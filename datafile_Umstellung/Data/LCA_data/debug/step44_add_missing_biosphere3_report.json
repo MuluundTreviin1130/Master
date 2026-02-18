@@ -1,0 +1,68 @@
+{
+  "biosphere3_len_before": 4709,
+  "unique_missing_added": 612,
+  "biosphere3_len_after": 612,
+  "invalid_refs_after": 514415,
+  "sample_missing": [
+    [
+      "fdb18af3-1f6e-40f0-a599-b2b1b3d9c35f",
+      "Sulfur trioxide",
+      "kilogram",
+      "fdb18af3-1f6e-40f0-a599-b2b1b3d9c35f"
+    ],
+    [
+      "4d0e0dab-9444-4851-8b61-91fc0701c3d0",
+      "Chloroprene",
+      "kilogram",
+      "4d0e0dab-9444-4851-8b61-91fc0701c3d0"
+    ],
+    [
+      "13d7e871-6e20-4357-a0c1-73b4739947ca",
+      "1,4-Dichloro-2-butene",
+      "kilogram",
+      "13d7e871-6e20-4357-a0c1-73b4739947ca"
+    ],
+    [
+      "c057d3e5-dc7a-42f2-aa55-74e3bb12df47",
+      "3,4-Dichloro-1-butene",
+      "kilogram",
+      "c057d3e5-dc7a-42f2-aa55-74e3bb12df47"
+    ],
+    [
+      "719d537e-69aa-49a4-b674-9b5739df6f55",
+      "Chloroprene",
+      "kilogram",
+      "719d537e-69aa-49a4-b674-9b5739df6f55"
+    ],
+    [
+      "50fcb4b5-8c1e-5384-b5ce-a3956838f411",
+      "Bixafen",
+      "kilogram",
+      "50fcb4b5-8c1e-5384-b5ce-a3956838f411"
+    ],
+    [
+      "55df86bd-5251-5c44-b7d5-400cc51475cd",
+      "Chlormequat chloride",
+      "kilogram",
+      "55df86bd-5251-5c44-b7d5-400cc51475cd"
+    ],
+    [
+      "b62dab3f-1136-5656-8843-814f7e537deb",
+      "Chlorotoluron",
+      "kilogram",
+      "b62dab3f-1136-5656-8843-814f7e537deb"
+    ],
+    [
+      "a81934c9-1e6f-4b56-b02d-b4ebcfed4f22",
+      "Clopyralid",
+      "kilogram",
+      "a81934c9-1e6f-4b56-b02d-b4ebcfed4f22"
+    ],
+    [
+      "eaebc656-c709-4f1a-ac00-52175d4adc96",
+      "Diflufenican",
+      "kilogram",
+      "eaebc656-c709-4f1a-ac00-52175d4adc96"
+    ]
+  ]
+}

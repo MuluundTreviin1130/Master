@@ -1,0 +1,10 @@
+{
+  "run_id": "paper_run",
+  "n_rows": 10,
+  "xnames": [
+    "pv_kwp",
+    "bess_kwh"
+  ],
+  "system_id": "PV_BESS_HP_V2H",
+  "teacher_mode": "fast+gold"
+}

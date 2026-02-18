@@ -1,0 +1,48 @@
+{
+  "tech": "Grid",
+  "infra": {
+    "climate_change": 0.0,
+    "ozone_depletion": 0.0,
+    "human_toxicity_cancer": 0.0,
+    "human_toxicity_non_cancer": 0.0,
+    "particulate_matter": 0.0,
+    "ionising_radiation": 0.0,
+    "photochemical_ozone_formation": 0.0,
+    "acidification": 0.0,
+    "eutrophication_terrestrial": 0.0,
+    "freshwater_eutrophication": 0.0,
+    "marine_eutrophication": 0.0,
+    "freshwater_ecotoxicity": 0.0,
+    "land_use": 0.0,
+    "water_use": 0.0,
+    "fossil_resource_use": 0.0,
+    "material_resources": 0.0
+  },
+  "op": {
+    "climate_change": 0.25361755764296207,
+    "ozone_depletion": 7.039898490173993e-09,
+    "human_toxicity_cancer": 9.765283169885902e-11,
+    "human_toxicity_non_cancer": 4.8941943516879975e-09,
+    "particulate_matter": 3.7680271658182516e-09,
+    "ionising_radiation": 0.017174103149501088,
+    "photochemical_ozone_formation": 0.0005582629622231804,
+    "acidification": 0.0010363931868112661,
+    "eutrophication_terrestrial": 0.0017524711242231654,
+    "freshwater_eutrophication": 2.7571696820014102e-05,
+    "marine_eutrophication": 0.00015060456087134412,
+    "freshwater_ecotoxicity": 11.460008924396364,
+    "land_use": 0.9896976335302888,
+    "water_use": 0.22614421266381862,
+    "fossil_resource_use": 3.9051279814283655,
+    "material_resources": 4.308177086566803e-06
+  },
+  "op_activity": {
+    "activity_db": "ecoinvent 3.11 cutoff",
+    "activity_code": "e0bec259edf1d712310d3874bcc72799",
+    "amount": 1.0,
+    "name": "market for electricity, low voltage",
+    "reference_product": "electricity, low voltage",
+    "location": "AT",
+    "unit": "kilowatt hour"
+  }
+}

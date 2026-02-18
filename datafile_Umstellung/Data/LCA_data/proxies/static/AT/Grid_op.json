@@ -1,0 +1,14 @@
+{
+  "technology": "Grid",
+  "stage": "op",
+  "bw_project": "my_lca_project",
+  "bw_db": "ecoinvent 3.11 cutoff",
+  "activity_key": [
+    "ecoinvent 3.11 cutoff",
+    "f281d8a42852c63a4f61156aba8d0b80"
+  ],
+  "fu_amount": 1.0,
+  "fu_unit_note": "1 kWh electricity, high voltage (market, AT)",
+  "scale_to_model_unit": 1.0,
+  "model_unit_note": "Model unit equals 1 kWh imported"
+}

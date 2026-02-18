@@ -1,0 +1,84 @@
+{
+  "categories": [
+    {
+      "key": "climate_change",
+      "label": "Climate change",
+      "unit": "kg CO2-eq"
+    },
+    {
+      "key": "ozone_depletion",
+      "label": "Ozone depletion",
+      "unit": "kg CFC-11-eq"
+    },
+    {
+      "key": "human_toxicity_cancer",
+      "label": "Human toxicity, carcinogenic",
+      "unit": "CTUh"
+    },
+    {
+      "key": "human_toxicity_non_cancer",
+      "label": "Human toxicity, non-carcinogenic",
+      "unit": "CTUh"
+    },
+    {
+      "key": "particulate_matter",
+      "label": "Particulate matter formation",
+      "unit": "disease incidence"
+    },
+    {
+      "key": "ionising_radiation",
+      "label": "Ionising radiation, human health",
+      "unit": "kBq U235-eq"
+    },
+    {
+      "key": "photochemical_ozone_formation",
+      "label": "Photochemical ozone formation, human health",
+      "unit": "kg NMVOC-eq"
+    },
+    {
+      "key": "acidification",
+      "label": "Acidification",
+      "unit": "molc H+-eq"
+    },
+    {
+      "key": "eutrophication_terrestrial",
+      "label": "Eutrophication, terrestrial",
+      "unit": "molc N-eq"
+    },
+    {
+      "key": "freshwater_eutrophication",
+      "label": "Eutrophication, freshwater",
+      "unit": "kg P-eq"
+    },
+    {
+      "key": "marine_eutrophication",
+      "label": "Eutrophication, marine",
+      "unit": "kg N-eq"
+    },
+    {
+      "key": "freshwater_ecotoxicity",
+      "label": "Ecotoxicity, freshwater",
+      "unit": "CTUe"
+    },
+    {
+      "key": "land_use",
+      "label": "Land use",
+      "unit": "dimensionless"
+    },
+    {
+      "key": "water_use",
+      "label": "Water use",
+      "unit": "m3 world eq deprived"
+    },
+    {
+      "key": "fossil_resource_use",
+      "label": "Fossil resource use",
+      "unit": "MJ"
+    },
+    {
+      "key": "material_resources",
+      "label": "Material resources, metals/minerals",
+      "unit": "kg Sb-eq"
+    }
+  ]
+}

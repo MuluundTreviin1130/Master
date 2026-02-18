@@ -1,0 +1,34 @@
+# EC Member Composition Configuration
+# 
+# Defines the types and counts of Energy Community members.
+# Each member type maps to:
+#   - id: Profile ID (Excel column name for load profile)
+#   - label: Human-readable label
+#   - count: Number of members of this type
+#   - building_key: Key for building parameters (typically same as id)
+
+members:
+  - id: "H0"
+    label: "Haushalt"
+    count: 50
+    building_key: "H0"
+  - id: "G0"
+    label: "Gewerbe allgemein"
+    count: 0
+    building_key: "G0"
+  - id: "G1"
+    label: "Gewerbe werktags 8-18"
+    count: 0
+    building_key: "G1"
+  - id: "G2"
+    label: "Gewerbe mit starkem bis überwiegendem Verbrauch in"
+    count: 0
+    building_key: "G2"
+  - id: "G3"
+    label: "Gewerbe durchlaufend"
+    count: 0
+    building_key: "G3"
+
+# Member IDs that are considered "households" (for N_HH calculation)
+household_ids:
+  - "H0"

@@ -1,0 +1,9 @@
+kpi,metric,value
+npc_eur,r2,0.9825155114882562
+npc_eur,rmse,72456.32790270414
+npc_eur,mae,35565.9706224265
+npc_eur,rel_MAE%,1.6226353611481867
+grid_interaction_kwh,r2,0.9990016187226222
+grid_interaction_kwh,rmse,603288.5636010764
+grid_interaction_kwh,mae,335976.820238965
+grid_interaction_kwh,rel_MAE%,0.981121238755559

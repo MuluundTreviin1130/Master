@@ -1,0 +1,48 @@
+{
+  "tech": "BESS",
+  "infra": {
+    "climate_change": 102.85053815635011,
+    "ozone_depletion": 1.2683430259326137e-06,
+    "human_toxicity_cancer": 1.1894833638526046e-07,
+    "human_toxicity_non_cancer": 7.500124237846649e-06,
+    "particulate_matter": 8.251620206301903e-06,
+    "ionising_radiation": 1.9133249314871674,
+    "photochemical_ozone_formation": 0.44166910475249643,
+    "acidification": 1.1359096815500802,
+    "eutrophication_terrestrial": 1.4244086481113412,
+    "freshwater_eutrophication": 0.005636857888028737,
+    "marine_eutrophication": 0.1268210339642138,
+    "freshwater_ecotoxicity": 8482.64920069631,
+    "land_use": 416.6317669001588,
+    "water_use": 26.678981252565503,
+    "fossil_resource_use": 1303.220435927773,
+    "material_resources": 0.0075242426034192065
+  },
+  "op": {
+    "climate_change": 0.0,
+    "ozone_depletion": 0.0,
+    "human_toxicity_cancer": 0.0,
+    "human_toxicity_non_cancer": 0.0,
+    "particulate_matter": 0.0,
+    "ionising_radiation": 0.0,
+    "photochemical_ozone_formation": 0.0,
+    "acidification": 0.0,
+    "eutrophication_terrestrial": 0.0,
+    "freshwater_eutrophication": 0.0,
+    "marine_eutrophication": 0.0,
+    "freshwater_ecotoxicity": 0.0,
+    "land_use": 0.0,
+    "water_use": 0.0,
+    "fossil_resource_use": 0.0,
+    "material_resources": 0.0
+  },
+  "infra_activity": {
+    "activity_db": "ecoinvent 3.11 cutoff",
+    "activity_code": "b47a4426debc122d1dfbac53cbcdf656",
+    "amount": 6.29,
+    "name": "market for battery cell, Li-ion, LiMn2O4",
+    "reference_product": "battery cell, Li-ion, LiMn2O4",
+    "location": "GLO",
+    "unit": "kilogram"
+  }
+}

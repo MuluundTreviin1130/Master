@@ -1,0 +1,87 @@
+{
+  "project": "my_lca_project",
+  "family": "EF v3.0 no LT",
+  "method_map": {
+    "climate_change": [
+      "EF v3.0 no LT",
+      "climate change no LT",
+      "global warming potential (GWP100) no LT"
+    ],
+    "ozone_depletion": [
+      "EF v3.0 no LT",
+      "ozone depletion no LT",
+      "ozone depletion potential (ODP) no LT"
+    ],
+    "human_toxicity_cancer": [
+      "EF v3.0 no LT",
+      "human toxicity: carcinogenic no LT",
+      "comparative toxic unit for human (CTUh) no LT"
+    ],
+    "human_toxicity_non_cancer": [
+      "EF v3.0 no LT",
+      "human toxicity: non-carcinogenic no LT",
+      "comparative toxic unit for human (CTUh) no LT"
+    ],
+    "particulate_matter": [
+      "EF v3.0 no LT",
+      "particulate matter formation no LT",
+      "impact on human health no LT"
+    ],
+    "ionising_radiation": [
+      "EF v3.0 no LT",
+      "ionising radiation: human health no LT",
+      "human exposure efficiency relative to u235 no LT"
+    ],
+    "photochemical_ozone_formation": [
+      "EF v3.0 no LT",
+      "photochemical oxidant formation: human health no LT",
+      "tropospheric ozone concentration increase no LT"
+    ],
+    "acidification": [
+      "EF v3.0 no LT",
+      "acidification no LT",
+      "accumulated exceedance (AE) no LT"
+    ],
+    "eutrophication_terrestrial": [
+      "EF v3.0 no LT",
+      "eutrophication: terrestrial no LT",
+      "accumulated exceedance (AE) no LT"
+    ],
+    "freshwater_eutrophication": [
+      "EF v3.0 no LT",
+      "eutrophication: freshwater no LT",
+      "fraction of nutrients reaching freshwater end compartment (P) no LT"
+    ],
+    "marine_eutrophication": [
+      "EF v3.0 no LT",
+      "eutrophication: marine no LT",
+      "fraction of nutrients reaching marine end compartment (N) no LT"
+    ],
+    "freshwater_ecotoxicity": [
+      "EF v3.0 no LT",
+      "ecotoxicity: freshwater no LT",
+      "comparative toxic unit for ecosystems (CTUe) no LT"
+    ],
+    "land_use": [
+      "EF v3.0 no LT",
+      "land use no LT",
+      "soil quality index no LT"
+    ],
+    "water_use": [
+      "EF v3.0 no LT",
+      "water use no LT",
+      "user deprivation potential (deprivation-weighted water consumption) no LT"
+    ],
+    "fossil_resource_use": [
+      "EF v3.0 no LT",
+      "energy resources: non-renewable no LT",
+      "abiotic depletion potential (ADP): fossil fuels no LT"
+    ],
+    "material_resources": [
+      "EF v3.0 no LT",
+      "material resources: metals/minerals no LT",
+      "abiotic depletion potential (ADP): elements (ultimate reserves) no LT"
+    ]
+  },
+  "unresolved": {}
+}

@@ -1,0 +1,48 @@
+{
+  "tech": "PV",
+  "infra": {
+    "climate_change": 2681.6711152969756,
+    "ozone_depletion": 0.00026429424406572053,
+    "human_toxicity_cancer": 2.251281252442127e-06,
+    "human_toxicity_non_cancer": 0.0001697018556409715,
+    "particulate_matter": 0.000186769451776094,
+    "ionising_radiation": 79.16645023610562,
+    "photochemical_ozone_formation": 11.886964402453652,
+    "acidification": 20.765236420517333,
+    "eutrophication_terrestrial": 32.51777630724576,
+    "freshwater_eutrophication": 0.19965917365048574,
+    "marine_eutrophication": 3.1398154693776203,
+    "freshwater_ecotoxicity": 167884.10131109616,
+    "land_use": 11320.766344651245,
+    "water_use": 4020.1674928033644,
+    "fossil_resource_use": 33453.54690041775,
+    "material_resources": 0.18646996157925183
+  },
+  "op": {
+    "climate_change": 0.0,
+    "ozone_depletion": 0.0,
+    "human_toxicity_cancer": 0.0,
+    "human_toxicity_non_cancer": 0.0,
+    "particulate_matter": 0.0,
+    "ionising_radiation": 0.0,
+    "photochemical_ozone_formation": 0.0,
+    "acidification": 0.0,
+    "eutrophication_terrestrial": 0.0,
+    "freshwater_eutrophication": 0.0,
+    "marine_eutrophication": 0.0,
+    "freshwater_ecotoxicity": 0.0,
+    "land_use": 0.0,
+    "water_use": 0.0,
+    "fossil_resource_use": 0.0,
+    "material_resources": 0.0
+  },
+  "infra_activity": {
+    "activity_db": "ecoinvent 3.11 cutoff",
+    "activity_code": "666219826c2279f7603fa361df44ab22",
+    "amount": 28000.0,
+    "name": "electricity production, photovoltaic, 3kWp slanted-roof installation, multi-Si, panel, mounted",
+    "reference_product": "electricity, low voltage",
+    "location": "AT",
+    "unit": "kilowatt hour"
+  }
+}

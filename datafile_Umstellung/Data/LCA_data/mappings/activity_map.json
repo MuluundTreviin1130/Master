@@ -1,0 +1,13 @@
+{
+  "Grid": {
+    "op": { "db": "ecoinvent 3.11 cutoff", "code": "e0bec259edf1d712310d3874bcc72799", "amount": 1.0 }
+  },
+  "PV": {
+    "infra": { "db": "ecoinvent 3.11 cutoff", "code": "666219826c2279f7603fa361df44ab22", "amount": 28000.0 },
+    "op":    { "db": "", "code": "", "amount": 1.0 }
+  },
+  "BESS": {
+    "infra": { "db": "ecoinvent 3.11 cutoff", "code": "b47a4426debc122d1dfbac53cbcdf656", "amount": 6.29 },
+    "op":    { "db": "", "code": "", "amount": 1.0 }
+  }
+}

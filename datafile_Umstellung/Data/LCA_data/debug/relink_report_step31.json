@@ -1,0 +1,587 @@
+{
+  "total_broken": 41915,
+  "stats": {
+    "updated": 33196,
+    "unresolved": 8719,
+    "ambiguous_resolved": 7663,
+    "fuzzy_used": 1276
+  },
+  "samples_unresolved": [
+    {
+      "old_code": "9d447cfebec7188067e4aea8d8b0210d",
+      "name": "Chloroprene",
+      "unit": "kilogram",
+      "categories": null,
+      "output": [
+        "ecoinvent 3.11 cutoff",
+        "0041db3960c41038f4c05de02dea5a05"
+      ]
+    },
+    {
+      "old_code": "45e92f59db5deb64dee1051fe51b73c8",
+      "name": "1,4-Dichloro-2-butene",
+      "unit": "kilogram",
+      "categories": null,
+      "output": [
+        "ecoinvent 3.11 cutoff",
+        "0041db3960c41038f4c05de02dea5a05"
+      ]
+    },
+    {
+      "old_code": "6963ceb88a810e3e56501534e701c471",
+      "name": "3,4-Dichloro-1-butene",
+      "unit": "kilogram",
+      "categories": null,
+      "output": [
+        "ecoinvent 3.11 cutoff",
+        "0041db3960c41038f4c05de02dea5a05"
+      ]
+    },
+    {
+      "old_code": "9d447cfebec7188067e4aea8d8b0210d",
+      "name": "Chloroprene",
+      "unit": "kilogram",
+      "categories": null,
+      "output": [
+        "ecoinvent 3.11 cutoff",
+        "0041db3960c41038f4c05de02dea5a05"
+      ]
+    },
+    {
+      "old_code": "660e4a60364f938bdcee316ec79c9b58",
+      "name": "Bixafen",
+      "unit": "kilogram",
+      "categories": null,
+      "output": [
+        "ecoinvent 3.11 cutoff",
+        "015089e2a2345305d935029fb1b471c4"
+      ]
+    },
+    {
+      "old_code": "2b221eba0d7240ea89ee51e89fa77b01",
+      "name": "Chlorotoluron",
+      "unit": "kilogram",
+      "categories": null,
+      "output": [
+        "ecoinvent 3.11 cutoff",
+        "015089e2a2345305d935029fb1b471c4"
+      ]
+    },
+    {
+      "old_code": "509011550fa01de789aa35e78b28c443",
+      "name": "Fluoxastrobin",
+      "unit": "kilogram",
+      "categories": null,
+      "output": [
+        "ecoinvent 3.11 cutoff",
+        "015089e2a2345305d935029fb1b471c4"
+      ]
+    },
+    {
+      "old_code": "8f3168f7a8e7f8ddf09acf7c9f5504ab",
+      "name": "Flupyrsulfuron-methyl sodium",
+      "unit": "kilogram",
+      "categories": null,
+      "output": [
+        "ecoinvent 3.11 cutoff",
+        "015089e2a2345305d935029fb1b471c4"
+      ]
+    },
+    {
+      "old_code": "b53ead3936385c54fe246642a092ac54",
+      "name": "Laminarin",
+      "unit": "kilogram",
+      "categories": null,
+      "output": [
+        "ecoinvent 3.11 cutoff",
+        "015089e2a2345305d935029fb1b471c4"
+      ]
+    },
+    {
+      "old_code": "c160b1525cb321af709a240affb9cd22",
+      "name": "Phenoxy compounds",
+      "unit": "kilogram",
+      "categories": null,
+      "output": [
+        "ecoinvent 3.11 cutoff",
+        "015089e2a2345305d935029fb1b471c4"
+      ]
+    },
+    {
+      "old_code": "f6da26b8843e13f2f7cd3bf10dcc1cf8",
+      "name": "Pyroxsulam",
+      "unit": "kilogram",
+      "categories": null,
+      "output": [
+        "ecoinvent 3.11 cutoff",
+        "015089e2a2345305d935029fb1b471c4"
+      ]
+    },
+    {
+      "old_code": "2d148f90e2ad35a9ecfb9fdb723d5a69",
+      "name": "Tritosulfuron",
+      "unit": "kilogram",
+      "categories": null,
+      "output": [
+        "ecoinvent 3.11 cutoff",
+        "015089e2a2345305d935029fb1b471c4"
+      ]
+    },
+    {
+      "old_code": "660e4a60364f938bdcee316ec79c9b58",
+      "name": "Bixafen",
+      "unit": "kilogram",
+      "categories": null,
+      "output": [
+        "ecoinvent 3.11 cutoff",
+        "015089e2a2345305d935029fb1b471c4"
+      ]
+    },
+    {
+      "old_code": "660e4a60364f938bdcee316ec79c9b58",
+      "name": "Bixafen",
+      "unit": "kilogram",
+      "categories": null,
+      "output": [
+        "ecoinvent 3.11 cutoff",
+        "015089e2a2345305d935029fb1b471c4"
+      ]
+    },
+    {
+      "old_code": "2b221eba0d7240ea89ee51e89fa77b01",
+      "name": "Chlorotoluron",
+      "unit": "kilogram",
+      "categories": null,
+      "output": [
+        "ecoinvent 3.11 cutoff",
+        "015089e2a2345305d935029fb1b471c4"
+      ]
+    },
+    {
+      "old_code": "509011550fa01de789aa35e78b28c443",
+      "name": "Fluoxastrobin",
+      "unit": "kilogram",
+      "categories": null,
+      "output": [
+        "ecoinvent 3.11 cutoff",
+        "015089e2a2345305d935029fb1b471c4"
+      ]
+    },
+    {
+      "old_code": "509011550fa01de789aa35e78b28c443",
+      "name": "Fluoxastrobin",
+      "unit": "kilogram",
+      "categories": null,
+      "output": [
+        "ecoinvent 3.11 cutoff",
+        "015089e2a2345305d935029fb1b471c4"
+      ]
+    },
+    {
+      "old_code": "8f3168f7a8e7f8ddf09acf7c9f5504ab",
+      "name": "Flupyrsulfuron-methyl sodium",
+      "unit": "kilogram",
+      "categories": null,
+      "output": [
+        "ecoinvent 3.11 cutoff",
+        "015089e2a2345305d935029fb1b471c4"
+      ]
+    },
+    {
+      "old_code": "8f3168f7a8e7f8ddf09acf7c9f5504ab",
+      "name": "Flupyrsulfuron-methyl sodium",
+      "unit": "kilogram",
+      "categories": null,
+      "output": [
+        "ecoinvent 3.11 cutoff",
+        "015089e2a2345305d935029fb1b471c4"
+      ]
+    },
+    {
+      "old_code": "b53ead3936385c54fe246642a092ac54",
+      "name": "Laminarin",
+      "unit": "kilogram",
+      "categories": null,
+      "output": [
+        "ecoinvent 3.11 cutoff",
+        "015089e2a2345305d935029fb1b471c4"
+      ]
+    }
+  ],
+  "samples_ambiguous_resolved": [
+    {
+      "old_code": "069cb9aace977c1308336d564df58791",
+      "name": "Sulfur trioxide",
+      "unit": "kilogram",
+      "chosen": [
+        "biosphere3",
+        "3268d8df-59cc-4740-a89f-dee8355ad7c3"
+      ],
+      "candidates": [
+        [
+          "biosphere3",
+          "3268d8df-59cc-4740-a89f-dee8355ad7c3"
+        ],
+        [
+          "biosphere3",
+          "aeb3e625-906a-4993-9f02-785f8cfd1ea5"
+        ],
+        [
+          "biosphere3",
+          "b00950bc-99cb-4ee2-bbc0-5f878ea170c3"
+        ],
+        [
+          "biosphere3",
+          "13825fb9-6e24-409a-bfcd-5dc4fd61ef98"
+        ],
+        [
+          "biosphere3",
+          "48430c70-95e0-4036-9854-72cc772ac8b2"
+        ]
+      ]
+    },
+    {
+      "old_code": "5113a035beb6cb4d2158d9e515e957a7",
+      "name": "Fluxapyroxad",
+      "unit": "kilogram",
+      "chosen": [
+        "biosphere3",
+        "d3dded99-fb96-5f65-b286-ed7b83fb78e2"
+      ],
+      "candidates": [
+        [
+          "biosphere3",
+          "2208ba07-373b-56a5-a2e3-8e770a4bc9a8"
+        ],
+        [
+          "biosphere3",
+          "d3dded99-fb96-5f65-b286-ed7b83fb78e2"
+        ],
+        [
+          "biosphere3",
+          "f0f42d28-0c71-58a6-a8b6-bdc524561b8b"
+        ],
+        [
+          "biosphere3",
+          "43092350-7599-5ed4-8766-bbc0b31318a5"
+        ],
+        [
+          "biosphere3",
+          "85e00608-dcad-549e-bcd1-c086e556fdfe"
+        ],
+        [
+          "biosphere3",
+          "90d5fd6a-ba11-5471-bd6b-d4ba12b90354"
+        ]
+      ]
+    },
+    {
+      "old_code": "df9b81d90cf84b294d2964c4023ac6f2",
+      "name": "Bentazone",
+      "unit": "kilogram",
+      "chosen": [
+        "biosphere3",
+        "237ea455-6c82-4254-af86-9409df922094"
+      ],
+      "candidates": [
+        [
+          "biosphere3",
+          "237ea455-6c82-4254-af86-9409df922094"
+        ],
+        [
+          "biosphere3",
+          "029af65d-7b19-4189-9c92-81fc03909665"
+        ],
+        [
+          "biosphere3",
+          "9288c80d-c5b0-485d-9b12-1f4122363db4"
+        ],
+        [
+          "biosphere3",
+          "29bb09a9-cfef-419e-8322-88e2f6bc0558"
+        ]
+      ]
+    },
+    {
+      "old_code": "d96a1772e7440ee698760f7b0965e404",
+      "name": "Dicamba",
+      "unit": "kilogram",
+      "chosen": [
+        "biosphere3",
+        "e555f589-ec29-468d-a35d-346dc45cdd84"
+      ],
+      "candidates": [
+        [
+          "biosphere3",
+          "e555f589-ec29-468d-a35d-346dc45cdd84"
+        ],
+        [
+          "biosphere3",
+          "44b7826f-6f4c-44f3-81eb-ad3426073fae"
+        ],
+        [
+          "biosphere3",
+          "5c7c5065-a636-4367-bf0a-8552609ffec7"
+        ],
+        [
+          "biosphere3",
+          "bc878fc6-d8a0-462f-91e1-11fb93b7928d"
+        ]
+      ]
+    },
+    {
+      "old_code": "5796dbe56e3fc02ac5d53d7bcb5cd46d",
+      "name": "Ethephon",
+      "unit": "kilogram",
+      "chosen": [
+        "biosphere3",
+        "a212914e-f8ba-49eb-9ceb-63e286053f2d"
+      ],
+      "candidates": [
+        [
+          "biosphere3",
+          "a212914e-f8ba-49eb-9ceb-63e286053f2d"
+        ],
+        [
+          "biosphere3",
+          "0ba582f8-3360-441a-a93c-ea15e87f7b0c"
+        ],
+        [
+          "biosphere3",
+          "e732d6dc-d502-4e03-8a5e-6c2644136b5f"
+        ],
+        [
+          "biosphere3",
+          "876d4bb6-badc-4d04-a193-71b68e908737"
+        ]
+      ]
+    },
+    {
+      "old_code": "b51bf11bfcdca2eeb4a22ee9e6edb05f",
+      "name": "Flufenacet",
+      "unit": "kilogram",
+      "chosen": [
+        "biosphere3",
+        "e9889638-ea4c-45b8-90fa-3201b43191e3"
+      ],
+      "candidates": [
+        [
+          "biosphere3",
+          "e9889638-ea4c-45b8-90fa-3201b43191e3"
+        ],
+        [
+          "biosphere3",
+          "17b87359-36f1-4ad3-a019-73e40fc2efc7"
+        ]
+      ]
+    },
+    {
+      "old_code": "3efe150c4b70075ec37fa19fdd069fde",
+      "name": "MCPB",
+      "unit": "kilogram",
+      "chosen": [
+        "biosphere3",
+        "415f43c0-3908-418d-95cd-fca46ec371b9"
+      ],
+      "candidates": [
+        [
+          "biosphere3",
+          "415f43c0-3908-418d-95cd-fca46ec371b9"
+        ],
+        [
+          "biosphere3",
+          "d48e95bf-3ea9-4a35-a791-d0984dcb539e"
+        ],
+        [
+          "biosphere3",
+          "7edf2b3a-762e-40ce-85e3-6716d8222e47"
+        ],
+        [
+          "biosphere3",
+          "0e20b8fa-3f9a-41f2-b9aa-2b4e32c62264"
+        ]
+      ]
+    },
+    {
+      "old_code": "470554e0bdd37f6e7ae4a46451cd53b6",
+      "name": "Pendimethalin",
+      "unit": "kilogram",
+      "chosen": [
+        "biosphere3",
+        "9cbbd44e-bc02-4586-9d58-e223db6f5e24"
+      ],
+      "candidates": [
+        [
+          "biosphere3",
+          "9cbbd44e-bc02-4586-9d58-e223db6f5e24"
+        ],
+        [
+          "biosphere3",
+          "92239067-b6f3-419f-b0ff-6ae67a804deb"
+        ],
+        [
+          "biosphere3",
+          "195e0a29-e62d-47fc-b1f6-7155939e2b25"
+        ],
+        [
+          "biosphere3",
+          "e4e17609-7a80-455d-a4e3-88af8695f987"
+        ]
+      ]
+    },
+    {
+      "old_code": "bf3ce0bb9ddfc5a6f4ab6e7c723dbd93",
+      "name": "2,4-D",
+      "unit": "kilogram",
+      "chosen": [
+        "biosphere3",
+        "79ff1e04-f069-50ed-b082-e995f38324d7"
+      ],
+      "candidates": [
+        [
+          "biosphere3",
+          "79ff1e04-f069-50ed-b082-e995f38324d7"
+        ],
+        [
+          "biosphere3",
+          "4d7c44eb-4910-5a23-be35-3e78bf864d12"
+        ],
+        [
+          "biosphere3",
+          "fffd291b-a67f-5b96-86cf-534a2132f062"
+        ],
+        [
+          "biosphere3",
+          "f681eb3c-854a-4f78-bcfe-76dfbcf9df3c"
+        ],
+        [
+          "biosphere3",
+          "e6137e6e-84a6-4fa1-a5bf-47c8153d7c05"
+        ]
+      ]
+    },
+    {
+      "old_code": "7bab1c9465210f3baac091ce92df6f57",
+      "name": "Azoxystrobin",
+      "unit": "kilogram",
+      "chosen": [
+        "biosphere3",
+        "b468d9af-f8a7-59f1-b82d-289dee4eae9e"
+      ],
+      "candidates": [
+        [
+          "biosphere3",
+          "b468d9af-f8a7-59f1-b82d-289dee4eae9e"
+        ],
+        [
+          "biosphere3",
+          "310a744b-7a1a-5b7a-a68b-7e85de9d8a20"
+        ],
+        [
+          "biosphere3",
+          "e69b028e-e549-4869-ae4a-b85ef8bcb7a9"
+        ],
+        [
+          "biosphere3",
+          "a6f022be-e24e-5d56-898e-98d4074c594f"
+        ],
+        [
+          "biosphere3",
+          "0b5b83a4-ef85-4db6-a739-79f8e00d5dac"
+        ]
+      ]
+    }
+  ],
+  "samples_fuzzy_used": [
+    {
+      "old_code": "5443ab981be09046fc20e03a6d78f0c1",
+      "name": "Fenoxaprop-P",
+      "unit": "kilogram",
+      "chosen": [
+        "biosphere3",
+        "b6e37022-cef7-4b2a-9e1e-f6ae4a0503e7"
+      ]
+    },
+    {
+      "old_code": "e437c84c133f963912f7a6ed129e987f",
+      "name": "Prohexadione calcium",
+      "unit": "kilogram",
+      "chosen": [
+        "biosphere3",
+        "2e718246-b4f2-44e3-bcc5-2ce3496d2db6"
+      ]
+    },
+    {
+      "old_code": "5443ab981be09046fc20e03a6d78f0c1",
+      "name": "Fenoxaprop-P",
+      "unit": "kilogram",
+      "chosen": [
+        "biosphere3",
+        "b6e37022-cef7-4b2a-9e1e-f6ae4a0503e7"
+      ]
+    },
+    {
+      "old_code": "5443ab981be09046fc20e03a6d78f0c1",
+      "name": "Fenoxaprop-P",
+      "unit": "kilogram",
+      "chosen": [
+        "biosphere3",
+        "b6e37022-cef7-4b2a-9e1e-f6ae4a0503e7"
+      ]
+    },
+    {
+      "old_code": "e437c84c133f963912f7a6ed129e987f",
+      "name": "Prohexadione calcium",
+      "unit": "kilogram",
+      "chosen": [
+        "biosphere3",
+        "2e718246-b4f2-44e3-bcc5-2ce3496d2db6"
+      ]
+    },
+    {
+      "old_code": "5443ab981be09046fc20e03a6d78f0c1",
+      "name": "Fenoxaprop-P",
+      "unit": "kilogram",
+      "chosen": [
+        "biosphere3",
+        "b6e37022-cef7-4b2a-9e1e-f6ae4a0503e7"
+      ]
+    },
+    {
+      "old_code": "e437c84c133f963912f7a6ed129e987f",
+      "name": "Prohexadione calcium",
+      "unit": "kilogram",
+      "chosen": [
+        "biosphere3",
+        "2e718246-b4f2-44e3-bcc5-2ce3496d2db6"
+      ]
+    },
+    {
+      "old_code": "5443ab981be09046fc20e03a6d78f0c1",
+      "name": "Fenoxaprop-P",
+      "unit": "kilogram",
+      "chosen": [
+        "biosphere3",
+        "b6e37022-cef7-4b2a-9e1e-f6ae4a0503e7"
+      ]
+    },
+    {
+      "old_code": "f9d21c66f268e44f7aa78329eb9f43b7",
+      "name": "Haloxyfop-P",
+      "unit": "kilogram",
+      "chosen": [
+        "biosphere3",
+        "a058168e-9a1e-5126-80b6-2d202e746835"
+      ]
+    },
+    {
+      "old_code": "e437c84c133f963912f7a6ed129e987f",
+      "name": "Prohexadione calcium",
+      "unit": "kilogram",
+      "chosen": [
+        "biosphere3",
+        "2e718246-b4f2-44e3-bcc5-2ce3496d2db6"
+      ]
+    }
+  ]
+}

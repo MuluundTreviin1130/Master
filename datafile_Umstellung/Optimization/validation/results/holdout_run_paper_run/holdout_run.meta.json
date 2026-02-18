@@ -1,0 +1,27 @@
+{
+  "run_id": "paper_run",
+  "n": 600,
+  "seed": 0,
+  "sampler": "lhs",
+  "xschema": [
+    "pv_kwp",
+    "bess_kwh"
+  ],
+  "report_kpis": [
+    "npc_eur",
+    "grid_interaction_kwh"
+  ],
+  "ref_engine": "gold",
+  "pred_engine": "gated",
+  "strict": true,
+  "signature_hash": "f33abd143643e35ca1a681319597c21e62d6aaf387100c788862970332572aa2",
+  "batch_size": 10,
+  "gating_gold": {
+    "enabled": true,
+    "mode": "periodic",
+    "fraction_max": 0.08,
+    "min_points": 8,
+    "period_batches": 2,
+    "finalists_k": 15
+  }
+}

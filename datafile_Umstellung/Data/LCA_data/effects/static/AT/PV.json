@@ -1,0 +1,57 @@
+{
+  "tech": "PV",
+  "infra": {
+    "climate_change": 2691.296410114255,
+    "ozone_depletion": 0.00026524287125870587,
+    "human_toxicity_cancer": 2.263100703647989e-06,
+    "human_toxicity_non_cancer": 0.000170311063408996,
+    "particulate_matter": 0.00018743982179501013,
+    "ionising_radiation": 79.45060122466501,
+    "photochemical_ozone_formation": 11.929630126139152,
+    "acidification": 20.839768861614832,
+    "eutrophication_terrestrial": 32.63449206055123,
+    "freshwater_eutrophication": 0.2003758081020182,
+    "marine_eutrophication": 3.1510851792450953,
+    "freshwater_ecotoxicity": 168486.86351955516,
+    "land_use": 11361.399863650791,
+    "water_use": 4034.5970265683154,
+    "fossil_resource_use": 33573.6210943607,
+    "material_resources": 0.18713925557267677
+  },
+  "op": {
+    "climate_change": 0.0,
+    "ozone_depletion": 0.0,
+    "human_toxicity_cancer": 0.0,
+    "human_toxicity_non_cancer": 0.0,
+    "particulate_matter": 0.0,
+    "ionising_radiation": 0.0,
+    "photochemical_ozone_formation": 0.0,
+    "acidification": 0.0,
+    "eutrophication_terrestrial": 0.0,
+    "freshwater_eutrophication": 0.0,
+    "marine_eutrophication": 0.0,
+    "freshwater_ecotoxicity": 0.0,
+    "land_use": 0.0,
+    "water_use": 0.0,
+    "fossil_resource_use": 0.0,
+    "material_resources": 0.0
+  },
+  "infra_activity": {
+    "activity_db": "ecoinvent 3.11 cutoff",
+    "activity_code": "666219826c2279f7603fa361df44ab22",
+    "amount": 1.0,
+    "name": "electricity production, photovoltaic, 3kWp slanted-roof installation, multi-Si, panel, mounted",
+    "reference_product": "electricity, low voltage",
+    "location": "AT",
+    "unit": "kilowatt hour"
+  },
+  "meta": {
+    "normalized_from": "per_kWh_PV_output",
+    "normalized_to": "per_kWp_lifetime",
+    "pv_yield_kwh_per_kwp_year": 1124.02,
+    "lifetime_years_used_for_normalization": 25,
+    "Y_L_kwh_per_kwp": 28100.5,
+    "includes_degradation": false,
+    "note": "All infra factors were multiplied by Y_L to be consistent with scaling by pv_kwp in the optimizer."
+  }
+}
