@@ -1,0 +1,23 @@
+{
+  "Grid": {
+    "op": { "db": "ecoinvent 3.11 cutoff", "code": "e0bec259edf1d712310d3874bcc72799", "amount": 1.0 }
+  },
+  "PV": {
+    "infra": { "db": "ecoinvent 3.11 cutoff", "code": "666219826c2279f7603fa361df44ab22", "amount": 28000.0 },
+    "op":    { "db": "", "code": "", "amount": 1.0 }
+  },
+  "BESS": {
+    "infra": { "db": "ecoinvent 3.11 cutoff", "code": "b47a4426debc122d1dfbac53cbcdf656", "amount": 6.29 },
+    "op":    { "db": "", "code": "", "amount": 1.0 }
+  },
+  "fuel_cell_PEM": {
+    "infra": {
+      "db": "ecoinvent 3.11 cutoff",
+      "code": "ead5c66a75c3ed5d381399f50b927e47",
+      "amount": 0.5,
+      "amount_note": "Base scaling per installed kW: ecoinvent process is a 2 kW stack, so amount_base=1/2=0.5 per kW. Lifetime/replacement scaling is handled in code."
+    },
+    "op":    { "db": "", "code": "", "amount": 1.0 }
+  }
+
+}

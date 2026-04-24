@@ -1,0 +1,5 @@
+technology,assessment_status,reliability,completeness,technological_representativeness,geographical_representativeness,temporal_representativeness,dqr,dqr_class
+Grid,scored,1,1,1,1,1,1.0,high_quality
+PV,scored,1,2,2,2,1,1.7777777777777777,medium_quality
+BESS,scored,2,2,2,3,2,2.5555555555555554,medium_quality
+fuel_cell_PEM,scored,2,2,2,3,3,2.6666666666666665,medium_quality

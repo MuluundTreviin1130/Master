@@ -1,0 +1,28 @@
+{
+  "source_weather_csv": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\profiles\\Vienna\\weather\\openmeteo_hourly_archive_2016_2025.csv",
+  "summary_csv": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\profiles\\Vienna\\weather\\openmeteo_year_summary_2016_2025.csv",
+  "selection_method": {
+    "average_year": {
+      "type": "minimum_z_distance",
+      "metric_columns": [
+        "annual_mean_temp_c",
+        "annual_shortwave_kwh_m2",
+        "hdd18",
+        "winter_mean_temp_c",
+        "winter_shortwave_kwh_m2",
+        "winter_hdd18"
+      ]
+    },
+    "cold_year": {
+      "type": "max_hdd18"
+    },
+    "mild_year": {
+      "type": "min_hdd18"
+    }
+  },
+  "selected_years": {
+    "average_year": 2020,
+    "cold_year": 2021,
+    "mild_year": 2024
+  }
+}

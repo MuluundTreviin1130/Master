@@ -1,0 +1,39 @@
+{
+  "id": "AT.fuel_cell_PEM",
+  "country": "AT",
+  "tech_key": "fuel_cell_PEM",
+  "param_key": "FC",
+  "static_lca_file": "Data/LCA_data/static/AT/fuel_cell_PEM.json",
+  "assessment_status": "scored",
+  "dataset_ref": {
+    "source_type": "static_lca_infra_activity",
+    "activity_db": "ecoinvent 3.11 cutoff",
+    "activity_code": "ead5c66a75c3ed5d381399f50b927e47",
+    "activity_name": "fuel cell production, stack polymer electrolyte membrane, 2kW electrical, future",
+    "reference_product": "fuel cell, stack polymer electrolyte membrane, 2kW electrical, future",
+    "location": "RoW",
+    "unit": "unit",
+    "amount": 0.5,
+    "amount_note": "Base scaling per installed kW: ecoinvent process is a 2 kW stack, so amount_base=0.5 per kW.",
+    "source_note": "Read from Data/LCA_data/static/AT/fuel_cell_PEM.json."
+  },
+  "pedigree_scores": {
+    "reliability": 2,
+    "completeness": 2,
+    "technological_representativeness": 2,
+    "geographical_representativeness": 3,
+    "temporal_representativeness": 3
+  },
+  "dqr": {
+    "formula": "(sum(scores) + weakest_score * 4) / 9",
+    "value": 2.6666666666666665,
+    "class": "medium_quality"
+  },
+  "notes": "Scored from the currently active PEM fuel cell stack dataset. Reliability and completeness are acceptable, but the process is a future-oriented 2 kW RoW stack proxy, so geographical and temporal representativeness are weaker for the present Austrian application.",
+  "review": {
+    "assessor": null,
+    "reviewer": null,
+    "last_updated": "2026-03-17",
+    "comment": "Initial project-internal pedigree scoring based on the current static LCA record."
+  }
+}

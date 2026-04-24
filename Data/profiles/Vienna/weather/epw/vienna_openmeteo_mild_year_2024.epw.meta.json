@@ -1,0 +1,366 @@
+{
+  "role": "mild_year",
+  "year": 2024,
+  "epw_path": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\profiles\\Vienna\\weather\\epw\\vienna_openmeteo_mild_year_2024.epw",
+  "template_epw_path": "C:\\Users\\Philipp Thunshirn\\Downloads\\AUT_WI_Wien-Innere.Stadt.110340_TMYx.2011-2025\\AUT_WI_Wien-Innere.Stadt.110340_TMYx.2011-2025.epw",
+  "source_weather_csv": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\profiles\\Vienna\\weather\\openmeteo_hourly_archive_2016_2025.csv",
+  "source_selection_json": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\profiles\\Vienna\\weather\\openmeteo_representative_years_2016_2025.json",
+  "config": {
+    "enabled": false,
+    "location": "Vienna",
+    "pseudo_epw_weather_csv": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\profiles\\Vienna\\weather\\openmeteo_hourly_archive_2016_2025.csv",
+    "pseudo_epw_representative_years_json": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\profiles\\Vienna\\weather\\openmeteo_representative_years_2016_2025.json",
+    "pseudo_epw_output_dir": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\profiles\\Vienna\\weather\\epw",
+    "pseudo_epw_template_path": "C:\\Users\\Philipp Thunshirn\\Downloads\\AUT_WI_Wien-Innere.Stadt.110340_TMYx.2011-2025\\AUT_WI_Wien-Innere.Stadt.110340_TMYx.2011-2025.epw",
+    "pseudo_epw_year_roles": [
+      "average_year",
+      "cold_year",
+      "mild_year"
+    ],
+    "pseudo_epw_extra_year_roles": {
+      "historical_2023": 2023
+    },
+    "usage_profile_excel_path": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\profiles\\common\\usage\\usage_profiles.xlsx",
+    "usage_profile_sheet_name": "usage_profiles",
+    "usage_profile_timebase": "annual_8760",
+    "usage_profile_leap_day_policy": "repeat_feb28",
+    "required_usage_profile_columns": [
+      "H",
+      "Betriebszeit_-",
+      "Pers/m2",
+      "Qi Sommer W/m2",
+      "Qi Winter W/m2",
+      "Luftwechsel_Anlage_1_h",
+      "Luftwechsel_Infiltration_1_h",
+      "Warmwasserbedarf_W_m2"
+    ],
+    "local_standard_utc_offset_hours": 1,
+    "horizontal_ir_model": "clark_allen",
+    "total_to_opaque_sky_cover_mode": "same_as_total",
+    "unsupported_fields_policy": "epw_missing_codes",
+    "energyplus_executable_path": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Technical_model\\technologies\\buildings\\calibration\\_vendor\\EnergyPlus-26.1.0\\EnergyPlus-26.1.0-6f2e40d102-Windows-x86_64\\energyplus.exe",
+    "energyplus_idf_version": "26.1",
+    "energyplus_smoke_role": "average_year",
+    "energyplus_smoke_output_dir": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Technical_model\\technologies\\buildings\\calibration\\_smoke",
+    "teacher_runs_output_dir": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Technical_model\\technologies\\buildings\\calibration\\_teacher_runs",
+    "teacher_plausibility_batch_output_dir": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Technical_model\\technologies\\buildings\\calibration\\_teacher_runs\\_plausibility_batches",
+    "teacher_plausibility_batch_default_experiments": [
+      "winter_reference_week",
+      "winter_free_float_72h"
+    ],
+    "teacher_plausibility_batch_summary_csv": "teacher_plausibility_batch_summary.csv",
+    "teacher_plausibility_batch_summary_json": "teacher_plausibility_batch_summary.json",
+    "teacher_geometry_solar_review_csv": "teacher_geometry_solar_review.csv",
+    "teacher_geometry_solar_review_json": "teacher_geometry_solar_review.json",
+    "teacher_event_batch_output_dir": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Technical_model\\technologies\\buildings\\calibration\\_teacher_runs\\_event_batches",
+    "teacher_event_batch_default_experiments": [
+      "winter_event_reference_96h",
+      "winter_recovery_reference_120h",
+      "winter_preheat_event",
+      "winter_cutback_event",
+      "winter_recovery_event"
+    ],
+    "teacher_event_batch_summary_csv": "teacher_event_batch_summary.csv",
+    "teacher_event_batch_summary_json": "teacher_event_batch_summary.json",
+    "reduced_order_fit_output_dir": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Technical_model\\technologies\\buildings\\calibration\\_reduced_order_fits",
+    "reduced_order_fit_summary_csv": "reduced_order_fit_summary.csv",
+    "reduced_order_fit_summary_json": "reduced_order_fit_summary.json",
+    "reduced_order_fit_default_reference_experiment_id": "winter_reference_week",
+    "reduced_order_fit_default_free_float_experiment_id": "winter_free_float_72h",
+    "event_response_fit_output_dir": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Technical_model\\technologies\\buildings\\calibration\\_event_response_fits",
+    "event_response_fit_summary_csv": "event_response_fit_summary.csv",
+    "event_response_fit_summary_json": "event_response_fit_summary.json",
+    "event_response_preheat_reference_experiment_id": "winter_event_reference_96h",
+    "event_response_cutback_reference_experiment_id": "winter_event_reference_96h",
+    "event_response_recovery_reference_experiment_id": "winter_recovery_reference_120h",
+    "event_response_preheat_experiment_id": "winter_preheat_event",
+    "event_response_cutback_experiment_id": "winter_cutback_event",
+    "event_response_recovery_experiment_id": "winter_recovery_event",
+    "event_response_temperature_recovery_tolerance_c": 0.1,
+    "event_response_unrecovered_sentinel_h": -1.0,
+    "calibrated_v1_json_path": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\thermal_archetypes\\Vienna\\calibrated_v1.json",
+    "calibrated_v1_python_path": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\thermal_archetypes\\Vienna\\calibrated_v1.py",
+    "teacher_hourly_filename": "teacher_hourly.csv",
+    "teacher_meta_filename": "teacher.meta.json",
+    "teacher_plausibility_hourly_filename": "teacher_plausibility_hourly.csv",
+    "teacher_plausibility_summary_filename": "teacher_plausibility_summary.json",
+    "teacher_plausibility_plot_filename": "teacher_plausibility_overview.png",
+    "teacher_reference_gfa_m2": 1000.0,
+    "teacher_window_typology_optics": {
+      "single_glazing_box_type_or_wood_frame": {
+        "shgc": 0.85,
+        "visible_transmittance": 0.78,
+        "source": "cross_tabula_proxy_dk_pl_single_glazing;v1_proxy_not_yet_source_backed"
+      },
+      "double_glazing_composite_window": {
+        "shgc": 0.76,
+        "visible_transmittance": 0.74,
+        "source": "cross_tabula_proxy_dk_pl_double_glazing;v1_proxy_not_yet_source_backed"
+      },
+      "heat_protection_glazing": {
+        "shgc": 0.6,
+        "visible_transmittance": 0.7,
+        "source": "cross_tabula_proxy_de_dk_double_low_e;v1_proxy_not_yet_source_backed"
+      },
+      "triple_glazing_or_high_performance_window": {
+        "shgc": 0.5,
+        "visible_transmittance": 0.66,
+        "source": "cross_tabula_proxy_de_dk_triple_low_e;v1_proxy_not_yet_source_backed"
+      }
+    },
+    "teacher_non_residential_simple_glazing_mode": "global_v1",
+    "teacher_non_residential_simple_glazing_shgc": 0.6,
+    "teacher_non_residential_simple_glazing_visible_transmittance": 0.6,
+    "teacher_non_residential_simple_glazing_source": "non_residential_v1_global_simple_glazing_no_source_backed_window_typology",
+    "teacher_simple_glazing_shgc": 0.6,
+    "teacher_simple_glazing_visible_transmittance": 0.6,
+    "teacher_pilot_default_cohort_id": "residential_1975_1990",
+    "teacher_pilot_default_experiment_id": "winter_reference_week",
+    "teacher_setup_output_dir": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\profiles\\Vienna\\weather\\calibration_setup",
+    "teacher_input_output_json": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\profiles\\Vienna\\weather\\calibration_setup\\teacher_inputs_v1.json",
+    "experiment_library_output_json": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\profiles\\Vienna\\weather\\calibration_setup\\experiment_library_v1.json",
+    "experiment_templates": [
+      {
+        "key": "winter_reference_week",
+        "role": "average_year",
+        "start_month": 1,
+        "start_day": 15,
+        "start_hour": 0,
+        "duration_h": 168,
+        "control_mode": "reference",
+        "event_type": "none",
+        "event_start_offset_h": 0,
+        "event_duration_h": 0,
+        "event_setpoint_delta_k": 0.0,
+        "post_event_observation_h": 0,
+        "notes": [
+          "Baseline winter reference week on the average representative year.",
+          "Used as main comparison anchor before event-style flexibility experiments."
+        ]
+      },
+      {
+        "key": "winter_free_float_72h",
+        "role": "cold_year",
+        "start_month": 1,
+        "start_day": 15,
+        "start_hour": 0,
+        "duration_h": 72,
+        "control_mode": "free_float",
+        "event_type": "none",
+        "event_start_offset_h": 0,
+        "event_duration_h": 0,
+        "event_setpoint_delta_k": 0.0,
+        "post_event_observation_h": 0,
+        "notes": [
+          "Free-float cooling-down experiment on the cold representative year."
+        ]
+      },
+      {
+        "key": "winter_event_reference_96h",
+        "role": "cold_year",
+        "start_month": 1,
+        "start_day": 15,
+        "start_hour": 0,
+        "duration_h": 96,
+        "control_mode": "reference",
+        "event_type": "none",
+        "event_start_offset_h": 0,
+        "event_duration_h": 0,
+        "event_setpoint_delta_k": 0.0,
+        "post_event_observation_h": 0,
+        "notes": [
+          "Cold-year event baseline without setpoint perturbation.",
+          "Used as direct comparison anchor for preheat and cutback event runs."
+        ]
+      },
+      {
+        "key": "winter_preheat_event",
+        "role": "cold_year",
+        "start_month": 1,
+        "start_day": 15,
+        "start_hour": 0,
+        "duration_h": 96,
+        "control_mode": "reference",
+        "event_type": "preheat",
+        "event_start_offset_h": 24,
+        "event_duration_h": 12,
+        "event_setpoint_delta_k": 2.0,
+        "post_event_observation_h": 24,
+        "notes": [
+          "Temporary preheating event around the winter reference trajectory."
+        ]
+      },
+      {
+        "key": "winter_cutback_event",
+        "role": "cold_year",
+        "start_month": 1,
+        "start_day": 15,
+        "start_hour": 0,
+        "duration_h": 96,
+        "control_mode": "reference",
+        "event_type": "cutback",
+        "event_start_offset_h": 24,
+        "event_duration_h": 12,
+        "event_setpoint_delta_k": -2.0,
+        "post_event_observation_h": 24,
+        "notes": [
+          "Temporary cutback event around the winter reference trajectory."
+        ]
+      },
+      {
+        "key": "winter_recovery_reference_120h",
+        "role": "cold_year",
+        "start_month": 1,
+        "start_day": 15,
+        "start_hour": 0,
+        "duration_h": 120,
+        "control_mode": "reference",
+        "event_type": "none",
+        "event_start_offset_h": 0,
+        "event_duration_h": 0,
+        "event_setpoint_delta_k": 0.0,
+        "post_event_observation_h": 0,
+        "notes": [
+          "Cold-year recovery baseline without setpoint perturbation.",
+          "Used as direct comparison anchor for the recovery event run."
+        ]
+      },
+      {
+        "key": "winter_recovery_event",
+        "role": "cold_year",
+        "start_month": 1,
+        "start_day": 15,
+        "start_hour": 0,
+        "duration_h": 120,
+        "control_mode": "reference",
+        "event_type": "recovery_probe",
+        "event_start_offset_h": 24,
+        "event_duration_h": 24,
+        "event_setpoint_delta_k": -2.0,
+        "post_event_observation_h": 48,
+        "notes": [
+          "Cutback and recovery probe used to quantify rebound and recovery speed."
+        ]
+      },
+      {
+        "key": "shoulder_reference_week",
+        "role": "mild_year",
+        "start_month": 10,
+        "start_day": 1,
+        "start_hour": 0,
+        "duration_h": 168,
+        "control_mode": "reference",
+        "event_type": "none",
+        "event_start_offset_h": 0,
+        "event_duration_h": 0,
+        "event_setpoint_delta_k": 0.0,
+        "post_event_observation_h": 0,
+        "notes": [
+          "Shoulder-season reference week on the mild representative year."
+        ]
+      },
+      {
+        "key": "repday_winter_peak_heat_day",
+        "role": "historical_2023",
+        "start_month": 1,
+        "start_day": 17,
+        "start_hour": 0,
+        "duration_h": 24,
+        "control_mode": "reference",
+        "event_type": "none",
+        "event_start_offset_h": 0,
+        "event_duration_h": 0,
+        "event_setpoint_delta_k": 0.0,
+        "post_event_observation_h": 0,
+        "notes": [
+          "Teacher reference day aligned with the selected 2023 winter_peak_heat_day."
+        ]
+      },
+      {
+        "key": "repday_winter_price_spike_day",
+        "role": "historical_2023",
+        "start_month": 1,
+        "start_day": 24,
+        "start_hour": 0,
+        "duration_h": 24,
+        "control_mode": "reference",
+        "event_type": "none",
+        "event_start_offset_h": 0,
+        "event_duration_h": 0,
+        "event_setpoint_delta_k": 0.0,
+        "post_event_observation_h": 0,
+        "notes": [
+          "Teacher reference day aligned with the selected 2023 winter_price_spike_day."
+        ]
+      },
+      {
+        "key": "repday_winter_sunny_heat_day",
+        "role": "historical_2023",
+        "start_month": 12,
+        "start_day": 4,
+        "start_hour": 0,
+        "duration_h": 24,
+        "control_mode": "reference",
+        "event_type": "none",
+        "event_start_offset_h": 0,
+        "event_duration_h": 0,
+        "event_setpoint_delta_k": 0.0,
+        "post_event_observation_h": 0,
+        "notes": [
+          "Teacher reference day aligned with the selected 2023 winter_sunny_heat_day."
+        ]
+      },
+      {
+        "key": "repday_winter_typical_day",
+        "role": "historical_2023",
+        "start_month": 1,
+        "start_day": 2,
+        "start_hour": 0,
+        "duration_h": 24,
+        "control_mode": "reference",
+        "event_type": "none",
+        "event_start_offset_h": 0,
+        "event_duration_h": 0,
+        "event_setpoint_delta_k": 0.0,
+        "post_event_observation_h": 0,
+        "notes": [
+          "Teacher reference day aligned with the selected 2023 winter_typical_day."
+        ]
+      },
+      {
+        "key": "repday_shoulder_typical_day",
+        "role": "historical_2023",
+        "start_month": 10,
+        "start_day": 31,
+        "start_hour": 0,
+        "duration_h": 24,
+        "control_mode": "reference",
+        "event_type": "none",
+        "event_start_offset_h": 0,
+        "event_duration_h": 0,
+        "event_setpoint_delta_k": 0.0,
+        "post_event_observation_h": 0,
+        "notes": [
+          "Teacher reference day aligned with the selected 2023 shoulder_typical_day."
+        ]
+      }
+    ],
+    "notes": [
+      "Pseudo-EPW builder stays offline and sidecar-only; not part of the runtime dispatch loop.",
+      "Open-Meteo weather is the current data SSOT for pseudo-EPW V1.",
+      "Template EPW is used only as file-format/header anchor, not as hourly weather truth.",
+      "First true teacher runs stay on a normalized reference GFA to avoid city-scale geometry in EnergyPlus.",
+      "The shared usage-profile workbook is currently interpreted as a normal-year 8760 annual profile."
+    ]
+  },
+  "assumptions": {
+    "local_standard_time": "UTC+1 without DST",
+    "horizontal_ir_model": "clark_allen",
+    "opaque_sky_cover_mode": "same_as_total",
+    "unsupported_fields_policy": "epw_missing_codes",
+    "present_weather_codes": "left as EPW missing code",
+    "illuminance_fields": "left as EPW missing codes",
+    "precipitable_water": "left as EPW missing code",
+    "aerosol_optical_depth": "left as EPW missing code"
+  }
+}

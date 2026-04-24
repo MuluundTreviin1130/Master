@@ -1,0 +1,248 @@
+{
+  "schema_version": "v1",
+  "location": "Vienna",
+  "representative_years_json": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\profiles\\Vienna\\weather\\openmeteo_representative_years_2016_2025.json",
+  "experiments": [
+    {
+      "experiment_id": "winter_reference_week",
+      "role": "average_year",
+      "calendar_year": 2020,
+      "epw_path": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\profiles\\Vienna\\weather\\epw\\vienna_openmeteo_average_year_2020.epw",
+      "start_local": "2020-01-15T00:00:00",
+      "end_local": "2020-01-22T00:00:00",
+      "duration_h": 168,
+      "control_mode": "reference",
+      "event_type": "none",
+      "event_start_offset_h": 0,
+      "event_duration_h": 0,
+      "event_setpoint_delta_k": 0.0,
+      "post_event_observation_h": 0,
+      "notes": [
+        "Baseline winter reference week on the average representative year.",
+        "Used as main comparison anchor before event-style flexibility experiments."
+      ]
+    },
+    {
+      "experiment_id": "winter_free_float_72h",
+      "role": "cold_year",
+      "calendar_year": 2021,
+      "epw_path": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\profiles\\Vienna\\weather\\epw\\vienna_openmeteo_cold_year_2021.epw",
+      "start_local": "2021-01-15T00:00:00",
+      "end_local": "2021-01-18T00:00:00",
+      "duration_h": 72,
+      "control_mode": "free_float",
+      "event_type": "none",
+      "event_start_offset_h": 0,
+      "event_duration_h": 0,
+      "event_setpoint_delta_k": 0.0,
+      "post_event_observation_h": 0,
+      "notes": [
+        "Free-float cooling-down experiment on the cold representative year."
+      ]
+    },
+    {
+      "experiment_id": "winter_event_reference_96h",
+      "role": "cold_year",
+      "calendar_year": 2021,
+      "epw_path": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\profiles\\Vienna\\weather\\epw\\vienna_openmeteo_cold_year_2021.epw",
+      "start_local": "2021-01-15T00:00:00",
+      "end_local": "2021-01-19T00:00:00",
+      "duration_h": 96,
+      "control_mode": "reference",
+      "event_type": "none",
+      "event_start_offset_h": 0,
+      "event_duration_h": 0,
+      "event_setpoint_delta_k": 0.0,
+      "post_event_observation_h": 0,
+      "notes": [
+        "Cold-year event baseline without setpoint perturbation.",
+        "Used as direct comparison anchor for preheat and cutback event runs."
+      ]
+    },
+    {
+      "experiment_id": "winter_preheat_event",
+      "role": "cold_year",
+      "calendar_year": 2021,
+      "epw_path": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\profiles\\Vienna\\weather\\epw\\vienna_openmeteo_cold_year_2021.epw",
+      "start_local": "2021-01-15T00:00:00",
+      "end_local": "2021-01-19T00:00:00",
+      "duration_h": 96,
+      "control_mode": "reference",
+      "event_type": "preheat",
+      "event_start_offset_h": 24,
+      "event_duration_h": 12,
+      "event_setpoint_delta_k": 2.0,
+      "post_event_observation_h": 24,
+      "notes": [
+        "Temporary preheating event around the winter reference trajectory."
+      ]
+    },
+    {
+      "experiment_id": "winter_cutback_event",
+      "role": "cold_year",
+      "calendar_year": 2021,
+      "epw_path": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\profiles\\Vienna\\weather\\epw\\vienna_openmeteo_cold_year_2021.epw",
+      "start_local": "2021-01-15T00:00:00",
+      "end_local": "2021-01-19T00:00:00",
+      "duration_h": 96,
+      "control_mode": "reference",
+      "event_type": "cutback",
+      "event_start_offset_h": 24,
+      "event_duration_h": 12,
+      "event_setpoint_delta_k": -2.0,
+      "post_event_observation_h": 24,
+      "notes": [
+        "Temporary cutback event around the winter reference trajectory."
+      ]
+    },
+    {
+      "experiment_id": "winter_recovery_reference_120h",
+      "role": "cold_year",
+      "calendar_year": 2021,
+      "epw_path": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\profiles\\Vienna\\weather\\epw\\vienna_openmeteo_cold_year_2021.epw",
+      "start_local": "2021-01-15T00:00:00",
+      "end_local": "2021-01-20T00:00:00",
+      "duration_h": 120,
+      "control_mode": "reference",
+      "event_type": "none",
+      "event_start_offset_h": 0,
+      "event_duration_h": 0,
+      "event_setpoint_delta_k": 0.0,
+      "post_event_observation_h": 0,
+      "notes": [
+        "Cold-year recovery baseline without setpoint perturbation.",
+        "Used as direct comparison anchor for the recovery event run."
+      ]
+    },
+    {
+      "experiment_id": "winter_recovery_event",
+      "role": "cold_year",
+      "calendar_year": 2021,
+      "epw_path": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\profiles\\Vienna\\weather\\epw\\vienna_openmeteo_cold_year_2021.epw",
+      "start_local": "2021-01-15T00:00:00",
+      "end_local": "2021-01-20T00:00:00",
+      "duration_h": 120,
+      "control_mode": "reference",
+      "event_type": "recovery_probe",
+      "event_start_offset_h": 24,
+      "event_duration_h": 24,
+      "event_setpoint_delta_k": -2.0,
+      "post_event_observation_h": 48,
+      "notes": [
+        "Cutback and recovery probe used to quantify rebound and recovery speed."
+      ]
+    },
+    {
+      "experiment_id": "shoulder_reference_week",
+      "role": "mild_year",
+      "calendar_year": 2024,
+      "epw_path": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\profiles\\Vienna\\weather\\epw\\vienna_openmeteo_mild_year_2024.epw",
+      "start_local": "2024-10-01T00:00:00",
+      "end_local": "2024-10-08T00:00:00",
+      "duration_h": 168,
+      "control_mode": "reference",
+      "event_type": "none",
+      "event_start_offset_h": 0,
+      "event_duration_h": 0,
+      "event_setpoint_delta_k": 0.0,
+      "post_event_observation_h": 0,
+      "notes": [
+        "Shoulder-season reference week on the mild representative year."
+      ]
+    },
+    {
+      "experiment_id": "repday_winter_peak_heat_day",
+      "role": "historical_2023",
+      "calendar_year": 2023,
+      "epw_path": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\profiles\\Vienna\\weather\\epw\\vienna_openmeteo_historical_2023_2023.epw",
+      "start_local": "2023-01-17T00:00:00",
+      "end_local": "2023-01-18T00:00:00",
+      "duration_h": 24,
+      "control_mode": "reference",
+      "event_type": "none",
+      "event_start_offset_h": 0,
+      "event_duration_h": 0,
+      "event_setpoint_delta_k": 0.0,
+      "post_event_observation_h": 0,
+      "notes": [
+        "Teacher reference day aligned with the selected 2023 winter_peak_heat_day."
+      ]
+    },
+    {
+      "experiment_id": "repday_winter_price_spike_day",
+      "role": "historical_2023",
+      "calendar_year": 2023,
+      "epw_path": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\profiles\\Vienna\\weather\\epw\\vienna_openmeteo_historical_2023_2023.epw",
+      "start_local": "2023-01-24T00:00:00",
+      "end_local": "2023-01-25T00:00:00",
+      "duration_h": 24,
+      "control_mode": "reference",
+      "event_type": "none",
+      "event_start_offset_h": 0,
+      "event_duration_h": 0,
+      "event_setpoint_delta_k": 0.0,
+      "post_event_observation_h": 0,
+      "notes": [
+        "Teacher reference day aligned with the selected 2023 winter_price_spike_day."
+      ]
+    },
+    {
+      "experiment_id": "repday_winter_sunny_heat_day",
+      "role": "historical_2023",
+      "calendar_year": 2023,
+      "epw_path": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\profiles\\Vienna\\weather\\epw\\vienna_openmeteo_historical_2023_2023.epw",
+      "start_local": "2023-12-04T00:00:00",
+      "end_local": "2023-12-05T00:00:00",
+      "duration_h": 24,
+      "control_mode": "reference",
+      "event_type": "none",
+      "event_start_offset_h": 0,
+      "event_duration_h": 0,
+      "event_setpoint_delta_k": 0.0,
+      "post_event_observation_h": 0,
+      "notes": [
+        "Teacher reference day aligned with the selected 2023 winter_sunny_heat_day."
+      ]
+    },
+    {
+      "experiment_id": "repday_winter_typical_day",
+      "role": "historical_2023",
+      "calendar_year": 2023,
+      "epw_path": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\profiles\\Vienna\\weather\\epw\\vienna_openmeteo_historical_2023_2023.epw",
+      "start_local": "2023-01-02T00:00:00",
+      "end_local": "2023-01-03T00:00:00",
+      "duration_h": 24,
+      "control_mode": "reference",
+      "event_type": "none",
+      "event_start_offset_h": 0,
+      "event_duration_h": 0,
+      "event_setpoint_delta_k": 0.0,
+      "post_event_observation_h": 0,
+      "notes": [
+        "Teacher reference day aligned with the selected 2023 winter_typical_day."
+      ]
+    },
+    {
+      "experiment_id": "repday_shoulder_typical_day",
+      "role": "historical_2023",
+      "calendar_year": 2023,
+      "epw_path": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\profiles\\Vienna\\weather\\epw\\vienna_openmeteo_historical_2023_2023.epw",
+      "start_local": "2023-10-31T00:00:00",
+      "end_local": "2023-11-01T00:00:00",
+      "duration_h": 24,
+      "control_mode": "reference",
+      "event_type": "none",
+      "event_start_offset_h": 0,
+      "event_duration_h": 0,
+      "event_setpoint_delta_k": 0.0,
+      "post_event_observation_h": 0,
+      "notes": [
+        "Teacher reference day aligned with the selected 2023 shoulder_typical_day."
+      ]
+    }
+  ],
+  "notes": [
+    "Experiment timing is expressed in local standard time to match the pseudo-EPW construction.",
+    "V1 keeps a small fixed experiment library on purpose; later calibration rounds can extend this via settings."
+  ]
+}

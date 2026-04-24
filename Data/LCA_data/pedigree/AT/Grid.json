@@ -1,0 +1,39 @@
+{
+  "id": "AT.Grid",
+  "country": "AT",
+  "tech_key": "Grid",
+  "param_key": "Grid",
+  "static_lca_file": "Data/LCA_data/static/AT/Grid.json",
+  "assessment_status": "scored",
+  "dataset_ref": {
+    "source_type": "activity_map_op",
+    "activity_db": "ecoinvent 3.11 cutoff",
+    "activity_code": "e0bec259edf1d712310d3874bcc72799",
+    "activity_name": "market for electricity, low voltage",
+    "reference_product": "electricity, low voltage",
+    "location": "AT",
+    "unit": "kilowatt hour",
+    "amount": 1.0,
+    "amount_note": null,
+    "source_note": "Mapped in Data/LCA_data/mappings/activity_map.json and aligned with Data/LCA_data/static/AT/Grid.json."
+  },
+  "pedigree_scores": {
+    "reliability": 1,
+    "completeness": 1,
+    "technological_representativeness": 1,
+    "geographical_representativeness": 1,
+    "temporal_representativeness": 1
+  },
+  "dqr": {
+    "formula": "(sum(scores) + weakest_score * 4) / 9",
+    "value": 1.0,
+    "class": "high_quality"
+  },
+  "notes": "Scored from the currently active Austrian low-voltage electricity market dataset. All five indicators are treated as high quality because the record is a direct country-specific ecoinvent market process aligned with the modeled grid import flow.",
+  "review": {
+    "assessor": null,
+    "reviewer": null,
+    "last_updated": "2026-03-17",
+    "comment": "Initial project-internal pedigree scoring based on the current static LCA record."
+  }
+}

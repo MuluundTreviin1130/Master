@@ -1,0 +1,48 @@
+{
+  "tech": "fuel_cell_PEM",
+  "infra": {
+    "climate_change": 85.76964422610678,
+    "ozone_depletion": 0.00018297406770591854,
+    "human_toxicity_cancer": 4.419818064413334e-08,
+    "human_toxicity_non_cancer": 1.3780904904561895e-06,
+    "particulate_matter": 7.228709091896511e-06,
+    "ionising_radiation": 1.186405500196079,
+    "photochemical_ozone_formation": 0.7730639537390681,
+    "acidification": 2.78808351832735,
+    "eutrophication_terrestrial": 2.897487529818717,
+    "freshwater_eutrophication": 0.004538907082837872,
+    "marine_eutrophication": 0.20005136816632063,
+    "freshwater_ecotoxicity": 28834.728632165334,
+    "land_use": 345.4896101088986,
+    "water_use": 12.966861617825273,
+    "fossil_resource_use": 820.0651553812673,
+    "material_resources": 0.0018632210832783115
+  },
+  "op": {
+    "climate_change": 0.0,
+    "ozone_depletion": 0.0,
+    "human_toxicity_cancer": 0.0,
+    "human_toxicity_non_cancer": 0.0,
+    "particulate_matter": 0.0,
+    "ionising_radiation": 0.0,
+    "photochemical_ozone_formation": 0.0,
+    "acidification": 0.0,
+    "eutrophication_terrestrial": 0.0,
+    "freshwater_eutrophication": 0.0,
+    "marine_eutrophication": 0.0,
+    "freshwater_ecotoxicity": 0.0,
+    "land_use": 0.0,
+    "water_use": 0.0,
+    "fossil_resource_use": 0.0,
+    "material_resources": 0.0
+  },
+  "infra_activity": {
+    "activity_db": "ecoinvent 3.11 cutoff",
+    "activity_code": "ead5c66a75c3ed5d381399f50b927e47",
+    "amount": 0.5,
+    "name": "fuel cell production, stack polymer electrolyte membrane, 2kW electrical, future",
+    "reference_product": "fuel cell, stack polymer electrolyte membrane, 2kW electrical, future",
+    "location": "RoW",
+    "unit": "unit"
+  }
+}

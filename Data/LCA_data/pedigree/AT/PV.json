@@ -1,0 +1,39 @@
+{
+  "id": "AT.PV",
+  "country": "AT",
+  "tech_key": "PV",
+  "param_key": "PV",
+  "static_lca_file": "Data/LCA_data/static/AT/PV.json",
+  "assessment_status": "scored",
+  "dataset_ref": {
+    "source_type": "static_lca_infra_activity",
+    "activity_db": "ecoinvent 3.11 cutoff",
+    "activity_code": "666219826c2279f7603fa361df44ab22",
+    "activity_name": "electricity production, photovoltaic, 3kWp slanted-roof installation, multi-Si, panel, mounted",
+    "reference_product": "electricity, low voltage",
+    "location": "AT",
+    "unit": "kilowatt hour",
+    "amount": 28000.0,
+    "amount_note": null,
+    "source_note": "Read from Data/LCA_data/static/AT/PV.json."
+  },
+  "pedigree_scores": {
+    "reliability": 1,
+    "completeness": 2,
+    "technological_representativeness": 2,
+    "geographical_representativeness": 2,
+    "temporal_representativeness": 1
+  },
+  "dqr": {
+    "formula": "(sum(scores) + weakest_score * 4) / 9",
+    "value": 1.7777777777777777,
+    "class": "medium_quality"
+  },
+  "notes": "Scored from the currently active Austrian PV infrastructure dataset. Reliability and temporal representativeness are treated as strong because the record is a specific ecoinvent 3.11 process. Completeness and representativeness are slightly weaker because the process is a specific 3 kWp rooftop PV installation used as a model proxy for generic PV capacity.",
+  "review": {
+    "assessor": null,
+    "reviewer": null,
+    "last_updated": "2026-03-17",
+    "comment": "Initial project-internal pedigree scoring based on the current static LCA record."
+  }
+}

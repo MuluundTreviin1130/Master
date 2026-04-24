@@ -1,0 +1,39 @@
+{
+  "id": "AT.BESS",
+  "country": "AT",
+  "tech_key": "BESS",
+  "param_key": "BESS",
+  "static_lca_file": "Data/LCA_data/static/AT/BESS.json",
+  "assessment_status": "scored",
+  "dataset_ref": {
+    "source_type": "static_lca_infra_activity",
+    "activity_db": "ecoinvent 3.11 cutoff",
+    "activity_code": "b47a4426debc122d1dfbac53cbcdf656",
+    "activity_name": "market for battery cell, Li-ion, LiMn2O4",
+    "reference_product": "battery cell, Li-ion, LiMn2O4",
+    "location": "GLO",
+    "unit": "kilogram",
+    "amount": 6.29,
+    "amount_note": null,
+    "source_note": "Read from Data/LCA_data/static/AT/BESS.json."
+  },
+  "pedigree_scores": {
+    "reliability": 2,
+    "completeness": 2,
+    "technological_representativeness": 2,
+    "geographical_representativeness": 3,
+    "temporal_representativeness": 2
+  },
+  "dqr": {
+    "formula": "(sum(scores) + weakest_score * 4) / 9",
+    "value": 2.5555555555555554,
+    "class": "medium_quality"
+  },
+  "notes": "Scored from the currently active Li-ion battery cell market dataset. Dataset quality is treated as medium rather than high because the model uses a global battery-cell market process as a proxy for the stationary BESS component, which weakens geographical and exact technological representativeness.",
+  "review": {
+    "assessor": null,
+    "reviewer": null,
+    "last_updated": "2026-03-17",
+    "comment": "Initial project-internal pedigree scoring based on the current static LCA record."
+  }
+}

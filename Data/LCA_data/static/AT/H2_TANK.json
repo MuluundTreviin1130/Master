@@ -1,0 +1,43 @@
+{
+  "tech": "H2_TANK",
+  "infra": {
+    "climate_change": 0.0,
+    "ozone_depletion": 0.0,
+    "human_toxicity_cancer": 0.0,
+    "human_toxicity_non_cancer": 0.0,
+    "particulate_matter": 0.0,
+    "ionising_radiation": 0.0,
+    "photochemical_ozone_formation": 0.0,
+    "acidification": 0.0,
+    "eutrophication_terrestrial": 0.0,
+    "freshwater_eutrophication": 0.0,
+    "marine_eutrophication": 0.0,
+    "freshwater_ecotoxicity": 0.0,
+    "land_use": 0.0,
+    "water_use": 0.0,
+    "fossil_resource_use": 0.0,
+    "material_resources": 0.0
+  },
+  "op": {
+    "climate_change": 0.0,
+    "ozone_depletion": 0.0,
+    "human_toxicity_cancer": 0.0,
+    "human_toxicity_non_cancer": 0.0,
+    "particulate_matter": 0.0,
+    "ionising_radiation": 0.0,
+    "photochemical_ozone_formation": 0.0,
+    "acidification": 0.0,
+    "eutrophication_terrestrial": 0.0,
+    "freshwater_eutrophication": 0.0,
+    "marine_eutrophication": 0.0,
+    "freshwater_ecotoxicity": 0.0,
+    "land_use": 0.0,
+    "water_use": 0.0,
+    "fossil_resource_use": 0.0,
+    "material_resources": 0.0
+  },
+  "meta": {
+    "placeholder": true,
+    "note": "Temporary placeholder until H2 tank LCA process is mapped and exported."
+  }
+}

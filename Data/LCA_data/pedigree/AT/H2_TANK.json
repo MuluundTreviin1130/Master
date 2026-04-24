@@ -1,0 +1,39 @@
+{
+  "id": "AT.H2_TANK",
+  "country": "AT",
+  "tech_key": "H2_TANK",
+  "param_key": "H2_TANK",
+  "static_lca_file": "Data/LCA_data/static/AT/H2_TANK.json",
+  "assessment_status": "pending_lca_mapping",
+  "dataset_ref": {
+    "source_type": "static_lca_placeholder_or_pending_mapping",
+    "activity_db": null,
+    "activity_code": null,
+    "activity_name": null,
+    "reference_product": null,
+    "location": null,
+    "unit": null,
+    "amount": null,
+    "amount_note": null,
+    "source_note": "Current static file notes a temporary placeholder until H2 tank LCA mapping is completed."
+  },
+  "pedigree_scores": {
+    "reliability": null,
+    "completeness": null,
+    "technological_representativeness": null,
+    "geographical_representativeness": null,
+    "temporal_representativeness": null
+  },
+  "dqr": {
+    "formula": "(sum(scores) + weakest_score * 4) / 9",
+    "value": null,
+    "class": null
+  },
+  "notes": "Static LCA file is still a placeholder without a mapped source process. Do not assign pedigree scores before a concrete hydrogen tank dataset is selected and exported.",
+  "review": {
+    "assessor": null,
+    "reviewer": null,
+    "last_updated": "2026-03-17",
+    "comment": "Status clarified: current static LCA file is a placeholder."
+  }
+}

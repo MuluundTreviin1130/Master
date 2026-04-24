@@ -1,0 +1,22 @@
+{
+  "core_dispatch_bundle": {
+    "label": "constant thermflex sensitivity and cohort bundle",
+    "path": "Optimization/run/results/Vienna/gold/paper_dispatch_comparison_20260403_131344"
+  },
+  "representative_day_bundle": {
+    "label": "representative-day summary bundle",
+    "path": "Optimization/run/results/Vienna/gold/constant_thermflex_representative_day_summary_20260403"
+  },
+  "representative_day_selector_bundle": {
+    "label": "representative-day selector and day-type rationale bundle",
+    "path": "Optimization/run/results/Vienna/gold/dh_thermflex_run_20260403_140316"
+  },
+  "biobjective_gold_bundle": {
+    "label": "biobjective gold candidates",
+    "path": "Optimization/run/results/Vienna/gold/biobj_gold_candidates_20260403_093146"
+  },
+  "two_stage_gap_bundle": {
+    "label": "full 48-to-6 two-stage robustness replay for biobj_co2_end",
+    "path": "Optimization/run/results/Vienna/gold/biobj_gold_candidates_20260403_093146/20260403_093214_biobj_co2_end_gold_day_ahead/20260416_211739_biobj_co2_end_two_stage_gap_debug"
+  }
+}

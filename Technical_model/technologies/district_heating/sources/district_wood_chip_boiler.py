@@ -1,0 +1,103 @@
+from __future__ import annotations
+
+from typing import Any, Dict
+
+import pandas as pd
+
+
+def _require_config_value(config: Any, attr: str) -> float:
+    if config is None or not hasattr(config, attr):
+        raise ValueError(f"[district_wood_chip_boiler] Missing required config attribute '{attr}'.")
+    value = getattr(config, attr)
+    if value is None:
+        raise ValueError(f"[district_wood_chip_boiler] Config attribute '{attr}' must not be None.")
+    return float(value)
+
+
+def _is_scheduled_downtime(timestamp: Any, config: Any) -> bool:
+    ts = pd.Timestamp(timestamp)
+    days = int(_require_config_value(config, "scheduled_downtime_days_per_year"))
+    start_day = int(_require_config_value(config, "scheduled_downtime_start_day_of_year"))
+    if days <= 0:
+        return False
+    if not 1 <= start_day <= 366:
+        raise ValueError("[district_wood_chip_boiler] scheduled_downtime_start_day_of_year must be within [1, 366].")
+    if not 0 <= days <= 366:
+        raise ValueError("[district_wood_chip_boiler] scheduled_downtime_days_per_year must be within [0, 366].")
+    day = int(ts.dayofyear)
+    end_day = start_day + days
+    if end_day <= 366:
+        return start_day <= day < end_day
+    overflow = end_day - 366
+    return day >= start_day or day < overflow
+
+
+def dispatch_district_wood_chip_boiler(
+    requested_thermal_kwh: float,
+    installed_kw_th: float,
+    config: Any,
+    timestamp: Any,
+    dt_h: float = 1.0,
+) -> Dict[str, float]:
+    requested_thermal_kwh = float(requested_thermal_kwh)
+    installed_kw_th = float(installed_kw_th)
+    dt_h = float(dt_h)
+    if requested_thermal_kwh < 0.0:
+        raise ValueError("[district_wood_chip_boiler] requested_thermal_kwh must be >= 0.")
+    if installed_kw_th < 0.0:
+        raise ValueError("[district_wood_chip_boiler] installed_kw_th must be >= 0.")
+    if dt_h <= 0.0:
+        raise ValueError("[district_wood_chip_boiler] dt_h must be > 0.")
+
+    min_partload = _require_config_value(config, "min_partload")
+    max_partload = _require_config_value(config, "max_partload")
+    eta_th = _require_config_value(config, "eta_th")
+    fuel_lhv_kwh_per_kg = _require_config_value(config, "fuel_lhv_kwh_per_kg")
+    if not 0.0 <= min_partload <= max_partload <= 1.0:
+        raise ValueError(
+            "[district_wood_chip_boiler] Partload settings must satisfy 0 <= min_partload <= max_partload <= 1."
+        )
+    if not 0.0 < eta_th <= 1.0:
+        raise ValueError("[district_wood_chip_boiler] eta_th must be within (0, 1].")
+    if fuel_lhv_kwh_per_kg <= 0.0:
+        raise ValueError("[district_wood_chip_boiler] fuel_lhv_kwh_per_kg must be > 0.")
+
+    thermal_capacity_kwh = installed_kw_th * dt_h
+    if _is_scheduled_downtime(timestamp, config):
+        return {
+            "thermal_kwh": 0.0,
+            "fuel_input_kwh": 0.0,
+            "fuel_input_kg": 0.0,
+            "thermal_capacity_kwh": float(thermal_capacity_kwh),
+            "scheduled_downtime": 1.0,
+        }
+    if thermal_capacity_kwh <= 0.0 or requested_thermal_kwh <= 0.0:
+        return {
+            "thermal_kwh": 0.0,
+            "fuel_input_kwh": 0.0,
+            "fuel_input_kg": 0.0,
+            "thermal_capacity_kwh": float(thermal_capacity_kwh),
+            "scheduled_downtime": 0.0,
+        }
+
+    min_output_kwh = min_partload * thermal_capacity_kwh
+    max_output_kwh = max_partload * thermal_capacity_kwh
+    if requested_thermal_kwh < min_output_kwh:
+        return {
+            "thermal_kwh": 0.0,
+            "fuel_input_kwh": 0.0,
+            "fuel_input_kg": 0.0,
+            "thermal_capacity_kwh": float(thermal_capacity_kwh),
+            "scheduled_downtime": 0.0,
+        }
+
+    thermal_kwh = min(max_output_kwh, requested_thermal_kwh)
+    fuel_input_kwh = thermal_kwh / eta_th
+    fuel_input_kg = fuel_input_kwh / fuel_lhv_kwh_per_kg
+    return {
+        "thermal_kwh": float(thermal_kwh),
+        "fuel_input_kwh": float(fuel_input_kwh),
+        "fuel_input_kg": float(fuel_input_kg),
+        "thermal_capacity_kwh": float(thermal_capacity_kwh),
+        "scheduled_downtime": 0.0,
+    }

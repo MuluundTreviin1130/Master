@@ -1,0 +1,5 @@
+# LCA/Brightway dependencies - install in project venv:
+#   .\.venv\Scripts\pip install -r Data\LCA_data\requirements-lca.txt
+bw2data
+bw2io
+bw2calc

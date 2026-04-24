@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "LCA Pedigree Record",
+  "type": "object",
+  "required": [
+    "id",
+    "country",
+    "tech_key",
+    "assessment_status",
+    "dataset_ref",
+    "pedigree_scores",
+    "dqr"
+  ],
+  "properties": {
+    "id": { "type": "string" },
+    "country": { "type": "string" },
+    "tech_key": { "type": "string" },
+    "param_key": { "type": ["string", "null"] },
+    "static_lca_file": { "type": ["string", "null"] },
+    "assessment_status": {
+      "type": "string",
+      "enum": ["pending_scoring", "draft", "reviewed", "final"]
+    },
+    "dataset_ref": {
+      "type": "object",
+      "required": [
+        "source_type",
+        "activity_db",
+        "activity_code",
+        "activity_name",
+        "reference_product",
+        "location",
+        "unit"
+      ],
+      "properties": {
+        "source_type": { "type": "string" },
+        "activity_db": { "type": ["string", "null"] },
+        "activity_code": { "type": ["string", "null"] },
+        "activity_name": { "type": ["string", "null"] },
+        "reference_product": { "type": ["string", "null"] },
+        "location": { "type": ["string", "null"] },
+        "unit": { "type": ["string", "null"] },
+        "amount": { "type": ["number", "null"] },
+        "amount_note": { "type": ["string", "null"] },
+        "source_note": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "pedigree_scores": {
+      "type": "object",
+      "required": [
+        "reliability",
+        "completeness",
+        "technological_representativeness",
+        "geographical_representativeness",
+        "temporal_representativeness"
+      ],
+      "properties": {
+        "reliability": { "type": ["integer", "null"], "minimum": 1, "maximum": 5 },
+        "completeness": { "type": ["integer", "null"], "minimum": 1, "maximum": 5 },
+        "technological_representativeness": { "type": ["integer", "null"], "minimum": 1, "maximum": 5 },
+        "geographical_representativeness": { "type": ["integer", "null"], "minimum": 1, "maximum": 5 },
+        "temporal_representativeness": { "type": ["integer", "null"], "minimum": 1, "maximum": 5 }
+      },
+      "additionalProperties": false
+    },
+    "dqr": {
+      "type": "object",
+      "required": [
+        "formula",
+        "value",
+        "class"
+      ],
+      "properties": {
+        "formula": { "type": "string" },
+        "value": { "type": ["number", "null"] },
+        "class": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "notes": { "type": "string" },
+    "review": {
+      "type": "object",
+      "properties": {
+        "assessor": { "type": ["string", "null"] },
+        "reviewer": { "type": ["string", "null"] },
+        "last_updated": { "type": ["string", "null"] },
+        "comment": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

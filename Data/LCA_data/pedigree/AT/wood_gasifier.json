@@ -1,0 +1,39 @@
+{
+  "id": "AT.wood_gasifier",
+  "country": "AT",
+  "tech_key": "wood_gasifier",
+  "param_key": "WOOD_GASIFIER",
+  "static_lca_file": null,
+  "assessment_status": "pending_scoring",
+  "dataset_ref": {
+    "source_type": "pending_lca_mapping",
+    "activity_db": null,
+    "activity_code": null,
+    "activity_name": null,
+    "reference_product": null,
+    "location": null,
+    "unit": null,
+    "amount": null,
+    "amount_note": null,
+    "source_note": "New technology: no static LCA file exported yet."
+  },
+  "pedigree_scores": {
+    "reliability": null,
+    "completeness": null,
+    "technological_representativeness": null,
+    "geographical_representativeness": null,
+    "temporal_representativeness": null
+  },
+  "dqr": {
+    "formula": "(sum(scores) + weakest_score * 4) / 9",
+    "value": null,
+    "class": null
+  },
+  "notes": "Pedigree scaffold for wood gasifier technology. First complete dataset selection and static LCA export, then score quality.",
+  "review": {
+    "assessor": null,
+    "reviewer": null,
+    "last_updated": null,
+    "comment": null
+  }
+}
