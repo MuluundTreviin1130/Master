@@ -1,5 +1,32 @@
 # Worklog
 
+## 2026-04-24
+
+### Layer-2 Building-Surrogate-Zielbild festgezogen
+
+- Aktuellen Repo-Schnitt fuer den geplanten ROM-Nachfolger inventarisiert:
+  - `EnergyPlus`-Teacher liegt unter `Technical_model/technologies/buildings/calibration/teachers/energyplus.py`
+  - aktueller Runtime-Gebaeudepfad liegt unter `runtime_space_heat.py`, `thermal_building_state.py` und `thermal_flex_controller.py`
+  - bestehender `Learning/`-Layer soll fuer Dataset-/Artefakt-/Validation-/Retrain-Logik wiederverwendet werden
+- Neues Planning-Dokument angelegt:
+  - `Documentation/Planning/building_surrogate_layer2_design.md`
+- Zielbild:
+  - `EnergyPlus` bleibt Teacher / Truth
+  - `Learning/` trainiert und verwaltet den learned building-response surrogate
+  - der neue Layer 2 ersetzt langfristig das Reduced-Order-Runtime-Modell
+  - bestehender Dispatch-/KPI-Surrogatlayer bleibt separat
+- EnergyPlus-Teacher exportiert bereits zentrale stundenweise Signale fuer V1:
+  - Innen-/Aussentemperatur
+  - Heizlast
+  - Fenster-/Solar-Gewinne
+  - Infiltration/Ventilation
+  - Outdoor-Air-Heat-Balance
+  - interne Gains, Setpoints und Wetterfenster
+- Naechster Umsetzungsschritt:
+  - standardisierten hourly transition dataset builder vorbereiten
+  - harte Validierung der Pflichtspalten einbauen
+  - danach erstes Multi-Target-Building-Surrogat im bestehenden Learning-Layer trainieren und ueber 24/48h-Rollouts pruefen
+
 ## 2026-04-19
 
 ### `upper_only dur24 evt24`-Screen und kompakter Trade-off-Tabellenschnitt

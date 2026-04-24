@@ -37,6 +37,19 @@
     - bessere Holdout-Metriken pro zusaetzlichem Truth-Budget
     - robustere Pareto-/Optimierungsregionen
 - [ ] Learned building-response surrogate als moeglicher Nachfolger des heutigen Reduced-Order-Modells schneiden:
+  - technischer Zielentwurf liegt in `Documentation/Planning/building_surrogate_layer2_design.md`
+  - V1 nicht als ROM-Korrektur finalisieren, sondern als EnergyPlus-Teacher -> Learning -> stateful building-surrogate Runtime-Pfad aufbauen
+  - vorhandene EnergyPlus-Teacher-Exports als Basis verwenden:
+    - `T_in`
+    - `q_heat`
+    - Fenster-/Solar-Gewinne
+    - Infiltration/Ventilation
+    - Outdoor-Air-Heat-Balance
+    - interne Gains und Setpoints
+  - als naechsten Umsetzungsschritt einen standardisierten hourly transition dataset builder vorbereiten:
+    - `state_t + exogenous_t + control_t + cohort_context -> state_t+1 + q_heat_t + heat-balance diagnostics`
+    - fehlende Pflichtspalten hart validieren
+    - keine stillen Null-Fallbacks fuer aktive physikalische Pfade zulassen
   - direkt aus `EnergyPlus`-Teacher-Daten trainieren
   - stateful / sequenziell, nicht nur KPI-Regression
   - Kernoutputs:

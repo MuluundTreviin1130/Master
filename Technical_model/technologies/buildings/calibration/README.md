@@ -25,6 +25,15 @@ Dieser Ordner enthaelt den Offline-Kalibrierungspfad fuer thermische Gebaeudearc
 - `export_calibrated_archetypes.py`
   Export von `calibrated_v1` und spaeteren Varianten.
 
+## Layer-2 Surrogate Target
+
+Der langfristige Gebaeudepfad soll vom heutigen Reduced-Order-Runtime-Modell
+auf einen `EnergyPlus`-trainierten building-response surrogate wechseln. Der
+technische Schnitt ist in
+`Documentation/Planning/building_surrogate_layer2_design.md` dokumentiert.
+Dieser Zielpfad nutzt den bestehenden `EnergyPlus`-Teacher und den bestehenden
+`Learning/`-Layer, statt einen separaten Modellpfad neben dem Repo aufzubauen.
+
 ## Output-Ordner
 
 - `_teacher_runs/`
