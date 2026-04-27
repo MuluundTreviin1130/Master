@@ -1,5 +1,17 @@
 # Worklog
 
+## 2026-04-27
+
+### Critical bug inspection: silent training/profile fallbacks removed
+
+- Inspected recent large sync changes for high-severity correctness failures.
+- Fixed a critical Learning training-label bug:
+  - `_evaluate_teacher_targets` no longer converts missing surrogate targets to `0.0`.
+  - Missing targets now raise `KeyError` with available KPI/flow context before any corrupted training row is appended.
+- Hardened V2H profile loading:
+  - Numeric gaps in ENTSOE template columns now raise `ValueError`.
+  - The loader no longer fills missing `min_SOC`, driving, or availability values with hardcoded defaults.
+
 ## 2026-04-24
 
 ### Layer-2 Building-Surrogate-Zielbild festgezogen

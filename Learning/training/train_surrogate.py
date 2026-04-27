@@ -34,6 +34,36 @@ def _artifact_filenames(settings: Any) -> Dict[str, str]:
     }
 
 
+def _resolve_teacher_target_vector(
+    targets: List[str],
+    objectives: Dict[str, float],
+    flows_L: Dict[str, float],
+) -> np.ndarray:
+    values: List[float] = []
+    missing: List[str] = []
+    for target in targets:
+        if target in objectives:
+            values.append(float(objectives[target]))
+            continue
+        if target in flows_L:
+            values.append(float(flows_L[target]))
+            continue
+        missing.append(str(target))
+
+    if missing:
+        available_objectives = ", ".join(sorted(str(key) for key in objectives.keys())) or "<none>"
+        available_flows = ", ".join(sorted(str(key) for key in flows_L.keys())) or "<none>"
+        raise KeyError(
+            "[surrogate_training] Teacher evaluation did not produce required target(s): "
+            + ", ".join(sorted(missing))
+            + ". Add the target to the KPI/objective path or to the teacher flow export; "
+            + "training with implicit zero labels would corrupt the surrogate dataset. "
+            + f"Available objectives: {available_objectives}. Available flows: {available_flows}."
+        )
+
+    return np.asarray(values, dtype=float)
+
+
 def _evaluate_teacher_targets(
     teacher: Any,
     settings: Any,
@@ -57,10 +87,7 @@ def _evaluate_teacher_targets(
             profiles,
             requested_objective_names=requested_objective_names,
         )
-        y = np.array(
-            [float(objectives[t]) if t in objectives else float(flows_L.get(t, 0.0)) for t in targets],
-            dtype=float,
-        )
+        y = _resolve_teacher_target_vector(targets, objectives, flows_L)
         Y_list.append(y)
     return X_new, np.vstack(Y_list)
 
