@@ -61,6 +61,22 @@ def load_v2h_profiles(file_path: str, n_steps: int) -> Tuple[np.ndarray, np.ndar
 
     if not all(arr.size == 24 for arr in [min_weekday, min_weekend, drv_weekday, drv_weekend, av_weekday, av_weekend]):
         raise ValueError("[profiles] ENTSOE-Profiles must provide 24 hourly rows.")
+    template_arrays = {
+        "min_soc_weekday": min_weekday,
+        "min_soc_weekend": min_weekend,
+        "driving_weekday": drv_weekday,
+        "driving_weekend": drv_weekend,
+        "availability_weekday": av_weekday,
+        "availability_weekend": av_weekend,
+    }
+    nan_counts = {name: int(np.isnan(values).sum()) for name, values in template_arrays.items()}
+    nan_counts = {name: count for name, count in nan_counts.items() if count > 0}
+    if nan_counts:
+        details = ", ".join(f"{name}={count}" for name, count in sorted(nan_counts.items()))
+        raise ValueError(
+            "[profiles] ENTSOE V2H profile contains non-numeric or missing values after parsing: "
+            f"{details}. Clean the profile SSOT instead of relying on implicit defaults."
+        )
 
     idx = pd.date_range("2023-01-01", periods=int(n_steps), freq="h")
     h = idx.hour.to_numpy(dtype=int)
@@ -70,9 +86,9 @@ def load_v2h_profiles(file_path: str, n_steps: int) -> Tuple[np.ndarray, np.ndar
     driving = np.where(is_weekend, drv_weekend[h], drv_weekday[h]).astype(float)
     availability = np.where(is_weekend, av_weekend[h], av_weekday[h]).astype(float)
 
-    min_soc = np.clip(np.nan_to_num(min_soc, nan=0.3), 0.0, 1.0)
-    driving = np.clip(np.nan_to_num(driving, nan=0.0), 0.0, 1.0)
-    availability = np.clip(np.nan_to_num(availability, nan=0.0), 0.0, 1.0)
+    min_soc = np.clip(min_soc, 0.0, 1.0)
+    driving = np.clip(driving, 0.0, 1.0)
+    availability = np.clip(availability, 0.0, 1.0)
     return min_soc, availability, driving
 
 
