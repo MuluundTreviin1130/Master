@@ -14,6 +14,9 @@
 - Regressionstest:
   - `tests/test_surrogate_engine_screen.py`
   - prueft, dass der Screen-Pfad keine KPI-Constraint-Auswertung ausloest und `F`/`G` dieselbe Kandidatenanzahl behalten.
+- Zusaetzlich zwei Import-Crashes auf dem Surrogate-Runtimepfad geschlossen:
+  - `Learning.validation.evaluate_gate` war referenziert, aber nicht im Repo vorhanden.
+  - `Settings.validation.holdout` war im Settings-Modell referenziert, aber nicht im Repo vorhanden.
 
 ## 2026-04-24
 
