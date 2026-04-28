@@ -1,5 +1,20 @@
 # Worklog
 
+## 2026-04-28
+
+### Kritischer Surrogate-Screen-Runtimebug behoben
+
+- Bug:
+  - `SurrogateEngine.evaluate()` leitete bei aktivem explizitem Feasibility-Screen und nicht direkt target-basierten Objectives denselben Screen-Constraint auch durch `compute_kpis()`.
+  - Dafuer gibt es keinen normalen Constraint-Provider; betroffene Surrogate-Optimierungslaeufe konnten hart mit `Unknown constraint provider for 'surrogate_feasible_probability_guard'` abbrechen.
+  - In Varianten mit zusaetzlichen Constraints waere ausserdem die `F`-/`G`-Zeilenausrichtung gefaehrdet.
+- Fix:
+  - Objective-Berechnung bei aktivem Screen laeuft nun ueber `compute_objectives()`.
+  - Die Constraint-Zeile kommt in diesem Pfad ausschliesslich aus dem expliziten Screen.
+- Regressionstest:
+  - `tests/test_surrogate_engine_screen.py`
+  - prueft, dass der Screen-Pfad keine KPI-Constraint-Auswertung ausloest und `F`/`G` dieselbe Kandidatenanzahl behalten.
+
 ## 2026-04-24
 
 ### Layer-2 Building-Surrogate-Zielbild festgezogen
