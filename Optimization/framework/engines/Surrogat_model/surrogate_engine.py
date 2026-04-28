@@ -27,7 +27,7 @@ from Optimization.framework.engines.Surrogat_model.feasibility_screen import (
     SurrogateFeasibilityScreen,
     build_surrogate_feasibility_screen,
 )
-from Optimization.framework.engines.kpi import compute_kpis, get_selected_objective_names
+from Optimization.framework.engines.kpi import compute_kpis, compute_objectives, get_selected_objective_names
 from Optimization.framework.engines.profiles_meta import get_profile_id
 from Optimization.framework.engines.signature_utils import build_signature_dict, signature_hash
 from Technical_model.energy_system.precompute.adapter import prepare_profiles_adapter
@@ -566,13 +566,20 @@ class SurrogateEngine:
             else:
                 flows_L = self._flows_dict(Y_pred[i, :])
                 design_vars = self._build_design_vars(X[i, :])
-                objectives, constraints, _ctx = compute_kpis(flows_L, design_vars, self.s, self.profiles)
+                if screen_constraints is not None:
+                    # The explicit surrogate screen is not a normal KPI constraint
+                    # provider.  When it is active, evaluate only objectives here
+                    # and source the single constraint row from the screen below.
+                    objectives = compute_objectives(flows_L, design_vars, self.s, self.profiles)
+                    constraints = []
+                else:
+                    objectives, constraints, _ctx = compute_kpis(flows_L, design_vars, self.s, self.profiles)
                 if self._objectives_in_targets and all(n in target_index for n in self.obj_names):
                     F_rows.append([float(Y_pred[i, target_index[n]]) for n in self.obj_names])
                 else:
                     F_rows.append([float(objectives[n]) for n in self.obj_names])
 
-                if self.con_names:
+                if self.con_names and screen_constraints is None:
                     G_rows.append(constraints)
 
             if screen_constraints is not None:
