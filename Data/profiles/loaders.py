@@ -38,19 +38,31 @@ def load_v2h_profiles(file_path: str, n_steps: int) -> Tuple[np.ndarray, np.ndar
     src["_hour"] = src["_hour"].astype(int)
     src = src[(src["_hour"] >= 1) & (src["_hour"] <= 24)].sort_values("_hour")
 
-    def _col(name_substr: str) -> str:
-        for c in src.columns:
-            if name_substr in str(c).strip().lower():
-                return c
-        raise KeyError(f"[profiles] Missing ENTSOE-Profiles column containing: '{name_substr}'")
+    def _col_exact(column_name: str) -> str:
+        """Resolve a spreadsheet column by exact normalized header.
+
+        The V2H workbook contains both "PROSUMER WEEKDAY 2030 [%]" (minimum
+        SOC) and "PROSUMER WEEKDAY [%]" (availability).  A substring lookup for
+        "prosumer weekday" therefore silently binds availability to the minimum
+        SOC column and suppresses weekday V2H availability.  Exact lookup keeps
+        the workbook schema explicit and fails fast if the header changes.
+        """
+
+        key = str(column_name).strip().lower()
+        if key not in src_cols:
+            raise KeyError(
+                f"[profiles] Missing ENTSOE-Profiles column '{column_name}'. "
+                f"Available: {list(src.columns)}"
+            )
+        return src_cols[key]
 
     # Prosumer (min_SOC + availability), Passenger (driving).
-    c_min_weekday = _col("prosumer weekday 2030")
-    c_min_weekend = _col("street weekday 2030")
-    c_drv_weekday = _col("passenger weekday")
-    c_drv_weekend = _col("passenger weekend")
-    c_av_weekday = _col("prosumer weekday")
-    c_av_weekend = _col("prosumer weekend")
+    c_min_weekday = _col_exact("PROSUMER WEEKDAY 2030 [%]")
+    c_min_weekend = _col_exact("STREET WEEKDAY 2030 [%]")
+    c_drv_weekday = _col_exact("PASSENGER WEEKDAY [%]")
+    c_drv_weekend = _col_exact("PASSENGER WEEKEND [%]")
+    c_av_weekday = _col_exact("PROSUMER WEEKDAY [%]")
+    c_av_weekend = _col_exact("PROSUMER WEEKEND [%]")
 
     min_weekday = pd.to_numeric(src[c_min_weekday], errors="coerce").to_numpy(dtype=float)
     min_weekend = pd.to_numeric(src[c_min_weekend], errors="coerce").to_numpy(dtype=float)

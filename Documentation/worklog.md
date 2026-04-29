@@ -1,5 +1,20 @@
 # Worklog
 
+## 2026-04-29
+
+### V2H-Profilspalten gegen mehrdeutige Header-Bindung abgesichert
+
+- Kritischen Loader-Fehler in `Data/profiles/loaders.py` gefunden:
+  - die bisherige Substring-Suche nach `prosumer weekday` traf im ENTSO-E-Workbook zuerst `PROSUMER WEEKDAY 2030 [%]`
+  - dadurch wurde die weekday availability aus der Min-SOC-Spalte statt aus `PROSUMER WEEKDAY [%]` gelesen
+  - Folge: V2H-Verfuegbarkeit an Werktagen wurde massiv unterdrueckt und Dispatch-/KPI-Ergebnisse konnten systematisch falsch werden
+- Fix:
+  - V2H-Spalten werden nun per exakt normalisiertem Header aufgeloest
+  - Schemaaenderungen schlagen mit klarer Fehlermeldung fehl, statt still eine falsche Spalte zu binden
+- Validierung:
+  - Workbook-Header per XLSX-XML-Inspection geprueft
+  - `python3 -m compileall -q Settings Data Technical_model Optimization Cost_model dispatch market Learning`
+
 ## 2026-04-24
 
 ### Layer-2 Building-Surrogate-Zielbild festgezogen
