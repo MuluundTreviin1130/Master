@@ -57,10 +57,25 @@ def _evaluate_teacher_targets(
             profiles,
             requested_objective_names=requested_objective_names,
         )
-        y = np.array(
-            [float(objectives[t]) if t in objectives else float(flows_L.get(t, 0.0)) for t in targets],
-            dtype=float,
-        )
+        target_values: List[float] = []
+        for target in targets:
+            if target in objectives:
+                raw_value = objectives[target]
+            elif target in flows_L:
+                raw_value = flows_L[target]
+            else:
+                raise KeyError(
+                    "[train_surrogate] Teacher output is missing required target "
+                    f"'{target}'. Available objectives={sorted(objectives.keys())}, "
+                    f"available flow keys={sorted(flows_L.keys())}."
+                )
+            value = float(raw_value)
+            if not np.isfinite(value):
+                raise ValueError(
+                    f"[train_surrogate] Teacher target '{target}' is not finite: {raw_value!r}."
+                )
+            target_values.append(value)
+        y = np.array(target_values, dtype=float)
         Y_list.append(y)
     return X_new, np.vstack(Y_list)
 

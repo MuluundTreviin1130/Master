@@ -15,8 +15,7 @@ from Settings import get_settings
 from Optimization.framework.Orchestrator.optimize import _resolve_runs_root
 
 # FÃ¼r die Jahreslast / Lifetime-Last (optional, fÃ¼r Autarkie)
-from Data.assembly import get_parameters, load_profiles
-from Technical_model.energy_system.precompute.precompute import prepare_profiles
+from Technical_model.energy_system.precompute.adapter import prepare_profiles_adapter
 
 
 # ---------------------------------------------------------------------------
@@ -49,33 +48,12 @@ def _load_year_and_lifetime_load_kwh(settings) -> Dict[str, float]:
     - Jahreslast (inkl. N_HH, HP etc.) summieren
     - Lifetime aus params["lifetime"]
     """
-    eng = settings.engine
-
-    # Parameter + Profile analog zur SurrogateEngine
-    params = get_parameters(eng.location)
-    params["location"] = eng.location
-
-    # EC-Shares aus Settings
-    if "EC" not in params:
-        params["EC"] = {}
-    params["EC"]["share"] = float(eng.ec_share_import)
-    params["EC"]["export_share"] = float(eng.ec_share_export)
-
-    # Community-ZÃ¤hler
-    params["N_HH"] = int(eng.N_HH)
-    params["N_EV"] = int(eng.N_EV_total)
-    params["N_EV_bidirectional"] = int(eng.N_EV_bidirectional)
-
-    params.setdefault("EV", {})
-    params["EV"]["N_EV_total"] = int(eng.N_EV_total)
-    params["EV"]["N_EV_bidirectional"] = int(eng.N_EV_bidirectional)
-
+    # Keep this analysis on the same member-aware profile path as the runtime
+    # engines. Calling load_profiles(location) directly now fails by design.
+    prep = prepare_profiles_adapter(settings)
+    params = prep.params_base
+    profiles = prep.profiles
     lifetime = int(params.get("lifetime", 1))
-
-    profiles_raw = load_profiles(eng.location)
-    profiles = prepare_profiles(params, profiles_raw,
-                                do_hp_electricity=True,
-                                do_coeffs=False)
 
     load_arr = np.asarray(profiles.get("load", []), dtype=float)
     year_load_kwh = float(np.sum(load_arr)) if load_arr.size else 0.0
