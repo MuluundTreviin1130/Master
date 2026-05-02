@@ -70,9 +70,28 @@ def load_v2h_profiles(file_path: str, n_steps: int) -> Tuple[np.ndarray, np.ndar
     driving = np.where(is_weekend, drv_weekend[h], drv_weekday[h]).astype(float)
     availability = np.where(is_weekend, av_weekend[h], av_weekday[h]).astype(float)
 
-    min_soc = np.clip(np.nan_to_num(min_soc, nan=0.3), 0.0, 1.0)
-    driving = np.clip(np.nan_to_num(driving, nan=0.0), 0.0, 1.0)
-    availability = np.clip(np.nan_to_num(availability, nan=0.0), 0.0, 1.0)
+    for name, arr in (
+        ("min_SOC", min_soc),
+        ("driving_profile", driving),
+        ("availability_profile", availability),
+    ):
+        n_missing = int(np.isnan(arr).sum())
+        if n_missing > 0:
+            raise ValueError(
+                f"[profiles] V2H profile '{name}' contains {n_missing} NaN values. "
+                "Clean the ENTSOE source sheet before using V2H profiles."
+            )
+        below_zero = int((arr < 0.0).sum())
+        above_one = int((arr > 1.0).sum())
+        if below_zero > 0 or above_one > 0:
+            raise ValueError(
+                f"[profiles] V2H profile '{name}' must be within [0, 1]: "
+                f"below_zero={below_zero}, above_one={above_one}."
+            )
+
+    min_soc = np.clip(min_soc, 0.0, 1.0)
+    driving = np.clip(driving, 0.0, 1.0)
+    availability = np.clip(availability, 0.0, 1.0)
     return min_soc, availability, driving
 
 

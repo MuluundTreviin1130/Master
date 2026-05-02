@@ -2951,3 +2951,7 @@
       - mehr Solar -> mehr verschobene MWh
       - aber mittlere KPI-Vorteile sind im `mid solar`-Bin am staerksten, nicht im `high solar`-Bin
     - `table_12` zeigt fuer die ausgewaehlten `dur24`-Tage die kohortenspezifische Intensitaet in `Wh/m2` plus `max Delta T_in`
+- 2026-05-02: Kritische Bug-Inspektion der juengsten Sync-/Surrogat-Aenderungen durchgefuehrt und drei Fail-fast-Korrekturen umgesetzt.
+  - `Learning/training/train_surrogate.py` bricht jetzt ab, wenn ein angefordertes Surrogat-Target weder als KPI noch als Teacher-Flow vorhanden ist, statt still `0.0` in Trainingslabels zu schreiben.
+  - `Data/profiles/loaders.py` validiert V2H-Min-SOC-, Availability- und Driving-Profile auf NaN/Inf und verhindert stille Ersatzwerte aus fehlerhaften Excel-Quellen.
+  - `Optimization/run/analysis/compare.py` nutzt fuer Jahres-/Lifetime-Lasten wieder `prepare_profiles_adapter(settings)` und damit die explizite Member-Konfiguration aus Settings.
