@@ -18,6 +18,59 @@ from .registry import (
 )
 
 
+def _numeric_profile_array(values: Any, label: str) -> np.ndarray:
+    """Convert one source column to float and fail fast on missing/non-numeric cells."""
+    arr = np.asarray(pd.to_numeric(values, errors="coerce"), dtype=float)
+    invalid = ~np.isfinite(arr)
+    if bool(invalid.any()):
+        first_idx = int(np.flatnonzero(invalid)[0])
+        raise ValueError(
+            f"[profiles] {label} contains {int(invalid.sum())} non-finite/non-numeric values; "
+            f"first invalid row index={first_idx}. Clean the source data before simulation."
+        )
+    return arr
+
+
+def _unit_interval_profile_array(values: Any, label: str) -> np.ndarray:
+    """Validate profile fractions explicitly instead of clipping corrupt source values."""
+    arr = _numeric_profile_array(values, label)
+    outside = (arr < 0.0) | (arr > 1.0)
+    if bool(outside.any()):
+        first_idx = int(np.flatnonzero(outside)[0])
+        raise ValueError(
+            f"[profiles] {label} contains {int(outside.sum())} values outside [0, 1]; "
+            f"first invalid row index={first_idx}. Source profiles must be fractional values."
+        )
+    return arr
+
+
+def _require_same_length(reference_len: int, label: str, arr: np.ndarray) -> None:
+    """Keep all hourly source profiles on the same horizon before downstream broadcasting."""
+    if len(arr) != int(reference_len):
+        raise ValueError(
+            f"[profiles] {label} length mismatch: expected {int(reference_len)} rows from load profiles, "
+            f"got {len(arr)} rows."
+        )
+
+
+def _matching_profile_column(columns: Any, name_substr: str, exclude_substrs: Tuple[str, ...] = ()) -> str:
+    """Resolve one source column explicitly so overlapping V2H headers cannot be misread."""
+    matches = [
+        c
+        for c in columns
+        if name_substr in str(c).strip().lower()
+        and not any(excl in str(c).strip().lower() for excl in exclude_substrs)
+    ]
+    if len(matches) == 1:
+        return matches[0]
+    if not matches:
+        raise KeyError(f"[profiles] Missing ENTSOE-Profiles column containing: '{name_substr}'")
+    raise KeyError(
+        f"[profiles] Ambiguous ENTSOE-Profiles column containing '{name_substr}': {matches}. "
+        "Use a more specific source header."
+    )
+
+
 def load_v2h_profiles(file_path: str, n_steps: int) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Build yearly V2H profiles directly from ENTSOE weekday/weekend templates."""
     if not file_path or not os.path.exists(file_path):
@@ -38,26 +91,27 @@ def load_v2h_profiles(file_path: str, n_steps: int) -> Tuple[np.ndarray, np.ndar
     src["_hour"] = src["_hour"].astype(int)
     src = src[(src["_hour"] >= 1) & (src["_hour"] <= 24)].sort_values("_hour")
 
-    def _col(name_substr: str) -> str:
-        for c in src.columns:
-            if name_substr in str(c).strip().lower():
-                return c
-        raise KeyError(f"[profiles] Missing ENTSOE-Profiles column containing: '{name_substr}'")
-
     # Prosumer (min_SOC + availability), Passenger (driving).
-    c_min_weekday = _col("prosumer weekday 2030")
-    c_min_weekend = _col("street weekday 2030")
-    c_drv_weekday = _col("passenger weekday")
-    c_drv_weekend = _col("passenger weekend")
-    c_av_weekday = _col("prosumer weekday")
-    c_av_weekend = _col("prosumer weekend")
+    c_min_weekday = _matching_profile_column(src.columns, "prosumer weekday 2030")
+    c_min_weekend = _matching_profile_column(src.columns, "street weekday 2030")
+    c_drv_weekday = _matching_profile_column(src.columns, "passenger weekday")
+    c_drv_weekend = _matching_profile_column(src.columns, "passenger weekend")
+    c_av_weekday = _matching_profile_column(src.columns, "prosumer weekday", exclude_substrs=("2030",))
+    c_av_weekend = _matching_profile_column(src.columns, "prosumer weekend")
 
-    min_weekday = pd.to_numeric(src[c_min_weekday], errors="coerce").to_numpy(dtype=float)
-    min_weekend = pd.to_numeric(src[c_min_weekend], errors="coerce").to_numpy(dtype=float)
-    drv_weekday = pd.to_numeric(src[c_drv_weekday], errors="coerce").to_numpy(dtype=float)
-    drv_weekend = pd.to_numeric(src[c_drv_weekend], errors="coerce").to_numpy(dtype=float)
-    av_weekday = pd.to_numeric(src[c_av_weekday], errors="coerce").to_numpy(dtype=float)
-    av_weekend = pd.to_numeric(src[c_av_weekend], errors="coerce").to_numpy(dtype=float)
+    expected_hours = list(range(1, 25))
+    actual_hours = src["_hour"].tolist()
+    if actual_hours != expected_hours:
+        raise ValueError(
+            f"[profiles] ENTSOE-Profiles must provide each hour 1..24 exactly once; got {actual_hours}."
+        )
+
+    min_weekday = _unit_interval_profile_array(src[c_min_weekday], f"V2H column '{c_min_weekday}'")
+    min_weekend = _unit_interval_profile_array(src[c_min_weekend], f"V2H column '{c_min_weekend}'")
+    drv_weekday = _unit_interval_profile_array(src[c_drv_weekday], f"V2H column '{c_drv_weekday}'")
+    drv_weekend = _unit_interval_profile_array(src[c_drv_weekend], f"V2H column '{c_drv_weekend}'")
+    av_weekday = _unit_interval_profile_array(src[c_av_weekday], f"V2H column '{c_av_weekday}'")
+    av_weekend = _unit_interval_profile_array(src[c_av_weekend], f"V2H column '{c_av_weekend}'")
 
     if not all(arr.size == 24 for arr in [min_weekday, min_weekend, drv_weekday, drv_weekend, av_weekday, av_weekend]):
         raise ValueError("[profiles] ENTSOE-Profiles must provide 24 hourly rows.")
@@ -70,9 +124,6 @@ def load_v2h_profiles(file_path: str, n_steps: int) -> Tuple[np.ndarray, np.ndar
     driving = np.where(is_weekend, drv_weekend[h], drv_weekday[h]).astype(float)
     availability = np.where(is_weekend, av_weekend[h], av_weekday[h]).astype(float)
 
-    min_soc = np.clip(np.nan_to_num(min_soc, nan=0.3), 0.0, 1.0)
-    driving = np.clip(np.nan_to_num(driving, nan=0.0), 0.0, 1.0)
-    availability = np.clip(np.nan_to_num(availability, nan=0.0), 0.0, 1.0)
     return min_soc, availability, driving
 
 
@@ -132,7 +183,8 @@ def load_profiles(
                     )
                 mixed_profile = np.zeros(n_steps, dtype=float)
                 for key, weight in profile_mix.items():
-                    mixed_profile += float(weight) * pd.to_numeric(df_load[str(key)], errors="coerce").to_numpy(dtype=float)
+                    member_part = _numeric_profile_array(df_load[str(key)], f"load-profile mix column '{key}'")
+                    mixed_profile += float(weight) * member_part
                 member_profile = mixed_profile
             else:
                 profile_key = str(getattr(member, "load_profile_key", "") or getattr(member, "member_id", ""))
@@ -141,7 +193,7 @@ def load_profiles(
                         f"[profiles] Member load_profile_key '{profile_key}' not found. "
                         f"Available: {list(df_load.columns)}"
                     )
-                member_profile = pd.to_numeric(df_load[profile_key], errors="coerce").to_numpy(dtype=float)
+                member_profile = _numeric_profile_array(df_load[profile_key], f"load-profile column '{profile_key}'")
             for _ in range(count):
                 load_member_2d[:, col_idx] = member_profile
                 col_idx += 1
@@ -166,7 +218,7 @@ def load_profiles(
         load_member_2d = np.zeros((n_steps, n_ec), dtype=float)
         col_idx = 0
         for member_id, count in zip(member_ids, member_counts):
-            member_profile = pd.to_numeric(df_load[member_id], errors="coerce").to_numpy(dtype=float)
+            member_profile = _numeric_profile_array(df_load[member_id], f"load-profile column '{member_id}'")
             for _ in range(count):
                 load_member_2d[:, col_idx] = member_profile
                 col_idx += 1
@@ -174,32 +226,33 @@ def load_profiles(
     load_array = load_member_2d.sum(axis=1)
 
     df_pv = pd.read_csv(location_PVprofiles[location], sep=";", decimal=",")
-    pv_array = pd.to_numeric(df_pv["PPV"], errors="coerce").to_numpy()
+    pv_array = _numeric_profile_array(df_pv["PPV"], "PV column 'PPV'")
 
     df_temp = pd.read_csv(location_temp_profiles[location], sep=";", decimal=",")
-    temp_series = pd.Series(pd.to_numeric(df_temp["T2m"], errors="coerce").values, index=df_temp["time"])
+    temp_array = _numeric_profile_array(df_temp["T2m"], "temperature column 'T2m'")
+    temp_series = pd.Series(temp_array, index=df_temp["time"])
 
     if require_wind:
         df_wind = pd.read_csv(location_wind_profiles[location])
         if "p" not in df_wind.columns:
             raise KeyError(f"[profiles] Wind profile for location '{location}' is missing required pressure column 'p'.")
-        wind_speed_array = pd.to_numeric(df_wind["ff"], errors="coerce").to_numpy(dtype=float)
-        wind_pressure_array = pd.to_numeric(df_wind["p"], errors="coerce").to_numpy(dtype=float)
-        n_nan_speed = int(np.isnan(wind_speed_array).sum())
-        n_nan_pressure = int(np.isnan(wind_pressure_array).sum())
-        if n_nan_speed > 0 or n_nan_pressure > 0:
-            raise ValueError(
-                f"[profiles] Wind profile for location '{location}' contains NaNs: "
-                f"ff={n_nan_speed}, p={n_nan_pressure}. Clean the source data before using wind-enabled runs."
-            )
+        wind_speed_array = _numeric_profile_array(df_wind["ff"], "wind column 'ff'")
+        wind_pressure_array = _numeric_profile_array(df_wind["p"], "wind column 'p'")
 
     df_irr = pd.read_csv(location_solarirradiation_profiles[location], sep=";", decimal=",")
-    irr_array = pd.to_numeric(df_irr["solar_irradiance_total"], errors="coerce").to_numpy()
+    irr_array = _numeric_profile_array(df_irr["solar_irradiance_total"], "irradiance column 'solar_irradiance_total'")
 
     df_solargains = pd.read_csv(location_solargains_profiles[location], sep=";", decimal=",")
-    solargains_array = pd.to_numeric(df_solargains["solar_gains_(W/m2)"], errors="coerce").to_numpy()
+    solargains_array = _numeric_profile_array(df_solargains["solar_gains_(W/m2)"], "solar-gains column 'solar_gains_(W/m2)'")
 
     n_steps = len(load_array)
+    _require_same_length(n_steps, "PV profile", pv_array)
+    _require_same_length(n_steps, "temperature profile", temp_array)
+    _require_same_length(n_steps, "irradiance profile", irr_array)
+    _require_same_length(n_steps, "solar-gains profile", solargains_array)
+    if require_wind:
+        _require_same_length(n_steps, "wind-speed profile", wind_speed_array)
+        _require_same_length(n_steps, "wind-pressure profile", wind_pressure_array)
     min_soc, availability_profile, driving_profile = load_v2h_profiles(location_V2H_profiles, n_steps)
 
     result = {
