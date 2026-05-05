@@ -1,5 +1,17 @@
 # Worklog
 
+## 2026-05-05
+
+### Profil-Loader Fail-fast-Validierung
+
+- Kritischen Profil-Ladepfad geprueft und zwei konkrete Korrektheitsrisiken behoben:
+  - nicht-numerische oder fehlende Pflichtwerte in Last-, PV-, Wetter-, Wind-, Einstrahlungs-, Solar-Gain- und V2H-Profilen werden jetzt beim Laden explizit abgelehnt
+  - alle stundenweisen Pflichtzeitreihen muessen dieselbe Laenge wie das Lastprofil haben, bevor Downstream-Broadcasting oder Simulation startet
+- V2H-Spaltenaufloesung geschaerft:
+  - `PROSUMER WEEKDAY 2030 [%]` bleibt Min-SOC
+  - `PROSUMER WEEKDAY [%]` wird explizit als Availability-Profil gelesen, statt durch den ueberlappenden Header versehentlich die Min-SOC-Spalte zu treffen
+- Regressionstests fuer diese Fail-fast-Faelle unter `tests/test_profile_loader_validation.py` ergaenzt.
+
 ## 2026-04-24
 
 ### Layer-2 Building-Surrogate-Zielbild festgezogen
