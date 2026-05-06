@@ -7,17 +7,11 @@ from pyomo.environ import Binary, ConcreteModel, ConstraintList, NonNegativeReal
 
 from dispatch.core import DispatchInput, DispatchResult
 from dispatch.metrics import compute_series_peak_change_kw, compute_series_peak_kw, compute_thermflex_series_metrics
+from dispatch.modes.series_validation import dispatch_series_array, optional_dispatch_series
 
 
-def _arr(values: Any, n: int) -> np.ndarray:
-    arr = np.asarray(values, dtype=float).reshape(-1)
-    if arr.size == n:
-        return arr
-    if arr.size == 0:
-        return np.zeros(n, dtype=float)
-    if arr.size > n:
-        return arr[:n]
-    return np.pad(arr, (0, n - arr.size), constant_values=float(arr[-1]))
+def _arr(values: Any, n: int, *, label: str) -> np.ndarray:
+    return dispatch_series_array(values, n, label=label)
 
 
 def _f(mapping: dict[str, Any], key: str, default: float = 0.0) -> float:
@@ -96,7 +90,7 @@ def _district_gas_chp_operating_points(params: dict[str, Any]) -> dict[str, Any]
 
 
 def _series(dispatch_input: DispatchInput, key: str, n: int) -> np.ndarray:
-    return np.maximum(0.0, _arr(dispatch_input.series.get(key, np.zeros(n)), n))
+    return optional_dispatch_series(dispatch_input.series, key, n, default=0.0, nonnegative=True)
 
 
 def _matrix(values: Any, rows: int, cols: int) -> np.ndarray:
@@ -162,12 +156,12 @@ def run_milp_day_ahead_dispatch(dispatch_input: DispatchInput, **_: Any) -> Disp
     sw_av = _series(dispatch_input, "small_wind_available", n)
     lw_av = _series(dispatch_input, "large_wind_available", n)
     hydro_av = _series(dispatch_input, "run_of_river_hydro_available", n)
-    grid_buy = _arr(s.get("grid_import_price", np.zeros(n)), n)
-    grid_sell = _arr(s.get("grid_export_price", np.zeros(n)), n)
+    grid_buy = optional_dispatch_series(s, "grid_import_price", n)
+    grid_sell = optional_dispatch_series(s, "grid_export_price", n)
     dh_demand = _series(dispatch_input, "district_heat_demand", n)
     dh_space_heat_ref = _series(dispatch_input, "district_space_heat_demand", n)
     dh_hotwater_demand = _series(dispatch_input, "district_hotwater_demand", n)
-    hp_cop = np.maximum(1e-9, _arr(s.get("district_heat_pump_cop", np.ones(n)), n))
+    hp_cop = np.maximum(1e-9, optional_dispatch_series(s, "district_heat_pump_cop", n, default=1.0))
     geo_el_av = _series(dispatch_input, "district_geothermal_available_el", n)
     geo_th_av = _series(dispatch_input, "district_geothermal_available_th", n)
     solar_direct_av = _series(dispatch_input, "district_solar_thermal_direct_available_th", n)
@@ -177,7 +171,12 @@ def run_milp_day_ahead_dispatch(dispatch_input: DispatchInput, **_: Any) -> Disp
     bio_th_av = _series(dispatch_input, "district_biomass_chp_available_th", n)
     bigas_th_av = _series(dispatch_input, "district_biogas_chp_available_th", n)
     gas_el_av_raw = s.get("district_gas_chp_available_el")
-    gas_power_priority_signal = _arr(s.get("district_gas_chp_power_priority_signal", np.ones(n)), n)
+    gas_power_priority_signal = optional_dispatch_series(
+        s,
+        "district_gas_chp_power_priority_signal",
+        n,
+        default=1.0,
+    )
     gas_th_av = _series(dispatch_input, "district_gas_chp_available_th", n)
     gas_boiler_th_av = _series(dispatch_input, "district_gas_boiler_available_th", n)
     wood_th_av = _series(dispatch_input, "district_wood_chip_boiler_available_th", n)
@@ -269,7 +268,7 @@ def run_milp_day_ahead_dispatch(dispatch_input: DispatchInput, **_: Any) -> Disp
             )
         gas_price_mwh = np.full(n, fallback_gas_cost * 1000.0 / max(1e-9, gas_lhv), dtype=float)
     else:
-        gas_price_mwh = _arr(gas_price_raw, n)
+        gas_price_mwh = _arr(gas_price_raw, n, label="district_gas_price_eur_per_mwh_fuel")
         if np.any(~np.isfinite(gas_price_mwh)) or np.any(gas_price_mwh <= 0.0):
             raise ValueError(
                 "[dispatch.milp_day_ahead] district_gas_day_ahead_price_eur_per_mwh_fuel must be finite and strictly positive."
@@ -280,7 +279,7 @@ def run_milp_day_ahead_dispatch(dispatch_input: DispatchInput, **_: Any) -> Disp
             raise ValueError(
                 "[dispatch.milp_day_ahead] CO2 cost model is enabled but 'co2_price_eur_per_tco2' is missing."
             )
-        co2_price_eur_per_t = _arr(co2_price_raw, n)
+        co2_price_eur_per_t = _arr(co2_price_raw, n, label="co2_price_eur_per_tco2")
         if np.any(~np.isfinite(co2_price_eur_per_t)) or np.any(co2_price_eur_per_t <= 0.0):
             raise ValueError(
                 "[dispatch.milp_day_ahead] co2_price_eur_per_tco2 must be finite and strictly positive."
