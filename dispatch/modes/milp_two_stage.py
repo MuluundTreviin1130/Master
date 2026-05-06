@@ -19,17 +19,11 @@ from pyomo.environ import (
 from dispatch.scenarios.historical import build_historical_scenario_bundle
 from dispatch.core import DispatchInput, DispatchResult
 from dispatch.metrics import compute_series_peak_change_kw, compute_series_peak_kw, compute_thermflex_series_metrics
+from dispatch.modes.series_validation import dispatch_series_array, optional_dispatch_series
 
 
-def _arr(values: Any, n: int) -> np.ndarray:
-    arr = np.asarray(values, dtype=float).reshape(-1)
-    if arr.size == n:
-        return arr
-    if arr.size == 0:
-        return np.zeros(n, dtype=float)
-    if arr.size > n:
-        return arr[:n]
-    return np.pad(arr, (0, n - arr.size), constant_values=float(arr[-1]))
+def _arr(values: Any, n: int, *, label: str) -> np.ndarray:
+    return dispatch_series_array(values, n, label=label)
 
 
 def _f(mapping: dict[str, Any], key: str, default: float = 0.0) -> float:
@@ -44,7 +38,7 @@ def _opt_nonneg(mapping: dict[str, Any], key: str) -> float | None:
 
 
 def _series(dispatch_input: DispatchInput, key: str, n: int) -> np.ndarray:
-    return np.maximum(0.0, _arr(dispatch_input.series.get(key, np.zeros(n)), n))
+    return optional_dispatch_series(dispatch_input.series, key, n, nonnegative=True)
 
 
 def _matrix(values: Any, rows: int, cols: int) -> np.ndarray:
@@ -134,15 +128,22 @@ def run_milp_two_stage_dispatch(dispatch_input: DispatchInput, **_: Any) -> Disp
     wood_th_av = np.zeros((n_scen, n), dtype=float)
 
     for s_idx, scenario in enumerate(scenario_inputs):
-        demand[s_idx] = np.maximum(0.0, np.asarray(scenario.series["electric_non_dispatch_demand"], dtype=float).reshape(-1))
+        demand[s_idx] = np.maximum(
+            0.0,
+            dispatch_series_array(
+                scenario.series["electric_non_dispatch_demand"],
+                n,
+                label="electric_non_dispatch_demand",
+            ),
+        )
         if demand[s_idx].size != n:
             raise ValueError("[dispatch.milp_two_stage] Scenario horizon mismatch in electric_non_dispatch_demand.")
         pv_av[s_idx] = _series(scenario, "pv_available", n)
         sw_av[s_idx] = _series(scenario, "small_wind_available", n)
         lw_av[s_idx] = _series(scenario, "large_wind_available", n)
         hydro_av[s_idx] = _series(scenario, "run_of_river_hydro_available", n)
-        grid_buy[s_idx] = _arr(scenario.series.get("grid_import_price", np.zeros(n)), n)
-        grid_sell[s_idx] = _arr(scenario.series.get("grid_export_price", np.zeros(n)), n)
+        grid_buy[s_idx] = optional_dispatch_series(scenario.series, "grid_import_price", n)
+        grid_sell[s_idx] = optional_dispatch_series(scenario.series, "grid_export_price", n)
         gas_price_raw = scenario.series.get(
             "district_gas_day_ahead_price_eur_per_mwh_fuel",
             scenario.series.get("district_gas_price_eur_per_mwh_fuel"),
@@ -150,21 +151,28 @@ def run_milp_two_stage_dispatch(dispatch_input: DispatchInput, **_: Any) -> Disp
         if gas_price_raw is None:
             gas_price_mwh[s_idx] = np.nan
         else:
-            gas_price_mwh[s_idx] = _arr(gas_price_raw, n)
+            gas_price_mwh[s_idx] = _arr(gas_price_raw, n, label="district_gas_day_ahead_price_eur_per_mwh_fuel")
         gas_balance_price_raw = scenario.series.get("district_gas_balance_price_eur_per_mwh_fuel")
         if gas_balance_price_raw is None:
             gas_balance_price_mwh[s_idx] = np.nan
         else:
-            gas_balance_price_mwh[s_idx] = _arr(gas_balance_price_raw, n)
+            gas_balance_price_mwh[s_idx] = _arr(
+                gas_balance_price_raw,
+                n,
+                label="district_gas_balance_price_eur_per_mwh_fuel",
+            )
         co2_price_raw = scenario.series.get("co2_price_eur_per_tco2")
         if co2_price_raw is None:
             co2_price_eur_per_t[s_idx] = np.nan
         else:
-            co2_price_eur_per_t[s_idx] = _arr(co2_price_raw, n)
+            co2_price_eur_per_t[s_idx] = _arr(co2_price_raw, n, label="co2_price_eur_per_tco2")
         dh_demand[s_idx] = _series(scenario, "district_heat_demand", n)
         dh_space_heat_ref[s_idx] = _series(scenario, "district_space_heat_demand", n)
         dh_hotwater_demand[s_idx] = _series(scenario, "district_hotwater_demand", n)
-        hp_cop[s_idx] = np.maximum(1e-9, _arr(scenario.series.get("district_heat_pump_cop", np.ones(n)), n))
+        hp_cop[s_idx] = np.maximum(
+            1e-9,
+            optional_dispatch_series(scenario.series, "district_heat_pump_cop", n, default=1.0),
+        )
         geo_el_av[s_idx] = _series(scenario, "district_geothermal_available_el", n)
         geo_th_av[s_idx] = _series(scenario, "district_geothermal_available_th", n)
         solar_direct_av[s_idx] = _series(scenario, "district_solar_thermal_direct_available_th", n)
@@ -259,12 +267,20 @@ def run_milp_two_stage_dispatch(dispatch_input: DispatchInput, **_: Any) -> Disp
             raise ValueError(
                 "[dispatch.milp_two_stage] Gas procurement model requires dispatch_input.series['district_gas_balance_price_eur_per_mwh_fuel']."
             )
-        base_gas_price_mwh = _arr(base_gas_day_ahead_price_raw, n)
+        base_gas_price_mwh = _arr(
+            base_gas_day_ahead_price_raw,
+            n,
+            label="base_district_gas_day_ahead_price_eur_per_mwh_fuel",
+        )
         if np.any(~np.isfinite(base_gas_price_mwh)) or np.any(base_gas_price_mwh <= 0.0):
             raise ValueError(
                 "[dispatch.milp_two_stage] dispatch_input.series['district_gas_day_ahead_price_eur_per_mwh_fuel'] must be finite and strictly positive."
             )
-        base_gas_balance_price_mwh = _arr(base_gas_balance_price_raw, n)
+        base_gas_balance_price_mwh = _arr(
+            base_gas_balance_price_raw,
+            n,
+            label="base_district_gas_balance_price_eur_per_mwh_fuel",
+        )
         if np.any(~np.isfinite(base_gas_balance_price_mwh)) or np.any(base_gas_balance_price_mwh <= 0.0):
             raise ValueError(
                 "[dispatch.milp_two_stage] dispatch_input.series['district_gas_balance_price_eur_per_mwh_fuel'] must be finite and strictly positive."

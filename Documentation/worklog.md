@@ -1,5 +1,18 @@
 # Worklog
 
+## 2026-05-06
+
+### Kritischer Dispatch-Zeitreihencheck
+
+- Bug-Finding-Automation auf den juengsten Sync-Stand angewendet.
+- Kritischen MILP-Dispatch-Fehler behoben:
+  - explizit uebergebene Dispatch-Zeitreihen wurden bisher bei falscher Horizontlaenge still gekuerzt oder mit dem letzten Wert aufgefuellt
+  - betroffen waren u. a. Preis-, CO2-, COP-, Verfuegbarkeits- und Thermflex-Reihen in `milp_day_ahead` und `milp_two_stage`
+  - neue gemeinsame Validierung in `dispatch/modes/series_validation.py` bricht bei Laengenabweichungen fail-fast ab
+- Regressionstest ergaenzt:
+  - `tests/test_dispatch_series_validation.py`
+  - prueft, dass kurze/lange explizite Reihen nicht mehr gepaddet oder getrimmt werden
+
 ## 2026-04-24
 
 ### Layer-2 Building-Surrogate-Zielbild festgezogen
