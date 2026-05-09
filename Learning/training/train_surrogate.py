@@ -14,6 +14,7 @@ from Learning.families.build_family import build_family
 from Learning.registry.register_dataset import register_dataset
 from Learning.registry.register_model import register_model
 from Learning.registry.update_model_status import update_model_status
+from Learning.training.target_values import resolve_teacher_target_row
 from Learning.validation.evaluate_gate import evaluate_gate
 from Optimization.framework.engines.Surrogat_model.features import augment_features
 from Optimization.framework.engines.Surrogat_model.fit.model_factory import make_model
@@ -57,10 +58,7 @@ def _evaluate_teacher_targets(
             profiles,
             requested_objective_names=requested_objective_names,
         )
-        y = np.array(
-            [float(objectives[t]) if t in objectives else float(flows_L.get(t, 0.0)) for t in targets],
-            dtype=float,
-        )
+        y = np.array(resolve_teacher_target_row(targets, objectives, flows_L), dtype=float)
         Y_list.append(y)
     return X_new, np.vstack(Y_list)
 
