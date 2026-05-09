@@ -1,5 +1,16 @@
 # Worklog
 
+## 2026-05-09
+
+### Kritische Learning-Pfad-Haertung
+
+- Cron-basierte Bug-Inspektion der juengsten Commits durchgefuehrt.
+- Kritischen Silent-Corruption-Pfad im Surrogat-Training gehaertet:
+  - Teacher-Targets werden jetzt nur noch aus berechneten KPI-Objectives oder explizit exportierten Teacher-Flows gelesen.
+  - Fehlende Targets brechen mit einer klaren Fehlermeldung ab, statt als `0.0` in Dataset und Modellartefakt zu landen.
+- Learning-Registry-Speicherung auf atomaren Tempfile-Write plus `os.replace` umgestellt, damit ein Prozessabbruch die Registry nicht am kanonischen Pfad abschneidet.
+- Abhaengigkeitsarme `unittest`-Regressionstests fuer beide Schutzregeln ergaenzt.
+
 ## 2026-04-24
 
 ### Layer-2 Building-Surrogate-Zielbild festgezogen
