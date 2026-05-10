@@ -10,11 +10,13 @@ The public objects are imported lazily so lightweight subpackages such as
 __all__ = ["get_settings", "Settings"]
 
 
-def __getattr__(name: str):
-    if name == "get_settings":
-        from .get_settings import get_settings
+def get_settings(*args, **kwargs):
+    from .get_settings import get_settings as _get_settings
 
-        return get_settings
+    return _get_settings(*args, **kwargs)
+
+
+def __getattr__(name: str):
     if name == "Settings":
         from .settings_model import Settings
 
