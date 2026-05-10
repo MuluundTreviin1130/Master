@@ -1,5 +1,18 @@
 # Worklog
 
+## 2026-05-10
+
+### Kritischen Settings-/Learning-Validation-Importcrash behoben
+
+- Daily Bug-Inspection der juengsten Commits durchgefuehrt.
+- Kritischer Befund:
+  - `Settings/get_settings.py` und `Settings/settings_model.py` referenzierten `Settings.validation.holdout`, der neue `Settings/validation`-Layer fehlte aber nach dem Repo-Umzug.
+  - `Learning/training/train_surrogate.py` referenzierte `Learning.validation.evaluate_gate`, der neue `Learning/validation`-Layer fehlte ebenfalls.
+- Fix:
+  - `Settings/validation/holdout.py` mit dem Holdout-Settings-Vertrag und expliziten Learning-Runtime-Override-Feldern ergaenzt.
+  - `Learning/validation/evaluate_gate.py` als fail-closed Holdout-Gate fuer native Surrogate-Trainings ergaenzt.
+  - fokussierte Regressionstests unter `tests/test_validation_modules.py` hinzugefuegt.
+
 ## 2026-04-24
 
 ### Layer-2 Building-Surrogate-Zielbild festgezogen
