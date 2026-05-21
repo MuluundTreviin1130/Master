@@ -60,7 +60,13 @@ def _parse_args() -> argparse.Namespace:
 
 def _load_overrides(path: str | None) -> dict:
     if not path:
-        if len(sys.argv) <= 1 and CLICK_TRAIN_DEFAULT_OVERRIDES.exists():
+        if len(sys.argv) <= 1:
+            if not CLICK_TRAIN_DEFAULT_OVERRIDES.exists():
+                raise FileNotFoundError(
+                    "[train_surrogate] click-train default overrides file not found: "
+                    f"{CLICK_TRAIN_DEFAULT_OVERRIDES}. Pass --overrides-json explicitly "
+                    "or restore the tracked SSOT override file."
+                )
             print(
                 "[train_surrogate] No CLI arguments provided. "
                 f"Using click-train default overrides: {CLICK_TRAIN_DEFAULT_OVERRIDES}",
