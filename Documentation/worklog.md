@@ -2951,3 +2951,15 @@
       - mehr Solar -> mehr verschobene MWh
       - aber mittlere KPI-Vorteile sind im `mid solar`-Bin am staerksten, nicht im `high solar`-Bin
     - `table_12` zeigt fuer die ausgewaehlten `dur24`-Tage die kohortenspezifische Intensitaet in `Wh/m2` plus `max Delta T_in`
+
+## 2026-05-21
+
+- Kritische Runner-Regressionspruefung fuer den aktuellen GitHub-Snapshot durchgefuehrt.
+  - `.gitignore` begrenzt `validation/` jetzt auf den Repo-Root, damit
+    `Optimization/validation/model_validation/overrides/...` als SSOT-Eingabelayer
+    nicht versehentlich ignoriert wird.
+  - `run_optimization.py` und `train_surrogate.py` brechen bei fehlendem no-arg
+    Click-Default-Override jetzt hart ab, statt still mit leeren Overrides zu laufen.
+  - Der Paper-Surrogat-Runner importiert `_build_signature_hash` aus dem tatsaechlichen
+    Modul `Optimization.run.runners.train_surrogate`.
+  - Neue stdlib-Regressionschecks liegen unter `tests/test_runner_regressions.py`.

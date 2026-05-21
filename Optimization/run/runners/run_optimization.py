@@ -51,7 +51,13 @@ CLICK_RUN_DEFAULT_OVERRIDES = (
 
 def _load_json(path: str | None) -> dict:
     if not path:
-        if len(sys.argv) <= 1 and CLICK_RUN_DEFAULT_OVERRIDES.exists():
+        if len(sys.argv) <= 1:
+            if not CLICK_RUN_DEFAULT_OVERRIDES.exists():
+                raise FileNotFoundError(
+                    "[run_optimization] click-run default overrides file not found: "
+                    f"{CLICK_RUN_DEFAULT_OVERRIDES}. Pass --overrides-json explicitly "
+                    "or restore the tracked SSOT override file."
+                )
             print(
                 "[run_optimization] No CLI arguments provided. "
                 f"Using click-run default overrides: {CLICK_RUN_DEFAULT_OVERRIDES}",
