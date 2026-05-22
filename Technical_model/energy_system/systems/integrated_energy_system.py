@@ -2904,8 +2904,22 @@ def simulate_integrated_energy_system(params: Dict[str, Any], profiles: Dict[str
         # This explicit sidecar export keeps the member-level thermflex detail
         # available for cohort-utilization analysis without changing the main
         # KPI schema used by the paper and surrogate pipelines.
+        thermflex_result_metrics = compute_thermflex_series_metrics(
+            district_space_heat_demand,
+            district_space_heat_demand_ref,
+        )
         result.update(
             {
+                "thermflex_active_total": np.sum(thermflex_member_flex_active, axis=0),
+                "thermflex_temperature_violation_degree_h": np.sum(thermflex_member_temp_violation, axis=0),
+                "thermflex_space_heat_delta_kwh": np.asarray(
+                    thermflex_result_metrics["thermflex_space_heat_delta_kwh"],
+                    dtype=float,
+                ),
+                "thermflex_virtual_storage_inventory_kwh": np.asarray(
+                    thermflex_result_metrics["thermflex_virtual_storage_inventory_kwh"],
+                    dtype=float,
+                ),
                 "thermflex_member_ids": list(thermflex_member_ids),
                 "thermflex_member_building_keys": list(thermflex_member_building_keys),
                 "thermflex_member_archetype_keys": list(thermflex_member_archetype_keys),

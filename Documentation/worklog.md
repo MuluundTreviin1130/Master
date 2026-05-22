@@ -1,5 +1,20 @@
 # Worklog
 
+## 2026-05-22
+
+### Kritische Import- und Thermflex-Export-Crashes behoben
+
+- Fehlende Validation-Packages wiederhergestellt:
+  - `Settings.validation.holdout` liefert wieder die explizite Holdout-Override-Konfiguration fuer `get_settings()`.
+  - `Learning.validation.evaluate_gate` liefert wieder den nativen Surrogate-Gate-Pfad fuer Retrain-Laeufe.
+- Gate-Logik fail-fast auf ungueltige Holdout-Arrays und blockiert Modelle bei kritischen Target-Fehlern oder nicht-finiten Predictions.
+- Gekoppelter Thermflex-Dispatch exportiert die aggregierten stundenweisen Serien wieder im IES-Resultat:
+  - `thermflex_active_total`
+  - `thermflex_temperature_violation_degree_h`
+  - `thermflex_space_heat_delta_kwh`
+  - `thermflex_virtual_storage_inventory_kwh`
+- Damit kann `reporting.write_thermflex_hourly=True` nach erfolgreichem Solve die erwartete CSV schreiben, statt am fehlenden Top-Level-Key abzubrechen.
+
 ## 2026-04-24
 
 ### Layer-2 Building-Surrogate-Zielbild festgezogen
