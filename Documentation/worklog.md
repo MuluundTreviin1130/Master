@@ -2951,3 +2951,12 @@
       - mehr Solar -> mehr verschobene MWh
       - aber mittlere KPI-Vorteile sind im `mid solar`-Bin am staerksten, nicht im `high solar`-Bin
     - `table_12` zeigt fuer die ausgewaehlten `dur24`-Tage die kohortenspezifische Intensitaet in `Wh/m2` plus `max Delta T_in`
+
+## 2026-05-23 - Validation package import regression fixed
+
+- Restored tracked `Settings/validation` and `Learning/validation` packages after
+  the repo-layout sync left hard imports without source modules.
+- Added the native Learning validation gate with fail-fast shape/non-finite
+  checks and stable remediation reason strings used by `run_retrain.py`.
+- Anchored the generic `.gitignore` `validation/` rule to the repository root so
+  source packages named `validation` are not silently omitted again.
