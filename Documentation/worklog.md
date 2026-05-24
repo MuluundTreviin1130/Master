@@ -2951,3 +2951,14 @@
       - mehr Solar -> mehr verschobene MWh
       - aber mittlere KPI-Vorteile sind im `mid solar`-Bin am staerksten, nicht im `high solar`-Bin
     - `table_12` zeigt fuer die ausgewaehlten `dur24`-Tage die kohortenspezifische Intensitaet in `Wh/m2` plus `max Delta T_in`
+
+## 2026-05-24 - Surrogate validation gate restored
+
+- Critical bug sweep found that `Learning.training.train_surrogate` imported
+  `Learning.validation.evaluate_gate`, but the package was missing in the repo.
+- Added the `Learning.validation` package with a fail-fast validation gate for
+  native surrogate retraining.
+- Hardened native retraining labels so missing surrogate targets now raise a
+  `KeyError` instead of being written as silent `0.0` labels.
+- Added focused `unittest` coverage for eligibility, critical-target failure,
+  non-finite predictions, and target-column coverage checks.
