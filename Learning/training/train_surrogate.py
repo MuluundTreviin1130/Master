@@ -20,6 +20,36 @@ from Optimization.framework.engines.Surrogat_model.fit.model_factory import make
 from Optimization.framework.engines.kpi import compute_kpis, is_supported_objective_name
 
 
+def _target_vector_from_truth(
+    *,
+    targets: List[str],
+    objectives: Dict[str, float],
+    flows_L: Dict[str, Any],
+) -> np.ndarray:
+    values: List[float] = []
+    missing: List[str] = []
+    for target in targets:
+        if target in objectives:
+            raw_value = objectives[target]
+        elif target in flows_L:
+            raw_value = flows_L[target]
+        else:
+            missing.append(target)
+            continue
+        value = float(raw_value)
+        if not np.isfinite(value):
+            raise ValueError(
+                f"[learning.train_surrogate] Target '{target}' produced a non-finite label: {raw_value!r}."
+            )
+        values.append(value)
+    if missing:
+        raise KeyError(
+            "[learning.train_surrogate] Teacher output is missing required surrogate targets: "
+            + ", ".join(sorted(missing))
+        )
+    return np.asarray(values, dtype=float)
+
+
 def _artifact_filenames(settings: Any) -> Dict[str, str]:
     learning = getattr(settings, "learning", None)
     primary_artifact = str(getattr(learning, "primary_artifact_filename", "surrogate_bundle.joblib"))
@@ -57,9 +87,10 @@ def _evaluate_teacher_targets(
             profiles,
             requested_objective_names=requested_objective_names,
         )
-        y = np.array(
-            [float(objectives[t]) if t in objectives else float(flows_L.get(t, 0.0)) for t in targets],
-            dtype=float,
+        y = _target_vector_from_truth(
+            targets=targets,
+            objectives=objectives,
+            flows_L=flows_L,
         )
         Y_list.append(y)
     return X_new, np.vstack(Y_list)
