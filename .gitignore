@@ -21,7 +21,7 @@ Optimization/run/validation_old/
 Learning/datasets/*/
 Learning/models/*/
 
-validation/
+/validation/
 
 Data/profiles/Vienna/weather/.cache/
 Data/profiles/Vienna/weather/_openmeteo_chunks/

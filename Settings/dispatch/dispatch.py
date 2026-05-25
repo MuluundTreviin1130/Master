@@ -1,7 +1,15 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import List
+
+
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+
+
+def _profile_path(*parts: str) -> str:
+    return str((_REPO_ROOT / "Data" / "profiles" / Path(*parts)).resolve())
 
 
 @dataclass
@@ -38,12 +46,12 @@ class DispatchConfig:
     historical_pvgis_path: str = r"C:\Users\Philipp Thunshirn\Desktop\PhD\Daten\PV_GIS_2016-23.csv"
     historical_day_ahead_root: str = r"C:\Users\Philipp Thunshirn\Desktop\PhD\Daten\Day-Ahead Preise"
     historical_gas_price_csv: str = ""
-    historical_gas_day_ahead_price_csv: str = (
-        r"C:\Users\Philipp Thunshirn\Desktop\PhD\Python model\Master\Data\profiles\common\gas\oegpi_monthly_daily_proxy_2020_2025.csv"
+    historical_gas_day_ahead_price_csv: str = _profile_path(
+        "common", "gas", "oegpi_monthly_daily_proxy_2020_2025.csv"
     )
     historical_gas_balance_price_csv: str = ""
-    historical_co2_price_csv: str = (
-        r"C:\Users\Philipp Thunshirn\Desktop\PhD\Python model\Master\Data\profiles\common\co2\ets_monthly_daily_proxy_2020_2025.csv"
+    historical_co2_price_csv: str = _profile_path(
+        "common", "co2", "ets_monthly_daily_proxy_2020_2025.csv"
     )
     historical_min_year: int = 2020
     historical_max_year: int = 2025

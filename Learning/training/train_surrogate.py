@@ -57,8 +57,14 @@ def _evaluate_teacher_targets(
             profiles,
             requested_objective_names=requested_objective_names,
         )
+        missing_targets = [target for target in targets if target not in objectives and target not in flows_L]
+        if missing_targets:
+            raise KeyError(
+                "[learning] missing required surrogate targets after teacher evaluation: "
+                + ", ".join(sorted(missing_targets))
+            )
         y = np.array(
-            [float(objectives[t]) if t in objectives else float(flows_L.get(t, 0.0)) for t in targets],
+            [float(objectives[t]) if t in objectives else float(flows_L[t]) for t in targets],
             dtype=float,
         )
         Y_list.append(y)

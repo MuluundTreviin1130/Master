@@ -1,5 +1,22 @@
 # Worklog
 
+## 2026-05-25
+
+### Critical correctness recovery for validation and dispatch defaults
+
+- Daily critical-bug pass found import-breaking validation modules missing from
+  the synced repo snapshot:
+  - `Settings.get_settings` expected `Settings.validation.holdout`
+  - native Learning retrain expected `Learning.validation.evaluate_gate`
+- Restored the explicit validation settings block and Learning gate evaluator so
+  settings-backed optimization and surrogate retraining can start again.
+- Replaced the Learning teacher target `0.0` fallback with fail-fast missing
+  target validation to avoid silently corrupting surrogate labels.
+- Pointed the default gas and CO2 dispatch price settings at the repo-shipped
+  CSVs under `Data/profiles/common/` instead of Windows-only absolute paths.
+- Added focused unittest coverage for the restored validation gate/config,
+  repo-local dispatch price defaults, and the removed zero-label fallback.
+
 ## 2026-04-24
 
 ### Layer-2 Building-Surrogate-Zielbild festgezogen
