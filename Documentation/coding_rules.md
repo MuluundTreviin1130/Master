@@ -11,6 +11,7 @@ These rules apply to ongoing repo work.
 - Keep the code extensible for future larger MES scope.
 - Treat simplicity, clarity, logic, overview, and extensibility as central criteria for every code extension.
 - Before writing or changing code, consult `AGENTS.md` and this file.
+- Work token- and context-efficiently: read narrowly, avoid noisy command output, keep changes scoped, and do not create large artifacts or explanations when a concise one is sufficient.
 
 ## Simplicity and explanation
 
@@ -18,6 +19,7 @@ These rules apply to ongoing repo work.
 - Do not hide intent in clever or compressed code when a clearer variant is available.
 - For new non-trivial logic, document the code densely: comments should make nearly line by line clear why it exists, why it is written that way, and what it means.
 - Simplify first, then explain; comments must not be used to justify avoidable structural complexity.
+- Be environmentally and context conscious while coding: avoid duplicate exploration, broad searches without need, and repo-wide rewrites when targeted edits solve the problem.
 
 ## Activation
 
@@ -30,9 +32,14 @@ These rules apply to ongoing repo work.
 - Document work steps in `Documentation/worklog.md`.
 - Put open tasks in `Documentation/Planning/TODO.md`.
 - Put literature and data provenance in `Documentation/Sources/`.
+- Keep `worklog`/`TODO` updates coarse-grained. Do not spend tokens or repo churn on documenting every micro-step; update them after meaningful work blocks, decisions, or validated results.
 - Keep exported KPIs/source tags explicit when behavior depends on calibration or settings.
 - Every new long-lived folder or sublayer must contain a meaningful `README.md`.
 - If an existing folder materially changes its purpose, update its `README.md`.
+- Keep reusable run artifacts structured:
+  - raw run outputs stay in their source folders under `Optimization/run/results/` or other producing layers
+  - reusable learning truth/model/diagnostic artifacts must be surfaced through the central `Learning/datasets/` inventory and curated dataset paths instead of ad hoc duplicate folders
+  - never silently mix incompatible artifact families into one training dataset
 - When larger repo changes accumulate, create a clean commit and push the work to GitHub regularly.
 
 ## Modeling
