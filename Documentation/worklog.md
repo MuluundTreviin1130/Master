@@ -1,5 +1,31 @@
 # Worklog
 
+## 2026-06-07
+
+### Critical bug sweep: ThermFlex surrogate stack
+
+- Recent-commit sweep found and fixed four high-severity runtime/data-contract
+  defects:
+  - Vienna ThermFlex surrogate trainer imported `_build_signature_hash` from
+    non-existent `Optimization.run.train_surrogate`; it now uses
+    `Optimization.run.runners.train_surrogate`.
+  - Daily ThermFlex result dataset deduplication no longer keeps an arbitrary
+    policy-day row when duplicate keys disagree on target values; it raises an
+    explicit data-contract error with target max ranges.
+  - Hourly ThermFlex mechanism truth deduplication now rejects duplicate
+    `(run_dir, cohort_key, timestamp)` rows whose numeric truth columns differ,
+    preventing silent label corruption.
+  - Restored the missing `Settings.validation` config sublayer required by
+    `Settings.get_settings()`.
+- Validation performed:
+  - `python3 -m py_compile` on all changed Python files.
+  - `python3 -m unittest Learning.test_thermflex_deduplication_contracts -v`
+    (`4` tests).
+  - `from Settings import get_settings; get_settings().validation` smoke check.
+  - Static trainer-import contract check. A full trainer import progressed past
+    the fixed repository import paths and then stopped on missing local optional
+    dependency `oemof`.
+
 ## 2026-05-19
 
 ### Thermflex: Main-Paper-Table Scope
