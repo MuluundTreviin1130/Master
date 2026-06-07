@@ -65,6 +65,7 @@ _BASE_REF_OVERRIDE = (
 )
 _DEFAULT_DATASET_ROOT = Path(__file__).resolve().parents[2] / "Learning" / "datasets"
 _DEFAULT_REGISTRY_PATH = Path(__file__).resolve().parents[2] / "Learning" / "registry" / "registry.json"
+_DUPLICATE_TARGET_TOLERANCE = 1e-9
 
 
 @dataclass(frozen=True)
@@ -654,6 +655,17 @@ def _deduplicate_policy_day_rows(selected: pd.DataFrame) -> tuple[pd.DataFrame, 
         duplicate_rows=duplicate_rows,
         key_columns=key_columns,
     )
+    target_conflicts = {
+        target: metrics["max_range"]
+        for target, metrics in duplicate_target_ranges.items()
+        if abs(float(metrics["max_range"])) > _DUPLICATE_TARGET_TOLERANCE
+    }
+    if target_conflicts:
+        raise ValueError(
+            "[thermflex_daily_results] duplicate policy-day rows disagree on target columns; "
+            "refusing to choose an arbitrary training label. max_ranges="
+            + json.dumps(target_conflicts, sort_keys=True)
+        )
 
     ranked = working.sort_values(
         [
