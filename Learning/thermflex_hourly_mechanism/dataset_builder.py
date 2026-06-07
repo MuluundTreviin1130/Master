@@ -47,6 +47,7 @@ _HOURLY_TRUTH_FILENAMES: tuple[str, ...] = (
     "constant_thermflex_cohort_utilization_hourly.csv",
     "thermflex_cohort_utilization_hourly.csv",
 )
+_DUPLICATE_TRUTH_TOLERANCE = 1e-9
 
 
 @dataclass(frozen=True)
@@ -455,6 +456,40 @@ def _deduplicate_hourly_truth(frame: pd.DataFrame) -> pd.DataFrame:
     cohort and timestamp identity instead of the label text.
     """
 
+    key_columns = ["run_dir", "cohort_key", "timestamp"]
+    compare_columns = [
+        column
+        for column in REQUIRED_HOURLY_MECHANISM_COLUMNS
+        if column not in {"case_label", *key_columns}
+    ]
+    duplicate_mask = frame.duplicated(subset=key_columns, keep=False)
+    if duplicate_mask.any():
+        conflicts: list[dict[str, Any]] = []
+        duplicate_groups = frame.loc[duplicate_mask].groupby(key_columns, sort=True, dropna=False)
+        for key, group in duplicate_groups:
+            numeric = group.loc[:, compare_columns].apply(pd.to_numeric, errors="raise").astype(float)
+            spread = numeric.max(axis=0) - numeric.min(axis=0)
+            conflict_columns = [
+                column
+                for column, value in spread.items()
+                if abs(float(value)) > _DUPLICATE_TRUTH_TOLERANCE
+            ]
+            if conflict_columns:
+                conflicts.append(
+                    {
+                        "run_dir": str(key[0]),
+                        "cohort_key": str(key[1]),
+                        "timestamp": str(key[2]),
+                        "conflict_columns": conflict_columns[:20],
+                    }
+                )
+        if conflicts:
+            raise ValueError(
+                "[thermflex_hourly_mechanism] duplicate hourly truth rows disagree; "
+                "refusing to choose an arbitrary training label. examples="
+                + json.dumps(conflicts[:10], default=str)
+            )
+
     deduped = frame.copy()
     deduped["_bundle_rank"] = deduped["source_bundle_name"].astype(str)
     deduped = deduped.sort_values(
@@ -462,7 +497,7 @@ def _deduplicate_hourly_truth(frame: pd.DataFrame) -> pd.DataFrame:
         ascending=[True, True, True, True, True],
     )
     deduped = deduped.drop_duplicates(
-        subset=["run_dir", "cohort_key", "timestamp"],
+        subset=key_columns,
         keep="last",
     ).reset_index(drop=True)
     return deduped.drop(columns="_bundle_rank")

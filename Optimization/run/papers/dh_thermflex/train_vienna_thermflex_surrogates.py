@@ -19,7 +19,7 @@ if project_root_str not in sys.path:
 from Settings import get_settings
 from Optimization.framework.engines.Surrogat_model.training import auto_train_surrogate
 from Optimization.framework.engines.Gated.io import promote_surrogate_version
-from Optimization.run.train_surrogate import _build_signature_hash
+from Optimization.run.runners.train_surrogate import _build_signature_hash
 
 
 DEFAULT_CASES = (
