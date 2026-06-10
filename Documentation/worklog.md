@@ -9125,3 +9125,14 @@ Naechste Schritte:
   - The remaining gaps are now solve-contract failures, not unattempted days;
     paper-facing outputs must retain evidence labels and should not describe
     these rows as complete full-season MILP truth.
+
+- 2026-06-10: Critical Learning validation import crash fixed.
+  - Investigated recent Learning/surrogate commits for high-severity correctness
+    issues and reproduced that `Learning.validation.evaluate_gate` was referenced
+    by the native surrogate retrain path but absent from the tree.
+  - Added the missing `Learning.validation` module with an explicit
+    `evaluate_gate()` contract driven by `settings.learning.validation_gate`
+    thresholds. The gate validates target names and holdout matrix shapes
+    fail-fast, reports per-target R2/MAE/relative-MAE metrics, and returns the
+    `eligible`, failed-target, and pass-share fields already consumed by
+    `Learning/scripts/run_retrain.py`.
