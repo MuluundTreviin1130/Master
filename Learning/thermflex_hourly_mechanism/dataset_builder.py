@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
@@ -456,16 +457,23 @@ def _deduplicate_hourly_truth(frame: pd.DataFrame) -> pd.DataFrame:
     """
 
     deduped = frame.copy()
-    deduped["_bundle_rank"] = deduped["source_bundle_name"].astype(str)
+    deduped["_bundle_rank"] = deduped["source_bundle_name"].astype(str).map(_extract_bundle_timestamp_rank)
     deduped = deduped.sort_values(
-        ["case_label", "run_dir", "cohort_key", "timestamp", "_bundle_rank"],
-        ascending=[True, True, True, True, True],
+        ["case_label", "run_dir", "cohort_key", "timestamp", "_bundle_rank", "source_bundle_name"],
+        ascending=[True, True, True, True, False, False],
     )
     deduped = deduped.drop_duplicates(
         subset=["run_dir", "cohort_key", "timestamp"],
-        keep="last",
+        keep="first",
     ).reset_index(drop=True)
     return deduped.drop(columns="_bundle_rank")
+
+
+def _extract_bundle_timestamp_rank(bundle_name: str) -> str:
+    matches = re.findall(r"(\d{8}_\d{6})", str(bundle_name))
+    if not matches:
+        return ""
+    return matches[-1]
 
 
 @lru_cache(maxsize=1)
