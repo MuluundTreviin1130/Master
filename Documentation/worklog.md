@@ -9129,6 +9129,8 @@ Naechste Schritte:
 - 2026-06-11: Critical Learning surrogate validation hotfix.
   - Restored the missing `Learning.validation.evaluate_gate` contract so the
     orchestrator registry and Surrogate/Gated engines no longer crash on import.
+  - Restored the missing `Settings.validation.holdout` settings group required
+    by `get_settings()` and documented `validation.holdout.model_id` overrides.
   - Added JSON-safe gate metrics and regression tests for pass, critical-target
     failure and missing target coverage cases.
   - Fixed ThermFlex hourly mechanism truth deduplication to rank overlapping

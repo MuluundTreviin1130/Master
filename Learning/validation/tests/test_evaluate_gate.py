@@ -2,24 +2,29 @@ from __future__ import annotations
 
 import json
 import unittest
+from types import SimpleNamespace
 
 import numpy as np
 
 from Learning.validation.evaluate_gate import evaluate_gate
-from Settings.learning import make_learning
 
 
 class EvaluateGateTest(unittest.TestCase):
     def _settings(self):
-        class Settings:
-            pass
-
-        settings = Settings()
-        settings.learning = make_learning()
-        gate = settings.learning.validation_gate
-        gate.critical_targets = ["critical_target"]
-        gate.min_pass_share = 1.0
-        return settings
+        gate = SimpleNamespace(
+            enabled=True,
+            auto_validate_after_retrain=True,
+            auto_promote_to_eligible=True,
+            require_full_target_coverage=True,
+            fail_on_nan_predictions=True,
+            min_pass_share=1.0,
+            critical_target_min_r2=0.95,
+            critical_target_max_rel_mae_percent=8.0,
+            secondary_target_min_r2=0.85,
+            secondary_target_max_rel_mae_percent=15.0,
+            critical_targets=["critical_target"],
+        )
+        return SimpleNamespace(learning=SimpleNamespace(validation_gate=gate))
 
     def test_marks_model_eligible_when_all_targets_pass(self) -> None:
         settings = self._settings()
