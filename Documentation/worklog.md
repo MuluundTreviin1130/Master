@@ -9125,3 +9125,11 @@ Naechste Schritte:
   - The remaining gaps are now solve-contract failures, not unattempted days;
     paper-facing outputs must retain evidence labels and should not describe
     these rows as complete full-season MILP truth.
+
+- 2026-06-11: Critical Learning surrogate validation hotfix.
+  - Restored the missing `Learning.validation.evaluate_gate` contract so the
+    orchestrator registry and Surrogate/Gated engines no longer crash on import.
+  - Added JSON-safe gate metrics and regression tests for pass, critical-target
+    failure and missing target coverage cases.
+  - Fixed ThermFlex hourly mechanism truth deduplication to rank overlapping
+    bundles by parsed `YYYYMMDD_HHMMSS` timestamp instead of raw bundle name.
