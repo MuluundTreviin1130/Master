@@ -57,8 +57,17 @@ def _evaluate_teacher_targets(
             profiles,
             requested_objective_names=requested_objective_names,
         )
+        missing_targets = [t for t in targets if t not in objectives and t not in flows_L]
+        if missing_targets:
+            available_targets = sorted(set(objectives.keys()) | set(flows_L.keys()))
+            raise KeyError(
+                "[train_surrogate] Teacher output is missing required surrogate targets "
+                f"{missing_targets}. Available objective/flow targets: {available_targets}. "
+                "Add the target to the teacher export or remove it from the active target settings; "
+                "missing target values must not be persisted as implicit zeros."
+            )
         y = np.array(
-            [float(objectives[t]) if t in objectives else float(flows_L.get(t, 0.0)) for t in targets],
+            [float(objectives[t]) if t in objectives else float(flows_L[t]) for t in targets],
             dtype=float,
         )
         Y_list.append(y)
