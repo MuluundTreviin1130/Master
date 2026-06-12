@@ -1,5 +1,20 @@
 # Worklog
 
+## 2026-06-12
+
+### Critical bug automation: native retrain and LCA guards
+
+- Inspected recent Learning/Data/Optimization changes for high-severity correctness issues.
+- Fixed native Learning retrain import crash by adding the missing validation gate module used by
+  `Learning.training.train_surrogate`.
+- Made native teacher target extraction fail fast when required surrogate targets are absent instead
+  of persisting implicit zero values into datasets and candidate models.
+- Restored the missing `Settings.validation` package required by `Settings.get_settings` and the
+  top-level `Settings` dataclass.
+- Added an active-H2 LCA coverage guard so placeholder ELY/H2 tank LCA records cannot be scored as
+  real zero-impact runtime data when an LCA objective is requested.
+- Added focused regression tests in `tests/test_critical_bug_fixes.py`.
+
 ## 2026-05-19
 
 ### Thermflex: Main-Paper-Table Scope

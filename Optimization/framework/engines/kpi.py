@@ -55,6 +55,45 @@ def _has_lca_metric_for_param_key(params: Dict[str, Any], param_key: str, metric
     return metric in lca.get("infra", {}) or metric in lca.get("op", {})
 
 
+def _lca_meta_is_placeholder(params: Dict[str, Any], param_key: str) -> bool:
+    block = params.get(param_key, {})
+    if not isinstance(block, dict):
+        return False
+    lca = block.get("LCA", {})
+    if not isinstance(lca, dict):
+        return False
+    meta = lca.get("meta", {})
+    return isinstance(meta, dict) and bool(meta.get("placeholder", False))
+
+
+def _require_active_h2_lca_coverage(params: Dict[str, Any], design_vars: Dict[str, Any], metric: str) -> None:
+    active_h2_assets = [
+        ("fuel_cell", float(design_vars.get("fc_kw", params.get("fc_kw", 0.0))), "FC"),
+        ("electrolyzer", float(design_vars.get("ely_kw", params.get("ely_kw", 0.0))), "ELY"),
+        ("h2_tank", float(design_vars.get("h2_tank_kwh", params.get("h2_tank_kwh", 0.0))), "H2_TANK"),
+    ]
+    missing = [
+        tech_name
+        for tech_name, activity_level, param_key in active_h2_assets
+        if activity_level > 0.0 and not _has_lca_metric_for_param_key(params, param_key, metric)
+    ]
+    placeholders = [
+        tech_name
+        for tech_name, activity_level, param_key in active_h2_assets
+        if activity_level > 0.0 and _lca_meta_is_placeholder(params, param_key)
+    ]
+    if missing or placeholders:
+        details: List[str] = []
+        if missing:
+            details.append(f"missing metric data for {', '.join(missing)}")
+        if placeholders:
+            details.append(f"placeholder LCA data for {', '.join(placeholders)}")
+        raise ValueError(
+            f"[kpi] objective '{metric}' requested, but active H2 technologies have incomplete LCA SSOT: "
+            f"{'; '.join(details)}. Add validated LCA data first instead of silently scoring these capacities as zero."
+        )
+
+
 def _require_dh_lca_coverage(params: Dict[str, Any], design_vars: Dict[str, Any], metric: str) -> None:
     active_dh_assets = [
         ("district_external_heat", float(design_vars.get("district_external_heat_kw_th", params.get("district_external_heat_kw_th", 0.0))), "DISTRICT_EXTERNAL_HEAT"),
@@ -395,6 +434,7 @@ def compute_objectives(
                 )
         elif _lca_metric_exists(params, name):
             _require_dh_lca_coverage(params, design_vars, name)
+            _require_active_h2_lca_coverage(params, design_vars, name)
             out[name] = _total_lca_metric(
                 params,
                 name,
