@@ -1,9 +1,49 @@
 from __future__ import annotations
 
+import sys
+import types
 import unittest
 from types import SimpleNamespace
 
 import numpy as np
+
+
+class _ModelStub:
+    def __init__(self, *_args: object, **_kwargs: object) -> None:
+        pass
+
+
+class _KernelStub:
+    def __init__(self, *_args: object, **_kwargs: object) -> None:
+        pass
+
+    def __mul__(self, _other: object) -> "_KernelStub":
+        return self
+
+
+def _install_optional_ml_stubs() -> None:
+    """Keep these focused tests independent of optional local ML packages."""
+    joblib = types.ModuleType("joblib")
+    joblib.dump = lambda *_args, **_kwargs: None
+    sklearn = types.ModuleType("sklearn")
+    model_selection = types.ModuleType("sklearn.model_selection")
+    model_selection.train_test_split = lambda *arrays, **_kwargs: arrays
+    ensemble = types.ModuleType("sklearn.ensemble")
+    ensemble.RandomForestRegressor = _ModelStub
+    gaussian_process = types.ModuleType("sklearn.gaussian_process")
+    gaussian_process.GaussianProcessRegressor = _ModelStub
+    kernels = types.ModuleType("sklearn.gaussian_process.kernels")
+    kernels.RBF = _KernelStub
+    kernels.ConstantKernel = _KernelStub
+    sys.modules.setdefault("joblib", joblib)
+    sys.modules.setdefault("sklearn", sklearn)
+    sys.modules.setdefault("sklearn.model_selection", model_selection)
+    sys.modules.setdefault("sklearn.ensemble", ensemble)
+    sys.modules.setdefault("sklearn.gaussian_process", gaussian_process)
+    sys.modules.setdefault("sklearn.gaussian_process.kernels", kernels)
+
+
+_install_optional_ml_stubs()
 
 from Learning.training.train_surrogate import _evaluate_teacher_targets
 from Learning.validation.evaluate_gate import evaluate_gate
