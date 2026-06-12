@@ -25,6 +25,7 @@ def _install_optional_ml_stubs() -> None:
     """Keep these focused tests independent of optional local ML packages."""
     joblib = types.ModuleType("joblib")
     joblib.dump = lambda *_args, **_kwargs: None
+    pandas = types.ModuleType("pandas")
     sklearn = types.ModuleType("sklearn")
     model_selection = types.ModuleType("sklearn.model_selection")
     model_selection.train_test_split = lambda *arrays, **_kwargs: arrays
@@ -36,6 +37,7 @@ def _install_optional_ml_stubs() -> None:
     kernels.RBF = _KernelStub
     kernels.ConstantKernel = _KernelStub
     sys.modules.setdefault("joblib", joblib)
+    sys.modules.setdefault("pandas", pandas)
     sys.modules.setdefault("sklearn", sklearn)
     sys.modules.setdefault("sklearn.model_selection", model_selection)
     sys.modules.setdefault("sklearn.ensemble", ensemble)
