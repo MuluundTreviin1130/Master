@@ -9125,3 +9125,13 @@ Naechste Schritte:
   - The remaining gaps are now solve-contract failures, not unattempted days;
     paper-facing outputs must retain evidence labels and should not describe
     these rows as complete full-season MILP truth.
+
+- 2026-06-13: Critical ThermFlex learning dataset alignment guard.
+  - Audited recent Learning/ThermFlex surrogate training paths for high-impact
+    correctness issues and found that trainers split by `truth_dataset.csv` rows
+    while indexing `training_data.npz` arrays without checking that both files
+    still describe the same row contract.
+  - Added a shared fail-fast row-alignment validator and wired it into the daily
+    results and hourly mechanism trainers before holdout indices are applied.
+  - Added a focused regression test for matching rows, desynchronized truth CSVs
+    and stale row-count metadata.

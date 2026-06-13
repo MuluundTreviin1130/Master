@@ -12,6 +12,7 @@ from sklearn.metrics import r2_score
 from xgboost import XGBRegressor
 
 from Learning.datasets.load_dataset import load_dataset
+from Learning.datasets.load_dataset import validate_truth_row_alignment
 from Learning.registry.register_model import register_model
 from Learning.registry.update_model_status import update_model_status
 from Learning.thermflex_hourly_mechanism.dataset_builder import (
@@ -54,6 +55,11 @@ def train_hourly_mechanism_model(
     if truth_csv_path is None:
         raise FileNotFoundError("[thermflex_hourly_mechanism] curated dataset is missing `truth_dataset.csv`.")
     truth_df = pd.read_csv(truth_csv_path)
+    validate_truth_row_alignment(
+        dataset_bundle,
+        len(truth_df),
+        context_label="[thermflex_hourly_mechanism] train_hourly_mechanism_model",
+    )
     split = build_grouped_holdout_split(
         truth_df=truth_df,
         group_column=group_column,

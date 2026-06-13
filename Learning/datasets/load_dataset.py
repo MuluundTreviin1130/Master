@@ -36,3 +36,58 @@ def load_dataset(dataset_root: str | Path, family_hash: str) -> Optional[Dict[st
         "Y": bundle["Y"],
         "meta": meta,
     }
+
+
+def validate_truth_row_alignment(
+    dataset_bundle: Dict[str, Any],
+    truth_row_count: int,
+    *,
+    context_label: str,
+) -> None:
+    """
+    Fail fast when the rich truth CSV no longer matches the saved NPZ rows.
+
+    Several ThermFlex training paths build holdout indices from `truth_dataset.csv`
+    but index `X`/`Y` from `training_data.npz`. If those files are partially
+    regenerated or manually edited out of sync, training can silently pair the
+    wrong labels with the wrong features whenever the CSV still has index values
+    that are valid for the array length. The row-count contract is therefore
+    checked before any split indices are applied.
+    """
+
+    truth_rows = int(truth_row_count)
+    if truth_rows < 0:
+        raise ValueError(f"{context_label}: truth_row_count must be nonnegative.")
+
+    row_counts: dict[str, int] = {}
+    for key in ("X_design", "X", "Y"):
+        if key not in dataset_bundle:
+            raise KeyError(f"{context_label}: dataset bundle missing `{key}`.")
+        row_counts[key] = int(dataset_bundle[key].shape[0])
+
+    expected_rows = set(row_counts.values())
+    if len(expected_rows) != 1:
+        detail = ", ".join(f"{key}={value}" for key, value in sorted(row_counts.items()))
+        raise ValueError(f"{context_label}: NPZ arrays have inconsistent row counts: {detail}.")
+
+    npz_rows = expected_rows.pop()
+    if truth_rows != npz_rows:
+        data_path = dataset_bundle.get("data_path", "<unknown training_data.npz>")
+        truth_csv_path = dataset_bundle.get("truth_csv_path", "<unknown truth_dataset.csv>")
+        raise ValueError(
+            f"{context_label}: truth CSV row count ({truth_rows}) does not match "
+            f"training_data.npz row count ({npz_rows}); refusing to train with "
+            f"desynchronized features/labels. truth_csv={truth_csv_path}, data={data_path}"
+        )
+
+    meta = dataset_bundle.get("meta", {})
+    if isinstance(meta, dict):
+        for meta_key in ("n_selected_rows", "n_samples"):
+            if meta_key not in meta:
+                continue
+            meta_rows = int(meta[meta_key])
+            if meta_rows != truth_rows:
+                raise ValueError(
+                    f"{context_label}: metadata `{meta_key}` row count ({meta_rows}) "
+                    f"does not match truth CSV row count ({truth_rows})."
+                )
