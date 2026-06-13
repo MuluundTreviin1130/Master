@@ -12,6 +12,7 @@ from sklearn.metrics import r2_score
 from xgboost import XGBRegressor
 
 from Learning.datasets.load_dataset import load_dataset
+from Learning.datasets.load_dataset import validate_truth_row_alignment
 from Learning.registry.register_model import register_model
 from Learning.registry.update_model_status import update_model_status
 from Learning.thermflex_daily_results.dataset_builder import (
@@ -70,6 +71,11 @@ def train_daily_results_model(
             "[thermflex_daily_results] curated dataset is missing `truth_dataset.csv`."
         )
     truth_df = pd.read_csv(truth_csv_path)
+    validate_truth_row_alignment(
+        dataset_bundle,
+        len(truth_df),
+        context_label="[thermflex_daily_results] train_daily_results_model",
+    )
     split = build_grouped_holdout_split(
         truth_df=truth_df,
         group_column=group_column,
@@ -97,6 +103,9 @@ def train_daily_results_model(
     y_test = y[split.test_index, :]
     target_names = list(available_target_names)
     target_transforms = {target: _resolve_target_transform(target) for target in target_names}
+    if "feature_mode" not in dataset_bundle["meta"]:
+        raise KeyError("[thermflex_daily_results] dataset metadata missing required `feature_mode`.")
+    feature_mode = str(dataset_bundle["meta"]["feature_mode"])
 
     models: list[Any] = []
     for target_idx, _target_name in enumerate(target_names):
@@ -131,6 +140,7 @@ def train_daily_results_model(
             "target_names": target_names,
             "target_transforms": target_transforms,
             "feature_columns": list(dataset_bundle["meta"]["encoded_feature_columns"]),
+            "feature_mode": feature_mode,
             "family_hash": family_hash,
         },
         artifact_path,
@@ -155,6 +165,7 @@ def train_daily_results_model(
         "target_names": target_names,
         "target_transforms": target_transforms,
         "target_profile": target_profile,
+        "feature_mode": feature_mode,
         "group_column": group_column,
         "test_size": float(test_size),
         "random_state": int(random_state),
