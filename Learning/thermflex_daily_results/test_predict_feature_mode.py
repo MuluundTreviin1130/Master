@@ -1,6 +1,10 @@
 from __future__ import annotations
 
+import importlib.util
 import unittest
+
+if importlib.util.find_spec("pandas") is None:
+    raise unittest.SkipTest("pandas is required for thermflex_daily_results.predict")
 
 from Learning.thermflex_daily_results.predict import (
     _resolve_model_feature_mode,
