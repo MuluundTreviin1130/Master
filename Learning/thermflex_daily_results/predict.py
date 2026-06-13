@@ -13,9 +13,17 @@ from Learning.thermflex_daily_results.features import add_engineered_feature_col
 from Learning.thermflex_daily_results.dataset_builder import (
     _enrich_with_canonical_daily_context,
     _load_policy_metadata,
+    _normalize_feature_mode,
     _resolved_numeric_feature_columns,
 )
-from Learning.thermflex_daily_results.schema import CATEGORICAL_FEATURE_COLUMNS, CONTEXT_FEATURE_COLUMNS
+from Learning.thermflex_daily_results.schema import (
+    CATEGORICAL_FEATURE_COLUMNS,
+    CONTEXT_FEATURE_COLUMNS,
+    DISPATCH_ECONOMICS_ENGINEERED_FEATURE_COLUMNS,
+    DISPATCH_ECONOMICS_REFERENCE_FEATURE_COLUMNS,
+    DISPATCH_STATE_ENGINEERED_FEATURE_COLUMNS,
+    DISPATCH_STATE_REFERENCE_FEATURE_COLUMNS,
+)
 
 
 @dataclass(frozen=True)
@@ -68,7 +76,8 @@ def predict_daily_results(
 
     model_bundle = load(model_path / "thermflex_daily_results_xgb.joblib")
     meta = json.loads((model_path / "thermflex_daily_results_xgb.meta.json").read_text(encoding="utf-8"))
-    template = _load_template_screen(template_path)
+    feature_mode = _resolve_model_feature_mode(model_bundle=model_bundle, meta=meta)
+    template = _load_template_screen(template_path, feature_mode=feature_mode)
     policy_meta = _load_policy_metadata(override_name=flex_override_name)
     policy_label = (
         str(flex_case_label).strip()
@@ -82,10 +91,12 @@ def predict_daily_results(
         template=template,
         policy_meta=policy_meta,
         policy_label=policy_label,
+        feature_mode=feature_mode,
     )
     x_aligned = _encode_and_align_features(
         feature_frame=feature_frame,
         expected_feature_columns=list(model_bundle["feature_columns"]),
+        feature_mode=feature_mode,
         allow_unseen_policy_categories=bool(allow_unseen_policy_categories),
     )
     predictions = _predict_target_block(
@@ -106,11 +117,12 @@ def predict_daily_results(
     )
 
 
-def _load_template_screen(path: Path) -> pd.DataFrame:
+def _load_template_screen(path: Path, *, feature_mode: str) -> pd.DataFrame:
     """Load only the explicit context + REF contract needed for surrogate day inference."""
 
     frame = pd.read_csv(path)
-    missing = sorted(set(_TEMPLATE_REQUIRED_COLUMNS).difference(frame.columns))
+    required_columns = _template_required_columns(feature_mode=feature_mode)
+    missing = sorted(set(required_columns).difference(frame.columns))
     if missing:
         raise KeyError(
             "[thermflex_daily_results] template screen missing required columns: " + ", ".join(missing)
@@ -124,7 +136,7 @@ def _load_template_screen(path: Path) -> pd.DataFrame:
     output_columns = list(
         dict.fromkeys(
             [
-                *_TEMPLATE_REQUIRED_COLUMNS,
+                *required_columns,
                 *CONTEXT_FEATURE_COLUMNS,
             ]
         )
@@ -142,6 +154,7 @@ def _build_feature_frame(
     template: pd.DataFrame,
     policy_meta: dict[str, Any],
     policy_label: str,
+    feature_mode: str,
 ) -> pd.DataFrame:
     """Recreate the exact raw feature contract used by the curated daily dataset."""
 
@@ -164,8 +177,14 @@ def _build_feature_frame(
     frame["policy_case_label_matches_export"] = float(
         str(policy_label).strip() == str(policy_meta["policy_case_label_canonical"]).strip()
     )
-    frame = add_engineered_feature_columns(frame)
-    numeric_feature_columns = list(_resolved_numeric_feature_columns())
+    feature_mode_normalized = _normalize_feature_mode(feature_mode)
+    frame = add_engineered_feature_columns(
+        frame,
+        include_dispatch_economics=feature_mode_normalized
+        in {"dispatch_economics", "dispatch_economics_stateful"},
+        include_dispatch_state=feature_mode_normalized == "dispatch_economics_stateful",
+    )
+    numeric_feature_columns = list(_resolved_numeric_feature_columns(feature_mode=feature_mode_normalized))
     missing_numeric = sorted(set(numeric_feature_columns).difference(frame.columns))
     if missing_numeric:
         raise KeyError(
@@ -179,11 +198,12 @@ def _encode_and_align_features(
     *,
     feature_frame: pd.DataFrame,
     expected_feature_columns: list[str],
+    feature_mode: str,
     allow_unseen_policy_categories: bool = False,
 ) -> np.ndarray:
     """One-hot encode the raw inference frame and align it to the trained model contract."""
 
-    numeric_feature_columns = list(_resolved_numeric_feature_columns())
+    numeric_feature_columns = list(_resolved_numeric_feature_columns(feature_mode=feature_mode))
     raw = feature_frame.loc[:, numeric_feature_columns + list(CATEGORICAL_FEATURE_COLUMNS)].copy()
     encoded = pd.get_dummies(
         raw,
@@ -229,6 +249,47 @@ def _encode_and_align_features(
             )
     encoded = encoded.loc[:, expected_feature_columns]
     return encoded.to_numpy(dtype=float)
+
+
+def _template_required_columns(*, feature_mode: str) -> tuple[str, ...]:
+    """Return the REF columns needed to rebuild the trained feature contract."""
+
+    feature_mode_normalized = _normalize_feature_mode(feature_mode)
+    columns = [*_TEMPLATE_REQUIRED_COLUMNS]
+    if feature_mode_normalized in {"dispatch_economics", "dispatch_economics_stateful"}:
+        columns.extend(DISPATCH_ECONOMICS_REFERENCE_FEATURE_COLUMNS)
+    if feature_mode_normalized == "dispatch_economics_stateful":
+        columns.extend(DISPATCH_STATE_REFERENCE_FEATURE_COLUMNS)
+    return tuple(dict.fromkeys(columns))
+
+
+def _resolve_model_feature_mode(*, model_bundle: dict[str, Any], meta: dict[str, Any]) -> str:
+    """
+    Resolve the trained daily feature mode from the model contract.
+
+    New artifacts store `feature_mode` explicitly. For older artifacts created
+    before that field existed, the encoded feature list is still authoritative:
+    dispatch-only columns cannot appear in a default contract, so inference can
+    derive the mode without padding or dropping any trained feature.
+    """
+
+    explicit = model_bundle.get("feature_mode", meta.get("feature_mode"))
+    if explicit is not None:
+        return _normalize_feature_mode(str(explicit))
+
+    feature_columns = {str(column) for column in model_bundle["feature_columns"]}
+    state_markers = set(DISPATCH_STATE_REFERENCE_FEATURE_COLUMNS).union(
+        DISPATCH_STATE_ENGINEERED_FEATURE_COLUMNS
+    )
+    if feature_columns.intersection(state_markers):
+        return "dispatch_economics_stateful"
+
+    economics_markers = set(DISPATCH_ECONOMICS_REFERENCE_FEATURE_COLUMNS).union(
+        DISPATCH_ECONOMICS_ENGINEERED_FEATURE_COLUMNS
+    )
+    if feature_columns.intersection(economics_markers):
+        return "dispatch_economics"
+    return "default"
 
 
 def _predict_target_block(*, model_bundle: dict[str, Any], x_aligned: np.ndarray) -> dict[str, np.ndarray]:

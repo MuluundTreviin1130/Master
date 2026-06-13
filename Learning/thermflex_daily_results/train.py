@@ -103,6 +103,9 @@ def train_daily_results_model(
     y_test = y[split.test_index, :]
     target_names = list(available_target_names)
     target_transforms = {target: _resolve_target_transform(target) for target in target_names}
+    if "feature_mode" not in dataset_bundle["meta"]:
+        raise KeyError("[thermflex_daily_results] dataset metadata missing required `feature_mode`.")
+    feature_mode = str(dataset_bundle["meta"]["feature_mode"])
 
     models: list[Any] = []
     for target_idx, _target_name in enumerate(target_names):
@@ -137,6 +140,7 @@ def train_daily_results_model(
             "target_names": target_names,
             "target_transforms": target_transforms,
             "feature_columns": list(dataset_bundle["meta"]["encoded_feature_columns"]),
+            "feature_mode": feature_mode,
             "family_hash": family_hash,
         },
         artifact_path,
@@ -161,6 +165,7 @@ def train_daily_results_model(
         "target_names": target_names,
         "target_transforms": target_transforms,
         "target_profile": target_profile,
+        "feature_mode": feature_mode,
         "group_column": group_column,
         "test_size": float(test_size),
         "random_state": int(random_state),
