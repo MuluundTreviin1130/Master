@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
@@ -456,16 +457,82 @@ def _deduplicate_hourly_truth(frame: pd.DataFrame) -> pd.DataFrame:
     """
 
     deduped = frame.copy()
-    deduped["_bundle_rank"] = deduped["source_bundle_name"].astype(str)
+    deduped["_bundle_timestamp_rank"] = deduped["source_bundle_name"].astype(str).map(_extract_bundle_timestamp_rank)
+    deduped["_bundle_version_rank"] = deduped["source_bundle_name"].astype(str).map(_extract_bundle_version_rank)
+    _raise_on_ambiguous_conflicting_hourly_duplicates(deduped)
     deduped = deduped.sort_values(
-        ["case_label", "run_dir", "cohort_key", "timestamp", "_bundle_rank"],
-        ascending=[True, True, True, True, True],
+        [
+            "case_label",
+            "run_dir",
+            "cohort_key",
+            "timestamp",
+            "_bundle_timestamp_rank",
+            "_bundle_version_rank",
+            "source_bundle_name",
+        ],
+        ascending=[True, True, True, True, True, True, True],
     )
     deduped = deduped.drop_duplicates(
         subset=["run_dir", "cohort_key", "timestamp"],
         keep="last",
     ).reset_index(drop=True)
-    return deduped.drop(columns="_bundle_rank")
+    return deduped.drop(columns=["_bundle_timestamp_rank", "_bundle_version_rank"])
+
+
+def _extract_bundle_timestamp_rank(bundle_name: str) -> str:
+    """Return a lexicographically sortable timestamp token from a bundle name."""
+
+    matches = re.findall(r"(\d{8}_\d{6})", str(bundle_name))
+    if not matches:
+        return ""
+    return matches[-1]
+
+
+def _extract_bundle_version_rank(bundle_name: str) -> int:
+    """Return the last explicit version token so `v10` ranks above `v2`."""
+
+    matches = re.findall(r"(?:^|[_-])v(\d+)(?:$|[_-])", str(bundle_name), flags=re.IGNORECASE)
+    if not matches:
+        return -1
+    return int(matches[-1])
+
+
+def _raise_on_ambiguous_conflicting_hourly_duplicates(frame: pd.DataFrame) -> None:
+    """
+    Fail fast when duplicate truth rows conflict but carry no usable recency signal.
+
+    Timestamped or explicitly versioned bundle names define an auditable newest
+    row. Without such a signal, falling back to lexicographic bundle names can
+    silently poison the training truth, so conflicting target rows must stop the
+    export instead.
+    """
+
+    key_columns = ["run_dir", "cohort_key", "timestamp"]
+    duplicate_rows = frame.loc[frame.duplicated(subset=key_columns, keep=False)].copy()
+    if duplicate_rows.empty:
+        return
+    check_columns = [column for column in TARGET_COLUMNS if column in duplicate_rows.columns]
+    if not check_columns:
+        return
+    for key, group in duplicate_rows.groupby(key_columns, dropna=False):
+        rank_columns = ["_bundle_timestamp_rank", "_bundle_version_rank"]
+        top_rank = group.loc[:, rank_columns].sort_values(rank_columns, ascending=[False, False]).iloc[0]
+        top_group = group.loc[
+            (group["_bundle_timestamp_rank"] == top_rank["_bundle_timestamp_rank"])
+            & (group["_bundle_version_rank"] == top_rank["_bundle_version_rank"])
+        ]
+        if len(top_group) <= 1:
+            continue
+        ranges = top_group.loc[:, check_columns].apply(pd.to_numeric, errors="raise").max() - top_group.loc[
+            :, check_columns
+        ].apply(pd.to_numeric, errors="raise").min()
+        conflicting = ranges.loc[ranges.abs() > 1e-9]
+        if conflicting.empty:
+            continue
+        raise ValueError(
+            "[thermflex_hourly_mechanism] ambiguous duplicate hourly truth rows have conflicting targets for "
+            f"{key}: {', '.join(str(column) for column in conflicting.index)}"
+        )
 
 
 @lru_cache(maxsize=1)

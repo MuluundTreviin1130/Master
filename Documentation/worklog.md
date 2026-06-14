@@ -9125,3 +9125,18 @@ Naechste Schritte:
   - The remaining gaps are now solve-contract failures, not unattempted days;
     paper-facing outputs must retain evidence labels and should not describe
     these rows as complete full-season MILP truth.
+
+- 2026-06-14: Critical ThermFlex learning bugfix pass.
+  - Fixed daily policy-day deduplication so newer timestamped screen bundles win
+    before larger stale full-season bundles when policy keys overlap.
+  - Fixed hourly mechanism truth deduplication so timestamp/version ranks decide
+    recency; ambiguous conflicting duplicate rows now fail fast instead of using
+    lexicographic bundle names.
+  - Added override-path containment for daily/dispatch policy metadata reads so
+    `flex_override_name` cannot escape the ThermFlex override SSOT directory.
+  - Restored the missing Table-09 heating-season KPI builder used by the daily
+    surrogate aggregation path and registered it in the table README.
+  - Restored the missing `Settings.validation` holdout config package so
+    `from Settings import get_settings` no longer crashes on every runtime path.
+  - Added focused synthetic regression tests for the dedup, override containment
+    Settings import and Table-09 import/write paths.
