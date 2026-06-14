@@ -619,8 +619,8 @@ def _deduplicate_policy_day_rows(selected: pd.DataFrame) -> tuple[pd.DataFrame, 
     - exported label must match the override-derived canonical label,
     - current schema beats legacy schema,
     - final CSV beats checkpoint CSV,
-    - larger bundles beat tiny partial duplicates,
-    - newer timestamped bundle names break remaining ties.
+    - newer timestamped bundle names beat stale full-season exports,
+    - larger bundles break remaining ties between equally recent bundles.
     """
 
     key_columns = [
@@ -661,8 +661,8 @@ def _deduplicate_policy_day_rows(selected: pd.DataFrame) -> tuple[pd.DataFrame, 
             "_dedup_rank_label_match",
             "_dedup_rank_schema",
             "_dedup_rank_screen_kind",
-            "_dedup_rank_bundle_rows",
             "_dedup_rank_bundle_timestamp",
+            "_dedup_rank_bundle_rows",
             "source_bundle_name",
             "source_screen_csv",
         ],
@@ -1411,12 +1411,7 @@ def _enrich_with_canonical_daily_context(df: pd.DataFrame) -> pd.DataFrame:
 def _load_policy_metadata(*, override_name: str) -> dict[str, Any]:
     """Resolve policy descriptors from the override file and active settings SSOT."""
 
-    override_path = (_OVERRIDE_DIR / override_name).resolve()
-    if not override_path.exists():
-        raise FileNotFoundError(
-            "[thermflex_daily_results] referenced ThermFlex override not found: "
-            f"{override_path}"
-        )
+    override_path = _resolve_thermflex_override_path(override_name=override_name)
     overrides = json.loads(override_path.read_text(encoding="utf-8-sig"))
     settings = get_settings(overrides=overrides)
     thermflex_cfg = settings.constraints.thermflex
@@ -1445,6 +1440,34 @@ def _load_policy_metadata(*, override_name: str) -> dict[str, Any]:
         **dispatch_contract,
         "policy_upper_only": bool(abs(lower_relaxation_k) < 1e-12),
     }
+
+
+def _resolve_thermflex_override_path(*, override_name: str) -> Path:
+    """Resolve one override name while keeping the override directory as SSOT boundary."""
+
+    normalized_name = str(override_name).strip()
+    if not normalized_name:
+        raise ValueError("[thermflex_daily_results] referenced ThermFlex override name is empty.")
+    override_root = _OVERRIDE_DIR.resolve()
+    override_path = (_OVERRIDE_DIR / normalized_name).resolve()
+    try:
+        override_path.relative_to(override_root)
+    except ValueError as exc:
+        raise ValueError(
+            "[thermflex_daily_results] ThermFlex override must stay below the override SSOT directory: "
+            f"{normalized_name}"
+        ) from exc
+    if not override_path.exists():
+        raise FileNotFoundError(
+            "[thermflex_daily_results] referenced ThermFlex override not found: "
+            f"{override_path}"
+        )
+    if not override_path.is_file():
+        raise FileNotFoundError(
+            "[thermflex_daily_results] referenced ThermFlex override is not a file: "
+            f"{override_path}"
+        )
+    return override_path
 
 
 def _dispatch_solve_contract(*, dispatch_cfg: Any, context_label: str) -> dict[str, float]:

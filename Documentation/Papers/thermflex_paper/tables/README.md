@@ -25,6 +25,7 @@ Current target tables:
 - `table_12_selected_day_residential_cohort_intensity_upper_only_dur24.md`
 
 Builders:
+- `build_table_09_heating_season_kpis.py`
 - `build_mechanism_tables_from_latest_bundle.py`
 
 Superseded tables live under `old/`.
