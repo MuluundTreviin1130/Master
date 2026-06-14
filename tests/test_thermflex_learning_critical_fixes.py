@@ -14,9 +14,16 @@ from Learning.thermflex_daily_results.dataset_builder import (
     _resolve_thermflex_override_path,
 )
 from Learning.thermflex_hourly_mechanism.dataset_builder import _deduplicate_hourly_truth
+from Settings import get_settings
 
 
 class ThermflexLearningCriticalFixTests(unittest.TestCase):
+    def test_settings_validation_layer_imports_with_empty_holdout_defaults(self) -> None:
+        settings = get_settings()
+
+        self.assertEqual(settings.validation.holdout.model_id, "")
+        self.assertEqual(settings.validation.holdout.artifact_path, "")
+
     def test_override_path_traversal_is_rejected_before_file_read(self) -> None:
         with self.assertRaisesRegex(ValueError, "override SSOT directory"):
             _resolve_thermflex_override_path(override_name="../../Settings/technical/heating_control.py")

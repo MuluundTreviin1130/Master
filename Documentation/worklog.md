@@ -9136,5 +9136,7 @@ Naechste Schritte:
     `flex_override_name` cannot escape the ThermFlex override SSOT directory.
   - Restored the missing Table-09 heating-season KPI builder used by the daily
     surrogate aggregation path and registered it in the table README.
+  - Restored the missing `Settings.validation` holdout config package so
+    `from Settings import get_settings` no longer crashes on every runtime path.
   - Added focused synthetic regression tests for the dedup, override containment
-    and Table-09 import/write paths.
+    Settings import and Table-09 import/write paths.
