@@ -9125,3 +9125,12 @@ Naechste Schritte:
   - The remaining gaps are now solve-contract failures, not unattempted days;
     paper-facing outputs must retain evidence labels and should not describe
     these rows as complete full-season MILP truth.
+
+- 2026-06-15: Critical Learning retrain import crash fixed.
+  - Found that `Learning/training/train_surrogate.py` imported
+    `Learning.validation.evaluate_gate`, but the `Learning/validation` package was
+    absent from the learning-layer commit.
+  - Added the missing validation gate with explicit `eligible`/`blocked` reasons
+    and the remediation fields consumed by `Learning/scripts/run_retrain.py`.
+  - Added focused unit coverage for critical-target coverage, NaN blocking, and
+    eligible high-quality predictions.
