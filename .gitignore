@@ -22,6 +22,8 @@ Learning/datasets/*/
 Learning/models/*/
 
 validation/
+!Learning/validation/
+!Learning/validation/*.py
 
 Data/profiles/Vienna/weather/.cache/
 Data/profiles/Vienna/weather/_openmeteo_chunks/
