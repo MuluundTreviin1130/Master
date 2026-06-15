@@ -1,0 +1,40 @@
+package,block,language,gpu,dl,maint,primary_use,sources,n_sources,confidence
+scikit-learn,ml,Python,--,--,active,Linear/kernel/tree regressors used as cheap surrogates,Tan2026;Bhosekar2018;Westermann2019;Khan2024_DT,4,high
+XGBoost,ml,"Python, R",yes,--,active,Gradient-boosted ensembles for forecasting and infill modelling,Khaloie2025;Conti2026;Zhang2026_building,3,high
+LightGBM,ml,Python,yes,--,active,Fast gradient-boosted ensembles for high-dim ESM features,Lim2025;Elwy2024,2,high
+TensorFlow,ml,"Python, C++",yes,yes,active,Generic NN surrogate stack,Tan2026;FernandezGodino2023,2,high
+PyTorch,ml,Python,yes,yes,active,"NN, GP-on-PyTorch and PINN backbones",Lim2025;Westermann2019;FernandezGodino2023,3,high
+Keras,ml,Python (TF),yes,yes,active,High-level API for ANN surrogates in building / HRES studies,,0,ck
+JAX,ml,Python,yes,yes,active,Differentiable programming for PINN and large-scale BO,,0,ck
+SMT,sur,Python,--,--,active,"GP, RBF, RMTS, mixture-of-experts; multi-fidelity",Westermann2019;Khan2024_DT,2,high
+GPy,sur,Python,--,--,semi-active,Vanilla Gaussian-process regression and classification,Tan2026,1,high
+GPyTorch,sur,Python (PyTorch),yes,part.,active,Scalable / variational GPs on GPU,Tan2026,1,high
+botorch,sur,Python (PyTorch),yes,part.,active,"Bayesian optimization, qEHVI for MOO Pareto search",Tan2026,1,high
+chaospy,sur,Python,--,--,active,Polynomial chaos expansion and Sobol indices,,0,ck
+OpenTURNS,sur,"Python, C++",--,--,active,UQ / PCE / Kriging / sensitivity,,0,ck
+Modulus,sur,Python,yes,yes,active,NVIDIA framework for PINN and physics-guided NN,,0,ck
+DeepXDE,sur,Python,yes,yes,active,PINN library for forward and inverse PDE problems,,0,ck
+pymoo,moo,Python,--,--,active,"NSGA-II/III, MOEA/D, MOPSO, RVEA, indicator metrics",,0,ck
+DEAP,moo,Python,--,--,semi-active,Evolutionary algorithm framework with multi-objective support,,0,ck
+pyDecision,moo,Python,--,--,active,"MCDM (AHP, TOPSIS, VIKOR, PROMETHEE, ELECTRE)",,0,ck
+Pyomo,sol,Python,part.,--,active,Algebraic modelling for MILP/NLP/MINLP,,0,ck
+JuMP,sol,Julia,part.,--,active,Julia algebraic modelling for MILP/NLP/MINLP,,0,ck
+CVXPY,sol,Python,part.,--,active,Convex optimization for surrogate-feasibility projection,,0,ck
+GAMS,sol,GAMS,--,--,commercial,"Algebraic modelling backbone for TIMES, MARKAL, REMix",agha_kassab_comprehensive_2024;malla_sg_optimization_2024;Fattahi2020;Klemm2021;ChenRenZhou2023,5,high
+Gurobi,sol,solver,--,--,commercial,Backend MILP/QP/SOCP solver,Lim2025;Manco2024,2,high
+CPLEX,sol,solver,--,--,commercial,Backend MILP/QP/SOCP solver,Lim2025;arar_tahir_scientific_2023;Manco2024;Fattahi2020,4,high
+Mosek,sol,solver,--,--,commercial,Backend QP/SOCP/conic solver,Mylonopoulos202332697;Fattahi2020,2,high
+IPOPT,sol,solver,--,--,active,Open-source NLP solver behind surrogate-feasible glue code,Khaloie2025;Westermann2019,2,high
+BARON,sol,solver,--,--,commercial,Global solver for non-convex MINLP and surrogate-DFO loops,Bhosekar2018,1,high
+PyPSA,esm,Python,--,--,active,"Power-system optimization (UC, OPF, CapEx) with stochastic extensions",Klemm2021,1,high
+oemof,esm,Python,--,--,active,Modular MES framework (oemof.solph) for sector coupling,Klemm2021,1,high
+Calliope,esm,Python,--,--,active,Multi-scale MES optimization with renewables and storage,Klemm2021,1,high
+OSeMOSYS,esm,"GAMS, Python",--,--,active,Long-term capacity expansion and operations,Fattahi2020;Klemm2021,2,high
+HOMER Pro,esm,proprietary,--,--,commercial,Microgrid sizing and HRES techno-economic optimization,agha_kassab_comprehensive_2024;Mylonopoulos202332697;nallolla_multi-objective_2023;velasquez_intelligence_2023;arar_tahir_scientific_2023;batista_optimizing_2023;Klemm2021;Li2025_hydrogen;ChenRenZhou2023,9,high
+TIMES,esm,GAMS,--,--,active,Long-term integrated ESM (national / EU scale),Fattahi2020;Klemm2021,2,high
+MARKAL,esm,GAMS,--,--,active,Long-term integrated ESM (precursor of TIMES),Fattahi2020;Klemm2021;ChenRenZhou2023,3,high
+REMix,esm,"Python, GAMS",--,--,active,Integrated ESM with high temporal/spatial resolution,Fattahi2020;Klemm2021,2,high
+EnergyPlus,esm,C++,--,--,active,Whole-building energy simulation; reference simulator,Westermann2019;Klemm2021;Zhang2026_building,3,high
+TRNSYS,esm,proprietary,--,--,commercial,Transient simulation of building / HVAC / renewable systems,Elsheikh2019622;batista_optimizing_2023;Westermann2019;Klemm2021;Li2025_hydrogen;Etghani2025,6,high
+Modelica/Dymola,esm,Modelica,--,--,active,Multi-physics simulation for thermal MES,Klemm2021;Elwy2024,2,high
+MATLAB,esm,MATLAB,part.,part.,commercial,"General host environment for ANN, Taguchi and DoE pipelines",Tan2026;agha_kassab_comprehensive_2024;Mylonopoulos202332697;nallolla_multi-objective_2023;Lim2025;arar_tahir_scientific_2023;Bhosekar2018;Westermann2019;Li2025_hydrogen;Khan2024_DT;FernandezGodino2023;Elwy2024;Zhang2026_building,13,high

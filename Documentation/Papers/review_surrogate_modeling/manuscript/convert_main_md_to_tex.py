@@ -208,15 +208,21 @@ def html_figure_to_tex(block: list[str]) -> list[str] | None:
         return None
     caption_match = re.search(r"<figcaption>(.*?)</figcaption>", text, flags=re.S)
     id_match = re.search(r"<figure\s+id=\"([^\"]+)\"", text)
+    env_match = re.search(r"data-latex-env=\"([^\"]+)\"", text)
+    width_match = re.search(r"data-latex-width=\"([^\"]+)\"", text)
+    placement_match = re.search(r"data-latex-placement=\"([^\"]+)\"", text)
     caption = convert_inline((caption_match.group(1).strip() if caption_match else "").replace("\n", " "))
     label = id_match.group(1) if id_match else "fig:todo"
+    env = env_match.group(1) if env_match else "figure*"
+    width = width_match.group(1) if width_match else r"\textwidth"
+    placement = placement_match.group(1) if placement_match else "!t"
     return [
-        r"\begin{figure*}[!t]",
+        rf"\begin{{{env}}}[{placement}]",
         r"\centering",
-        rf"\includegraphics[width=\textwidth]{{{src_match.group(1)}}}",
+        rf"\includegraphics[width={width}]{{{src_match.group(1)}}}",
         rf"\caption{{{caption}}}",
         rf"\label{{{label}}}",
-        r"\end{figure*}",
+        rf"\end{{{env}}}",
     ]
 
 

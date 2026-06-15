@@ -1,0 +1,12 @@
+doe_strategy,integration_pattern,dominant_model_class,n
+Active learning,P1,RBF / kernel,1
+Active learning,P2,GP / kriging,4
+Adaptive sampling,P2,GP / kriging,1
+Factorial / response-surface design,P1,PCE / RSM,1
+Factorial / response-surface design,P2,PCE / RSM,4
+Factorial / response-surface design,P5,PCE / RSM,1
+Latin hypercube sampling,P1,Neural network,3
+Latin hypercube sampling,P2,PCE / RSM,1
+Latin hypercube sampling,P5,GP / kriging,3
+Quasi-Monte Carlo / sparse-grid collocation,P1,PCE / RSM,8
+Quasi-Monte Carlo / sparse-grid collocation,P5,PCE / RSM,7

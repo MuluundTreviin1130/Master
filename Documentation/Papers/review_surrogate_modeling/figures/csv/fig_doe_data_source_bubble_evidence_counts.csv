@@ -1,0 +1,20 @@
+doe_strategy,data_source,n
+Active learning,Historical data,8
+Active learning,Not explicitly identified,19
+Active learning,Synthetic data,1
+Adaptive sampling,Historical data,1
+Adaptive sampling,Not explicitly identified,4
+Factorial / response-surface design,Historical data,2
+Factorial / response-surface design,Not explicitly identified,20
+Factorial / response-surface design,Synthetic data,1
+Latin hypercube sampling,Historical data,5
+Latin hypercube sampling,Not explicitly identified,15
+Latin hypercube sampling,Synthetic data,5
+Multi-fidelity training,Historical data,1
+Multi-fidelity training,Not explicitly identified,5
+Multi-fidelity training,Synthetic data,2
+Quasi-Monte Carlo / sparse-grid collocation,Historical data,3
+Quasi-Monte Carlo / sparse-grid collocation,Not explicitly identified,5
+Transfer learning,Historical data,1
+Transfer learning,Not explicitly identified,6
+Transfer learning,Synthetic data,2

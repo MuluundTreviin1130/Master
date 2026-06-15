@@ -207,8 +207,8 @@ and returned 3129 records. The following search query was used:
 > OR\
 > \"scenario reduction\")
 
-<figure id="fig1" data-latex-placement="t!">
-<img src="./doc/keywords.png" style="height:30.0%" />
+<figure id="fig1" data-latex-env="figure" data-latex-width="0.98\\linewidth" data-latex-placement="t!">
+<img src="../figures/fig_bibliometric_keyword_wordcloud.png" style="height:30.0%" />
 <figcaption>Keywords</figcaption>
 </figure>
 

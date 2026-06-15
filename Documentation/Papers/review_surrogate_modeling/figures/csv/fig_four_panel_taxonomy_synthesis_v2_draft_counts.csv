@@ -1,0 +1,102 @@
+panel,x,y,n,dominant
+A,P1/P3 replace,Constraint NN,14,
+A,P2 accelerate,Constraint NN,1,
+A,P5 uncertainty,Constraint NN,11,
+A,Input / weak,GP/Kriging,15,
+A,P1/P3 replace,GP/Kriging,11,
+A,P2 accelerate,GP/Kriging,20,
+A,P4 decompose,GP/Kriging,4,
+A,P5 uncertainty,GP/Kriging,18,
+A,Input / weak,Hybrid/PINN,4,
+A,P1/P3 replace,Hybrid/PINN,2,
+A,P2 accelerate,Hybrid/PINN,1,
+A,P5 uncertainty,Hybrid/PINN,1,
+A,P1/P3 replace,L2O,14,
+A,P4 decompose,L2O,1,
+A,P5 uncertainty,L2O,1,
+A,Input / weak,NN,10,
+A,P1/P3 replace,NN,5,
+A,P2 accelerate,NN,11,
+A,P5 uncertainty,NN,3,
+A,Input / weak,PCE/RSM,12,
+A,P1/P3 replace,PCE/RSM,9,
+A,P2 accelerate,PCE/RSM,13,
+A,P5 uncertainty,PCE/RSM,17,
+A,Input / weak,RBF/Kernel,13,
+A,P1/P3 replace,RBF/Kernel,10,
+A,P2 accelerate,RBF/Kernel,3,
+A,P5 uncertainty,RBF/Kernel,6,
+A,Input / weak,Tree,2,
+A,P1/P3 replace,Tree,1,
+A,P2 accelerate,Tree,2,
+A,P4 decompose,Tree,1,
+A,P5 uncertainty,Tree,1,
+B,P1/P3 replace,constraints / states,14,RBF/Kernel
+B,P2 accelerate,constraints / states,2,GP/Kriging
+B,Input / weak,exogenous input,15,RBF/Kernel
+B,P2 accelerate,exogenous input,6,GP/Kriging
+B,P4 decompose,exogenous input,1,GP/Kriging
+B,Input / weak,objective / response,41,PCE/RSM
+B,P1/P3 replace,objective / response,10,GP/Kriging
+B,P2 accelerate,objective / response,35,GP/Kriging
+B,P4 decompose,objective / response,4,GP/Kriging
+B,P1/P3 replace,solution / policy,12,L2O
+B,P4 decompose,solution / policy,1,L2O
+B,P5 uncertainty,solution / policy,1,L2O
+B,P5 uncertainty,uncertainty / risk,57,GP/Kriging
+C,0,0,1,P1/P3 replace
+C,0,1,12,P1/P3 replace
+C,0,2,7,P1/P3 replace
+C,0,3,2,P1/P3 replace
+C,1,1,2,P1/P3 replace
+C,1,2,7,P1/P3 replace
+C,2,1,20,P2 accelerate
+C,2,2,37,P5 uncertainty
+C,2,3,3,P2 accelerate
+C,3,1,14,P2 accelerate
+C,3,2,22,P5 uncertainty
+C,3,3,1,P1/P3 replace
+D,ED / UC,Constraint NN,2,
+D,MES / sector,Constraint NN,2,
+D,MOO design,Constraint NN,1,
+D,OPF,Constraint NN,8,
+D,Stoch / robust,Constraint NN,11,
+D,District heating,GP/Kriging,3,
+D,ED / UC,GP/Kriging,9,
+D,Expansion,GP/Kriging,2,
+D,MES / sector,GP/Kriging,3,
+D,MOO design,GP/Kriging,2,
+D,Microgrid / hub,GP/Kriging,13,
+D,OPF,GP/Kriging,2,
+D,Stoch / robust,GP/Kriging,6,
+D,OPF,Hybrid/PINN,2,
+D,ED / UC,L2O,7,
+D,MES / sector,L2O,1,
+D,Microgrid / hub,L2O,1,
+D,OPF,L2O,2,
+D,District heating,NN,2,
+D,ED / UC,NN,2,
+D,Expansion,NN,1,
+D,MES / sector,NN,6,
+D,MOO design,NN,6,
+D,Microgrid / hub,NN,3,
+D,OPF,NN,4,
+D,Stoch / robust,NN,1,
+D,District heating,PCE/RSM,2,
+D,ED / UC,PCE/RSM,7,
+D,MES / sector,PCE/RSM,8,
+D,MOO design,PCE/RSM,9,
+D,Microgrid / hub,PCE/RSM,9,
+D,OPF,PCE/RSM,2,
+D,Stoch / robust,PCE/RSM,6,
+D,District heating,RBF/Kernel,2,
+D,ED / UC,RBF/Kernel,4,
+D,MES / sector,RBF/Kernel,4,
+D,MOO design,RBF/Kernel,2,
+D,Microgrid / hub,RBF/Kernel,6,
+D,OPF,RBF/Kernel,6,
+D,Stoch / robust,RBF/Kernel,3,
+D,District heating,Tree,1,
+D,ED / UC,Tree,1,
+D,Expansion,Tree,1,
+D,Microgrid / hub,Tree,1,

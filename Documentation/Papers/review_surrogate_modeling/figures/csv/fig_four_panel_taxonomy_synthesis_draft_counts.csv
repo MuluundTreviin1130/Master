@@ -1,0 +1,120 @@
+panel,x,y,class_or_signal,n
+A,P1/P3 replace,Constraint NN,constraint,14
+A,P2 accelerate,Constraint NN,constraint,1
+A,P5 uncertainty,Constraint NN,constraint,11
+A,Input / weak,GP/Kriging,basic,15
+A,P1/P3 replace,GP/Kriging,adaptive,1
+A,P1/P3 replace,GP/Kriging,basic,7
+A,P1/P3 replace,GP/Kriging,uncertainty,3
+A,P2 accelerate,GP/Kriging,adaptive,15
+A,P2 accelerate,GP/Kriging,basic,3
+A,P2 accelerate,GP/Kriging,decision,1
+A,P2 accelerate,GP/Kriging,uncertainty,1
+A,P4 decompose,GP/Kriging,basic,4
+A,P5 uncertainty,GP/Kriging,uncertainty,18
+A,Input / weak,Hybrid/PINN,physics,4
+A,P1/P3 replace,Hybrid/PINN,physics,2
+A,P2 accelerate,Hybrid/PINN,physics,1
+A,P5 uncertainty,Hybrid/PINN,physics,1
+A,P1/P3 replace,L2O,decision,14
+A,P4 decompose,L2O,decision,1
+A,P5 uncertainty,L2O,decision,1
+A,Input / weak,NN,basic,9
+A,Input / weak,NN,decision,1
+A,P1/P3 replace,NN,adaptive,1
+A,P1/P3 replace,NN,basic,2
+A,P1/P3 replace,NN,uncertainty,2
+A,P2 accelerate,NN,adaptive,2
+A,P2 accelerate,NN,basic,6
+A,P2 accelerate,NN,uncertainty,3
+A,P5 uncertainty,NN,uncertainty,3
+A,Input / weak,PCE/RSM,basic,12
+A,P1/P3 replace,PCE/RSM,basic,2
+A,P1/P3 replace,PCE/RSM,uncertainty,7
+A,P2 accelerate,PCE/RSM,adaptive,2
+A,P2 accelerate,PCE/RSM,basic,8
+A,P2 accelerate,PCE/RSM,decision,1
+A,P2 accelerate,PCE/RSM,uncertainty,2
+A,P5 uncertainty,PCE/RSM,decision,1
+A,P5 uncertainty,PCE/RSM,uncertainty,16
+A,Input / weak,RBF/Kernel,basic,12
+A,Input / weak,RBF/Kernel,decision,1
+A,P1/P3 replace,RBF/Kernel,basic,9
+A,P1/P3 replace,RBF/Kernel,uncertainty,1
+A,P2 accelerate,RBF/Kernel,basic,2
+A,P2 accelerate,RBF/Kernel,uncertainty,1
+A,P5 uncertainty,RBF/Kernel,uncertainty,6
+A,Input / weak,Tree,basic,2
+A,P1/P3 replace,Tree,basic,1
+A,P2 accelerate,Tree,adaptive,2
+A,P4 decompose,Tree,basic,1
+A,P5 uncertainty,Tree,uncertainty,1
+B,Input / weak,exogenous input,RBF/Kernel,15
+B,Input / weak,objective / response,PCE/RSM,41
+B,P1/P3 replace,constraints / states,RBF/Kernel,14
+B,P1/P3 replace,objective / response,GP/Kriging,10
+B,P1/P3 replace,solution / policy,L2O,12
+B,P2 accelerate,constraints / states,GP/Kriging,2
+B,P2 accelerate,exogenous input,GP/Kriging,6
+B,P2 accelerate,objective / response,GP/Kriging,35
+B,P4 decompose,exogenous input,GP/Kriging,1
+B,P4 decompose,objective / response,GP/Kriging,4
+B,P4 decompose,solution / policy,L2O,1
+B,P5 uncertainty,solution / policy,L2O,1
+B,P5 uncertainty,uncertainty / risk,GP/Kriging,57
+C,0,0,P1/P3 replace,1
+C,0,1,P1/P3 replace,12
+C,0,2,P1/P3 replace,7
+C,0,3,P1/P3 replace,2
+C,1,1,P1/P3 replace,2
+C,1,2,P1/P3 replace,7
+C,2,1,P2 accelerate,20
+C,2,2,P5 uncertainty,37
+C,2,3,P2 accelerate,3
+C,3,1,P2 accelerate,14
+C,3,2,P5 uncertainty,22
+C,3,3,P1/P3 replace,1
+D,ED / UC,Constraint NN,,2
+D,MES / sector,Constraint NN,,2
+D,MOO design,Constraint NN,,1
+D,OPF,Constraint NN,,8
+D,Stoch / robust,Constraint NN,,11
+D,District heating,GP/Kriging,,3
+D,ED / UC,GP/Kriging,,9
+D,Expansion,GP/Kriging,,2
+D,MES / sector,GP/Kriging,,3
+D,MOO design,GP/Kriging,,2
+D,Microgrid / hub,GP/Kriging,,13
+D,OPF,GP/Kriging,,2
+D,Stoch / robust,GP/Kriging,,6
+D,OPF,Hybrid/PINN,,2
+D,ED / UC,L2O,,7
+D,MES / sector,L2O,,1
+D,Microgrid / hub,L2O,,1
+D,OPF,L2O,,2
+D,District heating,NN,,2
+D,ED / UC,NN,,2
+D,Expansion,NN,,1
+D,MES / sector,NN,,6
+D,MOO design,NN,,6
+D,Microgrid / hub,NN,,3
+D,OPF,NN,,4
+D,Stoch / robust,NN,,1
+D,District heating,PCE/RSM,,2
+D,ED / UC,PCE/RSM,,7
+D,MES / sector,PCE/RSM,,8
+D,MOO design,PCE/RSM,,9
+D,Microgrid / hub,PCE/RSM,,9
+D,OPF,PCE/RSM,,2
+D,Stoch / robust,PCE/RSM,,6
+D,District heating,RBF/Kernel,,2
+D,ED / UC,RBF/Kernel,,4
+D,MES / sector,RBF/Kernel,,4
+D,MOO design,RBF/Kernel,,2
+D,Microgrid / hub,RBF/Kernel,,6
+D,OPF,RBF/Kernel,,6
+D,Stoch / robust,RBF/Kernel,,3
+D,District heating,Tree,,1
+D,ED / UC,Tree,,1
+D,Expansion,Tree,,1
+D,Microgrid / hub,Tree,,1

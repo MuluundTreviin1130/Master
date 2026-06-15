@@ -1,0 +1,47 @@
+% Table T5 - Integration patterns between surrogate and downstream
+% optimizer; pairs with patterns P1..P5 in Section sec:integration.
+
+\begin{table*}[!t]
+  \centering
+  \scriptsize
+  \caption{Integration patterns for surrogate-assisted energy-system
+  optimization. Each row matches one pattern (P1--P5) used in
+  Section~\ref{sec:integration}. ``Solver layer'' indicates where the
+  surrogate sits in the optimization stack; ``safety hooks'' lists the
+  practices that experienced authors use to keep the integration
+  robust; ``typical pitfalls'' lists the failure modes that recur in
+  the screened pool.}
+  \label{tab:T5-integration-patterns}
+  \renewcommand{\arraystretch}{1.25}
+  \begin{tabularx}{\textwidth}{@{}L{0.04\textwidth} L{0.16\textwidth} L{0.16\textwidth} L{0.18\textwidth} L{0.20\textwidth} L{0.18\textwidth}@{}}}
+    \toprule
+    \# & Pattern name & Surrogate role & Solver layer & Safety hooks & Typical pitfalls \\
+    \midrule
+    P1 & Replace expensive subroutine
+       & Direct functional substitute for an inner optimizer or simulator
+       & Inner loop / subproblem
+       & Feasibility-restoration layer; constraint-aware embedding; periodic truth-model re-anchoring \cite{Wu2022231,Chen20244723,Chen2022,Liu20242534}
+       & Silent constraint violation; OOD operating regimes; surrogate-induced bias of the host objective \\
+    P2 & Accelerate search
+       & Acquisition / pre-screening of expensive candidates
+       & Outer loop / metaheuristic / BO
+       & Truth-model check of selected candidates; calibrated posterior for BO; trust-region or infill updates \cite{Nikolaidis2021,Aghaei Pour2022303,Han2018622,Lin2023}
+       & Mis-calibrated posterior, uninformative acquisition, wasted truth-budget \\
+    P3 & Warm start / solution proxy
+       & Predicts (near-)optimal decisions from problem data
+       & Pre-solve / branch-and-bound seeding
+       & Downstream solver as repair step; projection onto feasible set; ensembling for variance reduction \cite{Li2023__2,Chen20244723,Liang20246508,Thrampoulidis2021}
+       & Constant-time output is infeasible; warm start dominated by repair cost \\
+    P4 & Decomposition support
+       & Approximates recourse / pricing / value function
+       & Benders / column generation / DP layer
+       & Periodic exact cuts; bound tracking on optimality gap; restart on cut staleness \cite{Zhang2025__4,Wu2024391}
+       & Surrogate cuts dominate but are not certified; non-convergence of master--subproblem loop \\
+    P5 & Uncertainty handling
+       & Approximates chance / robust / DRO mapping
+       & Reformulation layer
+       & Moment or quantile matching; sample-based audit of chance constraints; calibrated uncertainty bands \cite{Muhlpfordt20194806,Safta20172535,Hu2020,Chen2023657}
+       & Tail under-coverage; Gaussian-only assumptions; correlation collapse across operating regimes \\
+    \bottomrule
+  \end{tabularx}
+\end{table*}

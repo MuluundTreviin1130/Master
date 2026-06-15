@@ -1,0 +1,72 @@
+% Table T2 - Cross matrix linking ESM task classes (rows) to surrogate
+% roles (columns). Cells list the typical surrogate family for that
+% combination plus 2-4 representative \cite{} keys. Cells marked
+% ``$\star$'' denote the dominant role for the row, ``--'' denotes
+% combinations that are rare in the screened pool.
+
+\begin{table*}[!t]
+  \centering
+  \scriptsize
+  \caption{Energy-system task class (rows) versus surrogate integration
+  role (columns); roles match patterns P1--P5 in
+  Section~\ref{sec:integration}. Cells list the typical surrogate
+  families and a small number of representative references; ``$\star$''
+  marks the dominant pattern per row, ``--'' marks combinations that
+  are rare in the screened pool.}
+  \label{tab:T2-task-role}
+  \renewcommand{\arraystretch}{1.25}
+  \begin{tabularx}{\textwidth}{@{}L{0.16\textwidth} L{0.18\textwidth} L{0.16\textwidth} L{0.16\textwidth} L{0.14\textwidth} L{0.14\textwidth}@{}}
+    \toprule
+    Task class & P1 Replace subroutine & P2 Accelerate search & P3 Warm start / proxy & P4 Decomposition & P5 Uncertainty \\
+    \midrule
+    Economic dispatch / UC
+      & $\star$ NN / L2O \cite{Wu2022231,Chen20244723,Pang2023}
+      & GP / BO \cite{Nikolaidis2021,Liang2024__2}
+      & End-to-end NN \cite{Wu2024391,Wang20211767}
+      & GP / SVR cuts \cite{Shao201858,Amjady2017}
+      & PCE / GP / quantile \cite{Hu2020,Hu2021671,Safta20172535} \\
+    Optimal power flow
+      & $\star$ NN / GNN \cite{Chen20244723,Chen2022,Park2019,Su2022315}
+      & Kriging / RBF \cite{Liu20223726,Mahapatra2022721}
+      & L2O / convex NN \cite{Liu20242534,Liang20246508}
+      & --
+      & PCE / GP / DQ \cite{Muhlpfordt20194806,Koirala20242284,Chen2023657} \\
+    Capacity expansion
+      & NN / GBDT \cite{Jahangiri20244849,Jahangiri2023}
+      & GP-BO / NSGA \cite{Han2018622,Pérez-Uresti2023}
+      & --
+      & Surrogate cuts \cite{Zhang2025__4,abbas_optimal_2024}
+      & $\star$ Adaptive metamodels \cite{Amaral20251156,Fu20202904,Kim2021} \\
+    District-heating dispatch
+      & $\star$ NN / SVR \cite{Koschwitz2018134,Bianchi2020244,Sánchez-Zabala2024}
+      & GP-BO / RSM \cite{Schulte2016104,Petrova2025,Du2025}
+      & ANN setpoints \cite{Reynolds2017704,Hirvonen2017323}
+      & --
+      & GP / RSM \cite{Simonson202036,Reich2020} \\
+    Multi-energy planning
+      & NN / GP \cite{Zheng20231907,Yin2024,Ren2024}
+      & $\star$ GP-BO / NSGA \cite{Han2018622,Roth2019214,Schulte2020}
+      & Market-NN proxy \cite{Jalving2023,Wang2020202933}
+      & Surrogate cuts \cite{Ghosh2023,Shi2024__2}
+      & PCE / GP \cite{Dong2023,Dong2022,Wang2024} \\
+    Microgrid / energy hub
+      & RBF / NN \cite{Wang2017,Hussien20211883,Roth2019214}
+      & $\star$ Hybrid forecast + BO \cite{Eseye201991463,Faraji2020157284,Nematollahi2021,Wang20192635}
+      & RL / NN policy \cite{Chaturvedi2024149,Hussien20226442,Prusty2025}
+      & --
+      & Stochastic emulator \cite{Liang20222192,Cao2023,Khalid20241959} \\
+    Multi-objective system design
+      & NN / RBF \cite{Hirvonen2017323,Wang2017,Schulte2020}
+      & $\star$ GP / NN + NSGA \cite{Roth2019214,Han2018622,Hussien20211883,Zang2023813,Reis2025,Katkar2025}
+      & --
+      & --
+      & GP-BO / NN \cite{Aghaei Pour2022303,Chakrabarty2021} \\
+    Stochastic / robust planning
+      & NN / GP \cite{Lawson201647,Liu20222679,Hu2020}
+      & GP-BO / NSGA \cite{Lin2023,Pang2023}
+      & L2O proxy \cite{Liang20246508}
+      & Scenario-tree NN \cite{Han2024,Zhang2024821}
+      & $\star$ PCE / GP / DQ \cite{Muhlpfordt20194806,Safta20172535,Lu201991827,Yang2024__2,Volodina2022} \\
+    \bottomrule
+  \end{tabularx}
+\end{table*}

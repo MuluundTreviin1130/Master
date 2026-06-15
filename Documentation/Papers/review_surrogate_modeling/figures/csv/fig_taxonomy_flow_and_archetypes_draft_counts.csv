@@ -1,0 +1,64 @@
+family,target,doe,pattern,validation,n
+GP / kriging,Integrated and distributed multi-energy systems,Active learning,P2 acceleration,Feasibility,1
+GP / kriging,Integrated and distributed multi-energy systems,Latin hypercube sampling,P2 acceleration,Decision-aware,1
+GP / kriging,"Power flow, network security and grid planning",Active learning,P2 acceleration,Point metrics,1
+GP / kriging,Power system operation and markets,Active learning,P2 acceleration,Decision-aware,1
+GP / kriging,Power system operation and markets,Active learning,P2 acceleration,Point metrics,2
+GP / kriging,Power system operation and markets,Adaptive sampling,P2 acceleration,Point metrics,1
+GP / kriging,Power system operation and markets,Latin hypercube sampling,P5 uncertainty,Problem UQ,1
+GP / kriging,Power system operation and markets,Transfer learning,P5 uncertainty,Interval calibration,1
+GP / kriging,Power system operation and markets,Transfer learning,P5 uncertainty,Point metrics,1
+GP / kriging,System design and expansion,Active learning,P2 acceleration,Decision-aware,3
+GP / kriging,System design and expansion,Active learning,P2 acceleration,Point metrics,2
+GP / kriging,System design and expansion,Active learning,P2 acceleration,Problem UQ,2
+GP / kriging,System design and expansion,Adaptive sampling,P2 acceleration,Decision-aware,1
+GP / kriging,System design and expansion,Adaptive sampling,P2 acceleration,Point metrics,1
+GP / kriging,System design and expansion,Factorial / response-surface design,P2 acceleration,Problem UQ,1
+GP / kriging,System design and expansion,Latin hypercube sampling,P2 acceleration,Problem UQ,1
+GP / kriging,System design and expansion,Multi-fidelity training,P1 replacement,Point metrics,1
+GP / kriging,System design and expansion,Multi-fidelity training,P2 acceleration,Point metrics,1
+GP / kriging,System design and expansion,Transfer learning,P5 uncertainty,Point metrics,3
+GP / kriging,System design and expansion,Transfer learning,P5 uncertainty,Problem UQ,2
+GP / kriging,System design and expansion,Transfer learning,P5 uncertainty,Stress test,1
+GP / kriging,Thermal and building energy systems,Active learning,P2 acceleration,Decision-aware,1
+GP / kriging,Thermal and building energy systems,Active learning,P2 acceleration,Point metrics,1
+GP / kriging,Thermal and building energy systems,Factorial / response-surface design,P2 acceleration,Point metrics,1
+GP / kriging,Thermal and building energy systems,Factorial / response-surface design,P2 acceleration,Problem UQ,1
+GP / kriging,Thermal and building energy systems,Latin hypercube sampling,P5 uncertainty,Problem UQ,1
+Neural network,Integrated and distributed multi-energy systems,Adaptive sampling,P1 replacement,Point metrics,1
+Neural network,Integrated and distributed multi-energy systems,Factorial / response-surface design,P1 replacement,Point metrics,1
+Neural network,Integrated and distributed multi-energy systems,Latin hypercube sampling,P5 uncertainty,Feasibility,1
+Neural network,Integrated and distributed multi-energy systems,Transfer learning,P1 replacement,Point metrics,1
+Neural network,Integrated and distributed multi-energy systems,Transfer learning,P5 uncertainty,Point metrics,1
+Neural network,Integrated and distributed multi-energy systems,Transfer learning,P5 uncertainty,Problem UQ,1
+Neural network,"Power flow, network security and grid planning",Latin hypercube sampling,P1 replacement,Problem UQ,1
+Neural network,"Power flow, network security and grid planning",Multi-fidelity training,P1 replacement,Point metrics,1
+Neural network,"Power flow, network security and grid planning",Multi-fidelity training,P1 replacement,Problem UQ,1
+Neural network,"Power flow, network security and grid planning",Transfer learning,P1 replacement,Point metrics,1
+Neural network,"Power flow, network security and grid planning",Transfer learning,P1 replacement,Problem UQ,1
+Neural network,"Power flow, network security and grid planning",Transfer learning,P3 solution proxy,Decision-aware,1
+Neural network,"Power flow, network security and grid planning",Transfer learning,P3 solution proxy,Point metrics,1
+Neural network,Power system operation and markets,Active learning,P2 acceleration,Point metrics,1
+Neural network,Power system operation and markets,Latin hypercube sampling,P3 solution proxy,Decision-aware,1
+Neural network,Thermal and building energy systems,Adaptive sampling,P5 uncertainty,Point metrics,1
+PCE / RSM,Integrated and distributed multi-energy systems,Factorial / response-surface design,P1 replacement,Point metrics,1
+PCE / RSM,Integrated and distributed multi-energy systems,Factorial / response-surface design,P2 acceleration,Point metrics,2
+PCE / RSM,Integrated and distributed multi-energy systems,Factorial / response-surface design,P5 uncertainty,Problem UQ,1
+PCE / RSM,Integrated and distributed multi-energy systems,Latin hypercube sampling,P1 replacement,Decision-aware,1
+PCE / RSM,"Power flow, network security and grid planning",Latin hypercube sampling,P2 acceleration,Point metrics,1
+PCE / RSM,"Power flow, network security and grid planning",Latin hypercube sampling,P2 acceleration,Problem UQ,1
+PCE / RSM,"Power flow, network security and grid planning",Latin hypercube sampling,P5 uncertainty,Problem UQ,1
+PCE / RSM,"Power flow, network security and grid planning",Quasi-Monte Carlo / sparse-grid collocation,P5 uncertainty,Interval calibration,1
+PCE / RSM,Power system operation and markets,Factorial / response-surface design,P1 replacement,Point metrics,1
+PCE / RSM,Power system operation and markets,Quasi-Monte Carlo / sparse-grid collocation,P5 uncertainty,Feasibility,1
+PCE / RSM,Power system operation and markets,Quasi-Monte Carlo / sparse-grid collocation,P5 uncertainty,Point metrics,2
+PCE / RSM,Power system operation and markets,Quasi-Monte Carlo / sparse-grid collocation,P5 uncertainty,Problem UQ,1
+PCE / RSM,System design and expansion,Factorial / response-surface design,P1 replacement,Point metrics,1
+RBF / kernel,Integrated and distributed multi-energy systems,Transfer learning,P1 replacement,Feasibility,1
+RBF / kernel,"Power flow, network security and grid planning",Latin hypercube sampling,P1 replacement,Feasibility,1
+RBF / kernel,"Power flow, network security and grid planning",Latin hypercube sampling,P5 uncertainty,Point metrics,1
+Tree ensembles,Integrated and distributed multi-energy systems,Active learning,P2 acceleration,Point metrics,1
+Tree ensembles,Integrated and distributed multi-energy systems,Active learning,P5 uncertainty,Problem UQ,1
+Tree ensembles,Thermal and building energy systems,Latin hypercube sampling,P1 replacement,Point metrics,1
+Tree ensembles,Thermal and building energy systems,Quasi-Monte Carlo / sparse-grid collocation,P5 uncertainty,Point metrics,1
+Tree ensembles,Thermal and building energy systems,Quasi-Monte Carlo / sparse-grid collocation,P5 uncertainty,Problem UQ,1

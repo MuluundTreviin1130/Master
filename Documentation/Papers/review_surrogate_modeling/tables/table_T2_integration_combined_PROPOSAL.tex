@@ -1,0 +1,103 @@
+% PROPOSAL ONLY — combined T2 + T5 (not yet wired into manuscript).
+% Part I: pattern definition (solver layer, safety hooks, pitfalls).
+% Part II: task-class x pattern evidence matrix (current T2 body).
+% Review before replacing table_T2_task_role_matrix.tex and dropping T5.
+
+\begin{table*}[!t]
+  \centering
+  \scriptsize
+  \caption{Integration patterns for surrogate-assisted energy-system
+  optimization (Part~I) and their occurrence across task classes in the
+  screened pool (Part~II). Part~I summarises where each pattern sits in
+  the solver stack, which safety practices recur in the literature, and
+  typical failure modes. Part~II lists typical surrogate families and
+  representative references per cell; ``$\star$'' marks the dominant
+  pattern per task row, ``--'' marks rare combinations.}
+  \label{tab:integration-patterns}
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabularx}{\textwidth}{@{}L{0.03\textwidth} L{0.11\textwidth} L{0.12\textwidth} L{0.36\textwidth} L{0.34\textwidth}@{}}
+    \toprule
+    \multicolumn{5}{@{}l}{\textbf{Part I: pattern definition}} \\
+    \midrule
+    \# & Pattern & Solver layer & Safety hooks & Typical pitfalls \\
+    \midrule
+    P1 & Replace subroutine
+       & Inner loop / subproblem
+       & Feasibility-restoration layer; constraint-aware embedding; periodic truth-model re-anchoring \cite{Wu2022231,Chen20244723,Chen2022,Liu20242534}
+       & Silent constraint violation; OOD operating regimes; surrogate-induced bias of the host objective \\
+    P2 & Accelerate search
+       & Outer loop / metaheuristic / BO
+       & Truth-model check of selected candidates; calibrated posterior for BO; trust-region or infill updates \cite{Nikolaidis2021,Aghaei Pour2022303,Han2018622,Lin2023}
+       & Mis-calibrated posterior; uninformative acquisition; wasted truth-budget \\
+    P3 & Warm start / proxy
+       & Pre-solve / repair step
+       & Downstream solver as repair step; projection onto feasible set; ensembling for variance reduction \cite{Li2023__2,Chen20244723,Liang20246508,Thrampoulidis2021}
+       & Constant-time output infeasible; warm start dominated by repair cost \\
+    P4 & Decomposition
+       & Benders / Lagrangian layer
+       & Periodic exact cuts; bound tracking on optimality gap; restart on cut staleness \cite{Zhang2025__4,Wu2024391}
+       & Uncertified surrogate cuts; non-convergence of master--subproblem loop \\
+    P5 & Uncertainty
+       & Reformulation layer
+       & Moment or quantile matching; sample-based audit of chance constraints; calibrated uncertainty bands \cite{Muhlpfordt20194806,Safta20172535,Hu2020,Chen2023657}
+       & Tail under-coverage; Gaussian-only assumptions; correlation collapse across regimes \\
+    \midrule
+    \multicolumn{5}{@{}l}{\textbf{Part II: task-class evidence}} \\
+    \midrule
+  \end{tabularx}
+  \vspace{0.4em}
+  \renewcommand{\arraystretch}{1.25}
+  \begin{tabularx}{\textwidth}{@{}L{0.14\textwidth} L{0.17\textwidth} L{0.17\textwidth} L{0.17\textwidth} L{0.15\textwidth} L{0.15\textwidth}@{}}
+    Task class & P1 & P2 & P3 & P4 & P5 \\
+    \midrule
+    Economic dispatch / UC
+      & $\star$ NN / L2O \cite{Wu2022231,Chen20244723,Pang2023}
+      & GP-BO / kriging-NSGA \cite{Nikolaidis2021,Lin2023}
+      & End-to-end NN \cite{Chen2022,Wu2022231}
+      & Lagrangian / Benders \cite{Wu2024391,Zhang2025__4}
+      & PCE / GP / quantile \cite{Hu2020,Hu2021671,Chen2023657} \\
+    Optimal power flow
+      & $\star$ NN / GNN \cite{Chen20244723,Chen2022,Park2019,Liu20223726}
+      & Kriging-EA \cite{Deng2020831,Lin2023}
+      & L2O \cite{Li2023__2}
+      & --
+      & PCE / GP / DQ \cite{Muhlpfordt20194806,Chen2023657,Koirala20242284} \\
+    Capacity expansion
+      & NN / GBDT \cite{Jahangiri20244849,Pérez-Uresti2023}
+      & GP-BO / NSGA \cite{Han2018622,Amaral20251156}
+      & --
+      & Benders + GP \cite{Zhang2025__4}
+      & $\star$ Adaptive metamodels \cite{Fu20202904,Kim2021} \\
+    District-heating dispatch
+      & $\star$ NN metamodel \cite{Sánchez-Zabala2024,Du2025}
+      & RSM / RFC \cite{Schulte2016104,Petrova2025}
+      & ANN setpoints \cite{Reynolds2017704}
+      & --
+      & GP / NMPC \cite{Simonson202036} \\
+    Multi-energy planning
+      & NN / GP \cite{Zheng20231907,Yin2024,Roth2019214}
+      & $\star$ GP-BO / NSGA \cite{Han2018622,Schulte2020,Aghaei Pour2022303}
+      & Market-NN proxy \cite{Jalving2023,Wang2020202933}
+      & --
+      & PCE / GP \cite{Dong2023,Dong2022,Wang2024} \\
+    Microgrid / energy hub
+      & RBF / NN \cite{Wang2017,Hussien20211883,Li2023__3}
+      & $\star$ SAEA / kriging-EA \cite{Deng2020831,Pang2023}
+      & RL / NN policy \cite{Chaturvedi2024149,Hussien20226442}
+      & --
+      & Stochastic emulator \cite{Liang20222192,Khalid20241959} \\
+    Multi-objective system design
+      & NN / RBF \cite{Hirvonen2017323,Wang2017,Schulte2020}
+      & $\star$ GP / NN + NSGA \cite{Roth2019214,Han2018622,Aghaei Pour2022303,Reis2025}
+      & Retrofit proxy \cite{Thrampoulidis2021}
+      & --
+      & GP-BO calibration \cite{Chakrabarty2021} \\
+    Stochastic / robust planning
+      & NN / GP \cite{Lawson201647,Liu20222679,Hu2020}
+      & Kriging-NSGA \cite{Lin2023,Pang2023}
+      & L2O proxy \cite{Liang20246508}
+      & Lagrangian ML \cite{Wu2024391}
+      & $\star$ PCE / GP / DQ \cite{Muhlpfordt20194806,Safta20172535,Lu201991827,Chen2023657} \\
+    \bottomrule
+  \end{tabularx}
+\end{table*}

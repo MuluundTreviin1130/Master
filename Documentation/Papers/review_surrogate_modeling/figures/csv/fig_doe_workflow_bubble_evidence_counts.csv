@@ -1,0 +1,29 @@
+doe_strategy,workflow_context,n
+Factorial / response-surface design,Not explicitly identified,12
+Latin hypercube sampling,Not explicitly identified,6
+Quasi-Monte Carlo / sparse-grid collocation,Not explicitly identified,4
+Active learning,Not explicitly identified,14
+Adaptive sampling,Not explicitly identified,3
+Multi-fidelity training,Not explicitly identified,5
+Transfer learning,Not explicitly identified,4
+Factorial / response-surface design,Simulation-driven workflow,9
+Latin hypercube sampling,Simulation-driven workflow,14
+Quasi-Monte Carlo / sparse-grid collocation,Simulation-driven workflow,1
+Active learning,Simulation-driven workflow,5
+Adaptive sampling,Simulation-driven workflow,1
+Multi-fidelity training,Simulation-driven workflow,2
+Transfer learning,Simulation-driven workflow,2
+Factorial / response-surface design,Historical-data-driven workflow,1
+Latin hypercube sampling,Historical-data-driven workflow,5
+Quasi-Monte Carlo / sparse-grid collocation,Historical-data-driven workflow,3
+Active learning,Historical-data-driven workflow,9
+Adaptive sampling,Historical-data-driven workflow,0
+Multi-fidelity training,Historical-data-driven workflow,1
+Transfer learning,Historical-data-driven workflow,3
+Factorial / response-surface design,Hybrid model-coupled workflow,1
+Latin hypercube sampling,Hybrid model-coupled workflow,0
+Quasi-Monte Carlo / sparse-grid collocation,Hybrid model-coupled workflow,0
+Active learning,Hybrid model-coupled workflow,0
+Adaptive sampling,Hybrid model-coupled workflow,1
+Multi-fidelity training,Hybrid model-coupled workflow,0
+Transfer learning,Hybrid model-coupled workflow,0

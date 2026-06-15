@@ -1,0 +1,41 @@
+application_target,block,subcategory,n
+Integrated and distributed multi-energy systems,Data sources,Synthetic data,12
+Integrated and distributed multi-energy systems,Data sources,Historical data,24
+Integrated and distributed multi-energy systems,Data sources,Hybrid data,0
+Integrated and distributed multi-energy systems,Static designs,Factorial / response-surface design,14
+Integrated and distributed multi-energy systems,Static designs,Latin hypercube sampling,9
+Integrated and distributed multi-energy systems,Static designs,Quasi-Monte Carlo / sparse-grid collocation,1
+Integrated and distributed multi-energy systems,Adaptive sampling and active learning,Adaptive sampling,2
+Integrated and distributed multi-energy systems,Adaptive sampling and active learning,Active learning,8
+"Power flow, network security and grid planning",Data sources,Synthetic data,8
+"Power flow, network security and grid planning",Data sources,Historical data,8
+"Power flow, network security and grid planning",Data sources,Hybrid data,0
+"Power flow, network security and grid planning",Static designs,Factorial / response-surface design,0
+"Power flow, network security and grid planning",Static designs,Latin hypercube sampling,6
+"Power flow, network security and grid planning",Static designs,Quasi-Monte Carlo / sparse-grid collocation,3
+"Power flow, network security and grid planning",Adaptive sampling and active learning,Adaptive sampling,0
+"Power flow, network security and grid planning",Adaptive sampling and active learning,Active learning,2
+System design and expansion,Data sources,Synthetic data,6
+System design and expansion,Data sources,Historical data,14
+System design and expansion,Data sources,Hybrid data,0
+System design and expansion,Static designs,Factorial / response-surface design,5
+System design and expansion,Static designs,Latin hypercube sampling,5
+System design and expansion,Static designs,Quasi-Monte Carlo / sparse-grid collocation,0
+System design and expansion,Adaptive sampling and active learning,Adaptive sampling,1
+System design and expansion,Adaptive sampling and active learning,Active learning,9
+Power system operation and markets,Data sources,Synthetic data,5
+Power system operation and markets,Data sources,Historical data,22
+Power system operation and markets,Data sources,Hybrid data,0
+Power system operation and markets,Static designs,Factorial / response-surface design,1
+Power system operation and markets,Static designs,Latin hypercube sampling,3
+Power system operation and markets,Static designs,Quasi-Monte Carlo / sparse-grid collocation,3
+Power system operation and markets,Adaptive sampling and active learning,Adaptive sampling,1
+Power system operation and markets,Adaptive sampling and active learning,Active learning,6
+Thermal and building energy systems,Data sources,Synthetic data,4
+Thermal and building energy systems,Data sources,Historical data,8
+Thermal and building energy systems,Data sources,Hybrid data,0
+Thermal and building energy systems,Static designs,Factorial / response-surface design,3
+Thermal and building energy systems,Static designs,Latin hypercube sampling,2
+Thermal and building energy systems,Static designs,Quasi-Monte Carlo / sparse-grid collocation,1
+Thermal and building energy systems,Adaptive sampling and active learning,Adaptive sampling,1
+Thermal and building energy systems,Adaptive sampling and active learning,Active learning,3

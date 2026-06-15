@@ -1,0 +1,14 @@
+integration_role,surrogate_target,dominant_family,dominant_trust,n
+Input / weak coupling,exogenous input,RBF/Kernel,basic / point,13
+Input / weak coupling,objective / system response,PCE/RSM,basic / point,43
+P1/P3 replacement,constraints / states,RBF/Kernel,basic / point,14
+P1/P3 replacement,objective / system response,GP/Kriging,basic / point,10
+P1/P3 replacement,solution / policy,L2O,decision-aware,12
+P2 search acceleration,constraints / states,GP/Kriging,basic / point,2
+P2 search acceleration,exogenous input,GP/Kriging,adaptive / BO,5
+P2 search acceleration,objective / system response,GP/Kriging,basic / point,36
+P4 decomposition,exogenous input,GP/Kriging,basic / point,1
+P4 decomposition,objective / system response,GP/Kriging,basic / point,4
+P4 decomposition,solution / policy,L2O,decision-aware,1
+P5 uncertainty,solution / policy,L2O,decision-aware,1
+P5 uncertainty,uncertainty / risk,GP/Kriging,uncertainty,57

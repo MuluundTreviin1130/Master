@@ -1,0 +1,13 @@
+dimension,label,n
+strategy,Latin hypercube sampling,8
+strategy,Quasi-Monte Carlo / sparse-grid collocation,15
+strategy,Factorial / response-surface design,6
+strategy,Adaptive sampling,1
+strategy,Active learning,5
+strategy,Multi-fidelity training,0
+strategy,Transfer learning,0
+strategy,Unassigned,93
+data_source,Synthetic data,0
+data_source,Historical data,4
+data_source,Hybrid data,0
+data_source,Unassigned,124

@@ -1,0 +1,25 @@
+{
+  "mode": "full",
+  "requested_smoke_records": 0,
+  "selected_records": 249,
+  "selected_pdf_records": 187,
+  "selected_abstract_records": 249,
+  "max_pages": 35,
+  "workers": 4,
+  "cache_hits": 187,
+  "cache_misses": 0,
+  "extracted_pages": 2456,
+  "pdf_extraction_seconds_sum": 0.0,
+  "wall_seconds": 71.424,
+  "accepted_labels_by_dimension": {
+    "data_source": 111,
+    "doe_strategy": 106,
+    "family": 203,
+    "pattern": 127,
+    "target": 179,
+    "trust": 122,
+    "validation": 182
+  },
+  "records_with_any_label": 232,
+  "estimated_full_uncached_minutes": null
+}

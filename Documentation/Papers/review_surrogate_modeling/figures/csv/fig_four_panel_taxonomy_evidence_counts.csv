@@ -1,0 +1,193 @@
+panel,x,y,signal,n
+A_bubble,P1,Constraint-aware NN,Interval calibration,3
+A_bubble,P1,GP / kriging,Point metrics (RMSE/MAE/R²),12
+A_bubble,P2,GP / kriging,Point metrics (RMSE/MAE/R²),5
+A_bubble,P4,GP / kriging,Point metrics (RMSE/MAE/R²),2
+A_bubble,P5,GP / kriging,Uncertainty (problem UQ),12
+A_bubble,P1,Neural network,Point metrics (RMSE/MAE/R²),16
+A_bubble,P2,Neural network,Feasibility rate,13
+A_bubble,P5,Neural network,Uncertainty (problem UQ),1
+A_bubble,P1,PCE / RSM,Uncertainty (problem UQ),11
+A_bubble,P2,PCE / RSM,Point metrics (RMSE/MAE/R²),19
+A_bubble,P4,PCE / RSM,Feasibility rate,1
+A_bubble,P5,PCE / RSM,Uncertainty (problem UQ),11
+A_bubble,P1,RBF / kernel,Point metrics (RMSE/MAE/R²),13
+A_bubble,P2,RBF / kernel,Uncertainty (problem UQ),2
+A_bubble,P5,RBF / kernel,Uncertainty (problem UQ),1
+A_bubble,P1,Tree ensembles,Feasibility rate,3
+A_bubble,P2,Tree ensembles,Uncertainty (problem UQ),1
+B_alluvial_record,P5,GP / kriging,Uncertainty (problem UQ),1
+B_alluvial_record,P1,GP / kriging,Feasibility rate,1
+B_alluvial_record,P1,Neural network,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P5,GP / kriging,Uncertainty (problem UQ),1
+B_alluvial_record,P1,Neural network,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P1,PCE / RSM,Uncertainty (problem UQ),1
+B_alluvial_record,P1,Neural network,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P1,PCE / RSM,Feasibility rate,1
+B_alluvial_record,P4,GP / kriging,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P2,GP / kriging,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P2,RBF / kernel,Uncertainty (problem UQ),1
+B_alluvial_record,P2,Neural network,Feasibility rate,1
+B_alluvial_record,P2,GP / kriging,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P2,PCE / RSM,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P2,PCE / RSM,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P1,PCE / RSM,Uncertainty (problem UQ),1
+B_alluvial_record,P2,Neural network,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P2,Neural network,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P4,PCE / RSM,Feasibility rate,1
+B_alluvial_record,P2,PCE / RSM,Feasibility rate,1
+B_alluvial_record,P2,PCE / RSM,Stress test,1
+B_alluvial_record,P2,PCE / RSM,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P2,PCE / RSM,Feasibility rate,1
+B_alluvial_record,P2,Neural network,Uncertainty (problem UQ),1
+B_alluvial_record,P2,PCE / RSM,Uncertainty (problem UQ),1
+B_alluvial_record,P2,PCE / RSM,Feasibility rate,1
+B_alluvial_record,P2,PCE / RSM,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P2,PCE / RSM,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P2,PCE / RSM,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P2,PCE / RSM,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P2,Neural network,Feasibility rate,1
+B_alluvial_record,P1,GP / kriging,Uncertainty (problem UQ),1
+B_alluvial_record,P1,RBF / kernel,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P5,GP / kriging,Uncertainty (problem UQ),1
+B_alluvial_record,P1,RBF / kernel,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P2,PCE / RSM,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P1,GP / kriging,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P5,RBF / kernel,Uncertainty (problem UQ),1
+B_alluvial_record,P1,PCE / RSM,Uncertainty (problem UQ),1
+B_alluvial_record,P1,GP / kriging,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P2,PCE / RSM,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P1,Neural network,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P1,Neural network,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P1,RBF / kernel,Feasibility rate,1
+B_alluvial_record,P1,RBF / kernel,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P5,GP / kriging,Uncertainty (problem UQ),1
+B_alluvial_record,P4,GP / kriging,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P1,GP / kriging,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P1,Neural network,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P1,Tree ensembles,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P5,GP / kriging,Uncertainty (problem UQ),1
+B_alluvial_record,P2,Neural network,Feasibility rate,1
+B_alluvial_record,P1,RBF / kernel,Feasibility rate,1
+B_alluvial_record,P2,PCE / RSM,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P2,PCE / RSM,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P5,PCE / RSM,Uncertainty (problem UQ),1
+B_alluvial_record,P1,Neural network,Interval calibration,1
+B_alluvial_record,P5,PCE / RSM,Stress test,1
+B_alluvial_record,P2,Neural network,Feasibility rate,1
+B_alluvial_record,P2,GP / kriging,Interval calibration,1
+B_alluvial_record,P2,PCE / RSM,Uncertainty (problem UQ),1
+B_alluvial_record,P2,PCE / RSM,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P2,RBF / kernel,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P2,Neural network,Feasibility rate,1
+B_alluvial_record,P1,RBF / kernel,Interval calibration,1
+B_alluvial_record,P1,Neural network,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P1,GP / kriging,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P5,PCE / RSM,Uncertainty (problem UQ),1
+B_alluvial_record,P5,Neural network,Uncertainty (problem UQ),1
+B_alluvial_record,P1,RBF / kernel,Uncertainty (problem UQ),1
+B_alluvial_record,P1,Neural network,Decision-aware (regret/gap),1
+B_alluvial_record,P1,PCE / RSM,Interval calibration,1
+B_alluvial_record,P5,PCE / RSM,Feasibility rate,1
+B_alluvial_record,P1,Neural network,Decision-aware (regret/gap),1
+B_alluvial_record,P1,Neural network,Feasibility rate,1
+B_alluvial_record,P2,GP / kriging,Feasibility rate,1
+B_alluvial_record,P1,GP / kriging,Uncertainty (problem UQ),1
+B_alluvial_record,P5,PCE / RSM,Uncertainty (problem UQ),1
+B_alluvial_record,P5,GP / kriging,Uncertainty (problem UQ),1
+B_alluvial_record,P1,Tree ensembles,Feasibility rate,1
+B_alluvial_record,P5,PCE / RSM,Feasibility rate,1
+B_alluvial_record,P5,PCE / RSM,Uncertainty (problem UQ),1
+B_alluvial_record,P1,Neural network,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P1,PCE / RSM,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P1,GP / kriging,Uncertainty (problem UQ),1
+B_alluvial_record,P2,Neural network,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P1,Constraint-aware NN,Interval calibration,1
+B_alluvial_record,P1,RBF / kernel,Uncertainty (problem UQ),1
+B_alluvial_record,P1,Neural network,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P5,PCE / RSM,Uncertainty (problem UQ),1
+B_alluvial_record,P2,GP / kriging,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P5,GP / kriging,Uncertainty (problem UQ),1
+B_alluvial_record,P5,PCE / RSM,Uncertainty (problem UQ),1
+B_alluvial_record,P5,PCE / RSM,Feasibility rate,1
+B_alluvial_record,P1,PCE / RSM,Uncertainty (problem UQ),1
+B_alluvial_record,P1,Neural network,Uncertainty (problem UQ),1
+B_alluvial_record,P1,GP / kriging,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P1,RBF / kernel,Uncertainty (problem UQ),1
+B_alluvial_record,P2,Neural network,Uncertainty (problem UQ),1
+B_alluvial_record,P1,RBF / kernel,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P1,RBF / kernel,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P1,Constraint-aware NN,Interval calibration,1
+B_alluvial_record,P1,PCE / RSM,Uncertainty (problem UQ),1
+B_alluvial_record,P1,Tree ensembles,Feasibility rate,1
+B_alluvial_record,P1,PCE / RSM,Uncertainty (problem UQ),1
+B_alluvial_record,P1,PCE / RSM,Uncertainty (problem UQ),1
+B_alluvial_record,P1,RBF / kernel,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P1,RBF / kernel,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P1,Neural network,Decision-aware (regret/gap),1
+B_alluvial_record,P5,GP / kriging,Uncertainty (problem UQ),1
+B_alluvial_record,P1,PCE / RSM,Feasibility rate,1
+B_alluvial_record,P5,PCE / RSM,Feasibility rate,1
+B_alluvial_record,P1,GP / kriging,Feasibility rate,1
+B_alluvial_record,P1,GP / kriging,Uncertainty (problem UQ),1
+B_alluvial_record,P1,Constraint-aware NN,Feasibility rate,1
+B_alluvial_record,P5,GP / kriging,Uncertainty (problem UQ),1
+B_alluvial_record,P1,GP / kriging,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P2,Neural network,Interval calibration,1
+B_alluvial_record,P2,PCE / RSM,Feasibility rate,1
+B_alluvial_record,P5,GP / kriging,Uncertainty (problem UQ),1
+B_alluvial_record,P1,Neural network,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P5,GP / kriging,Uncertainty (problem UQ),1
+B_alluvial_record,P2,Neural network,Stress test,1
+B_alluvial_record,P2,Neural network,Point metrics (RMSE/MAE/R²),1
+B_alluvial_record,P5,GP / kriging,Interval calibration,1
+B_alluvial_record,P2,Tree ensembles,Uncertainty (problem UQ),1
+C_doe,P1,Active learning,,2
+C_doe,P2,Active learning,,10
+C_doe,P1,Adaptive sampling,,11
+C_doe,P2,Adaptive sampling,,1
+C_doe,P4,Adaptive sampling,,2
+C_doe,P5,Adaptive sampling,,8
+C_doe,P1,Factorial / DoE,,5
+C_doe,P2,Factorial / DoE,,12
+C_doe,P5,Factorial / DoE,,2
+C_doe,P1,Historical data,,6
+C_doe,P2,Historical data,,3
+C_doe,P1,LHS / quasi-MC,,17
+C_doe,P2,LHS / quasi-MC,,9
+C_doe,P4,LHS / quasi-MC,,1
+C_doe,P5,LHS / quasi-MC,,14
+C_doe,P2,Multi-fidelity,,1
+C_doe,P1,Transfer learning,,2
+D_app,ED / UC,Constraint-aware NN,,1
+D_app,OPF,Constraint-aware NN,,2
+D_app,District heating,GP / kriging,,1
+D_app,ED / UC,GP / kriging,,6
+D_app,Expansion,GP / kriging,,3
+D_app,MES / sector,GP / kriging,,4
+D_app,MOO design,GP / kriging,,2
+D_app,Microgrid / hub,GP / kriging,,9
+D_app,OPF,GP / kriging,,6
+D_app,District heating,Neural network,,3
+D_app,ED / UC,Neural network,,6
+D_app,Expansion,Neural network,,4
+D_app,MES / sector,Neural network,,3
+D_app,MOO design,Neural network,,5
+D_app,Microgrid / hub,Neural network,,6
+D_app,OPF,Neural network,,3
+D_app,District heating,PCE / RSM,,1
+D_app,ED / UC,PCE / RSM,,7
+D_app,Expansion,PCE / RSM,,1
+D_app,MES / sector,PCE / RSM,,2
+D_app,MOO design,PCE / RSM,,14
+D_app,Microgrid / hub,PCE / RSM,,9
+D_app,OPF,PCE / RSM,,8
+D_app,District heating,RBF / kernel,,1
+D_app,ED / UC,RBF / kernel,,3
+D_app,MOO design,RBF / kernel,,1
+D_app,Microgrid / hub,RBF / kernel,,7
+D_app,OPF,RBF / kernel,,5
+D_app,ED / UC,Tree ensembles,,1
+D_app,Expansion,Tree ensembles,,1
+D_app,Microgrid / hub,Tree ensembles,,1
+D_app,OPF,Tree ensembles,,1

@@ -1,0 +1,68 @@
+{
+  "n_cards": 128,
+  "doe_prose_present": 45,
+  "doe_pdf_missing": 0,
+  "doe_unclassified": 8,
+  "val_false_positive_rows": 14,
+  "val_narrative_would_add": 33,
+  "no_pdf_text": 0,
+  "doe_missing_samples": [],
+  "val_fp_samples": [
+    [
+      "Zhang20203731",
+      "Feasibility rate"
+    ],
+    [
+      "Liu20242534",
+      "Interval calibration"
+    ],
+    [
+      "Perera2017187",
+      "Feasibility rate"
+    ],
+    [
+      "Matta2026",
+      "Interval calibration"
+    ],
+    [
+      "S\u00e1nchez-Zabala2024",
+      "Interval calibration"
+    ],
+    [
+      "Wu2022231",
+      "Decision-aware (regret/gap);Feasibility rate"
+    ],
+    [
+      "Ahmad202451",
+      "Interval calibration"
+    ],
+    [
+      "Nikolaidis2021",
+      "Feasibility rate"
+    ],
+    [
+      "Liang20246508",
+      "Interval calibration"
+    ],
+    [
+      "Chen2023657",
+      "Interval calibration"
+    ],
+    [
+      "Li202359995",
+      "Decision-aware (regret/gap)"
+    ],
+    [
+      "Park2019",
+      "Interval calibration"
+    ],
+    [
+      "Rodgers2018951",
+      "Feasibility rate"
+    ],
+    [
+      "Jahangiri20244849",
+      "Stress test"
+    ]
+  ]
+}

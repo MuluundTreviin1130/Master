@@ -1,0 +1,85 @@
+% Table T1 - Taxonomy of surrogate model families used in
+% energy-system optimization. Each cell carries a compact, abstract-
+% level claim and 2-4 representative \cite{} keys from
+% paper_library/review_paper_library.bib. Cite assignments are
+% abstract-/metadata-grounded and must be cross-checked against full
+% texts before submission (see TODO.md, "Volltext-Verifikation").
+
+\begin{table*}[!t]
+  \centering
+  \footnotesize
+  \caption{Taxonomy of surrogate model families used for optimization in
+  energy-system modeling. ``Output'' is point ($p$) or interval / posterior
+  ($i$). ``Optimizer compat.'' indicates natural embedding in
+  gradient-based ($\nabla$), convex ($\circ$) or mixed-integer
+  ($\square$) solvers. References are representative, not exhaustive;
+  the per-entry assignment lives in the curated paper library.}
+  \label{tab:T1-taxonomy}
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabularx}{\textwidth}{@{}L{0.16\textwidth} C{0.05\textwidth} C{0.08\textwidth} L{0.21\textwidth} L{0.20\textwidth} L{0.22\textwidth}@{}}
+    \toprule
+    Family & Output & Opt.\ compat. & Strengths & Typical failure modes & Where it dominates (refs.) \\
+    \midrule
+    Polynomial RSM / PCE
+      & $p$,$i$ & $\nabla$ $\circ$ $\square$
+      & Closed-form moments; analytic chance constraints; parsimonious
+      & Curse of dimensionality; smoothness assumption; sparse-grid cost
+      & Chance-constrained AC OPF, stochastic dispatch
+        \cite{Muhlpfordt20194806,Muhlpfordt20174490,Koirala20242284,Xu20212696,Engelmann20186188} \\
+    Kriging / Gaussian process
+      & $p$,$i$ & $\nabla$
+      & Calibrated posterior; Bayesian acquisition; small-sample friendly
+      & $O(n^3)$ scaling; stationarity assumption; kernel choice sensitive
+      & Bayesian optimization for UC, MES design
+        \cite{Hu2020,Hu2021671,Volodina2022,Schulte2020,Roth2019214,Liu20222679} \\
+    Radial basis functions
+      & $p$    & $\nabla$
+      & Smooth interpolant; cheap; metaheuristic-friendly
+      & Centre placement is heuristic; weak in extrapolation
+      & Surrogate-assisted evolutionary OPF and HRES sizing
+        \cite{Liu20223726,Mahapatra2022721,Mahapatra20161921,Hussien20211883} \\
+    Random forest / GBDT
+      & $p$,$i$ & $\square$
+      & Categorical inputs; robust to outliers; quantile output
+      & Step responses break gradients; piecewise-constant tails
+      & Forecasting-as-input for planning; scenario screening
+        \cite{Eseye201991463,Faraji2020157284,Hanifi2024,Madhukumar20228891} \\
+    Neural networks (MLP / CNN / RNN)
+      & $p$ & $\nabla$ ($\square$)
+      & Universal approximation; large-data scaling; transfer learning
+      & Black-box; calibration drift; overconfidence on OOD
+      & End-to-end OPF, demand and price forecasting
+        \cite{Chen20244723,Chen2022,Wu2022231,Xu20223066,Guo20222057,Li202359995} \\
+    Input-convex / monotone NN
+      & $p$ & $\nabla$ $\circ$
+      & Preserves convexity; embeddable in LP/QP outer loops
+      & Limited expressiveness; harder to train
+      & Cost-curve and conversion-loss surrogates in MES dispatch
+        \cite{Liu20242534,Wu2024391,Pang2023,Lin2023} \\
+    Piecewise-linear MIP-friendly NN
+      & $p$ & $\square$
+      & Exact embedding into MILP; supports branch-and-bound
+      & Big-M tightness; MILP size grows with width
+      & MIP-embedded UC, OPF, and capacity expansion proxies
+        \cite{Wu2022231,Liu20223726,Liang20246508,Pang2023} \\
+    Graph neural networks
+      & $p$    & $\nabla$
+      & Topology-aware; transferable across grid sizes
+      & Message-passing depth; oversmoothing on radial DH/grid trees
+      & Power-flow surrogates, multi-fidelity GNN OPF
+        \cite{Park2019,Su2022315,Khayambashi202453,Taghizadeh2024} \\
+    Physics-informed NN
+      & $p$,$i$ & $\nabla$
+      & Encodes balance / KKT residuals; better OOD behaviour
+      & PDE-loss tuning hard; convergence sensitive to weighting
+      & PINN-OPF, building-energy and thermal-network emulators
+        \cite{Park2019,Petrova2025,Du2025,Chaudhry2024} \\
+    Decision-focused / L2O proxies
+      & $p$ & $\nabla$
+      & Trained for decision quality, not regression error
+      & Feasibility restoration needed; dataset is optimizer-synthetic
+      & Learning-to-optimize for SCED / SCUC / OPF
+        \cite{Wu2022231,Chen20244723,Chen2022,Liu20223726,Wu2024391,Liang20246508} \\
+    \bottomrule
+  \end{tabularx}
+\end{table*}

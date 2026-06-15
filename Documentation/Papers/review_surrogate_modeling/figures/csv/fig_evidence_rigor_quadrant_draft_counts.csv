@@ -1,0 +1,13 @@
+doe_depth,validation_depth,dominant_role,dominant_family,n
+0,0,P1/P3 replacement,RBF / kernel,1
+0,1,P1/P3 replacement,Neural network,12
+0,2,P1/P3 replacement,RBF / kernel,7
+0,3,P1/P3 replacement,Neural network,2
+1,1,P1/P3 replacement,RBF / kernel,2
+1,2,P1/P3 replacement,Neural network,7
+2,1,P2 search acceleration,PCE / RSM,20
+2,2,P5 uncertainty,PCE / RSM,37
+2,3,P2 search acceleration,PCE / RSM,3
+3,1,P2 search acceleration,GP / kriging,14
+3,2,P5 uncertainty,GP / kriging,22
+3,3,P1/P3 replacement,Neural network,1

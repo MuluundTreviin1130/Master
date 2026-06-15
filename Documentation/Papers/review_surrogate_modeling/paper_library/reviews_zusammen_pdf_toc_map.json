@@ -1,0 +1,263 @@
+{
+  "stats": {
+    "pdf": "c:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Papers\\Journals\\Review\\Literatur\\Reviews\\Reviews zusammen.pdf",
+    "toc_level1_unique_titles": 70,
+    "plausible_article_titles": 35,
+    "unique_dois_matched_to_library": 14,
+    "title_not_found": 1,
+    "doi_found_but_not_in_library": 3
+  },
+  "unique_articles_matched": [
+    {
+      "doi": "10.1016/j.applthermaleng.2023.121871",
+      "cite_keys": [
+        "Manco2024"
+      ],
+      "toc_title": "A review on multi energy systems modelling and optimization",
+      "search_page_1based": 125
+    },
+    {
+      "doi": "10.1016/j.rser.2020.110195",
+      "cite_keys": [
+        "Fattahi2020"
+      ],
+      "toc_title": "A systemic approach to analyze integrated energy system modeling tools: A review of national models",
+      "search_page_1based": 151
+    },
+    {
+      "doi": "10.1016/j.compchemeng.2017.09.017",
+      "cite_keys": [
+        "Bhosekar2018"
+      ],
+      "toc_title": "Advances in surrogate based modeling, feasibility analysis, and optimization: A review",
+      "search_page_1based": 33
+    },
+    {
+      "doi": "10.1016/j.enbuild.2026.117238",
+      "cite_keys": [
+        "Zhang2026_building"
+      ],
+      "toc_title": "AI-driven surrogate modeling for performance-oriented parametric optimization in sustainable building design: a systematic  ...",
+      "search_page_1based": 105
+    },
+    {
+      "doi": "10.32604/ee.2025.070668",
+      "cite_keys": [
+        "Etghani2025"
+      ],
+      "toc_title": "Artificial Neural Networks and Taguchi Methods for Energy Systems Optimization: A Comprehensive Review",
+      "search_page_1based": 870
+    },
+    {
+      "doi": "10.1016/j.apenergy.2025.126995",
+      "cite_keys": [
+        "Tan2026"
+      ],
+      "toc_title": "Gaussian processes in power systems: Techniques, applications, and future works",
+      "search_page_1based": 74
+    },
+    {
+      "doi": "10.3390/en19051191",
+      "cite_keys": [
+        "Conti2026"
+      ],
+      "toc_title": "Hybrid Renewable Energy Systems",
+      "search_page_1based": 649
+    },
+    {
+      "doi": "10.1016/j.rser.2020.110206",
+      "cite_keys": [
+        "Klemm2021"
+      ],
+      "toc_title": "Modeling and optimization of multi-energy systems in mixed-use districts: A review of existing methods and approaches",
+      "search_page_1based": 167
+    },
+    {
+      "doi": "10.1016/j.solener.2019.01.037",
+      "cite_keys": [
+        "Elsheikh2019622"
+      ],
+      "toc_title": "Modeling of solar energy systems using artificial neural network: A comprehensive review",
+      "search_page_1based": 1
+    },
+    {
+      "doi": "10.1016/j.rser.2023.113377",
+      "cite_keys": [
+        "batista_optimizing_2023"
+      ],
+      "toc_title": "Optimizing methodologies of hybrid renewable energy systems powered reverse osmosis plants",
+      "search_page_1based": 755
+    },
+    {
+      "doi": "10.1016/j.est.2024.113688",
+      "cite_keys": [
+        "Zhou2024__2"
+      ],
+      "toc_title": "Renewable-storage sizing approaches for centralized and distributed renewable energy—A state-of-the-art review",
+      "search_page_1based": 19
+    },
+    {
+      "doi": "10.1016/j.apenergy.2025.125637",
+      "cite_keys": [
+        "Khaloie2025"
+      ],
+      "toc_title": "Review of machine learning techniques for optimal power flow",
+      "search_page_1based": 51
+    },
+    {
+      "doi": "10.1016/j.ijepes.2022.108698",
+      "cite_keys": [
+        "arar_tahir_scientific_2023"
+      ],
+      "toc_title": "Scientific mapping of optimisation applied to microgrids integrated with renewable energy systems",
+      "search_page_1based": 737
+    },
+    {
+      "doi": "10.1016/j.enbuild.2019.05.057",
+      "cite_keys": [
+        "Westermann2019"
+      ],
+      "toc_title": "Surrogate modelling for sustainable building design - A review",
+      "search_page_1based": 88
+    }
+  ],
+  "doi_not_in_library": [
+    {
+      "toc_title": "A comprehensive review of hydrogen integrated hybrid renewable energy systems: Configurations, models, simulation and optim ...",
+      "bookmark_page_1based": 199,
+      "search_page_1based": 199,
+      "doi_guess": "10.1016/j.gerr.2025.100165",
+      "cite_keys": [],
+      "in_library": false,
+      "note": ""
+    },
+    {
+      "toc_title": "Summary of the Contributions",
+      "bookmark_page_1based": 625,
+      "search_page_1based": 367,
+      "doi_guess": "10.3390/en19030768",
+      "cite_keys": [],
+      "in_library": false,
+      "note": ""
+    },
+    {
+      "toc_title": "Synthesis and Research Directions Across Forecasting, Control, and Resilience",
+      "bookmark_page_1based": 634,
+      "search_page_1based": 372,
+      "doi_guess": "10.3390/en19030768",
+      "cite_keys": [],
+      "in_library": false,
+      "note": ""
+    }
+  ],
+  "no_doi_or_failed": [
+    {
+      "toc_title": "Operational Challenges in Power Systems and Analytical Solutions",
+      "bookmark_page_1based": 625,
+      "search_page_1based": 477,
+      "doi_guess": null,
+      "cite_keys": [],
+      "in_library": false,
+      "note": ""
+    },
+    {
+      "toc_title": "Learning to Predict: From Uncertainty Inputs to Operational Insight",
+      "bookmark_page_1based": 634,
+      "search_page_1based": 484,
+      "doi_guess": null,
+      "cite_keys": [],
+      "in_library": false,
+      "note": ""
+    },
+    {
+      "toc_title": "Learning to Surrogate: Replacing Intractable Constraints",
+      "bookmark_page_1based": 637,
+      "search_page_1based": 494,
+      "doi_guess": null,
+      "cite_keys": [],
+      "in_library": false,
+      "note": ""
+    },
+    {
+      "toc_title": "Learning to Optimize: Neural Solvers for Operational Decision Problems",
+      "bookmark_page_1based": 644,
+      "search_page_1based": 496,
+      "doi_guess": null,
+      "cite_keys": [],
+      "in_library": false,
+      "note": ""
+    },
+    {
+      "toc_title": "Deployment Challenges for Deep Learning in Power System Operations",
+      "bookmark_page_1based": 648,
+      "search_page_1based": 477,
+      "doi_guess": null,
+      "cite_keys": [],
+      "in_library": false,
+      "note": ""
+    },
+    {
+      "toc_title": "2. Understanding model fidelity",
+      "bookmark_page_1based": 625,
+      "search_page_1based": 660,
+      "doi_guess": null,
+      "cite_keys": [],
+      "in_library": false,
+      "note": ""
+    },
+    {
+      "toc_title": "3. Domains of application",
+      "bookmark_page_1based": 634,
+      "search_page_1based": 663,
+      "doi_guess": null,
+      "cite_keys": [],
+      "in_library": false,
+      "note": ""
+    },
+    {
+      "toc_title": "﻿Machine learning applications in energy systems: current trends, challenges, and research directions",
+      "bookmark_page_1based": 807,
+      "search_page_1based": null,
+      "doi_guess": null,
+      "cite_keys": [],
+      "in_library": false,
+      "note": "title not found in PDF text"
+    },
+    {
+      "toc_title": "Analytical Surrogate Models for OPF",
+      "bookmark_page_1based": 637,
+      "search_page_1based": 852,
+      "doi_guess": null,
+      "cite_keys": [],
+      "in_library": false,
+      "note": ""
+    },
+    {
+      "toc_title": "Learned Surrogate Models for OPF",
+      "bookmark_page_1based": 644,
+      "search_page_1based": 853,
+      "doi_guess": null,
+      "cite_keys": [],
+      "in_library": false,
+      "note": ""
+    },
+    {
+      "toc_title": "Comparison of Analytical and Learned OPF Surrogates via Simulation Results",
+      "bookmark_page_1based": 648,
+      "search_page_1based": 859,
+      "doi_guess": null,
+      "cite_keys": [],
+      "in_library": false,
+      "note": ""
+    },
+    {
+      "toc_title": "Challenges and Future Directions",
+      "bookmark_page_1based": 649,
+      "search_page_1based": 75,
+      "doi_guess": null,
+      "cite_keys": [],
+      "in_library": false,
+      "note": ""
+    }
+  ]
+}

@@ -1,0 +1,1445 @@
+term,frequency
+Gaussian process,36
+electric load flow,30
+stochastic systems,29
+gaussian distribution,28
+gaussian noise electronic,27
+learning systems,26
+radial basis function networks,25
+power,19
+energy utilization,18
+iterative methods,18
+monte carlo methods,17
+learning algorithms,15
+smart power grids,15
+stochastic models,14
+algorithm,12
+acoustic generators,11
+probability distributions,11
+meta model,10
+investments,10
+cooling,9
+surface properties,9
+polynomials,9
+power generation,9
+electric utilities,8
+numerical model,8
+mean square error,8
+controllers,8
+numerical methods,8
+lithium ion batteries,8
+power markets,8
+gaussian method,8
+long short term memory,8
+functions,8
+computational modelling,7
+load modeling,7
+objective functions,7
+generator,7
+intelligent systems,7
+heating,7
+electric loads,7
+random processes,7
+interpolation,7
+reactive power,7
+distributed power generation,7
+energy resource,7
+prediction,7
+real time systems,6
+commerce,6
+energy resources,6
+performance assessment,6
+housing,6
+two term control systems,6
+computation theory,6
+fossil fuels,6
+sampling,6
+radial basis function rbf,6
+electricity,6
+charging batteries,6
+multi objective,6
+unit commitment,5
+accuracy assessment,5
+power control,5
+energy policy,5
+case studies,5
+heuristic algorithms,5
+quadratic programming,5
+chance constraint,5
+chance constrained,5
+system stability,5
+demand response,5
+benchmarking,5
+energy markets,5
+demand side management,5
+chaos expansions,5
+ions,5
+fuel additives,5
+probability,5
+real time,4
+detection method,4
+computational time,4
+radial basis functions,4
+power quality,4
+mixed integer linear,4
+hybrid systems,4
+greenhouse gases,4
+turing machines,4
+real time control,4
+load flow,4
+uranium compounds,4
+probabilistic power flow,4
+energy market,4
+electricity generation,4
+least squares approximations,4
+cogeneration plants,4
+secondary batteries,4
+day ahead,4
+distribution functions,4
+design,4
+energy transitions,4
+budget control,4
+performance,4
+predictive models,4
+probabilistic logics,4
+predictive control systems,4
+heating equipment,4
+expansion,4
+exergy,4
+modeling,3
+end to end,3
+electricity supply,3
+china,3
+learning based approach,3
+large scales,3
+mapping,3
+estimation method,3
+voltage control,3
+mapping relationships,3
+computer software,3
+fuel consumption,3
+electric losses,3
+phase change materials,3
+biofuel,3
+approximation algorithms,3
+interactive computer systems,3
+real time system,3
+learning,3
+nonlinear equations,3
+resource allocation,3
+markov processes,3
+matlab,3
+cooling systems,3
+integrated approach,3
+speed,3
+cogeneration,3
+information management,3
+feature extraction,3
+fuzzy inference,3
+three term control systems,3
+proportional control systems,3
+micro grid,3
+lagrange multipliers,3
+autonomous operations,3
+gas turbines,3
+clean energy,3
+convolution,3
+backpropagation,3
+bayesian analysis,3
+forestry,3
+power flows,3
+phasor measurement units,3
+bayesian networks,3
+strategic approach,3
+predictive analytics,3
+prediction accuracy,3
+resource adequacy,3
+design of experiments,3
+active learning,3
+multi fidelities,3
+probabilistics,3
+parameter estimation,3
+management systems,3
+hybrid vehicles,3
+calibration,3
+optimizers,3
+electric load management,3
+transient analysis,3
+hybrid model,3
+ships,2
+power plant,2
+physics based models,2
+electrokinesis,2
+network architecture,2
+transfer learning,2
+network security,2
+real time operation,2
+stability criterions,2
+wake,2
+pump,2
+equipment,2
+k means clustering,2
+transients,2
+value engineering,2
+large scale systems,2
+transient stability indices,2
+retrofit solutions,2
+retrofitting,2
+seasonal variation,2
+multicriteria analysis,2
+climate models,2
+cooling load,2
+energy consumption,2
+natural resources,2
+time series,2
+energy prediction,2
+adaptive boosting,2
+proportional integral controllers,2
+analysis of variance anova,2
+process based,2
+temperature control,2
+stochastic uncertainties,2
+probability density function,2
+voltage distribution measurement,2
+low voltage distribution system,2
+kernel,2
+embedded systems,2
+sales,2
+domestic appliances,2
+variance reduction techniques,2
+methane,2
+natural gasoline plants,2
+natural gas,2
+meta heuristic techniques,2
+stochastic programming,2
+comparative study,2
+waste heat,2
+heat exchangers,2
+energy conservation,2
+control strategies,2
+combined cooling heating and power,2
+structural dynamics,2
+mixed integer,2
+heat transfer,2
+energy use,2
+meteorology,2
+proportional integral derivatives,2
+electric frequency control,2
+power management,2
+electric inverters,2
+multi objective functions,2
+experimental design,2
+probabilistic load flow,2
+brain,2
+input output programs,2
+memory network,2
+capacity estimation,2
+errors,2
+firefly algorithms,2
+heuristic methods,2
+energy security,2
+distributed energy,2
+grid operation,2
+meta heuristics algorithms,2
+distributed computer systems,2
+function evaluation,2
+mimo systems,2
+air conditioning,2
+milp,2
+latin hypercube sampling,2
+data reduction,2
+management strategies,2
+multi task learning,2
+high dimensional,2
+aerodynamics,2
+root mean square errors,2
+thermodynamics,2
+extraction,2
+extreme learning machine,2
+state of the art,2
+knowledge acquisition,2
+ensemble learning,2
+input variables,2
+electric batteries,2
+turbine,2
+fuels,2
+hulls ship,2
+energy demands,2
+ground penetrating radar systems,2
+nearest neighbor search,2
+cosimulation,2
+training,2
+data set,2
+random variables,2
+convergence,2
+design method,2
+demand analysis,2
+electricity consumption,2
+prediction modelling,2
+condition,2
+weibull distribution,2
+dynamics,2
+synchronous machinery,2
+hvdc power transmission,2
+auxiliary equipment,2
+population statistics,2
+vehicle energy,2
+intrinsic mode functions,2
+empirical mode decomposition,2
+engine,2
+empirical analysis,2
+decomposition analysis,2
+algorithms,2
+historic preservation,2
+sliding mode control,2
+adaptive control systems,2
+predictive modeling,2
+compressive sensing,2
+compressed sensing,2
+power grids,2
+thyristor controlled series compensator,2
+induction motors,2
+automatic generation control,2
+generation controls,2
+automatic generation,2
+birds,2
+profitability,2
+externally fired gas turbines,2
+combustion,2
+power allocations,2
+combined cooling,2
+voltage regulators,2
+distributed generators,2
+coot bird metaheuristic optimizer,2
+metaheuristic,2
+exergy efficiencies,2
+ammonia,2
+global warming,2
+quality of service,2
+distribution systems,2
+gradient methods,2
+modeling data,2
+nuclear fuels,2
+marine vehicles,1
+powertrains,1
+ship propulsion,1
+model method,1
+virtual reality,1
+boundary parameters,1
+option selection,1
+deep integrations,1
+end to end e2e learning,1
+digitization,1
+technical constraints,1
+physic informed,1
+functionals,1
+behavioral research,1
+e learning,1
+xizang,1
+lhasa,1
+proton exchange membranes,1
+oxygen,1
+co production,1
+supervised learning,1
+engineering modeling,1
+security constrained unit commitment,1
+security constraint,1
+continuous variables,1
+computer architecture,1
+biological systems,1
+repair,1
+biological system modeling,1
+stability criteria,1
+computational expense,1
+small signal stability,1
+orders of magnitude,1
+simulation studies,1
+network structures,1
+graph representation,1
+reasoning procedures,1
+experimental study,1
+power estimations,1
+statistical criterion,1
+distillation,1
+wavelet transforms,1
+short term voltage stability,1
+stability,1
+electric industry,1
+deep belief networks,1
+control system stability,1
+electric load shedding,1
+extensive simulations,1
+deep belief network dbn,1
+tropics,1
+pollution control,1
+c++ programming language,1
+system configurations,1
+software implementation,1
+zurich,1
+operational energy,1
+computer simulation,1
+ecological footprint,1
+seismic retrofit,1
+greenhouse gas,1
+residential location,1
+community design,1
+domestic hot water,1
+performance targets,1
+residential house,1
+latitude,1
+district cooling,1
+high rise,1
+climate cooling,1
+hot and humid climate,1
+residential districts,1
+independent variables,1
+distribution system simulators,1
+distribution power flow analysis,1
+opendss,1
+active distribution networks,1
+times series,1
+times series models,1
+time series analysis,1
+distributed lag models,1
+application programs,1
+model and algorithms,1
+elasticity,1
+compensation mechanism,1
+maximum power point trackers,1
+maximum power point tracking,1
+different operating conditions,1
+generalized reduced gradient algorithms,1
+sulfur compounds,1
+saturated fatty acids,1
+scanning electron microscopy,1
+emulsion polymerization,1
+encapsulation,1
+sodium sulfate,1
+thermogravimetry analysis,1
+encapsulated phase change materials,1
+thermodynamic properties,1
+microencapsulation,1
+thermodynamic stability,1
+sodium dodecyl sulfate,1
+lauric acid,1
+process control,1
+thermogravimetric analysis,1
+emulsification,1
+polystyrenes,1
+styrene,1
+stochastic sampling,1
+active constraints,1
+stochastic variation,1
+transesterification process,1
+energy dispersive x ray spectroscopy,1
+enzymes,1
+titanium dioxide,1
+enzymatic transesterification,1
+transesterification,1
+bioenergy,1
+enzyme activity,1
+petroleum industry,1
+jatropha curcas oil,1
+nanomaterial,1
+synthetic fuels,1
+oxide minerals,1
+catalyst,1
+jatropha curcas,1
+international standards,1
+immobilization,1
+varanidae,1
+energy dispersive spectroscopy,1
+biodiesel,1
+biodiesel production,1
+concentration composition,1
+fourier transform infrared spectroscopy,1
+karhunen loeve expansion,1
+dimension reduction,1
+complex networks,1
+energy model,1
+systems policies,1
+computer models,1
+heuristics algorithm,1
+nerve cell,1
+human experiment,1
+consensus,1
+distributed framework,1
+resource management,1
+human,1
+theoretical study,1
+hard constraints,1
+gages,1
+image registration,1
+optimized production technology,1
+problem solving,1
+images registration,1
+computation time,1
+calculations,1
+active power loss,1
+benchmark functions,1
+volatile behaviors,1
+volatile behavioral pattern,1
+temperature standard,1
+serpentine,1
+drops,1
+pressure drop,1
+liquids,1
+cooling water,1
+temperature differences,1
+optimized solutions,1
+accurate computations,1
+inequality constraint,1
+constraint theory,1
+stochastic process model,1
+monte carlo sampling,1
+quantities of interests,1
+propagation of uncertainties,1
+transformer,1
+hosting capacity,1
+statistical feasibility,1
+chance constrained programming,1
+online systems,1
+knowledge guiding,1
+time of use pricing,1
+standard deviation,1
+statistics,1
+residential customers,1
+bat algorithms,1
+light emitting diodes,1
+index,1
+joint chance constraint,1
+classification accuracy,1
+importance sampling,1
+multi label classifications,1
+electricity industry,1
+atmospheric electricity,1
+health damage,1
+health,1
+fossil fuel,1
+generation expansion,1
+proven reserves,1
+k means++ clustering,1
+climate change,1
+contrastive learning,1
+solution quality,1
+solution mining,1
+bagged gradient boosted tree,1
+integrating machines,1
+nonnegative matrix decompositions,1
+markov chains,1
+effectiveness and efficiencies,1
+weather sensitive loads,1
+deterministic scenario,1
+stochastic programming model,1
+energy integration,1
+maximum likelihood estimation,1
+new energies,1
+mathematical transformations,1
+germany,1
+research work,1
+heating and cooling loads,1
+urban energy,1
+multi variables,1
+waste heat utilization,1
+grid interaction,1
+computational complexity,1
+borehole heat exchangers,1
+large scale applications,1
+boreholes,1
+computational chemistry,1
+setpoints,1
+heating energy consumption,1
+computational intelligence techniques,1
+energy plus,1
+parametrical and sensitivity analyze,1
+nuclear batteries,1
+parametric devices,1
+sensitivity analyzes,1
+multiprocessing programs,1
+recovery factors,1
+stochastic modeling,1
+well placement,1
+computer system recovery,1
+urban areas,1
+heat recovery factor,1
+ancillary service markets,1
+price determination,1
+community energy,1
+statistical methods,1
+geostatistical approach,1
+auto regressive integrated moving average,1
+spatio temporal models,1
+spatiotemporal correlation,1
+autoregressive moving average model,1
+weighted least squares,1
+leave one out cross validations,1
+water heating,1
+resistance heating,1
+heat resistance,1
+non convex programming,1
+mixed integer nonconvex programming,1
+variable mass flow,1
+mass transfer,1
+cluster analysis,1
+response performance,1
+cluster energy,1
+energy infrastructures,1
+price dynamics,1
+conceptual design,1
+electricity generation system,1
+price takers,1
+stochasticity,1
+sparse polynomials,1
+energy couplings,1
+coupling characteristic,1
+allocation methods,1
+sampling algorithm,1
+capacity allocation,1
+system capacity,1
+allocation model,1
+ball grid arrays,1
+fitness evaluations,1
+personnel training,1
+corresponding solutions,1
+fuzzy systems,1
+stochastic behavior,1
+demand response programs,1
+adaptive neuro fuzzy inference system,1
+multi layer perceptron,1
+fractional order controllers,1
+frequency controllers,1
+stiction,1
+fractional order control,1
+proportional integral derivative controllers,1
+asymptotic stability,1
+novel applications,1
+stand alone modes,1
+symmetrical fault,1
+sizing,1
+dynamic programming,1
+technology application,1
+current,1
+digital technologies,1
+system transitions,1
+knowledge based systems,1
+net zero,1
+digitisation,1
+future challenges,1
+data privacy,1
+low enthalpy reservoir,1
+systems analysis,1
+modeler bias,1
+heterogeneity,1
+low enthalpies,1
+exhaust gas recirculation,1
+convergence difficulty,1
+fossil fuel power plants,1
+electrical power production,1
+dual layers,1
+supply/demand balance,1
+generalized polynomials,1
+kernel structure,1
+game theory,1
+internet protocols,1
+manual,1
+proposal,1
+network augmentation,1
+short term electrical loads,1
+ensemble prediction,1
+three fold cross validation,1
+fuzzy clustering method,1
+fuzzy clustering,1
+inter day data,1
+random initialization,1
+trees mathematics,1
+acquisition function,1
+annealing,1
+network models,1
+university campus,1
+university campus load,1
+probabilistic models,1
+collaborative carrier transport,1
+fast fading aging,1
+temperature,1
+fast fading,1
+collaborative filtering,1
+carriers transport,1
+remaining capacity,1
+kernel function,1
+local mean decompositions,1
+lssvm,1
+bioluminescence,1
+fossil fuel generators,1
+nonlinear benchmark,1
+netherlands,1
+metaheuristics,1
+meta heuristic approach,1
+meta heuristic methods,1
+fossil fuel deposits,1
+charging loads,1
+electrical vehicles,1
+prediction interval,1
+feasibility analysis,1
+model selection,1
+computationally expensive,1
+variable complexity,1
+multi fidelity,1
+variable fidelity,1
+dynamic learning,1
+advanced analytics,1
+data streams,1
+static power flow learning,1
+future prospect,1
+static power,1
+physics informed,1
+early design,1
+mathematical modelling,1
+urban districts,1
+modeling tools,1
+mixed use districts,1
+soft linking models,1
+multi criteria analysis,1
+hard linking models,1
+energy modeling challenges,1
+model integration,1
+bibliometric analysis,1
+gra,1
+taguchi,1
+centralised,1
+capacity sizing,1
+distributed energy resources,1
+sampling strategies,1
+cloning,1
+infilling,1
+vapor compression plant,1
+finite automata,1
+low floor,1
+humidity control,1
+quadratic programs,1
+recirculations,1
+actinium,1
+degrees of freedom mechanics,1
+optical pumping,1
+multi input multi output,1
+vapor compression refrigeration,1
+tellurium,1
+pulse width modulation,1
+ordered set,1
+coefficient of performance,1
+heat exchanger network,1
+minlp,1
+indoor air,1
+hvac,1
+outdoor air,1
+sos 2,1
+compressed air,1
+heat flow,1
+multi temperature heat demand,1
+pressure vessels,1
+probabilistic structures,1
+bayesian approaches,1
+management practice,1
+brine,1
+expedite computations,1
+transition functions,1
+complexity,1
+reservoir management,1
+wireless power transfer wpt,1
+substrate integrated waveguides,1
+high frequency electronics,1
+signal integrity,1
+millimeter waves,1
+wireless power transfer,1
+substrates,1
+inductive power transmission,1
+additives,1
+titration,1
+busbars,1
+turbine components,1
+turbomachine blades,1
+turbine blade,1
+aero dynamic performance,1
+saddle point approximation,1
+short term memory,1
+nei monggol,1
+shared weight,1
+electrochemical impedance spectroscopy,1
+operations technology,1
+nonlinear behavior,1
+accurate measurement,1
+aging,1
+extraction method,1
+prognostics and health managements,1
+degradation,1
+feature extraction methods,1
+fast charging batteries,1
+remaining useful lives,1
+tabu search,1
+high dimensionality,1
+fuzzy mathematics,1
+performance monitoring,1
+training algorithms,1
+turbine performance,1
+non parametric model,1
+radial based function,1
+markov chain,1
+short term load forcasting,1
+power supply,1
+time delay,1
+systematic error,1
+statistical bias,1
+validation process,1
+hybrid learning approach,1
+velocity of particles,1
+controlled study,1
+delayed information,1
+generalization performance,1
+vectors,1
+comparatives studies,1
+balancing,1
+hybrid electric aircraft,1
+mission analyse,1
+flight mission,1
+propulsion,1
+energy source,1
+aircraft,1
+aerodynamic effect,1
+electrification,1
+vehicle performance,1
+fully coupled,1
+electric aircrafts,1
+ship hull form,1
+ship hull form design,1
+smart manufacturing,1
+form design,1
+energy efficient design,1
+simulation based designs,1
+stability analyze,1
+prediction algorithms,1
+ground penetrating radar,1
+classification algorithm,1
+meteorological condition,1
+geophysical prospecting,1
+performance estimation,1
+power distribution grids,1
+automatic relevance determination,1
+predictive control strategy,1
+engines,1
+district modeling,1
+generalization capacity,1
+auto regressive,1
+confidence interval,1
+data science,1
+zoning,1
+load estimation,1
+pulse code modulation,1
+phase change,1
+peak demand,1
+operational strategies,1
+robotics,1
+nonlinear approximation,1
+nonlinear systems,1
+comparison with a standard,1
+control systems,1
+ecology,1
+payback periods,1
+discounted payback period,1
+boilers,1
+investment return rate,1
+investment returns,1
+integrated circuit design,1
+uncertain energy market,1
+gauss hermite quadrature,1
+stochastic collocation method,1
+chaos theory,1
+sparse grid,1
+nested property,1
+non gaussian uncertainties,1
+parameterization,1
+energy liberalization,1
+security of supply,1
+computational requirements,1
+iterative methodology,1
+optimum configurations,1
+statistical characterization,1
+network function virtualization,1
+vertical stabilizers,1
+theoretical framework,1
+successive iteration,1
+shrinkage,1
+optimized configuration,1
+active searches,1
+nearest neighbour,1
+knnr,1
+labeled data,1
+large datasets,1
+multilevel monte carlo,1
+resource adequacy assessment,1
+labelings,1
+multilevels,1
+complexity theory,1
+lagrangian relaxations,1
+miso communication,1
+iso,1
+power flow analyze,1
+varying topologies,1
+load flow control,1
+efficient power,1
+multi fidelity data fusion,1
+control schemes,1
+flow control,1
+knowledge management,1
+knowledge transfer,1
+knowledge,1
+heat extraction,1
+hong kong,1
+space cooling,1
+energy budget,1
+air temperature,1
+urban heat island,1
+cooling degree days,1
+climate conditions,1
+atmospheric temperature,1
+heat island,1
+temperature effect,1
+energy requirements,1
+extreme heat,1
+cooling energy,1
+urban area,1
+extreme event,1
+specific capacities,1
+ni content,1
+cathodes,1
+cathode active material,1
+cycle lives,1
+systems engineering,1
+ion batteries,1
+ambients,1
+fast transfer,1
+lithium ions,1
+different ambient temperature,1
+state of charge,1
+state of charge estimation,1
+quad rotors,1
+physical dynamics,1
+prediction models,1
+minimum energy trajectories,1
+instrumentation,1
+network process,1
+composite,1
+residual model,1
+learning methods,1
+model learning,1
+fires,1
+wildfire,1
+weather condition,1
+conductor,1
+dynamic behaviors,1
+grid following,1
+inverter based resource,1
+steady state analysis,1
+open systems,1
+inverter based,1
+open source,1
+industry standards,1
+industrial electronics,1
+developing countries,1
+black widow algorithm,1
+clean energy sources,1
+piecewise linear techniques,1
+variable dc bus voltage control,1
+power conversion loss,1
+dc bus voltages,1
+power conversion,1
+nerual networks,1
+conversion loss,1
+model calibration,1
+bayesian methods,1
+inference engines,1
+parameters estimation,1
+differential equations,1
+real systems,1
+preferred solutions,1
+interactive methods,1
+computer,1
+survey design,1
+electric network parameters,1
+ultra high voltage direct current,1
+multi objective evaluations,1
+latin hypercube designs,1
+dynamic reactive power compensations,1
+field synchronous machines,1
+synchronous condensers,1
+altitude control,1
+power production,1
+statistical mechanics,1
+cultivation,1
+mean absolute percentage error,1
+agricultural energy consumption,1
+productivity,1
+agricultural energy,1
+coefficient of determination,1
+agricultural robots,1
+inverter,1
+finite element method,1
+electromagnetics,1
+flux weakening,1
+electric discharges,1
+interior permanent magnet synchronous machines,1
+wheels,1
+permanent magnets,1
+flywheels,1
+high speed interior permanent magnet synchronoi machine,1
+mechanical,1
+flywheel propulsion,1
+discharge electric,1
+high speed,1
+rotor mechanical strength,1
+sorting,1
+artificial bee colony,1
+artificial bees,1
+screening,1
+dynamic reference space clustering,1
+space clustering,1
+electric hydraulic,1
+hydraulic vehicles,1
+decentralised,1
+alternating directions method of multipliers,1
+alternating direction method of multiplier,1
+multi agent,1
+physics modeling,1
+multi agent systems,1
+islanding conditions,1
+pattern learning,1
+object oriented programming,1
+islanding detection,1
+signal processing,1
+signal selection,1
+alberta,1
+canada,1
+spain,1
+nonintrusive load monitoring,1
+hidden markov models,1
+feature ranking,1
+signal decomposition,1
+signal resolution,1
+heterogeneous classifiers,1
+classification of information,1
+auto correlation,1
+features extraction,1
+benders decompositions,1
+higher dimensional,1
+time series simulation,1
+complementary ensemble empirical mode decomposition,1
+sample entropy,1
+multi model fusion,1
+entropy,1
+load components,1
+zero crossing rate,1
+probabilistic technique,1
+statistical distribution,1
+probabilistic load flow analysis,1
+voltage unbalance factors,1
+probabilistic forecasts,1
+predictive distributions,1
+spatial distribution,1
+deterministic forecasts,1
+electrical power,1
+state of health,1
+accurate estimation,1
+partial charges,1
+integrated gradient,1
+probabilistic state of health prediction,1
+mean absolute error,1
+short term load forecast,1
+number of hidden neurons,1
+hidden neurons,1
+stochastic search algorithms,1
+stlf,1
+neurons,1
+montecarlo methods,1
+meta modeling sensitivity analyse,1
+heating load,1
+european directive,1
+retrofit measures,1
+laws and legislation,1
+calibration process,1
+generator parameters,1
+estimated parameter,1
+synchrophasor measurements,1
+wages,1
+low pressures,1
+parameters calibrations,1
+surface algorithm,1
+quantitative analysis,1
+differentiators,1
+feedback control,1
+high gain,1
+invariance,1
+maximum power extractions,1
+third order sliding mode control,1
+high gain differentiator,1
+third order sliding modes,1
+fourier transforms,1
+systems performance,1
+boolean functions,1
+expert knowledge,1
+mathematical programming,1
+unit commitment problems,1
+actor critic,1
+demand prediction,1
+novel methodology,1
+probability estimate,1
+contingency management,1
+analytical formulation,1
+alternating direction method of multipliers,1
+polynomial approximation,1
+statistical information,1
+multivariate polynomial,1
+power transmission lines,1
+clean energy transition,1
+transmission line measurements,1
+electric lines,1
+power predictions,1
+quality control,1
+fuel supply,1
+fully integrated,1
+integral part,1
+model structures,1
+computational methods,1
+computation model,1
+type ii,1
+input features,1
+powerloss,1
+cuckoo searches,1
+ant lion optimizer,1
+bus transmission,1
+bus voltage,1
+gravitational search algorithms,1
+hybrid techniques,1
+thyristors,1
+gravitational search algorithm gsa,1
+mechatronics,1
+convex functions,1
+dc dc converters,1
+vehicles,1
+computational model,1
+electric drives,1
+pins,1
+traction motors,1
+alternating current opf,1
+alternating current,1
+electric impedance measurement,1
+reproducibility of results,1
+swarm intelligence,1
+reproducibility,1
+animals,1
+bird,1
+animal,1
+transportation network,1
+dynamic wireless charging,1
+wireless charging,1
+grid expansions,1
+cheju cheju prvisl,1
+monte carlo s simulation,1
+capacity factors,1
+probabilistic modeling,1
+weibull,1
+supply chains,1
+strategic investments,1
+supply chain network,1
+capacity expansion,1
+learning frameworks,1
+transmissions,1
+offshore oil well production,1
+offshore structure,1
+first principle simulation,1
+automatic model generation,1
+automation,1
+physics based modeling,1
+sweden,1
+marginal electricities,1
+market conditions,1
+electricity production,1
+system performance analysis,1
+rice,1
+india,1
+rice husk,1
+bio energy,1
+gasification,1
+power to gas,1
+methane production,1
+advanced biofuels,1
+gas industry,1
+electricity system,1
+chemical energy,1
+flexible operation,1
+steam,1
+steam generation,1
+electrification in industry,1
+heat demands,1
+software,1
+multicomponents,1
+high temperature,1
+level of contributions,1
+energy analysis,1
+refrigerators,1
+absorption cooling,1
+thermodynamic modelling,1
+multi layer feed forward,1
+methanol,1
+resnet,1
+small modular reactors,1
+1 d cnn,1
+transcritical cycle,1
+maximum loadability,1
+perfect foresights,1
+sharing information,1
+proportional load sharing,1
+dynamic droop control,1
+resistance,1
+energy distributions,1
+q learning,1
+droop control,1
+frequency regulations,1
+fractional order,1
+order types,1
+improvised moth swarm algorithm,1
+electric control equipment,1
+fractional order type 2 fuzzy controller,1
+type 2 fuzzy,1
+swarm algorithms,1
+fuzzy controllers,1
+nonlinear load,1
+control design,1
+tubes components,1
+pi control,1
+adaptive control,1
+stackelberg games,1
+market competition,1
+game strategies,1
+trading mechanism,1
+competition,1
+energy routers,1
+energy routing,1
+stochastics,1
+routing performance,1
+smart power,1
+energy internet,1
+municipal solid waste,1
+biogas energy,1
+rankine cycle,1
+fermentation,1
+parameter analysis,1
+biogas,1
+multi generations,1
+4e,1
+firedamp,1
+flight control systems,1
+load testing,1
+gas pipeline,1
+outages,1
+multiple cascading failure,1
+computer programming,1
+cascading failures,1
+failure analysis,1
+maximum mean discrepancy,1
+exponential algorithms,1
+adaptive pi controllers,1
+proportional plus integral controllers,1
+numerical method,1
+complementary energy,1
+model validation,1
+reductions,1
+simulation response,1
+transient simulation,1
+hybrid power,1
+tri generation,1
+experimental design techniques,1
+weighted sum approaches,1
+islanding,1
+short term simulation,1
+smart distribution systems,1
+distribution operations,1
+preventive maintenance,1
+state transitions,1
+gaussian mixture model,1
+multi objective state transition algorithm,1
+inverse problems,1
+objective approaches,1
+electric equipment protection,1
+directional over current relays,1
+relay coordination,1
+operating time,1
+system analysis computing,1
+power distribution faults,1
+circuit breakers,1
+ship designs,1
+power distributions,1
+timing circuits,1
+contactor,1
+electric circuit breakers,1
+rectifying circuits,1
+distributed energies,1
+electrical hub,1
+existing energies,1
+high degree of accuracy,1
+variance analysis,1
+advanced technology,1
+system operator,1
+plant distributions,1
+local energy market,1
+local energy,1
+data enhancement,1
+conservation voltage reductions,1
+tractable reformulation,1
+fuzzy approach,1
+intermittent energy,1
+ontario canada,1
+input/output datum,1
+hybrid,1
+modified deep q network,1
+interval prediction,1
+energy interval,1
+electricity distribution systems,1
+matrix laboratories,1
+operational performance,1
+privacy by design,1
+electricity market modelling,1
+market driven,1
+trajectories,1
+transient stability assessment,1
+probabilistic transient stability,1
+physic informed graphical learning,1
+learning approach,1
+energy flow,1
+energy transfer,1
+transient stability constraints,1
+model driven,1
+conventional approach,1
+electromagnetic transients,1
+transient stability,1
+transient stability analysis,1
+preventive control,1
+stability constraints,1
+spatiotemporal analysis,1
+australia,1
+load forecast,1
+multitask learning,1
+end to end learning,1
+deep deterministic policy gradient,1
+edge computing,1
+policy gradient,1
+power grid networks,1
+mobile edge computing,1
+task dependencies,1
+computing power,1
+deterministics,1
+mobile edge computing network,1
+gradient based,1
+active network management,1
+grid control,1
+three phasis,1
+load,1
+multi modal,1
+spatio temporal graphs,1
+three phase,1
+vehicle to grid,1
+derivative free algorithm,1
+sampling based,1
+adaptive sampling,1
+real world system,1
+multiple inputs,1
+learn+,1
+multiple outputs,1
+access points,1
+cell free,1
+learn to optimize l2o,1
+cell free massive multiple input multiple output,1
+hybrid model data approach,1
+transient model,1
+multi objective trade off,1
+trade off,1
+system dynamics,1
+energy mix model,1
+energy mix,1
+united states,1
+system theory,1
+green,1
+energy supplies,1
+high fidelity modeling,1
+industrial processs,1
+low fidelity models,1
+simulink,1
+multi fidelity models,1
+dynamic controls,1
+dynamic power control,1
+nuclear power plants,1
+multilayers perceptrons,1
+fast reactors,1
+simulators,1
+lfr,1
+system development,1
+sarax,1
+nuclear energy,1
+current voltage formulation,1
+current voltage,1
+galerkin methods,1
+auxiliary variables,1
+plate type,1
+deionized water,1
+3d modeling,1
+measurements of,1
+numerical models,1
+phase change material,1
+heat transfer performance,1
+plates structural components,1
+doubly fed induction generators,1
+electric fault currents,1
+cooperation control,1
+reactive power capacity,1
+electric machine control,1
+convergence analysis,1
+asynchronous generators,1
+expression simplification,1
+active power control,1
+curve fitting,1
+exploitation and explorations,1
+error correction,1
+linear programing,1
+generalization ability,1
+cutting tools,1
+performance degradation,1
+machine design,1
+configuration parameters,1
+deterioration,1
+machinery,1
+management and conservations,1
+temporal granularity,1
+surveys,1
+experimental modeling,1
+algorithm performance,1
+numerical algorithms,1
+iteration algorithms,1
+residential dwelling,1
+predictive variables,1
+non parametric bayesian,1
+innovative approaches,1
+base models,1
+high accuracy,1
+model based opc,1
+computational accuracy,1
+multi fidelity modeling,1
+least squares method,1
+physical constraints,1
+deregulation,1
+cultural algorithm,1
+flat plate collector,1
+insulating glass,1
+long term scenarios,1
+multiple uncertainties,1
+security region boundary,1
+galerkin projection,1
+micro gas turbine,1
+trust region,1
+micro energy grid,1

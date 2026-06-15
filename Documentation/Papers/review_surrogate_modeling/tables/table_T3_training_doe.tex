@@ -1,0 +1,66 @@
+% Table T3 - Training data and design-of-experiments practice for
+% surrogate-assisted MES / energy-system optimization.
+% Each refs. cell: 2-5 cite keys aligned with manuscript claims.
+
+\begin{table*}[!t]
+  \centering
+  \footnotesize
+  \caption{Training data and design-of-experiments practice for
+  surrogate-assisted multi-energy-system and wider energy-system
+  optimization. ``Pairs naturally with'' lists surrogate families most
+  often combined with the strategy in the screened pool; ``Typical task''
+  lists the host optimization where the strategy is most often reported.}
+  \label{tab:T3-doe}
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabularx}{\textwidth}{@{}L{0.18\textwidth} L{0.30\textwidth} L{0.20\textwidth} L{0.26\textwidth}@{}}
+    \toprule
+    Strategy & Description & Pairs naturally with & Typical task (refs.) \\
+    \midrule
+    Latin hypercube sampling
+      & One sample per input stratum for even hyper-cube coverage before metamodel fitting
+      & Kriging, RBF, GP
+      & Multi-carrier microgrid and DES planning, solar district heating, dispatch emulation
+        \cite{Liu201914569,Seele20232480,Summ2025,Zhang2025__7,Hu2021671} \\
+    Sobol / quasi-MC
+      & Structured uncertainty points for polynomial-chaos propagation in stochastic optimization
+      & PCE, sparse grid
+      & Integrated energy dispatch and security regions; stochastic dispatch and chance-constrained OPF
+        \cite{Dong2023,Jiang2026620,Gaitanis2026,Safta20172535,Lu201991827} \\
+    Factorial / fractional FD
+      & All or reduced combinations of discrete factor levels for response-surface fitting
+      & RSM, GPR, low-order PCE
+      & CCHP and integrated energy system design, hydrogen and geothermal planning
+        \cite{Salahinezhad2025,Liu2025__4,Roy2023,Ahmad202451,Schulte2020} \\
+    Adaptive sampling
+      & Adds expensive model runs during search via infill or model-management rules
+      & Kriging, RBF, GP
+      & Multi-carrier microgrid planning, fuel-cell calibration, building energy design
+        \cite{Liu201914569,Zhang2025__7,Aghaei Pour2022303,Granacher20221573,Lin2023} \\
+    Active learning (BO)
+      & Acquisition function or active-learning rule selects the next high-fidelity run
+      & GP (preferred), kNN, ensembles
+      & Integrated energy systems, geothermal design, energy-market assessment
+        \cite{Griffith2025,Chen2025244,Chakrabarty2021,Uhrich2026211,Matta2026} \\
+    Multi-fidelity training
+      & Combines cheap low-fidelity sweeps with sparse high-fidelity evaluations
+      & Co-kriging, multi-fidelity GNN, MF GP
+      & Geothermal flow control, nuclear--renewable hybrid plants
+        \cite{Chen2025244,Chung2023} \\
+    Transfer learning
+      & Reuses a trained surrogate in a new context with few new runs
+      & NN, GBDT, GP
+      & Battery state-of-charge across ambient conditions
+        \cite{Chen202514792} \\
+    Counterfactual / synthetic
+      & Objectives and constraints from repeated high-fidelity model runs at prescribed inputs
+      & NN / L2O proxies, RSM, GP
+      & SCED/SCUC and OPF proxies; MES, DH and process superstructure metamodels
+        \cite{Liu20223726,Wu2022231,Liu201914569,Sánchez-Zabala2024,Granacher20221573} \\
+    Historical operational data
+      & Past measurements; serial correlation and future information leakage if not handled
+      & NN, GBDT, GP residuals
+      & Multi-carrier and single-carrier load/renewable forecasting for downstream planning
+        \cite{Shi2024__2,Dong2024,Koschwitz2018134,Bianchi2020244,Eseye201991463} \\
+    \bottomrule
+  \end{tabularx}
+\end{table*}

@@ -1,0 +1,70 @@
+family,integration_role,trust_signal,n
+Constraint-aware NN,P1/P3 direct replacement,Constraint-aware,14
+Constraint-aware NN,P1/P3 direct replacement,Decision-aware / validation,2
+Constraint-aware NN,P2 search acceleration,Constraint-aware,1
+Constraint-aware NN,P5 uncertainty handling,Constraint-aware,11
+Decision-focused / L2O,P1/P3 direct replacement,Decision-aware / validation,14
+Decision-focused / L2O,P4 decomposition,Decision-aware / validation,1
+Decision-focused / L2O,P5 uncertainty handling,Decision-aware / validation,1
+GP / kriging,P1/P3 direct replacement,Adaptive / BO,1
+GP / kriging,P1/P3 direct replacement,Basic / unspecified,7
+GP / kriging,P1/P3 direct replacement,Constraint-aware,2
+GP / kriging,P1/P3 direct replacement,Uncertainty-aware,3
+GP / kriging,P2 search acceleration,Adaptive / BO,15
+GP / kriging,P2 search acceleration,Basic / unspecified,3
+GP / kriging,P2 search acceleration,Decision-aware / validation,2
+GP / kriging,P2 search acceleration,Uncertainty-aware,1
+GP / kriging,P4 decomposition,Basic / unspecified,4
+GP / kriging,P5 uncertainty handling,Constraint-aware,2
+GP / kriging,P5 uncertainty handling,Uncertainty-aware,19
+GP / kriging,Weak / input proxy,Basic / unspecified,16
+GP / kriging,Weak / input proxy,Physics-informed,2
+Hybrid / PINN,P1/P3 direct replacement,Physics-informed,2
+Hybrid / PINN,P2 search acceleration,Physics-informed,1
+Hybrid / PINN,P5 uncertainty handling,Physics-informed,1
+Hybrid / PINN,Weak / input proxy,Physics-informed,4
+Neural network,P1/P3 direct replacement,Adaptive / BO,1
+Neural network,P1/P3 direct replacement,Basic / unspecified,7
+Neural network,P1/P3 direct replacement,Constraint-aware,1
+Neural network,P1/P3 direct replacement,Decision-aware / validation,11
+Neural network,P1/P3 direct replacement,Physics-informed,1
+Neural network,P1/P3 direct replacement,Uncertainty-aware,2
+Neural network,P2 search acceleration,Adaptive / BO,4
+Neural network,P2 search acceleration,Basic / unspecified,7
+Neural network,P2 search acceleration,Uncertainty-aware,3
+Neural network,P4 decomposition,Basic / unspecified,1
+Neural network,P5 uncertainty handling,Uncertainty-aware,10
+Neural network,Weak / input proxy,Basic / unspecified,21
+Neural network,Weak / input proxy,Decision-aware / validation,2
+Neural network,Weak / input proxy,Physics-informed,2
+PCE / RSM,P1/P3 direct replacement,Basic / unspecified,2
+PCE / RSM,P1/P3 direct replacement,Constraint-aware,6
+PCE / RSM,P1/P3 direct replacement,Uncertainty-aware,7
+PCE / RSM,P2 search acceleration,Adaptive / BO,2
+PCE / RSM,P2 search acceleration,Basic / unspecified,8
+PCE / RSM,P2 search acceleration,Constraint-aware,1
+PCE / RSM,P2 search acceleration,Decision-aware / validation,1
+PCE / RSM,P2 search acceleration,Uncertainty-aware,2
+PCE / RSM,P5 uncertainty handling,Constraint-aware,5
+PCE / RSM,P5 uncertainty handling,Decision-aware / validation,1
+PCE / RSM,P5 uncertainty handling,Uncertainty-aware,16
+PCE / RSM,Weak / input proxy,Basic / unspecified,12
+RBF / kernel,P1/P3 direct replacement,Basic / unspecified,13
+RBF / kernel,P1/P3 direct replacement,Constraint-aware,1
+RBF / kernel,P1/P3 direct replacement,Uncertainty-aware,1
+RBF / kernel,P2 search acceleration,Adaptive / BO,1
+RBF / kernel,P2 search acceleration,Basic / unspecified,3
+RBF / kernel,P2 search acceleration,Uncertainty-aware,1
+RBF / kernel,P4 decomposition,Basic / unspecified,1
+RBF / kernel,P5 uncertainty handling,Decision-aware / validation,1
+RBF / kernel,P5 uncertainty handling,Uncertainty-aware,6
+RBF / kernel,Weak / input proxy,Basic / unspecified,15
+RBF / kernel,Weak / input proxy,Decision-aware / validation,1
+RBF / kernel,Weak / input proxy,Physics-informed,2
+Tree ensembles,P1/P3 direct replacement,Basic / unspecified,2
+Tree ensembles,P1/P3 direct replacement,Decision-aware / validation,1
+Tree ensembles,P2 search acceleration,Adaptive / BO,2
+Tree ensembles,P4 decomposition,Basic / unspecified,1
+Tree ensembles,P4 decomposition,Decision-aware / validation,1
+Tree ensembles,P5 uncertainty handling,Uncertainty-aware,1
+Tree ensembles,Weak / input proxy,Basic / unspecified,7

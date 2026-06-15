@@ -1,0 +1,243 @@
+panel,x,y,signal,n
+A_bubble,P1/P3 replace,Constraint NN,constraint,14
+A_bubble,P2 accelerate,Constraint NN,constraint,1
+A_bubble,P5 uncertainty,Constraint NN,constraint,11
+A_bubble,Input / weak,GP/Kriging,basic,15
+A_bubble,P1/P3 replace,GP/Kriging,adaptive,1
+A_bubble,P1/P3 replace,GP/Kriging,basic,7
+A_bubble,P1/P3 replace,GP/Kriging,uncertainty,3
+A_bubble,P2 accelerate,GP/Kriging,adaptive,15
+A_bubble,P2 accelerate,GP/Kriging,basic,3
+A_bubble,P2 accelerate,GP/Kriging,decision,1
+A_bubble,P2 accelerate,GP/Kriging,uncertainty,1
+A_bubble,P4 decompose,GP/Kriging,basic,4
+A_bubble,P5 uncertainty,GP/Kriging,uncertainty,18
+A_bubble,Input / weak,Hybrid/PINN,physics,4
+A_bubble,P1/P3 replace,Hybrid/PINN,physics,2
+A_bubble,P2 accelerate,Hybrid/PINN,physics,1
+A_bubble,P5 uncertainty,Hybrid/PINN,physics,1
+A_bubble,P1/P3 replace,L2O,decision,14
+A_bubble,P4 decompose,L2O,decision,1
+A_bubble,P5 uncertainty,L2O,decision,1
+A_bubble,Input / weak,NN,basic,9
+A_bubble,Input / weak,NN,decision,1
+A_bubble,P1/P3 replace,NN,adaptive,1
+A_bubble,P1/P3 replace,NN,basic,2
+A_bubble,P1/P3 replace,NN,uncertainty,2
+A_bubble,P2 accelerate,NN,adaptive,2
+A_bubble,P2 accelerate,NN,basic,6
+A_bubble,P2 accelerate,NN,uncertainty,3
+A_bubble,P5 uncertainty,NN,uncertainty,3
+A_bubble,Input / weak,PCE/RSM,basic,12
+A_bubble,P1/P3 replace,PCE/RSM,basic,2
+A_bubble,P1/P3 replace,PCE/RSM,uncertainty,7
+A_bubble,P2 accelerate,PCE/RSM,adaptive,2
+A_bubble,P2 accelerate,PCE/RSM,basic,8
+A_bubble,P2 accelerate,PCE/RSM,decision,1
+A_bubble,P2 accelerate,PCE/RSM,uncertainty,2
+A_bubble,P5 uncertainty,PCE/RSM,decision,1
+A_bubble,P5 uncertainty,PCE/RSM,uncertainty,16
+A_bubble,Input / weak,RBF/Kernel,basic,12
+A_bubble,Input / weak,RBF/Kernel,decision,1
+A_bubble,P1/P3 replace,RBF/Kernel,basic,9
+A_bubble,P1/P3 replace,RBF/Kernel,uncertainty,1
+A_bubble,P2 accelerate,RBF/Kernel,basic,2
+A_bubble,P2 accelerate,RBF/Kernel,uncertainty,1
+A_bubble,P5 uncertainty,RBF/Kernel,uncertainty,6
+A_bubble,Input / weak,Tree,basic,2
+A_bubble,P1/P3 replace,Tree,basic,1
+A_bubble,P2 accelerate,Tree,adaptive,2
+A_bubble,P4 decompose,Tree,basic,1
+A_bubble,P5 uncertainty,Tree,uncertainty,1
+B_alluvial_record,P5 uncertainty,GP/Kriging,Uncertainty,1
+B_alluvial_record,P1/P3 replace,GP/Kriging,Feasibility,1
+B_alluvial_record,P1/P3 replace,NN,Point metrics,1
+B_alluvial_record,P5 uncertainty,GP/Kriging,Uncertainty,1
+B_alluvial_record,P1/P3 replace,NN,Point metrics,1
+B_alluvial_record,P1/P3 replace,PCE/RSM,Uncertainty,1
+B_alluvial_record,P1/P3 replace,NN,Point metrics,1
+B_alluvial_record,P1/P3 replace,PCE/RSM,Feasibility,1
+B_alluvial_record,P4 decompose,GP/Kriging,Point metrics,1
+B_alluvial_record,P2 accelerate,GP/Kriging,Point metrics,1
+B_alluvial_record,P2 accelerate,RBF/Kernel,Uncertainty,1
+B_alluvial_record,P2 accelerate,NN,Feasibility,1
+B_alluvial_record,P2 accelerate,GP/Kriging,Point metrics,1
+B_alluvial_record,P2 accelerate,PCE/RSM,Point metrics,1
+B_alluvial_record,P2 accelerate,PCE/RSM,Point metrics,1
+B_alluvial_record,P1/P3 replace,PCE/RSM,Uncertainty,1
+B_alluvial_record,P2 accelerate,NN,Point metrics,1
+B_alluvial_record,P2 accelerate,NN,Point metrics,1
+B_alluvial_record,P4 decompose,PCE/RSM,Feasibility,1
+B_alluvial_record,P2 accelerate,PCE/RSM,Feasibility,1
+B_alluvial_record,P2 accelerate,PCE/RSM,Stress test,1
+B_alluvial_record,P2 accelerate,PCE/RSM,Point metrics,1
+B_alluvial_record,P2 accelerate,PCE/RSM,Feasibility,1
+B_alluvial_record,P2 accelerate,NN,Uncertainty,1
+B_alluvial_record,P2 accelerate,PCE/RSM,Uncertainty,1
+B_alluvial_record,P2 accelerate,PCE/RSM,Feasibility,1
+B_alluvial_record,P2 accelerate,PCE/RSM,Point metrics,1
+B_alluvial_record,P2 accelerate,PCE/RSM,Point metrics,1
+B_alluvial_record,P2 accelerate,PCE/RSM,Point metrics,1
+B_alluvial_record,P2 accelerate,PCE/RSM,Point metrics,1
+B_alluvial_record,P2 accelerate,NN,Feasibility,1
+B_alluvial_record,P1/P3 replace,GP/Kriging,Uncertainty,1
+B_alluvial_record,P1/P3 replace,RBF/Kernel,Point metrics,1
+B_alluvial_record,P5 uncertainty,GP/Kriging,Uncertainty,1
+B_alluvial_record,P1/P3 replace,RBF/Kernel,Point metrics,1
+B_alluvial_record,P2 accelerate,PCE/RSM,Point metrics,1
+B_alluvial_record,P1/P3 replace,GP/Kriging,Point metrics,1
+B_alluvial_record,P5 uncertainty,RBF/Kernel,Uncertainty,1
+B_alluvial_record,P1/P3 replace,--,Point metrics,1
+B_alluvial_record,P1/P3 replace,PCE/RSM,Uncertainty,1
+B_alluvial_record,P1/P3 replace,GP/Kriging,Point metrics,1
+B_alluvial_record,P2 accelerate,PCE/RSM,Point metrics,1
+B_alluvial_record,P1/P3 replace,NN,Point metrics,1
+B_alluvial_record,P1/P3 replace,NN,Point metrics,1
+B_alluvial_record,P1/P3 replace,RBF/Kernel,Feasibility,1
+B_alluvial_record,P1/P3 replace,RBF/Kernel,Point metrics,1
+B_alluvial_record,P5 uncertainty,GP/Kriging,Uncertainty,1
+B_alluvial_record,P4 decompose,GP/Kriging,Point metrics,1
+B_alluvial_record,P1/P3 replace,GP/Kriging,Point metrics,1
+B_alluvial_record,P1/P3 replace,NN,Point metrics,1
+B_alluvial_record,P1/P3 replace,Tree,Point metrics,1
+B_alluvial_record,P5 uncertainty,GP/Kriging,Uncertainty,1
+B_alluvial_record,P2 accelerate,NN,Feasibility,1
+B_alluvial_record,P1/P3 replace,RBF/Kernel,Feasibility,1
+B_alluvial_record,P2 accelerate,PCE/RSM,Point metrics,1
+B_alluvial_record,P2 accelerate,PCE/RSM,Point metrics,1
+B_alluvial_record,P5 uncertainty,PCE/RSM,Uncertainty,1
+B_alluvial_record,P1/P3 replace,NN,Interval calibration,1
+B_alluvial_record,P5 uncertainty,PCE/RSM,Stress test,1
+B_alluvial_record,P2 accelerate,NN,Feasibility,1
+B_alluvial_record,P2 accelerate,GP/Kriging,Interval calibration,1
+B_alluvial_record,P2 accelerate,PCE/RSM,Uncertainty,1
+B_alluvial_record,P2 accelerate,PCE/RSM,Point metrics,1
+B_alluvial_record,P2 accelerate,RBF/Kernel,Point metrics,1
+B_alluvial_record,P2 accelerate,NN,Feasibility,1
+B_alluvial_record,P1/P3 replace,RBF/Kernel,Interval calibration,1
+B_alluvial_record,P1/P3 replace,NN,Point metrics,1
+B_alluvial_record,P1/P3 replace,GP/Kriging,Point metrics,1
+B_alluvial_record,P5 uncertainty,PCE/RSM,Uncertainty,1
+B_alluvial_record,P5 uncertainty,NN,Uncertainty,1
+B_alluvial_record,P1/P3 replace,RBF/Kernel,Uncertainty,1
+B_alluvial_record,P1/P3 replace,NN,Decision-aware,1
+B_alluvial_record,P1/P3 replace,PCE/RSM,Interval calibration,1
+B_alluvial_record,P5 uncertainty,PCE/RSM,Feasibility,1
+B_alluvial_record,P1/P3 replace,NN,Decision-aware,1
+B_alluvial_record,P1/P3 replace,NN,Feasibility,1
+B_alluvial_record,P1/P3 replace,RBF/Kernel,--,1
+B_alluvial_record,P2 accelerate,GP/Kriging,Feasibility,1
+B_alluvial_record,P1/P3 replace,GP/Kriging,Uncertainty,1
+B_alluvial_record,P5 uncertainty,PCE/RSM,Uncertainty,1
+B_alluvial_record,P5 uncertainty,GP/Kriging,Uncertainty,1
+B_alluvial_record,P1/P3 replace,Tree,Feasibility,1
+B_alluvial_record,P5 uncertainty,PCE/RSM,Feasibility,1
+B_alluvial_record,P5 uncertainty,PCE/RSM,Uncertainty,1
+B_alluvial_record,P1/P3 replace,NN,Point metrics,1
+B_alluvial_record,P1/P3 replace,PCE/RSM,Point metrics,1
+B_alluvial_record,P1/P3 replace,GP/Kriging,Uncertainty,1
+B_alluvial_record,P2 accelerate,NN,Point metrics,1
+B_alluvial_record,P1/P3 replace,Constraint NN,Interval calibration,1
+B_alluvial_record,P1/P3 replace,RBF/Kernel,Uncertainty,1
+B_alluvial_record,P1/P3 replace,NN,Point metrics,1
+B_alluvial_record,P5 uncertainty,PCE/RSM,Uncertainty,1
+B_alluvial_record,P2 accelerate,GP/Kriging,Point metrics,1
+B_alluvial_record,P5 uncertainty,GP/Kriging,Uncertainty,1
+B_alluvial_record,P5 uncertainty,PCE/RSM,Uncertainty,1
+B_alluvial_record,P5 uncertainty,PCE/RSM,Feasibility,1
+B_alluvial_record,P1/P3 replace,PCE/RSM,Uncertainty,1
+B_alluvial_record,P1/P3 replace,NN,Uncertainty,1
+B_alluvial_record,P1/P3 replace,GP/Kriging,Point metrics,1
+B_alluvial_record,P1/P3 replace,RBF/Kernel,Uncertainty,1
+B_alluvial_record,P2 accelerate,NN,Uncertainty,1
+B_alluvial_record,P1/P3 replace,RBF/Kernel,Point metrics,1
+B_alluvial_record,P1/P3 replace,RBF/Kernel,Point metrics,1
+B_alluvial_record,P1/P3 replace,Constraint NN,Interval calibration,1
+B_alluvial_record,P1/P3 replace,PCE/RSM,Uncertainty,1
+B_alluvial_record,P1/P3 replace,Tree,Feasibility,1
+B_alluvial_record,P1/P3 replace,PCE/RSM,Uncertainty,1
+B_alluvial_record,P1/P3 replace,PCE/RSM,Uncertainty,1
+B_alluvial_record,P1/P3 replace,RBF/Kernel,Point metrics,1
+B_alluvial_record,P1/P3 replace,RBF/Kernel,Point metrics,1
+B_alluvial_record,P1/P3 replace,NN,Decision-aware,1
+B_alluvial_record,P5 uncertainty,GP/Kriging,Uncertainty,1
+B_alluvial_record,P1/P3 replace,PCE/RSM,Feasibility,1
+B_alluvial_record,P5 uncertainty,PCE/RSM,Feasibility,1
+B_alluvial_record,P1/P3 replace,GP/Kriging,Feasibility,1
+B_alluvial_record,P1/P3 replace,GP/Kriging,Uncertainty,1
+B_alluvial_record,P1/P3 replace,Constraint NN,Feasibility,1
+B_alluvial_record,P5 uncertainty,GP/Kriging,Uncertainty,1
+B_alluvial_record,P1/P3 replace,GP/Kriging,Point metrics,1
+B_alluvial_record,P2 accelerate,NN,Interval calibration,1
+B_alluvial_record,P2 accelerate,PCE/RSM,Feasibility,1
+B_alluvial_record,P5 uncertainty,GP/Kriging,Uncertainty,1
+B_alluvial_record,P1/P3 replace,NN,Point metrics,1
+B_alluvial_record,P5 uncertainty,GP/Kriging,Uncertainty,1
+B_alluvial_record,P2 accelerate,NN,Stress test,1
+B_alluvial_record,P2 accelerate,NN,Point metrics,1
+B_alluvial_record,P5 uncertainty,GP/Kriging,Interval calibration,1
+B_alluvial_record,P2 accelerate,Tree,Uncertainty,1
+C_doe,P1,--,,17
+C_doe,P2,--,,4
+C_doe,P5,--,,1
+C_doe,P1,Active learning,,2
+C_doe,P2,Active learning,,10
+C_doe,P1,Adaptive sampling,,11
+C_doe,P2,Adaptive sampling,,1
+C_doe,P4,Adaptive sampling,,2
+C_doe,P5,Adaptive sampling,,8
+C_doe,P1,Factorial / DoE,,5
+C_doe,P2,Factorial / DoE,,12
+C_doe,P5,Factorial / DoE,,2
+C_doe,P1,Historical data,,6
+C_doe,P2,Historical data,,3
+C_doe,P1,LHS / quasi-MC,,17
+C_doe,P2,LHS / quasi-MC,,9
+C_doe,P4,LHS / quasi-MC,,1
+C_doe,P5,LHS / quasi-MC,,14
+C_doe,P2,Multi-fidelity,,1
+C_doe,P1,Transfer learning,,2
+D_app,ED / UC,Constraint NN,,2
+D_app,MES / sector,Constraint NN,,2
+D_app,MOO design,Constraint NN,,1
+D_app,OPF,Constraint NN,,8
+D_app,Stoch / robust,Constraint NN,,11
+D_app,District heating,GP/Kriging,,3
+D_app,ED / UC,GP/Kriging,,9
+D_app,Expansion,GP/Kriging,,2
+D_app,MES / sector,GP/Kriging,,3
+D_app,MOO design,GP/Kriging,,2
+D_app,Microgrid / hub,GP/Kriging,,13
+D_app,OPF,GP/Kriging,,2
+D_app,Stoch / robust,GP/Kriging,,6
+D_app,OPF,Hybrid/PINN,,2
+D_app,ED / UC,L2O,,7
+D_app,MES / sector,L2O,,1
+D_app,Microgrid / hub,L2O,,1
+D_app,OPF,L2O,,2
+D_app,District heating,NN,,2
+D_app,ED / UC,NN,,2
+D_app,Expansion,NN,,1
+D_app,MES / sector,NN,,6
+D_app,MOO design,NN,,6
+D_app,Microgrid / hub,NN,,3
+D_app,OPF,NN,,4
+D_app,Stoch / robust,NN,,1
+D_app,District heating,PCE/RSM,,2
+D_app,ED / UC,PCE/RSM,,7
+D_app,MES / sector,PCE/RSM,,8
+D_app,MOO design,PCE/RSM,,9
+D_app,Microgrid / hub,PCE/RSM,,9
+D_app,OPF,PCE/RSM,,2
+D_app,Stoch / robust,PCE/RSM,,6
+D_app,District heating,RBF/Kernel,,2
+D_app,ED / UC,RBF/Kernel,,4
+D_app,MES / sector,RBF/Kernel,,4
+D_app,MOO design,RBF/Kernel,,2
+D_app,Microgrid / hub,RBF/Kernel,,6
+D_app,OPF,RBF/Kernel,,6
+D_app,Stoch / robust,RBF/Kernel,,3
+D_app,District heating,Tree,,1
+D_app,ED / UC,Tree,,1
+D_app,Expansion,Tree,,1
+D_app,Microgrid / hub,Tree,,1

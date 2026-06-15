@@ -1,0 +1,60 @@
+figure,model_class,target,trust_or_combination,n
+model_target_trust,GP / kriging,Decisions / solution-related objects,Trust mechanism not explicitly identified,1
+model_target_trust,GP / kriging,Exogenous inputs,Posterior uncertainty,1
+model_target_trust,GP / kriging,Exogenous inputs,Predictive-error based,11
+model_target_trust,GP / kriging,Exogenous inputs,Trust mechanism not explicitly identified,6
+model_target_trust,GP / kriging,Objective values,Posterior uncertainty,3
+model_target_trust,GP / kriging,Objective values,Predictive-error based,4
+model_target_trust,GP / kriging,Objective values,Trust mechanism not explicitly identified,5
+model_target_trust,GP / kriging,Physical states or constraints,Predictive-error based,4
+model_target_trust,GP / kriging,Physical states or constraints,Trust mechanism not explicitly identified,5
+model_target_trust,GP / kriging,Probability distributions / chance-constraint terms,Posterior uncertainty,2
+model_target_trust,GP / kriging,Probability distributions / chance-constraint terms,Predictive-error based,6
+model_target_trust,GP / kriging,Probability distributions / chance-constraint terms,Trust mechanism not explicitly identified,7
+model_target_trust,Neural network,Decisions / solution-related objects,Decision-oriented,4
+model_target_trust,Neural network,Decisions / solution-related objects,Predictive-error based,3
+model_target_trust,Neural network,Decisions / solution-related objects,Trust mechanism not explicitly identified,1
+model_target_trust,Neural network,Exogenous inputs,Posterior uncertainty,1
+model_target_trust,Neural network,Exogenous inputs,Predictive-error based,2
+model_target_trust,Neural network,Objective values,Decision-oriented,2
+model_target_trust,Neural network,Objective values,Predictive-error based,4
+model_target_trust,Neural network,Objective values,Trust mechanism not explicitly identified,2
+model_target_trust,Neural network,Physical states or constraints,Decision-oriented,3
+model_target_trust,Neural network,Physical states or constraints,Physics-guided,3
+model_target_trust,Neural network,Physical states or constraints,Predictive-error based,4
+model_target_trust,Neural network,Physical states or constraints,Trust mechanism not explicitly identified,3
+model_target_trust,Neural network,Probability distributions / chance-constraint terms,Trust mechanism not explicitly identified,2
+model_target_trust,PCE / RSM,Exogenous inputs,Trust mechanism not explicitly identified,1
+model_target_trust,PCE / RSM,Objective values,Predictive-error based,1
+model_target_trust,PCE / RSM,Objective values,Trust mechanism not explicitly identified,8
+model_target_trust,PCE / RSM,Physical states or constraints,Predictive-error based,3
+model_target_trust,PCE / RSM,Physical states or constraints,Trust mechanism not explicitly identified,7
+model_target_trust,PCE / RSM,Probability distributions / chance-constraint terms,Predictive-error based,4
+model_target_trust,PCE / RSM,Probability distributions / chance-constraint terms,Trust mechanism not explicitly identified,14
+model_target_trust,RBF / kernel,Exogenous inputs,Posterior uncertainty,1
+model_target_trust,RBF / kernel,Exogenous inputs,Predictive-error based,7
+model_target_trust,RBF / kernel,Exogenous inputs,Trust mechanism not explicitly identified,1
+model_target_trust,RBF / kernel,Objective values,Posterior uncertainty,1
+model_target_trust,RBF / kernel,Objective values,Predictive-error based,3
+model_target_trust,RBF / kernel,Objective values,Trust mechanism not explicitly identified,4
+model_target_trust,RBF / kernel,Physical states or constraints,Predictive-error based,1
+model_target_trust,RBF / kernel,Physical states or constraints,Trust mechanism not explicitly identified,4
+model_target_trust,Tree ensembles,Decisions / solution-related objects,Decision-oriented,1
+model_target_trust,Tree ensembles,Exogenous inputs,Predictive-error based,1
+model_target_trust,Tree ensembles,Objective values,Decision-oriented,1
+model_target_trust,Tree ensembles,Objective values,Predictive-error based,1
+model_target_trust,Tree ensembles,Probability distributions / chance-constraint terms,Decision-oriented,1
+validation_upset,,,Point metrics,61
+validation_upset,,,Problem UQ,23
+validation_upset,,,Point metrics + Problem UQ,15
+validation_upset,,,Feasibility,10
+validation_upset,,,Decision-aware,9
+validation_upset,,,Point metrics + Feasibility,4
+validation_upset,,,Point metrics + Decision-aware,3
+validation_upset,,,Point metrics + Interval calibration,3
+validation_upset,,,Interval calibration,2
+validation_upset,,,Point metrics + Problem UQ + Interval calibration,2
+validation_upset,,,Point metrics + Stress test,2
+validation_upset,,,Feasibility + Decision-aware,1
+validation_upset,,,Point metrics + Problem UQ + Feasibility,1
+validation_upset,,,Point metrics + Problem UQ + Stress test,1

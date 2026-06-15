@@ -1,0 +1,43 @@
+term,cluster,frequency
+multi-objective optimization,Optimization algorithms,1675
+cost,Objectives / criteria,1507
+microgrid,Multi-energy systems,864
+energy efficiency,Objectives / criteria,684
+emissions,Objectives / criteria,682
+wind power,Technologies,441
+photovoltaics,Technologies,441
+neural network,Surrogate / ML,427
+genetic algorithm,Optimization algorithms,409
+surrogate model,Surrogate / ML,347
+MOPSO,Optimization algorithms,324
+battery storage,Technologies,308
+Pareto front,Optimization algorithms,306
+reliability,Objectives / criteria,283
+hydrogen,Technologies,283
+machine learning,Surrogate / ML,279
+Gaussian process,Surrogate / ML,268
+flexibility,Objectives / criteria,211
+electric vehicle,Technologies,209
+response surface,Surrogate / ML,203
+hybrid renewable system,Multi-energy systems,161
+integrated energy system,Multi-energy systems,146
+CHP,Technologies,119
+life cycle / LCA,Objectives / criteria,108
+deep learning,Surrogate / ML,95
+multi-energy system,Multi-energy systems,95
+thermal storage,Technologies,88
+metamodel,Surrogate / ML,88
+kriging,Surrogate / ML,74
+biomass,Technologies,73
+heat pump,Technologies,59
+resilience,Objectives / criteria,58
+Bayesian optimization,Optimization algorithms,57
+district heating,Multi-energy systems,56
+CCHP,Multi-energy systems,55
+energy hub,Multi-energy systems,51
+energy community,Multi-energy systems,44
+NSGA-II / III,Optimization algorithms,41
+virtual power plant,Multi-energy systems,41
+differential evolution,Optimization algorithms,39
+random forest,Surrogate / ML,36
+XGBoost,Surrogate / ML,20

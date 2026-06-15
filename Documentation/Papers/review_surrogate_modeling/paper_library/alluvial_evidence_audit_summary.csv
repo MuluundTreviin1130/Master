@@ -1,0 +1,32 @@
+dimension,label,n
+family,PCE / RSM,37
+family,GP / kriging,80
+family,Neural network,39
+family,RBF / kernel,34
+family,Tree ensembles,8
+family,Unassigned,63
+doe,Latin hypercube sampling,17
+doe,Quasi-Monte Carlo / sparse-grid collocation,5
+doe,Factorial / response-surface design,17
+doe,Adaptive sampling,3
+doe,Active learning,24
+doe,Multi-fidelity training,9
+doe,Transfer learning,7
+doe,Simulation-generated data,1
+doe,Historical operational data,49
+doe,Hybrid data,0
+doe,Unassigned,129
+pattern,P1 replacement,2
+pattern,P2 acceleration,28
+pattern,P3 solution proxy,14
+pattern,P4 decomposition,8
+pattern,P5 uncertainty,9
+pattern,Unassigned,200
+validation,Decision-aware,11
+validation,Stress test,2
+validation,Interval calibration,7
+validation,Feasibility,16
+validation,Problem UQ,23
+validation,Point metrics,76
+validation,Unassigned,126
+complete,All four dimensions,24

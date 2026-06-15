@@ -1,0 +1,13 @@
+figure,model_class,integration_pattern,dominant_target,n
+bubble,Constraint-aware NN,P1,Probability distributions / chance-constraint terms,2
+bubble,GP / kriging,P1,Exogenous inputs,9
+bubble,GP / kriging,P4,Exogenous inputs,1
+bubble,GP / kriging,P5,Probability distributions / chance-constraint terms,2
+bubble,Neural network,P1,Decisions / solution-related objects,10
+bubble,Neural network,P2,Objective values,6
+bubble,PCE / RSM,P1,Probability distributions / chance-constraint terms,8
+bubble,PCE / RSM,P2,Objective values,10
+bubble,PCE / RSM,P5,Probability distributions / chance-constraint terms,7
+bubble,RBF / kernel,P1,Physical states or constraints,9
+bubble,RBF / kernel,P2,Objective values,1
+bubble,Tree ensembles,P1,Decisions / solution-related objects,1

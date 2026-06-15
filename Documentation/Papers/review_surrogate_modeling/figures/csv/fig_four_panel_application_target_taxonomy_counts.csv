@@ -1,0 +1,100 @@
+panel,application_target,category,subcategory,n
+A_model_class,Integrated and distributed multi-energy systems,GP / kriging,,25
+A_model_class,Integrated and distributed multi-energy systems,Neural network,,13
+A_model_class,Integrated and distributed multi-energy systems,PCE / RSM,,17
+A_model_class,Integrated and distributed multi-energy systems,RBF / kernel,,12
+A_model_class,Integrated and distributed multi-energy systems,Tree ensembles,,3
+A_model_class,"Power flow, network security and grid planning",GP / kriging,,9
+A_model_class,"Power flow, network security and grid planning",Neural network,,4
+A_model_class,"Power flow, network security and grid planning",PCE / RSM,,8
+A_model_class,"Power flow, network security and grid planning",RBF / kernel,,4
+A_model_class,Power system operation and markets,GP / kriging,,16
+A_model_class,Power system operation and markets,Neural network,,8
+A_model_class,Power system operation and markets,PCE / RSM,,7
+A_model_class,Power system operation and markets,RBF / kernel,,9
+A_model_class,Power system operation and markets,Tree ensembles,,2
+A_model_class,System design and expansion,GP / kriging,,21
+A_model_class,System design and expansion,Neural network,,6
+A_model_class,System design and expansion,PCE / RSM,,4
+A_model_class,System design and expansion,RBF / kernel,,1
+A_model_class,Thermal and building energy systems,GP / kriging,,8
+A_model_class,Thermal and building energy systems,Neural network,,5
+A_model_class,Thermal and building energy systems,PCE / RSM,,2
+A_model_class,Thermal and building energy systems,RBF / kernel,,2
+A_model_class,Thermal and building energy systems,Tree ensembles,,3
+B_doe,Integrated and distributed multi-energy systems,Adaptive,Active learning,8
+B_doe,Integrated and distributed multi-energy systems,Adaptive,Adaptive sampling,2
+B_doe,Integrated and distributed multi-energy systems,Data,Historical data,24
+B_doe,Integrated and distributed multi-energy systems,Data,Synthetic data,12
+B_doe,Integrated and distributed multi-energy systems,Static,Factorial / response-surface design,14
+B_doe,Integrated and distributed multi-energy systems,Static,Latin hypercube sampling,9
+B_doe,Integrated and distributed multi-energy systems,Static,Quasi-Monte Carlo / sparse-grid collocation,1
+B_doe,"Power flow, network security and grid planning",Adaptive,Active learning,2
+B_doe,"Power flow, network security and grid planning",Data,Historical data,8
+B_doe,"Power flow, network security and grid planning",Data,Synthetic data,8
+B_doe,"Power flow, network security and grid planning",Static,Latin hypercube sampling,6
+B_doe,"Power flow, network security and grid planning",Static,Quasi-Monte Carlo / sparse-grid collocation,3
+B_doe,Power system operation and markets,Adaptive,Active learning,6
+B_doe,Power system operation and markets,Adaptive,Adaptive sampling,1
+B_doe,Power system operation and markets,Data,Historical data,22
+B_doe,Power system operation and markets,Data,Synthetic data,5
+B_doe,Power system operation and markets,Static,Factorial / response-surface design,1
+B_doe,Power system operation and markets,Static,Latin hypercube sampling,3
+B_doe,Power system operation and markets,Static,Quasi-Monte Carlo / sparse-grid collocation,3
+B_doe,System design and expansion,Adaptive,Active learning,9
+B_doe,System design and expansion,Adaptive,Adaptive sampling,1
+B_doe,System design and expansion,Data,Historical data,14
+B_doe,System design and expansion,Data,Synthetic data,6
+B_doe,System design and expansion,Static,Factorial / response-surface design,5
+B_doe,System design and expansion,Static,Latin hypercube sampling,5
+B_doe,Thermal and building energy systems,Adaptive,Active learning,3
+B_doe,Thermal and building energy systems,Adaptive,Adaptive sampling,1
+B_doe,Thermal and building energy systems,Data,Historical data,8
+B_doe,Thermal and building energy systems,Data,Synthetic data,4
+B_doe,Thermal and building energy systems,Static,Factorial / response-surface design,3
+B_doe,Thermal and building energy systems,Static,Latin hypercube sampling,2
+B_doe,Thermal and building energy systems,Static,Quasi-Monte Carlo / sparse-grid collocation,1
+C_integration,Integrated and distributed multi-energy systems,P1 replacement,,7
+C_integration,Integrated and distributed multi-energy systems,P2 acceleration,,17
+C_integration,Integrated and distributed multi-energy systems,P3 solution proxy,,5
+C_integration,Integrated and distributed multi-energy systems,P4 decomposition,,4
+C_integration,Integrated and distributed multi-energy systems,P5 uncertainty,,12
+C_integration,"Power flow, network security and grid planning",P1 replacement,,3
+C_integration,"Power flow, network security and grid planning",P2 acceleration,,3
+C_integration,"Power flow, network security and grid planning",P3 solution proxy,,2
+C_integration,"Power flow, network security and grid planning",P5 uncertainty,,14
+C_integration,Power system operation and markets,P1 replacement,,2
+C_integration,Power system operation and markets,P2 acceleration,,7
+C_integration,Power system operation and markets,P3 solution proxy,,7
+C_integration,Power system operation and markets,P4 decomposition,,2
+C_integration,Power system operation and markets,P5 uncertainty,,10
+C_integration,System design and expansion,P1 replacement,,2
+C_integration,System design and expansion,P2 acceleration,,12
+C_integration,System design and expansion,P5 uncertainty,,7
+C_integration,Thermal and building energy systems,P1 replacement,,3
+C_integration,Thermal and building energy systems,P2 acceleration,,4
+C_integration,Thermal and building energy systems,P5 uncertainty,,4
+D_validation,Integrated and distributed multi-energy systems,Decision-aware,,2
+D_validation,Integrated and distributed multi-energy systems,Feasibility,,5
+D_validation,Integrated and distributed multi-energy systems,Interval calibration,,1
+D_validation,Integrated and distributed multi-energy systems,Point metrics,,25
+D_validation,Integrated and distributed multi-energy systems,Problem UQ,,13
+D_validation,Integrated and distributed multi-energy systems,Stress test,,1
+D_validation,"Power flow, network security and grid planning",Decision-aware,,1
+D_validation,"Power flow, network security and grid planning",Feasibility,,7
+D_validation,"Power flow, network security and grid planning",Interval calibration,,1
+D_validation,"Power flow, network security and grid planning",Point metrics,,13
+D_validation,"Power flow, network security and grid planning",Problem UQ,,9
+D_validation,Power system operation and markets,Decision-aware,,4
+D_validation,Power system operation and markets,Feasibility,,5
+D_validation,Power system operation and markets,Interval calibration,,5
+D_validation,Power system operation and markets,Point metrics,,30
+D_validation,Power system operation and markets,Problem UQ,,7
+D_validation,System design and expansion,Decision-aware,,6
+D_validation,System design and expansion,Feasibility,,1
+D_validation,System design and expansion,Point metrics,,17
+D_validation,System design and expansion,Problem UQ,,9
+D_validation,System design and expansion,Stress test,,2
+D_validation,Thermal and building energy systems,Decision-aware,,2
+D_validation,Thermal and building energy systems,Point metrics,,12
+D_validation,Thermal and building energy systems,Problem UQ,,4

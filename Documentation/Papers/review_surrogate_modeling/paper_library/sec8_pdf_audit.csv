@@ -1,0 +1,129 @@
+cite_key,section,doe_bucket,doe_prose,doe_audit,validation_t6,validation_narrative_tags,validation_prose,validation_false_positive,validation_pdf_extra,has_pdf_text
+Zhou20181,mes,Adaptive sampling,,absent,Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²),,Validation assesses prediction-interval calibration.,,,yes
+Zheng20231907,mes,Adaptive sampling,,absent,Feasibility rate,Feasibility rate,Validation reports feasibility or constraint violations on the host problem.,,,yes
+Ren2024,mes,LHS / quasi-MC,Training inputs are placed by Latin hypercube sampling over the planning box.,pdf_supported,Point metrics (RMSE/MAE/R²),,,,,yes
+Dong2022,mes,Adaptive sampling,,absent,Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²),,,,,yes
+Jalving2023,mes,Factorial / DoE,,absent,Point metrics (RMSE/MAE/R²),,,,,yes
+Wang2020202933,mes,LHS / quasi-MC,,absent,Point metrics (RMSE/MAE/R²); Uncertainty (problem UQ),,,,,yes
+Franzoso2025,mes,--,,absent,Point metrics (RMSE/MAE/R²),,,,,yes
+Dong2023,mes,LHS / quasi-MC,Uncertain inputs are represented by sparse-grid or PCE collocation nodes (quasi-Monte Carlo / quadrature family).,pdf_supported,Uncertainty (problem UQ); Feasibility rate; Point metrics (RMSE/MAE/R²),Feasibility rate,Validation reports feasibility or constraint violations on the host problem.,,,yes
+Shi2024__2,mes,Adaptive sampling,,absent,Point metrics (RMSE/MAE/R²),,,,,yes
+Wang2017,moo,Adaptive sampling,,absent,Point metrics (RMSE/MAE/R²),,,,,yes
+Han2018622,moo,LHS / quasi-MC,,absent,Point metrics (RMSE/MAE/R²); Uncertainty (problem UQ),,,,,yes
+Wang2024,moo,Historical data,,absent,Feasibility rate; Point metrics (RMSE/MAE/R²),Feasibility rate,Validation reports feasibility or constraint violations on the host problem.,,,yes
+Zhang20234075,moo,LHS / quasi-MC,,absent,Point metrics (RMSE/MAE/R²),,,,,yes
+Dong2024,moo,Factorial / DoE,,absent,Point metrics (RMSE/MAE/R²),,,,,yes
+Salahinezhad2025,moo,Factorial / DoE,Training runs follow structured design-of-experiments grids.,pdf_supported,Point metrics (RMSE/MAE/R²),,,,,yes
+Dong2023__2,moo,LHS / quasi-MC,,absent,Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²),,,,,yes
+Lalitha20231401,moo,Active learning,,absent,Point metrics (RMSE/MAE/R²),,,,,yes
+Reis2025,moo,Active learning,Further simulation runs are chosen by Bayesian optimization (acquisition-driven active learning).,unclassified_prose,Point metrics (RMSE/MAE/R²),,,,,yes
+abbas_optimal_2024,moo,LHS / quasi-MC,,absent,Feasibility rate; Point metrics (RMSE/MAE/R²); Uncertainty (problem UQ),Feasibility rate,Validation reports feasibility or constraint violations on the host problem.,,,yes
+alahmad_enhancing_2025,moo,LHS / quasi-MC,,absent,Uncertainty (problem UQ); Feasibility rate; Point metrics (RMSE/MAE/R²),Feasibility rate,Validation reports feasibility or constraint violations on the host problem.,,,yes
+alahmad_optimizing_2025,moo,LHS / quasi-MC,,absent,Stress test; Uncertainty (problem UQ),Stress test,Validation includes stress-test blocks.,,,yes
+ali_optimizing_2025,moo,LHS / quasi-MC,,absent,Point metrics (RMSE/MAE/R²),,,,,yes
+an_multi-objective_2025,moo,LHS / quasi-MC,,absent,Feasibility rate,Feasibility rate,Validation reports feasibility or constraint violations on the host problem.,,,yes
+bagheri_miqcp-based_2025,moo,--,,absent,Point metrics (RMSE/MAE/R²); Uncertainty (problem UQ),,,,,yes
+bendriss_novel_2025,moo,LHS / quasi-MC,,absent,Uncertainty (problem UQ),,,,,yes
+chen_multi-objective_2025-1,moo,Factorial / DoE,,absent,Feasibility rate,Feasibility rate,Validation reports feasibility or constraint violations on the host problem.,,,yes
+cortes-caicedo_multi-objective_2025,moo,Factorial / DoE,,absent,Point metrics (RMSE/MAE/R²),,,,,yes
+liang_high_2024,moo,Multi-fidelity,,absent,Point metrics (RMSE/MAE/R²),,,,,yes
+malla_sg_optimization_2024,moo,Factorial / DoE,,absent,Point metrics (RMSE/MAE/R²),,,,,yes
+tezer_multi-objective_2025,moo,Factorial / DoE,Training runs follow factorial designs over discrete factor levels.,pdf_supported,Point metrics (RMSE/MAE/R²),,,,,yes
+tian_building_2025,moo,Historical data,The emulator is trained from historically observed operating data.,pdf_supported,Feasibility rate; Point metrics (RMSE/MAE/R²),Feasibility rate,Validation reports feasibility or constraint violations on the host problem.,,,yes
+Eseye201991463,microgrid,Adaptive sampling,,absent,Point metrics (RMSE/MAE/R²); Uncertainty (problem UQ),,,,,yes
+Faraji2020157284,microgrid,--,,absent,Point metrics (RMSE/MAE/R²),,,,,yes
+Nematollahi2021,microgrid,Adaptive sampling,,absent,Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²),,,,,yes
+Wang20192635,microgrid,Historical data,The emulator is trained from historically observed operating data.,pdf_supported,Point metrics (RMSE/MAE/R²),,,,,yes
+Hussien20211883,microgrid,Factorial / DoE,Training runs follow factorial designs over discrete factor levels.,pdf_supported,Point metrics (RMSE/MAE/R²),,,,,yes
+Rigo-Mariani20171762,microgrid,LHS / quasi-MC,,absent,Point metrics (RMSE/MAE/R²),,,,,yes
+Wang20211767,microgrid,--,,absent,Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²),,,,,yes
+Cao2023__2,microgrid,LHS / quasi-MC,Training inputs are placed by Latin hypercube sampling over the planning box.,pdf_supported,Point metrics (RMSE/MAE/R²),,,,,yes
+Xu20184696,microgrid,LHS / quasi-MC,Uncertain inputs are represented by sparse-grid or PCE collocation nodes (quasi-Monte Carlo / quadrature family).,pdf_supported,Point metrics (RMSE/MAE/R²); Uncertainty (problem UQ),,,,,yes
+Gan2021695,microgrid,Adaptive sampling,,absent,Point metrics (RMSE/MAE/R²),,,,,yes
+Hussien20226442,microgrid,Factorial / DoE,Training runs explore discrete factor combinations for response-surface fitting.,pdf_supported,Point metrics (RMSE/MAE/R²),,,,,yes
+Guo20222057,microgrid,Historical data,,absent,Point metrics (RMSE/MAE/R²),,,,,yes
+Chaturvedi2024149,microgrid,--,,absent,Point metrics (RMSE/MAE/R²),,,,,yes
+Lu20232989,microgrid,Historical data,The emulator is trained from historically observed operating data.,pdf_supported,Feasibility rate; Point metrics (RMSE/MAE/R²),Feasibility rate,Validation reports feasibility or constraint violations on the host problem.,,,yes
+Wu2021,microgrid,Active learning,Further simulation runs are chosen by Bayesian optimization (acquisition-driven active learning).,unclassified_prose,Point metrics (RMSE/MAE/R²),,,,,yes
+Kiani20253021,microgrid,Adaptive sampling,,absent,Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²),,,,,yes
+Shao201858,microgrid,Adaptive sampling,,absent,Point metrics (RMSE/MAE/R²),,,,,yes
+Kanwal2018117,microgrid,Adaptive sampling,,absent,Point metrics (RMSE/MAE/R²),,,,,yes
+Roth2019214,microgrid,Factorial / DoE,,absent,Point metrics (RMSE/MAE/R²),,,,,yes
+Li2023__3,microgrid,--,,absent,Point metrics (RMSE/MAE/R²),,,,,yes
+Han2024,microgrid,Adaptive sampling,,absent,Uncertainty (problem UQ),,,,,yes
+Kaewdornhan2022130373,microgrid,Active learning,,absent,Feasibility rate; Point metrics (RMSE/MAE/R²); Uncertainty (problem UQ),Feasibility rate,Validation reports feasibility or constraint violations on the host problem.,,,yes
+Zhang20203731,microgrid,Transfer learning,Emulator training transfers information across related datasets.,unclassified_prose,Uncertainty (problem UQ); Feasibility rate; Point metrics (RMSE/MAE/R²),Feasibility rate,,Feasibility rate,,yes
+Hussien202190577,microgrid,Factorial / DoE,Training runs explore discrete factor combinations for response-surface fitting.,pdf_supported,Point metrics (RMSE/MAE/R²),,,,,yes
+Hussien202415075,microgrid,Factorial / DoE,Training runs explore discrete factor combinations for response-surface fitting.,pdf_supported,Point metrics (RMSE/MAE/R²),,,,,yes
+Pourmohammadi2023,microgrid,LHS / quasi-MC,,absent,Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²),,,,,yes
+Liu20242534,microgrid,Historical data,,absent,Point metrics (RMSE/MAE/R²); Interval calibration,Interval calibration,,Interval calibration,,yes
+Yang2024__2,microgrid,LHS / quasi-MC,,absent,Uncertainty (problem UQ); Stress test; Point metrics (RMSE/MAE/R²),Stress test,Validation includes stress-test blocks.,,,yes
+Perera2017187,microgrid,Active learning,Further simulation runs are chosen by an active-learning rule.,pdf_supported,Feasibility rate; Point metrics (RMSE/MAE/R²); Uncertainty (problem UQ),Feasibility rate,,Feasibility rate,,yes
+Matta2026,microgrid,Active learning,Further simulation runs are chosen by an active-learning rule.,pdf_supported,Interval calibration; Point metrics (RMSE/MAE/R²); Uncertainty (problem UQ),Interval calibration,Validation assesses prediction-interval calibration.,Interval calibration,,yes
+arar_tahir_scientific_2023,microgrid,LHS / quasi-MC,Training inputs are placed by Latin hypercube sampling over the planning box.,pdf_supported,Point metrics (RMSE/MAE/R²); Uncertainty (problem UQ),,,,,yes
+batista_optimizing_2023,microgrid,LHS / quasi-MC,,absent,Point metrics (RMSE/MAE/R²),,,,,yes
+velasquez_intelligence_2023,microgrid,--,,absent,Point metrics (RMSE/MAE/R²),,,,,yes
+Hirvonen2017323,dh,Factorial / DoE,,absent,Feasibility rate; Point metrics (RMSE/MAE/R²),Feasibility rate,Validation reports feasibility or constraint violations on the host problem.,,,yes
+Sánchez-Zabala2024,dh,Factorial / DoE,,absent,Interval calibration,Interval calibration,Validation assesses prediction-interval calibration.,Interval calibration,,yes
+Weinberger2018555,dh,Factorial / DoE,Training runs follow a Box--Behnken design over factor levels.,unclassified_prose,Point metrics (RMSE/MAE/R²),,,,,yes
+Reich2020,dh,Adaptive sampling,,absent,Point metrics (RMSE/MAE/R²),,,,,yes
+Chaudhry2024,dh,LHS / quasi-MC,Uncertain inputs are represented by sparse-grid or PCE collocation nodes (quasi-Monte Carlo / quadrature family).,pdf_supported,Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²),,,,,yes
+Du2025,dh,Factorial / DoE,,absent,Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²),,,,,yes
+Rafi202132436,dispatch,--,,absent,Point metrics (RMSE/MAE/R²); Uncertainty (problem UQ),,,,,yes
+Wu2022231,dispatch,LHS / quasi-MC,,absent,Decision-aware (regret/gap); Feasibility rate; Point metrics (RMSE/MAE/R²),Decision-aware (regret/gap);Feasibility rate,,Decision-aware (regret/gap);Feasibility rate,,yes
+Ahmad202451,dispatch,Factorial / DoE,Training runs follow a Box--Behnken design over factor levels.,unclassified_prose,Point metrics (RMSE/MAE/R²); Interval calibration,Interval calibration,,Interval calibration,,yes
+Safta20172535,dispatch,LHS / quasi-MC,Uncertain inputs are represented by sparse-grid or PCE collocation nodes (quasi-Monte Carlo / quadrature family).,pdf_supported,Uncertainty (problem UQ); Feasibility rate; Point metrics (RMSE/MAE/R²),Feasibility rate,Validation reports feasibility or constraint violations on the host problem.,,,yes
+Chen20244723,dispatch,--,,absent,Decision-aware (regret/gap); Feasibility rate; Point metrics (RMSE/MAE/R²),Decision-aware (regret/gap);Feasibility rate,"Validation reports regret or optimality-gap checks, not only fit error.",,,yes
+Chen2022,dispatch,Historical data,,absent,Feasibility rate; Point metrics (RMSE/MAE/R²),Feasibility rate,Validation reports feasibility or constraint violations on the host problem.,,,yes
+Dullinger20181646,dispatch,--,,absent,--,,,,,yes
+Nikolaidis2021,dispatch,Active learning,Further simulation runs are chosen by Bayesian optimization (acquisition-driven active learning).,unclassified_prose,Feasibility rate; Point metrics (RMSE/MAE/R²),Feasibility rate,,Feasibility rate,,yes
+Angizeh2023134995,dispatch,Adaptive sampling,,absent,Point metrics (RMSE/MAE/R²); Uncertainty (problem UQ),,Validation assesses prediction-interval calibration.,,,yes
+Wang2022812,dispatch,LHS / quasi-MC,Uncertain inputs are represented by sparse-grid or PCE collocation nodes (quasi-Monte Carlo / quadrature family).,pdf_supported,Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²),,,,,yes
+Hu2021671,dispatch,LHS / quasi-MC,Uncertain inputs are represented by sparse-grid or PCE collocation nodes (quasi-Monte Carlo / quadrature family).,pdf_supported,Uncertainty (problem UQ),,,,,yes
+Wu2024391,dispatch,--,,absent,Feasibility rate,Feasibility rate,Validation reports feasibility or constraint violations on the host problem.,,,yes
+Pan20244422,dispatch,LHS / quasi-MC,Uncertain inputs are represented by sparse-grid or PCE collocation nodes (quasi-Monte Carlo / quadrature family).,pdf_supported,Uncertainty (problem UQ); Feasibility rate; Point metrics (RMSE/MAE/R²),Feasibility rate,Validation reports feasibility or constraint violations on the host problem.,,,yes
+Li20191438,dispatch,LHS / quasi-MC,Uncertain inputs are represented by sparse-grid or PCE collocation nodes (quasi-Monte Carlo / quadrature family).,pdf_supported,Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²),,,,,yes
+Xu20223066,dispatch,--,,absent,Point metrics (RMSE/MAE/R²),,,,,yes
+Rixhon2021,dispatch,LHS / quasi-MC,Uncertain inputs are represented by quasi-Monte Carlo (low-discrepancy) sample sets.,pdf_supported,Point metrics (RMSE/MAE/R²),,,,,yes
+Yan2019625,dispatch,Adaptive sampling,,absent,Point metrics (RMSE/MAE/R²); Uncertainty (problem UQ),,Validation assesses prediction-interval calibration.,,,yes
+Pang2023,dispatch,Active learning,,absent,Point metrics (RMSE/MAE/R²),,,,,yes
+Liang20246508,dispatch,--,,absent,Uncertainty (problem UQ); Interval calibration,Interval calibration,,Interval calibration,,yes
+Goudarzi2017667,dispatch,--,,absent,Point metrics (RMSE/MAE/R²); Uncertainty (problem UQ),,,,,yes
+Guo202115024,dispatch,--,,absent,Point metrics (RMSE/MAE/R²),,,,,yes
+Lu201991827,dispatch,LHS / quasi-MC,Uncertain inputs are represented by sparse-grid or PCE collocation nodes (quasi-Monte Carlo / quadrature family).,pdf_supported,Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²),,,,,yes
+Lin2023,dispatch,Active learning,,absent,Point metrics (RMSE/MAE/R²),,,,,yes
+Hu2020,dispatch,LHS / quasi-MC,Training inputs are placed by Latin hypercube sampling over the planning box.,pdf_supported,Uncertainty (problem UQ),,,,,yes
+Fu20202904,opf,LHS / quasi-MC,Training inputs are placed by Latin hypercube sampling over the planning box.,pdf_supported,Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²),,,,,yes
+Fu2022,opf,Factorial / DoE,Training runs explore discrete factor combinations for response-surface fitting.,pdf_supported,Uncertainty (problem UQ); Feasibility rate,Feasibility rate,Validation reports feasibility or constraint violations on the host problem.,,,yes
+Muhlpfordt20194806,opf,LHS / quasi-MC,Uncertain inputs are represented by sparse-grid or PCE collocation nodes (quasi-Monte Carlo / quadrature family).,pdf_supported,Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²),,,,,yes
+Su2022315,opf,LHS / quasi-MC,Training inputs are placed by Latin hypercube sampling over the planning box.,pdf_supported,Point metrics (RMSE/MAE/R²); Uncertainty (problem UQ),,,,,yes
+Deng2020831,opf,Adaptive sampling,Training points are added sequentially by infill rules during surrogate-assisted search.,pdf_supported,Point metrics (RMSE/MAE/R²),,,,,yes
+Urgun20202791,opf,LHS / quasi-MC,Training inputs are placed by Latin hypercube sampling over the planning box.,pdf_supported,Point metrics (RMSE/MAE/R²); Uncertainty (problem UQ),,,,,yes
+Srithapon202134395,opf,Active learning,,absent,Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²),,,,,yes
+Liu20223726,opf,LHS / quasi-MC,,absent,Point metrics (RMSE/MAE/R²),,,,,yes
+Wu2021__2,opf,--,,absent,Point metrics (RMSE/MAE/R²),,,,,yes
+Chen2023657,opf,--,,absent,Uncertainty (problem UQ); Feasibility rate; Interval calibration,Feasibility rate;Interval calibration,Validation reports feasibility or constraint violations on the host problem.,Interval calibration,,yes
+Koirala20242284,opf,LHS / quasi-MC,Uncertain inputs are represented by sparse-grid or PCE collocation nodes (quasi-Monte Carlo / quadrature family).,pdf_supported,Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²),,,,,yes
+Li2023__2,opf,Historical data,,absent,Feasibility rate; Point metrics (RMSE/MAE/R²),Feasibility rate,Validation reports feasibility or constraint violations on the host problem.,,,yes
+Muhlpfordt20174490,opf,LHS / quasi-MC,Uncertain inputs are represented by sparse-grid or PCE collocation nodes (quasi-Monte Carlo / quadrature family).,pdf_supported,Uncertainty (problem UQ),,,,,yes
+Xu20212696,opf,LHS / quasi-MC,Uncertain inputs are represented by sparse-grid or PCE collocation nodes (quasi-Monte Carlo / quadrature family).,pdf_supported,Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²),,Validation reports feasibility or constraint violations on the host problem.,,,yes
+Mahapatra20161921,opf,--,,absent,Point metrics (RMSE/MAE/R²),,,,,yes
+Mahapatra2022721,opf,--,,absent,Point metrics (RMSE/MAE/R²),,,,,yes
+Li202359995,opf,Transfer learning,Emulator training transfers information across related datasets.,unclassified_prose,Decision-aware (regret/gap); Feasibility rate,Decision-aware (regret/gap);Feasibility rate,Validation reports feasibility or constraint violations on the host problem.,Decision-aware (regret/gap),,yes
+Zhang2024821,opf,Adaptive sampling,,absent,Uncertainty (problem UQ),,,,,yes
+Van Acker2022,opf,LHS / quasi-MC,Uncertain inputs are represented by sparse-grid or PCE collocation nodes (quasi-Monte Carlo / quadrature family).,pdf_supported,Feasibility rate; Point metrics (RMSE/MAE/R²); Uncertainty (problem UQ),Feasibility rate,Validation reports feasibility or constraint violations on the host problem.,,,yes
+Engelmann20186188,opf,LHS / quasi-MC,Uncertain inputs are represented by sparse-grid or PCE collocation nodes (quasi-Monte Carlo / quadrature family).,pdf_supported,Uncertainty (problem UQ); Feasibility rate; Point metrics (RMSE/MAE/R²),Feasibility rate,Validation reports feasibility or constraint violations on the host problem.,,,yes
+Mitrovic2023__2,opf,Adaptive sampling,,absent,Uncertainty (problem UQ); Feasibility rate; Point metrics (RMSE/MAE/R²),Feasibility rate,Validation reports feasibility or constraint violations on the host problem.,,,yes
+Mitrovic2023__3,opf,Adaptive sampling,,absent,Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²),,,,,yes
+Lei20247417,opf,Adaptive sampling,,absent,Uncertainty (problem UQ); Feasibility rate; Point metrics (RMSE/MAE/R²),Feasibility rate,Validation reports feasibility or constraint violations on the host problem.,,,yes
+Liu20222679,opf,Adaptive sampling,,absent,Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²),,,,,yes
+Katkar2025,opf,Active learning,,absent,Point metrics (RMSE/MAE/R²),,,,,yes
+Park2019,expansion,Historical data,,absent,Point metrics (RMSE/MAE/R²); Interval calibration,Interval calibration,,Interval calibration,,yes
+Rodgers2018951,expansion,Factorial / DoE,,absent,Feasibility rate; Point metrics (RMSE/MAE/R²),Feasibility rate,,Feasibility rate,,yes
+Kim2021,expansion,Adaptive sampling,,absent,Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²),,,,,yes
+Pérez-Uresti2023,expansion,--,,absent,Point metrics (RMSE/MAE/R²),,,,,yes
+Lawson201647,expansion,LHS / quasi-MC,,absent,Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²),,,,,yes
+Jahangiri20244849,expansion,--,,absent,Stress test; Point metrics (RMSE/MAE/R²),Stress test,,Stress test,,yes
+Jahangiri2023,expansion,--,,absent,Point metrics (RMSE/MAE/R²),,,,,yes
+Volodina2022,expansion,LHS / quasi-MC,Training inputs are placed by Latin hypercube sampling over the planning box.,pdf_supported,Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²); Interval calibration,Interval calibration,Validation assesses prediction-interval calibration.,,,yes
+Yang2025,expansion,Active learning,Further simulation runs are chosen by Bayesian optimization (acquisition-driven active learning).,unclassified_prose,Point metrics (RMSE/MAE/R²); Uncertainty (problem UQ),,,,,yes

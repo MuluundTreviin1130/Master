@@ -1,0 +1,285 @@
+bucket_id,bucket_label,section,cite_key,year,cited_by_count,title
+B01_cornerstone_reviews,Cornerstone reviews and surveys,"Sec. 1, 2, 8",Mylonopoulos202332697,2023,38,A Comprehensive Review of Modeling and Optimization Methods for Ship Energy Systems
+B01_cornerstone_reviews,Cornerstone reviews and surveys,"Sec. 1, 2, 8",Ruan2021221,2021,54,Review of learning-Assisted power system optimization
+B01_cornerstone_reviews,Cornerstone reviews and surveys,"Sec. 1, 2, 8",Khaloie2025,2025,26,Review of machine learning techniques for optimal power flow
+B01_cornerstone_reviews,Cornerstone reviews and surveys,"Sec. 1, 2, 8",Lim2025,2025,3,Power System Decision Making in the Age of Deep Learning: A Comprehensive Review
+B01_cornerstone_reviews,Cornerstone reviews and surveys,"Sec. 1, 2, 8",Starke2025214,2025,6,A review on the applicability of machine learning techniques to the metamodeling of energy systems
+B01_cornerstone_reviews,Cornerstone reviews and surveys,"Sec. 1, 2, 8",Elsheikh2019622,2019,696,Modeling of solar energy systems using artificial neural network: A comprehensive review
+B01_cornerstone_reviews,Cornerstone reviews and surveys,"Sec. 1, 2, 8",Xiao2018,2018,29,Application and comparison of metaheuristic and new metamodel based global optimization methods to the optimal operation of active distribution networks
+B01_cornerstone_reviews,Cornerstone reviews and surveys,"Sec. 1, 2, 8",Koschwitz2018134,2018,189,Data-driven heating and cooling load predictions for non-residential buildings based on support vector machine regression and NARX Recurrent Neural Network: A comparative study on district scale
+B01_cornerstone_reviews,Cornerstone reviews and surveys,"Sec. 1, 2, 8",Cao2023,2023,47,Digital technologies for net-zero energy transition: a preliminary study
+B01_cornerstone_reviews,Cornerstone reviews and surveys,"Sec. 1, 2, 8",Bhosekar2018,2018,0,"Advances in surrogate based modeling, feasibility analysis, and optimization: A review"
+B01_cornerstone_reviews,Cornerstone reviews and surveys,"Sec. 1, 2, 8",DiazManriquez2016,2016,0,A Review of Surrogate Assisted Multiobjective Evolutionary Algorithms
+B01_cornerstone_reviews,Cornerstone reviews and surveys,"Sec. 1, 2, 8",FernandezGodino2023,2023,0,Review of Multi-Fidelity Models
+B01_cornerstone_reviews,Cornerstone reviews and surveys,"Sec. 1, 2, 8",Mohammadi2024,2024,0,Surrogate Modeling for Solving OPF: A Review
+B01_cornerstone_reviews,Cornerstone reviews and surveys,"Sec. 1, 2, 8",Westermann2019,2019,0,Surrogate modelling for sustainable building design -- A review
+B01_cornerstone_reviews,Cornerstone reviews and surveys,"Sec. 1, 2, 8",Elwy2024,2024,0,The artificial intelligence reformation of sustainable building design approach: A systematic review on building design optimization methods using surrogate models
+B01_cornerstone_reviews,Cornerstone reviews and surveys,"Sec. 1, 2, 8",Zhang2026_building,2026,0,AI-driven surrogate modeling for performance-oriented parametric optimization in sustainable building design: a systematic review
+B01_cornerstone_reviews,Cornerstone reviews and surveys,"Sec. 1, 2, 8",Manco2024,2024,0,A review on multi energy systems modelling and optimization
+B01_cornerstone_reviews,Cornerstone reviews and surveys,"Sec. 1, 2, 8",Klemm2021,2021,0,Modeling and optimization of multi-energy systems in mixed-use districts: A review of existing methods and approaches
+B01_cornerstone_reviews,Cornerstone reviews and surveys,"Sec. 1, 2, 8",Fattahi2020,2020,0,A systemic approach to analyze integrated energy system modeling tools: A review of national models
+B01_cornerstone_reviews,Cornerstone reviews and surveys,"Sec. 1, 2, 8",agha_kassab_comprehensive_2024,2024,0,A Comprehensive Review of Sizing and Energy Management Strategies for Optimal Planning of Microgrids with {PV} and Other Renewable Integration
+B01_cornerstone_reviews,Cornerstone reviews and surveys,"Sec. 1, 2, 8",nallolla_multi-objective_2023,2023,0,Multi-Objective Optimization Algorithms for a Hybrid {AC}/{DC} Microgrid Using {RES}: A Comprehensive Review
+B01_cornerstone_reviews,Cornerstone reviews and surveys,"Sec. 1, 2, 8",Li2025_hydrogen,2025,0,"A comprehensive review of hydrogen integrated hybrid renewable energy systems: Configurations, models, simulation and optimization with artificial intelligence"
+B01_cornerstone_reviews,Cornerstone reviews and surveys,"Sec. 1, 2, 8",ChenRenZhou2023,2023,0,Review of multi-objective optimization in long-term energy system models
+B01_cornerstone_reviews,Cornerstone reviews and surveys,"Sec. 1, 2, 8",Sahoo2025,2025,0,A Review of Multi-Criteria Decision-Making (MCDM) Applications to Solve Energy Management Problems From 2010-2025: Current State and Future Research
+B01_cornerstone_reviews,Cornerstone reviews and surveys,"Sec. 1, 2, 8",Etghani2025,2025,0,Artificial Neural Networks and Taguchi Methods for Energy Systems Optimization: A Comprehensive Review
+B01_cornerstone_reviews,Cornerstone reviews and surveys,"Sec. 1, 2, 8",Zhou2024__2,2024,49,Renewable-storage sizing approaches for centralized and distributed renewable energy—A state-of-the-art review
+B01_cornerstone_reviews,Cornerstone reviews and surveys,"Sec. 1, 2, 8",vahidinasab_overview_2020,2020,0,Overview of Electric Energy Distribution Networks Expansion Planning
+B01_cornerstone_reviews,Cornerstone reviews and surveys,"Sec. 1, 2, 8",Conti2026,2026,0,Optimization Strategies for Large-Scale PV Integration in Smart Distribution Networks: A Review
+B01_cornerstone_reviews,Cornerstone reviews and surveys,"Sec. 1, 2, 8",Alkesaiberi2022,2022,141,Efficient Wind Power Prediction Using Machine Learning Methods: A Comparative Study
+B01_cornerstone_reviews,Cornerstone reviews and surveys,"Sec. 1, 2, 8",Alquthami202248419,2022,96,A Performance Comparison of Machine Learning Algorithms for Load Forecasting in Smart Grid
+B01_cornerstone_reviews,Cornerstone reviews and surveys,"Sec. 1, 2, 8",Gbémou2021,2021,43,A comparative study of machine learning-based methods for global horizontal irradiance forecasting
+B01_cornerstone_reviews,Cornerstone reviews and surveys,"Sec. 1, 2, 8",Xiao2021717,2021,64,Energy Efficiency Modeling for Configuration-Dependent Machining via Machine Learning: A Comparative Study
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Hu2020,2020,7,Uncertainty quantification in stochastic economic dispatch using Gaussian process emulation
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Volodina2022,2022,3,Propagating uncertainty in a network of energy models
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Deng2020831,2020,48,Kriging Assisted Surrogate Evolutionary Computation to Solve Optimal Power Flow Problems
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Nikolaidis2021,2021,39,Gaussian process-based Bayesian optimization for data-driven unit commitment
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Li2021,2021,0,Optimization for liquid cooling cylindrical battery thermal management system based on gaussian process model
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Zhou20181,2018,184,A robust optimization approach for integrated community energy system in energy and ancillary service markets
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Wang2021,2021,0,Short-Term Time Wind Speed Forecasting Based on Spatio-Temporal Geostatistical Approach and Kriging Method
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Eseye201991463,2019,107,Machine learning based integrated feature selection approach for improved electricity demand forecasting in decentralized energy systems
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Wang2017,2017,90,Design of a fractional order frequency PID controller for an islanded microgrid: A multi-objective extremal optimization method
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Nematollahi2021,2021,58,Sizing and sitting of DERs in active distribution networks incorporating load prevailing uncertainties using probabilistic approaches
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Rigo-Mariani20171762,2017,54,Integrated optimal design of a smart microgrid with storage
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Schulte2020,2020,52,Multi-objective optimization under uncertainty of geothermal reservoirs using experimental design-based proxy models
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Giorgetti2020,2020,14,Surrogate-Assisted Modeling and Robust Optimization of a Micro Gas Turbine Plant with Carbon Capture
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Dong2022,2022,35,Optimization strategy based on robust model predictive control for RES-CCHP system under multiple uncertainties
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Liu20222679,2022,10,Kernel Structure Design for Data-Driven Probabilistic Load Flow Studies
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Hanifi2024,2024,187,Advanced hyperparameter optimization of deep learning models for wind power prediction
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Madhukumar20228891,2022,142,Regression Model-Based Short-Term Load Forecasting for University Campus Load
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Wang2023,2023,0,Improved singular filtering-Gaussian process regression-long short-term memory model for whole-life-cycle remaining capacity estimation of lithium-ion batteries adaptive to fast aging and multi-current variations
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Shi2024,2024,2,Short-term Load Forecasting Considering EV Charging Loads with Prediction Interval Evaluation
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Tan2026,2026,6,"Gaussian processes in power systems: Techniques, applications, and future works"
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Lin2023,2023,9,Data-driven method of solving computationally expensive combined economic/emission dispatch problems in large-scale power systems: an improved kriging-assisted optimization approach
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Hu2021671,2021,33,A Bayesian Approach for Estimating Uncertainty in Stochastic Economic Dispatch Considering Wind Power Penetration
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Torun20192128,2019,140,High-Dimensional Global Optimization Method for High-Frequency Electronic Design
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Zhang2019270,2019,301,Wind speed prediction method using Shared Weight Long Short-Term Memory Network and Gaussian Process Regression
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Babaeiyazdi2021,2021,267,State of charge prediction of EV Li-ion batteries using EIS: A machine learning approach
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Kong2021,2021,195,Voltage-temperature health feature extraction to improve prognostics and health management of lithium-ion batteries
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Bianchi2020244,2020,4,Convolutional Neural Network and Stochastic Variational Gaussian Process for Heating Load Forecasting
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Reich2020,2020,6,Predictive control of district heating system using multi-stage nonlinear approximation with selective memory
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Granacher20221573,2022,1,Active learning for multi-objective optimization of processes and energy systems
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Matta2026,2026,1,Designing a near-optimal isolated microgrid using active learning
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Zhang2025__6,2025,2,MLMC-based Resource Adequacy Assessment with Active Learning Trained Surrogate Models
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Morakinyo201973,2019,93,Estimates of the impact of extreme heat events on cooling energy demand in Hong Kong
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Valladares2022,2022,33,Gaussian process-based prognostics of lithium-ion batteries and design optimization of cathode active materials
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Chen202514792,2025,1,A Scalable Recurrent Structure with Fast Transfer Learning for Lithium-Ion Battery State of Charge Estimation at Different Ambient Temperatures
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,De Castro20247710,2024,1,Multi-Fidelity Reinforcement Learning for Minimum Energy Trajectory Planning
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Hu2024,2024,52,Probabilistic net load forecasting based on transformer network and Gaussian process-enabled residual modeling learning method
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Chakrabarty2021,2021,58,Scalable Bayesian optimization for model calibration: Case study on coupled building and HVAC dynamics
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Palm2022,2022,17,Gaussian Process Regression Based Multi-Objective Bayesian Optimization for Power System Design
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Baheri2017131,2017,35,Real-time control using Bayesian optimization: A case study in airborne wind energy systems
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Baheri20171365,2017,22,Altitude optimization of Airborne Wind Energy systems: A Bayesian Optimization approach
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Ceylan2020944,2020,35,Assessment of agricultural energy consumption of Turkey by MLR and Bayesian optimized SVR and GPR models
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Katkar2025,2025,1,Ensemble Surrogate Archive-Assisted Artificial Bee Colony-NSGA-II Metaheuristics for Multi-Modal Optimal Power Flow Framework
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Shao201858,2018,31,Kriging Empirical Mode Decomposition via support vector machine learning technique for autonomous operation diagnosing of CHP in microgrid
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Amjady2017,2017,53,"Short term wind power prediction based on improved kriging interpolation, Empirical Mode Decomposition, and closed-loop forecasting engine"
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Zhang2025__4,2025,2,An Accelerated Approach to Time-Sequential Production Simulation for Integrated Generation-Grid-Storage Systems Combining Benders Decomposition and Data-Driven Methods
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Shi2024__2,2024,2,Load forecasting for regional integrated energy system based on complementary ensemble empirical mode decomposition and multi-model fusion
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Buchanan2024,2024,44,Probabilistic lithium-ion battery state-of-health prediction using convolutional neural networks and Gaussian process regression
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Zhu2022,2022,57,Uncertainty and sensitivity analysis of cooling and heating loads for building energy planning
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Zhang2025__7,2025,2,Parameter optimization calibration of low-pressure fuel cell energy system based on adaptive response surface algorithm
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Huotari2020,2020,15,Hybrid ship unit commitment with demand prediction and model predictive control
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Yan2019625,2019,25,Analytical Iterative Multistep Interval Forecasts of Wind Generation Based on TLGP
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Angizeh2023134995,2023,38,Impact Assessment Framework for Grid Integration of Energy Storage Systems and Renewable Energy Sources Toward Clean Energy Transition
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Kanwal2018117,2018,30,Support vector machine and Gaussian process regression based modeling for photovoltaic power prediction
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Oyedeji2023,2023,18,Computational Models for Forecasting Electric Vehicle Energy Demand
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Mitrovic2023__2,2023,13,Fast Data-Driven Chance Constrained AC-OPF Using Hybrid Sparse Gaussian Processes
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Mitrovic2023__3,2023,13,GP CC-OPF: Gaussian Process based optimization tool for Chance-Constrained Optimal Power Flow[Formula presented]
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Kim2021,2021,36,Probabilistic modeling of wind energy potential for power grid expansion planning
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Shi2026,2026,0,Wind-Solar-Storage Transmission Expansion Planning With Reinforcement Learning Framework Based on Gaussian Process Regression
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Simonson202036,2020,5,Probabilistic Modeling of Thermal Grids using Gaussian Processes
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Gan2021695,2021,45,Data-Driven Energy Management System with Gaussian Process Forecasting and MPC for Interconnected Microgrids
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Prusty2025,2025,40,An improved moth swarm algorithm based fractional order type-2 fuzzy PID controller for frequency regulation of microgrid system
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Kiani20253021,2025,36,Learning Robust Model Predictive Control for Voltage Control of Islanded Microgrid
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Zhang20234075,2023,22,Surrogated-assisted multimodal multi-objective optimization for hybrid renewable energy system
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Han2024,2024,20,Hierarchical robust Day-Ahead VPP and DSO coordination based on local market to enhance distribution network voltage stability
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Zhang2024821,2024,17,Tractable Data Enriched Distributionally Robust Chance-Constrained Conservation Voltage Reduction
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Chung2023,2023,0,MULTI-FIDELITY MODELING FOR DYNAMIC POWER CONTROL AND OPTIMIZATION OF NUCLEAR-RENEWABLE HYBRID ENERGY SYSTEMS
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Yang2022,2022,16,Bayesian optimization for effective thermal conductivity measurement of thermal energy storage: An experimental and numerical approach
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,García-Nieto20216627,2021,16,A new hybrid model to foretell thermal power efficiency from energy performance certificates at residential dwellings applying a Gaussian process regression
+B02_gp_kriging,Gaussian process / kriging emulators,Sec. 3.2,Lin2021,2021,2,A Novel Hybrid Models Based on Gaussian Process Regression for Short-Term Wind Power Forecasting
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Wang2020202933,2020,23,Optimal Scheduling for Integrated Energy System Considering Scheduling Elasticity of Electric and Thermal Loads
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Hasanien2018168,2018,141,Performance improvement of photovoltaic power systems using an optimal control strategy based on whale optimization algorithm
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Sami20181416,2018,120,Thermal properties optimization of microencapsulated a renewable and non-toxic phase change material with a polystyrene shell for thermal energy storage systems
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Ahmad202451,2024,77,"Parametric analysis of wastewater electrolysis for green hydrogen production: A combined RSM, genetic algorithm, and particle swarm optimization approach"
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Xu20212696,2021,28,An Iterative Response-Surface-Based Approach for Chance-Constrained AC Optimal Power Flow Considering Dependent Uncertainty
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Zulfiqar20211026,2021,68,Lipase-PDA-TiO2 NPs: An emphatic nano-biocatalyst for optimized biodiesel production from Jatropha curcas oil
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Muhlpfordt20194806,2019,76,Chance-Constrained AC Optimal Power Flow: A Polynomial Chaos Approach
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Safta20172535,2017,52,Efficient Uncertainty Quantification in Stochastic Economic Dispatch
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Koirala20242284,2024,28,Chance-Constrained Optimization Based PV Hosting Capacity Calculation Using General Polynomial Chaos
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Fu20202904,2020,137,Statistical Machine Learning Model for Stochastic Optimal Planning of Distribution Networks Considering a Dynamic Correlation and Dimension Reduction
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Fu2022,2022,133,Statistical machine learning model for capacitor planning considering uncertainties in photovoltaic power
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Schulte2016104,2016,36,Optimization of Medium-Deep Borehole Thermal Energy Storage Systems
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Dong2023,2023,8,Chance-constrained optimal dispatch of integrated energy systems based on data-driven sparse polynomial chaos expansion
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Hussien20211883,2021,57,Sunflower optimization algorithm-based optimal PI control for enhancing the performance of an autonomous operation of a microgrid
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Yang2024,2024,6,A Day-Ahead Economic Dispatch Method for Renewable Energy Systems Considering Flexibility Supply and Demand Balancing Capabilities
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Meng20191219,2019,156,Structural reliability analysis and uncertainties-based collaborative design and optimization of turbine blades using surrogate model
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Chaudhry2024,2024,5,Improving the potential of fifth-generation district heating and cooling networks through robust design and operational optimization under future energy market and demand uncertainties
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Lu201991827,2019,13,Stochastic Optimization of Economic Dispatch with Wind and Photovoltaic Energy Using the Nested Sparse Grid-Based Stochastic Collocation Method
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Engelmann20186188,2018,15,Distributed Stochastic AC Optimal Power Flow based on Polynomial Chaos Expansion
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Muhlpfordt20174490,2017,28,Solving optimal power flow with non-Gaussian uncertainties via polynomial chaos expansion
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,El Mestari2025,2025,10,Tuning Parameters of Genetic Algorithms for Wind Farm Optimization Using the Design of Experiments Method
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Deodhar2018,2018,6,Experimentally Infused Plant and Controller Optimization Using Iterative Design of Experiments - Theoretical Framework and Airborne Wind Energy Case Study
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Zang2023813,2023,19,Multiobjective Optimization and Multiphysics Design of a 5 MW High-Speed IPMSM Used in FESS Based on NSGA-II
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Gruosso2020618,2020,38,Joined Probabilistic Load Flow and Sensitivity Analysis of Distribution Networks Based on Polynomial Chaos Method
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Khazeiynasab2021,2021,10,PMU Measurement Based Generator Parameter Calibration by Black-Box Optimization with A Stochastic Radial Basis Function Surrogate Model
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Wang2022812,2022,37,A Data-Driven Uncertainty Quantification Method for Stochastic Economic Dispatch
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Pan20244422,2024,32,Reliability-Constrained Economic Dispatch With Analytical Formulation of Operational Risk Evaluation
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Li20191438,2019,30,Compressive Sensing Based Stochastic Economic Dispatch with High Penetration Renewables
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Roy2023,2023,36,Multi-objective optimization of biomass gasification based combined heat and power system employing molten carbonate fuel cell and externally fired gas turbine
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Rixhon2021,2021,26,The role of electrofuels under uncertainties for the belgian energy transition
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Assareh2023,2023,44,"Performance analysis of solar-assisted-geothermal combined cooling, heating, and power (CCHP) systems incorporated with a hydrogen generation subsystem"
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Xu20184696,2018,46,Maximum Loadability of Islanded Microgrids With Renewable Energy Generation
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Hussien20226442,2022,44,Coot Bird Algorithms-Based Tuning PI Controller for Optimal Microgrid Autonomous Operation
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Liang20222192,2022,34,Stochastic Optimal Energy Storage Management for Energy Routers Via Compressive Sensing
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Ata2025,2025,16,"Comprehensive evaluation of a gas turbine-based multi-generation system for power, heating, cooling, freshwater, hydrogen and ammonia: 4E assessment and multi-objective optimization with RSM desirability approach"
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Hussien202415075,2024,16,Hybrid Transient Search Algorithm With Levy Flight for Optimal PI Controllers of Islanded Microgrids
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Hussien202190577,2021,16,LMSRE-based adaptive pi controller for enhancing the performance of an autonomous operation of microgrids
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Salahinezhad2025,2025,9,Trade-off analysis for optimal design of trigeneration energy systems integrated with solar and hydrogen subsystems: A novel optimization strategy
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Cao2017,2017,9,Multi-objective optimization of preplanned microgrid islanding based on stochastic short-term simulation
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Dong2023__2,2023,8,Robust optimal scheduling for integrated energy systems based on multi-objective confidence gap decision theory
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Roy2020,2020,28,Performance evaluation of a novel biomass-based hybrid energy system employing optimisation and multi-criteria decision-making techniques
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Pourmohammadi2023,2023,14,Robust metamodel-based simulation-optimization approaches for designing hybrid renewable energy systems
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Yang2024__2,2024,6,Data-driven robust optimization scheduling for microgrid day-ahead to intra-day operations based on renewable energy interval prediction
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Van Acker2022,2022,16,General polynomial chaos in the current–voltage formulation of the optimal power flow problem
+B03_pce_response_surface,Polynomial chaos and response surfaces,Sec. 3.1,Xu20203127,2020,0,An efficient multifidelity model for assessing risk probabilities in power systems under rare events
+B04_rbf_kernel,Radial basis functions / kernel regressors,Sec. 3.3,Liu20223726,2022,40,Explicit Data-Driven Small-Signal Stability Constrained Optimal Power Flow
+B04_rbf_kernel,Radial basis functions / kernel regressors,Sec. 3.3,Han2018622,2018,66,Surrogate modeling-based multi-objective dynamic VAR planning considering short-term voltage stability and transient stability
+B04_rbf_kernel,Radial basis functions / kernel regressors,Sec. 3.3,Jia2022553,2022,21,Developing machine-learning meta-models for high-rise residential district cooling in hot and humid climate
+B04_rbf_kernel,Radial basis functions / kernel regressors,Sec. 3.3,Lu20232989,2023,41,Distributed Online Dispatch for Microgrids Using Hierarchical Reinforcement Learning Embedded with Operation Knowledge
+B04_rbf_kernel,Radial basis functions / kernel regressors,Sec. 3.3,Wang20211767,2021,53,Stochastic Optimization for Residential Demand Response with Unit Commitment and Time of Use
+B04_rbf_kernel,Radial basis functions / kernel regressors,Sec. 3.3,Urgun20202791,2020,46,Importance Sampling Using Multilabel Radial Basis Classification for Composite Power System Reliability Evaluation
+B04_rbf_kernel,Radial basis functions / kernel regressors,Sec. 3.3,Faraji2020157284,2020,103,Optimal day-ahead self-scheduling and operation of prosumer microgrids using hybrid machine learning-based weather and load forecasting
+B04_rbf_kernel,Radial basis functions / kernel regressors,Sec. 3.3,Wang20192635,2019,58,Neural networks for power management optimal strategy in hybrid microgrid
+B04_rbf_kernel,Radial basis functions / kernel regressors,Sec. 3.3,Rafi202132436,2021,482,A short-term load forecasting method using integrated CNN and LSTM network
+B04_rbf_kernel,Radial basis functions / kernel regressors,Sec. 3.3,Sideratos2020,2020,165,A novel fuzzy-based ensemble model for load forecasting using hybrid deep neural networks
+B04_rbf_kernel,Radial basis functions / kernel regressors,Sec. 3.3,Li2019,2019,159,Recurrent neural networks based photovoltaic power forecasting approach
+B04_rbf_kernel,Radial basis functions / kernel regressors,Sec. 3.3,Tian2020,2020,176,Short-term wind speed prediction based on LMD and improved FA optimized combined kernel function LSSVM
+B04_rbf_kernel,Radial basis functions / kernel regressors,Sec. 3.3,Yang2020415,2020,130,A novel competitive swarm optimized RBF neural network model for short-term solar power generation forecasting
+B04_rbf_kernel,Radial basis functions / kernel regressors,Sec. 3.3,velasquez_intelligence_2023,2023,0,Intelligence Techniques in Sustainable Energy: Analysis of a Decade of Advances
+B04_rbf_kernel,Radial basis functions / kernel regressors,Sec. 3.3,Dullinger20181646,2018,39,A general approach for mixed-integer predictive control of HVAC systems using MILP
+B04_rbf_kernel,Radial basis functions / kernel regressors,Sec. 3.3,Wu2021,2021,38,Optimal bidding and scheduling of AA-CAES based energy hub considering cascaded consumption of heat
+B04_rbf_kernel,Radial basis functions / kernel regressors,Sec. 3.3,Karamichailidou20212137,2021,143,Wind turbine power curve modeling using radial basis function neural networks and tabu search
+B04_rbf_kernel,Radial basis functions / kernel regressors,Sec. 3.3,Zeng2017175,2017,198,A switching delayed PSO optimized extreme learning machine for short-term load forecasting
+B04_rbf_kernel,Radial basis functions / kernel regressors,Sec. 3.3,Li2020,2020,0,Short-term wind power forecasting based on support vector machine with improved dragonfly algorithm
+B04_rbf_kernel,Radial basis functions / kernel regressors,Sec. 3.3,Sánchez-Zabala2024,2024,16,Building energy performance metamodels for district energy management optimisation platforms
+B04_rbf_kernel,Radial basis functions / kernel regressors,Sec. 3.3,Khalid20241959,2024,41,A novel computational paradigm for scheduling of hybrid energy networks considering renewable uncertainty limitations
+B04_rbf_kernel,Radial basis functions / kernel regressors,Sec. 3.3,Guan2025,2025,0,Optimization of energy management strategy for a novel electric-hydraulic vehicle based on NSGA-III genetic algorithm
+B04_rbf_kernel,Radial basis functions / kernel regressors,Sec. 3.3,Sun20191497,2019,53,A two-step short-term probabilistic wind forecasting methodology based on predictive distribution optimization
+B04_rbf_kernel,Radial basis functions / kernel regressors,Sec. 3.3,Abedinia20161511,2016,70,Short-term load forecast of electrical power system by radial basis function neural network and new stochastic search algorithm
+B04_rbf_kernel,Radial basis functions / kernel regressors,Sec. 3.3,Ullah20255970,2025,6,Optimized Neuro-Adaptive Third-Order Sliding Mode Control With High-Gain Differentiator for Enhanced Photovoltaic System Performance: Simulation and Experimental Validation
+B04_rbf_kernel,Radial basis functions / kernel regressors,Sec. 3.3,Mahapatra2022721,2022,22,Constrained optimal power flow and optimal TCSC allocation using hybrid cuckoo search and ant lion optimizer
+B04_rbf_kernel,Radial basis functions / kernel regressors,Sec. 3.3,Mahapatra20161921,2016,22,Hybrid technique for optimal location and cost sizing of thyristor controlled series compensator to upgrade voltage stability
+B04_rbf_kernel,Radial basis functions / kernel regressors,Sec. 3.3,Wu2021__2,2021,38,Hybrid Improved Bird Swarm Algorithm with Extreme Learning Machine for Short-Term Power Prediction in Photovoltaic Power Generation System
+B04_rbf_kernel,Radial basis functions / kernel regressors,Sec. 3.3,Zhang20203731,2020,17,Two-Stage Optimal Operation Strategy of Isolated Microgrid with TSK Fuzzy Identification of Supply Security
+B04_rbf_kernel,Radial basis functions / kernel regressors,Sec. 3.3,Venkatakrishnan2022,2022,8,Optimally manage the energy between electric vehicle charging stations and electricity distribution system: A hybrid technique
+B04_rbf_kernel,Radial basis functions / kernel regressors,Sec. 3.3,Prasad2025,2025,4,Active and Reactive Power Control in Three-Phase Grid-Connected Electric Vehicles using Zebra Optimization Algorithm and Multimodal Adaptive Spatio-Temporal Graph Neural Network
+B04_rbf_kernel,Radial basis functions / kernel regressors,Sec. 3.3,Goudarzi2017667,2017,18,Smart real-time scheduling of generating units in an electricity market considering environmental aspects and physical constraints of generators
+B05_tree_ensembles,"Tree ensembles (RF, gradient boosting)",Sec. 3.4,Li2023,2023,28,A novel method of creating machine learning-based time series meta-models for building energy analysis
+B05_tree_ensembles,"Tree ensembles (RF, gradient boosting)",Sec. 3.4,Petrova2025,2025,8,Thermal interference in aquifer thermal energy storage: Insights from stochastic surrogate modelling of well placement
+B05_tree_ensembles,"Tree ensembles (RF, gradient boosting)",Sec. 3.4,Amoedo2023929,2023,2,A genetic algorithm-active learning approach in energy systems optimization
+B05_tree_ensembles,"Tree ensembles (RF, gradient boosting)",Sec. 3.4,Wu2024391,2024,33,Synergistic Integration of Machine Learning and Mathematical Optimization for Unit Commitment
+B05_tree_ensembles,"Tree ensembles (RF, gradient boosting)",Sec. 3.4,Li2023__2,2023,28,Learning to Optimize Distributed Optimization: ADMM-based DC-OPF Case Study
+B05_tree_ensembles,"Tree ensembles (RF, gradient boosting)",Sec. 3.4,Li2023__3,2023,28,Physics-model-free heat-electricity energy management of multiple microgrids based on surrogate model-enabled multi-agent deep reinforcement learning
+B05_tree_ensembles,"Tree ensembles (RF, gradient boosting)",Sec. 3.4,Ghosh2023,2023,17,Decomposition-Transformation Assisted Optimized Heterogeneous Classification Strategy in NILM
+B05_tree_ensembles,"Tree ensembles (RF, gradient boosting)",Sec. 3.4,Yang2025,2025,0,Adaptive multi-objective Bayesian optimization approach for capacity planning of the interconnected offshore wind farms
+B06_neural_surrogates,Neural surrogates (MLP/CNN/RNN/GNN),Sec. 3.5,Perera2019191,2019,104,Machine learning methods to assist energy system optimization
+B06_neural_surrogates,Neural surrogates (MLP/CNN/RNN/GNN),Sec. 3.5,Wu2022231,2022,86,Deep Learning to Optimize: Security-Constrained Unit Commitment with Uncertain Wind Power Generation and BESSs
+B06_neural_surrogates,Neural surrogates (MLP/CNN/RNN/GNN),Sec. 3.5,Chen20244723,2024,44,End-to-End Feasible Optimization Proxies for Large-Scale Economic Dispatch
+B06_neural_surrogates,Neural surrogates (MLP/CNN/RNN/GNN),Sec. 3.5,Chen2022,2022,39,Learning optimization proxies for large-scale Security-Constrained Economic Dispatch
+B06_neural_surrogates,Neural surrogates (MLP/CNN/RNN/GNN),Sec. 3.5,Xu20223066,2022,30,E2DNet: An Ensembling Deep Neural Network for Solving Nonconvex Economic Dispatch in Smart Grid
+B06_neural_surrogates,Neural surrogates (MLP/CNN/RNN/GNN),Sec. 3.5,Park2019,2019,123,Physics-induced graph neural network: An application to wind-farm power estimation
+B06_neural_surrogates,Neural surrogates (MLP/CNN/RNN/GNN),Sec. 3.5,Su2022315,2022,65,Deep Belief Network Enabled Surrogate Modeling for Fast Preventive Control of Power System Transient Stability
+B06_neural_surrogates,Neural surrogates (MLP/CNN/RNN/GNN),Sec. 3.5,Thrampoulidis2021,2021,118,A machine learning-based surrogate model to approximate optimal building retrofit solutions
+B06_neural_surrogates,Neural surrogates (MLP/CNN/RNN/GNN),Sec. 3.5,Hirvonen2017323,2017,18,Neural network metamodelling in multi-objective optimization of a high latitude solar community
+B06_neural_surrogates,Neural surrogates (MLP/CNN/RNN/GNN),Sec. 3.5,Guo20222057,2022,43,Training Deep Neural Network for Optimal Power Allocation in Islanded Microgrid Systems: A Distributed Learning-Based Approach
+B06_neural_surrogates,Neural surrogates (MLP/CNN/RNN/GNN),Sec. 3.5,Li202359995,2023,20,Learning to Solve Optimization Problems With Hard Linear Constraints
+B06_neural_surrogates,Neural surrogates (MLP/CNN/RNN/GNN),Sec. 3.5,Pang2023,2023,20,A Surrogate-Assisted Adaptive Bat Algorithm for Large-Scale Economic Dispatch
+B06_neural_surrogates,Neural surrogates (MLP/CNN/RNN/GNN),Sec. 3.5,Srithapon202134395,2021,44,Surrogate-Assisted Multi-Objective Probabilistic Optimal Power Flow for Distribution Network with Photovoltaic Generation and Electric Vehicles
+B06_neural_surrogates,Neural surrogates (MLP/CNN/RNN/GNN),Sec. 3.5,Jahangiri2023,2023,7,A Deep Learning Approach for Exploring the Design Space for the Decarbonization of the Canadian Electricity System
+B06_neural_surrogates,Neural surrogates (MLP/CNN/RNN/GNN),Sec. 3.5,Reynolds2017704,2017,14,A smart heating set point scheduler using an artificial neural network and genetic algorithm
+B06_neural_surrogates,Neural surrogates (MLP/CNN/RNN/GNN),Sec. 3.5,Jalving2023,2023,28,Beyond price taker: Conceptual design and optimization of integrated energy systems using machine learning market surrogates
+B06_neural_surrogates,Neural surrogates (MLP/CNN/RNN/GNN),Sec. 3.5,Sun2020,2020,70,Optimal carbon storage reservoir management through deep reinforcement learning
+B06_neural_surrogates,Neural surrogates (MLP/CNN/RNN/GNN),Sec. 3.5,Zhang2022,2022,38,Model-based fully coupled propulsion-aerodynamics optimization for hybrid electric aircraft energy management strategy
+B06_neural_surrogates,Neural surrogates (MLP/CNN/RNN/GNN),Sec. 3.5,Taghizadeh2024,2024,19,Multi-fidelity graph neural networks for efficient power flow analysis under high-dimensional demand and renewable generation uncertainty
+B06_neural_surrogates,Neural surrogates (MLP/CNN/RNN/GNN),Sec. 3.5,Khayambashi202453,2024,10,HYBRID CHANCE-CONSTRAINED OPTIMAL POWER FLOW UNDER LOAD AND RENEWABLE GENERATION UNCERTAINTY USING ENHANCED MULTI-FIDELITY GRAPH NEURAL NETWORKS
+B06_neural_surrogates,Neural surrogates (MLP/CNN/RNN/GNN),Sec. 3.5,Subedi2026157,2026,0,Dynamic Validation of CNN-Based Surrogate Models for Inverter-Based Resources in Open-Source Solvers
+B06_neural_surrogates,Neural surrogates (MLP/CNN/RNN/GNN),Sec. 3.5,Liu20242534,2024,12,More Efficient Energy Management for Hybrid AC/DC Microgrids with Hard Constrained Neural Network-Based Conversion Loss Surrogate Models
+B06_neural_surrogates,Neural surrogates (MLP/CNN/RNN/GNN),Sec. 3.5,Kaewdornhan2022130373,2022,20,Electric Distribution Network with Multi-Microgrids Management Using Surrogate-Assisted Deep Reinforcement Learning Optimization
+B06_neural_surrogates,Neural surrogates (MLP/CNN/RNN/GNN),Sec. 3.5,Zhang2022__2,2022,38,Development and comparative selection of surrogate models using artificial neural network for an integrated regenerative transcritical cycle
+B06_neural_surrogates,Neural surrogates (MLP/CNN/RNN/GNN),Sec. 3.5,Chaturvedi2024149,2024,41,Reinforcement Learning-Based Integrated Control to Improve the Efficiency of DC Microgrids
+B06_neural_surrogates,Neural surrogates (MLP/CNN/RNN/GNN),Sec. 3.5,Yakubu2025,2025,19,"Modeling, optimization, and thermal management strategies of hydrogen fuel cell systems"
+B06_neural_surrogates,Neural surrogates (MLP/CNN/RNN/GNN),Sec. 3.5,Bian202224179,2022,19,"Energy, exergy, economy analysis, and multi-objective optimization of a novel integrated energy system by combining artificial neural network and whale optimization algorithm"
+B06_neural_surrogates,Neural surrogates (MLP/CNN/RNN/GNN),Sec. 3.5,tian_building_2025,2025,0,Building design and operation multi-objective optimization: Energy costs vs. Emissions
+B06_neural_surrogates,Neural surrogates (MLP/CNN/RNN/GNN),Sec. 3.5,bagheri_miqcp-based_2025,2025,0,An {MIQCP}-based multi-objective optimal operation strategy for renewables-integrated smart distribution systems considering transformer loss of life and environmental emissions
+B06_neural_surrogates,Neural surrogates (MLP/CNN/RNN/GNN),Sec. 3.5,Franzoso2025,2025,11,Deep reinforcement learning as a tool for the analysis and optimization of energy flows in multi-energy systems
+B06_neural_surrogates,Neural surrogates (MLP/CNN/RNN/GNN),Sec. 3.5,Tian2025,2025,7,EDformer family: End-to-end multi-task load forecasting frameworks for day-ahead economic dispatch
+B06_neural_surrogates,Neural surrogates (MLP/CNN/RNN/GNN),Sec. 3.5,Cestero2025,2025,4,Optimizing energy management of smart grid using reinforcement learning aided by surrogate models built using physics-informed neural networks
+B06_neural_surrogates,Neural surrogates (MLP/CNN/RNN/GNN),Sec. 3.5,Moradi2024108,2024,6,Learning to optimize power allocation in cell-free massive MIMO networks with hybrid green energy
+B06_neural_surrogates,Neural surrogates (MLP/CNN/RNN/GNN),Sec. 3.5,Chen2022__2,2022,39,OPTIMIZATION OF CORE PARAMETERS BASED ON ARTIFICIAL NEURAL NETWORK SURROGATE MODEL
+B06_neural_surrogates,Neural surrogates (MLP/CNN/RNN/GNN),Sec. 3.5,Guo202115024,2021,17,An Alternative Learning-Based Approach for Economic Dispatch in Smart Grid
+B07_constraint_aware,Constraint-aware / structure-preserving surrogates,Sec. 3.6,Liang20246508,2024,19,Joint Chance-Constrained Unit Commitment: Statistically Feasible Robust Optimization With Learning-to-Optimize Acceleration
+B07_constraint_aware,Constraint-aware / structure-preserving surrogates,Sec. 3.6,Chen2023657,2023,29,Deep-Quantile-Regression-Based Surrogate Model for Joint Chance-Constrained Optimal Power Flow with Renewable Generation
+B07_constraint_aware,Constraint-aware / structure-preserving surrogates,Sec. 3.6,Lei20247417,2024,10,Surrogate Formulation for Chance-Constrained DC Optimal Power Flow With Affine Control Policy
+B07_constraint_aware,Constraint-aware / structure-preserving surrogates,Sec. 3.6,Wang2024__2,2024,30,A method to bridge energy and process system optimization: Identifying the feasible operating space for a methanation process in power-to-gas energy systems
+B07_constraint_aware,Constraint-aware / structure-preserving surrogates,Sec. 3.6,Lei2022,2022,14,Data-driven assisted chance-constrained energy and reserve scheduling with wind curtailment
+B08_hybrid_pinn,Hybrid and physics-informed surrogates,Sec. 3.7,Lu2025740,2025,13,Advanced Probabilistic Transient Stability Assessment for Operational Planning: A Physics-Informed Graphical Learning Approach
+B08_hybrid_pinn,Hybrid and physics-informed surrogates,Sec. 3.7,Ren20252375,2025,9,Hybrid Model-Driven and Data-Driven Surrogate-Assisted Method for Transient Stability Preventive Control
+B08_hybrid_pinn,Hybrid and physics-informed surrogates,Sec. 3.7,Chi2024,2024,2,Hybrid model-data-driven dynamic VAR planning for wind-penetrated power system using spectral surrogate techniques
+B09_decision_focused_l2o,Decision-focused and learning-to-optimize,Sec. 3.8,Yang20251813,2025,6,Energy-efficient edge intelligence for task-dependency MEC power grid networks
+B09_decision_focused_l2o,Decision-focused and learning-to-optimize,Sec. 3.8,Rizqi2023,2023,21,Green energy mix modeling under supply uncertainty: Hybrid system dynamics and adaptive PSO approach
+B10_doe_active_learning,Design of experiments and active learning,Sec. 4.2-4.3,Priesmann2024,2024,5,Artificial intelligence and design of experiments for resource adequacy assessment in power systems
+B10_doe_active_learning,Design of experiments and active learning,Sec. 4.2-4.3,Uhrich2026211,2026,0,A Metamodeling Framework for Accelerated Energy Market Optimization Using Active Learning
+B10_doe_active_learning,Design of experiments and active learning,Sec. 4.2-4.3,Karantoumanis2025377,2025,0,Optimizing concentrated solar power plants using adaptive sampling-based derivative-free algorithms
+B11_multi_fidelity,Multi-fidelity / transfer learning,Sec. 4.4,Chen2025244,2025,3,Multi-fidelity machine learning with knowledge transfer enhances geothermal energy system design and optimization
+B11_multi_fidelity,Multi-fidelity / transfer learning,Sec. 4.4,liang_high_2024,2024,0,High fidelity modeling of pumped storage units for optimal operation of a multi-energy co-generation system
+B12_bayes_accel,Bayesian / surrogate-assisted optimization,Sec. 5.2,Zhu2024318,2024,11,Research progress on intelligent optimization techniques for energy-efficient design of ship hull forms: Research progress on intelligent..: S. Zhu et al.
+B12_bayes_accel,Bayesian / surrogate-assisted optimization,Sec. 5.2,Aghaei Pour2022303,2022,30,Surrogate assisted interactive multiobjective optimization in energy system design of buildings
+B12_bayes_accel,Bayesian / surrogate-assisted optimization,Sec. 5.2,Ma2022737,2022,17,Two-Level Surrogate-Assisted Transient Parameters Design Optimization of a Wound-Field Synchronous Machine
+B12_bayes_accel,Bayesian / surrogate-assisted optimization,Sec. 5.2,Reis2025,2025,5,Symmetry-Guided Surrogate-Assisted NSGA-II for Multi-Objective Optimization of Renewable Energy Systems
+B12_bayes_accel,Bayesian / surrogate-assisted optimization,Sec. 5.2,Lalitha20231401,2023,8,Multi-objective approach for protection of microgrids using surrogate assisted particle swarm optimization (SAPSO)
+B12_bayes_accel,Bayesian / surrogate-assisted optimization,Sec. 5.2,Dong2022197,2022,14,Surrogate-Assisted Cooperation Control of Network-Connected Doubly Fed Induction Generator Wind Farm with Maximized Reactive Power Capacity
+B14_decomposition,Surrogate-enabled decomposition,Sec. 5.4,abbas_optimal_2024,2024,0,Optimal scheduling and management of grid-connected distributed resources using improved decomposition-based many-objective evolutionary algorithm
+B15_uncertainty,Uncertainty handling with surrogates,Sec. 5.5,Lawson201647,2016,18,Bayesian framework for power network planning under uncertainty
+B15_uncertainty,Uncertainty handling with surrogates,Sec. 5.5,Du2025,2025,4,Development of a robust data-driven surrogate model to improve energy flexibility of an integrated district heating system with a thermal storage system
+B15_uncertainty,Uncertainty handling with surrogates,Sec. 5.5,Bayani20231024,2023,45,Quantifying the Risk of Wildfire Ignition by Power Lines Under Extreme Weather Conditions
+B15_uncertainty,Uncertainty handling with surrogates,Sec. 5.5,Liang2024__3,2024,16,Risk-based distributionally robust optimal dispatch for multiple cascading failures in regional integrated energy system using surrogate modeling
+B16_validation,Validation and decision-aware metrics,Sec. 6,Azevedo2021630,2021,11,Influence of model calibration and optimization techniques on the evaluation of thermal comfort and retrofit measures of a Lisbon household using building energy simulation
+B17_ed_uc,Economic dispatch and unit commitment,Sec. 7.1,Liang2024__2,2024,16,Expert knowledge data-driven based actor–critic reinforcement learning framework to solve computationally expensive unit commitment problems with uncertain wind energy
+B18_opf,Optimal power flow surrogates,Sec. 7.2,De Keyser20179702,2017,27,Convex mapping formulations enabling optimal power split and design of the electric drivetrain in all-electric vehicles
+B19_capacity_expansion,Capacity and generation expansion planning,Sec. 7.3,Rodgers2018951,2018,41,Generation expansion planning considering health and societal damages – A simulation-based optimization approach
+B19_capacity_expansion,Capacity and generation expansion planning,Sec. 7.3,Jahangiri20244849,2024,8,A machine learning approach to analysis of Canadian provincial power system decarbonization
+B19_capacity_expansion,Capacity and generation expansion planning,Sec. 7.3,Amaral20251156,2025,1,Adaptive metamodeling-based simulation optimisation
+B19_capacity_expansion,Capacity and generation expansion planning,Sec. 7.3,Zhou2022__2,2022,44,Bi-level framework for microgrid capacity planning under dynamic wireless charging of electric vehicles
+B19_capacity_expansion,Capacity and generation expansion planning,Sec. 7.3,Pérez-Uresti2023,2023,25,Strategic investment planning for the hydrogen economy – A mixed integer non-linear framework for the development and capacity expansion of hydrogen supply chain networks
+B20_district_heating,District heating and thermal storage,Sec. 7.4,Zhou2024,2024,49,Machine learning-based digital district heating/cooling with renewable integrations and advanced low-carbon transition
+B20_district_heating,District heating and thermal storage,Sec. 7.4,Weinberger2018555,2018,7,Investigating influential techno-economic factors for combined heat and power production using optimization and metamodeling
+B21_mes_sector_coupling,Multi-energy and sector-coupled systems,Sec. 7.5,Wang2024,2024,30,Numerical assessment and optimization of photovoltaic-based hydrogen-oxygen Co-production energy system: A machine learning and multi-objective strategy
+B21_mes_sector_coupling,Multi-energy and sector-coupled systems,Sec. 7.5,Gao2025,2025,9,"Multi-objective optimization and posteriori multi-criteria decision making on an integrative solid oxide fuel cell cooling, heating and power system with semi-empirical model-driven co-simulation"
+B21_mes_sector_coupling,Multi-energy and sector-coupled systems,Sec. 7.5,Zheng20231907,2023,48,Distributed Dispatch of Integrated Electricity-Heat Systems With Variable Mass Flow
+B21_mes_sector_coupling,Multi-energy and sector-coupled systems,Sec. 7.5,Ren2024,2024,36,Data-driven surrogate optimization for deploying heterogeneous multi-energy storage to improve demand response performance at building cluster level
+B21_mes_sector_coupling,Multi-energy and sector-coupled systems,Sec. 7.5,Yin2024,2024,37,Energy management and capacity allocation method of hybrid energy storage system based on port transportation-energy coupling characteristics
+B21_mes_sector_coupling,Multi-energy and sector-coupled systems,Sec. 7.5,malla_sg_optimization_2024,2024,0,Optimization of Multi-Energy Systems for Efficient Power-to-X Conversion
+B21_mes_sector_coupling,Multi-energy and sector-coupled systems,Sec. 7.5,batista_optimizing_2023,2023,0,Optimizing methodologies of hybrid renewable energy systems powered reverse osmosis plants
+B21_mes_sector_coupling,Multi-energy and sector-coupled systems,Sec. 7.5,Ahlström2022596,2022,27,The role of biomass gasification in the future flexible power system – BECCS or CCU?
+B21_mes_sector_coupling,Multi-energy and sector-coupled systems,Sec. 7.5,Qi2023,2023,52,Strategies for flexible operation of power-to-X processes coupled with renewables
+B21_mes_sector_coupling,Multi-energy and sector-coupled systems,Sec. 7.5,Walden2023,2023,34,"Nonlinear operational optimization of an industrial power-to-heat system with a high temperature heat pump, a thermal energy storage and wind energy"
+B21_mes_sector_coupling,Multi-energy and sector-coupled systems,Sec. 7.5,Dong2024,2024,14,Design and optimal scheduling of forecasting-based campus multi-energy complementary energy system
+B21_mes_sector_coupling,Multi-energy and sector-coupled systems,Sec. 7.5,Cuzner2018,2018,8,Power Conversion and Distribution Equipment Metamodels for Dependable Design of Shipboard Integrated Power and Energy Systems
+B21_mes_sector_coupling,Multi-energy and sector-coupled systems,Sec. 7.5,Perera2017187,2017,5,Optimum design of distributed energy hubs using hybrid surrogate models (HSM)
+B21_mes_sector_coupling,Multi-energy and sector-coupled systems,Sec. 7.5,tezer_multi-objective_2025,2025,0,Multi-objective optimization of hybrid renewable energy systems with green hydrogen integration and hybrid storage strategies
+B21_mes_sector_coupling,Multi-energy and sector-coupled systems,Sec. 7.5,chen_multi-objective_2025-1,2025,0,Multi-objective optimization of multi-energy complementary systems integrated biomass-solar-wind energy utilization in rural areas
+B21_mes_sector_coupling,Multi-energy and sector-coupled systems,Sec. 7.5,bian_multi-energy_2025,2025,0,Multi-energy Complementary Planning for Regional Integrated Energy System Considering Flexibility and Economy
+B21_mes_sector_coupling,Multi-energy and sector-coupled systems,Sec. 7.5,ali_optimizing_2025,2025,0,Optimizing Hydrogen Systems and Demand Response for Enhanced Integration of {RES} and {EVs} in Smart Grids
+B22_microgrid_hub,"Microgrids, energy hubs and communities",Sec. 7.6,Roth2019214,2019,30,A flexible metamodel architecture for optimal design of Hybrid Renewable Energy Systems (HRES) – Case study of a stand-alone HRES for a factory in tropical island
+B22_microgrid_hub,"Microgrids, energy hubs and communities",Sec. 7.6,salgueiro_multi-objective_2019,2019,0,Multi-objective Metaheuristics' Challenges in the Optimization of Microgrids Planning and Management
+B22_microgrid_hub,"Microgrids, energy hubs and communities",Sec. 7.6,arar_tahir_scientific_2023,2023,0,Scientific mapping of optimisation applied to microgrids integrated with renewable energy systems
+B22_microgrid_hub,"Microgrids, energy hubs and communities",Sec. 7.6,Cao2023__2,2023,47,Co-optimization of multiple virtual power plants considering electricity-heat-carbon trading: A Stackelberg game strategy
+B22_microgrid_hub,"Microgrids, energy hubs and communities",Sec. 7.6,an_multi-objective_2025,2025,0,Multi-objective optimization for optimal placement of shared battery energy storage systems in urban energy communities
+B22_microgrid_hub,"Microgrids, energy hubs and communities",Sec. 7.6,anoune_microgrid_2025,2025,0,Microgrid Optimization Using a Developed Model of Genetic Algorithm Under {MATLAB}
+B23_moo_design,Multi-objective MES design,Sec. 7.7,cortes-caicedo_multi-objective_2025,2025,0,A multi-objective optimization approach based on the Non-Dominated Sorting Genetic Algorithm {II} for power coordination in battery energy storage systems for {DC} distribution network applications
+B23_moo_design,Multi-objective MES design,Sec. 7.7,alahmad_enhancing_2025,2025,0,Enhancing renewable energy integration through strategic stochastic optimization planning of distributed energy resources (Wind/{PV}/{SBESS}/{MBESS}) in distribution systems
+B23_moo_design,Multi-objective MES design,Sec. 7.7,alahmad_optimizing_2025,2025,0,Optimizing renewable energy and green technologies in distribution systems through stochastic planning of distributed energy resources
+B23_moo_design,Multi-objective MES design,Sec. 7.7,bendriss_novel_2025,2025,0,A novel improved Frilled Lizard algorithm for solving the optimal planning problem of renewable energy sources within distribution grids under uncertainties

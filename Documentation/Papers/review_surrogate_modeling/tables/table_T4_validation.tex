@@ -1,0 +1,96 @@
+% Table T4 - Validation metrics, with explicit attention to
+% decision-aware and feasibility-oriented measures that the dominant
+% practice in ESM still under-reports. Cite-Refs identify
+% representative studies that report each metric (or, in the
+% ``Common misuses'' column, that explicitly flag the misuse).
+
+\begin{table*}[!t]
+  \centering
+  \footnotesize
+  \caption{Validation metrics used to qualify surrogates in
+  energy-system optimization. The first block lists the standard
+  regression metrics; the second block lists decision-aware metrics
+  that we recommend reporting alongside them; the third block lists
+  the test designs that distinguish a healthy validation from a
+  cosmetic one. References are representative; the full study-level
+  picture is in Table~\ref{tab:T6-evidence-map}.}
+  \label{tab:T4-validation}
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabularx}{\textwidth}{@{}L{0.22\textwidth} L{0.16\textwidth} L{0.26\textwidth} L{0.28\textwidth}@{}}
+    \toprule
+    Metric / test & Tells you about & When it is useful (refs.) & Common misuses (refs.) \\
+    \midrule
+    \multicolumn{4}{l}{\textit{Standard regression metrics}} \\
+    RMSE / MAE / $R^2$
+      & Average fit
+      & Sanity / first screen
+        \cite{Mylonopoulos202332697,Ruan2021221,Starke2025214,Perera2019191}
+      & Reported alone, without decision-aware companion
+        \cite{Khaloie2025,Lim2025,Mylonopoulos202332697} \\
+    Quantile / prediction-interval coverage
+      & Calibration of posterior spread
+      & Probabilistic surrogates, BO acquisition
+        \cite{Hu2020,Hu2021671,Volodina2022,Hu2024,Buchanan2024}
+      & Optimistic on training set; calibration breakdown OOD
+        \cite{Subedi2026157,Khaloie2025} \\
+    \midrule
+    \multicolumn{4}{l}{\textit{Decision-aware metrics}} \\
+    Decision regret (cost gap to oracle)
+      & Loss in decision quality
+      & Surrogate inside optimizer (P1, P3)
+        \cite{Chen20244723,Wu2022231,Liang20246508,Wu2024391}
+      & Computed only on training set / on synthetic data
+        \cite{Ruan2021221,Khaloie2025,Lim2025} \\
+    Feasibility rate
+      & Constraint safety on the host problem
+      & Hard-constrained problems (P1, P3, P5)
+        \cite{Liu20242534,Chen2023657,Chen2022,Koirala20242284}
+      & Reported without violation severity
+        \cite{Khaloie2025,Lim2025,Starke2025214} \\
+    Violation severity (worst case + 95th percentile)
+      & Robustness under tail load / contingencies
+      & Safety-critical operation, stress regimes
+        \cite{Chen2023657,Liang20246508,Chen20244723}
+      & Average-only reporting; missing contingency stratification
+        \cite{Lim2025,Khaloie2025} \\
+    Objective gap distribution (MIP gap, CVaR of gap)
+      & Distributional fairness across instances
+      & MILP / MINLP surrogate use
+        \cite{Wu2022231,Chen20244723,Wu2024391}
+      & Mean-only summaries hide tail behaviour
+        \cite{Ruan2021221,Mylonopoulos202332697} \\
+    Out-of-distribution score
+      & Trust-region applicability
+      & Online updating, planning under future capacity mixes
+        \cite{Park2019,Subedi2026157,Liu20222679}
+      & Single fixed test split, no policy-shift block
+        \cite{Khaloie2025,Lim2025,Starke2025214} \\
+    \midrule
+    \multicolumn{4}{l}{\textit{Test designs}} \\
+    Stress tests (peak load, low-renewable spell, cold spell)
+      & Tail behaviour
+      & ESM operation under extremes
+        \cite{Hu2024,Du2025,Yang2024__2,Bayani20231024}
+      & Only on average days; no Dunkelflaute / heat-wave block
+        \cite{Khaloie2025,Lim2025,Starke2025214} \\
+    Counterfactual policy shift (capacity mix, tariff regime)
+      & Robustness to scenario change
+      & Capacity planning, MES design under scenarios
+        \cite{Jalving2023,Park2019}
+      & Validation only on historical mix
+        \cite{Khaloie2025,Lim2025,Mylonopoulos202332697} \\
+    Scenario-shift / distribution-shift split
+      & Generalisation beyond IID
+      & Stochastic / robust use, OOD planning
+        \cite{Volodina2022,Lawson201647,Subedi2026157,Liu20222679}
+      & IID random split only
+        \cite{Khaloie2025,Lim2025,Starke2025214} \\
+    Holdout reproducibility (seeds, splits, code, data)
+      & Trust and comparability
+      & All surrogate classes
+        \cite{Khazeiynasab2021,Zhang2025__7}
+      & Single seed / split; missing code or data release
+        \cite{Khaloie2025,Lim2025,Starke2025214,Ruan2021221,Mylonopoulos202332697} \\
+    \bottomrule
+  \end{tabularx}
+\end{table*}

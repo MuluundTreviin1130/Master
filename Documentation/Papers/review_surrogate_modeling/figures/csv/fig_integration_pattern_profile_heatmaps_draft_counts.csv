@@ -1,0 +1,58 @@
+panel,category,pattern,n
+model_class,--,P1,1
+model_class,Constraint-aware NN,P1,3
+model_class,GP / kriging,P1,12
+model_class,GP / kriging,P2,5
+model_class,GP / kriging,P4,2
+model_class,GP / kriging,P5,12
+model_class,Neural network,P1,16
+model_class,Neural network,P2,13
+model_class,Neural network,P5,1
+model_class,PCE / RSM,P1,11
+model_class,PCE / RSM,P2,19
+model_class,PCE / RSM,P4,1
+model_class,PCE / RSM,P5,11
+model_class,RBF / kernel,P1,14
+model_class,RBF / kernel,P2,2
+model_class,RBF / kernel,P5,1
+model_class,Tree ensembles,P1,3
+model_class,Tree ensembles,P2,1
+doe,--,P1,17
+doe,--,P2,4
+doe,--,P5,1
+doe,Active learning,P1,2
+doe,Active learning,P2,10
+doe,Adaptive sampling,P1,11
+doe,Adaptive sampling,P2,1
+doe,Adaptive sampling,P4,2
+doe,Adaptive sampling,P5,8
+doe,Factorial / DoE,P1,5
+doe,Factorial / DoE,P2,12
+doe,Factorial / DoE,P5,2
+doe,Historical data,P1,6
+doe,Historical data,P2,3
+doe,LHS / quasi-MC,P1,17
+doe,LHS / quasi-MC,P2,9
+doe,LHS / quasi-MC,P4,1
+doe,LHS / quasi-MC,P5,14
+doe,Multi-fidelity,P2,1
+doe,Transfer learning,P1,2
+validation,--,P1,1
+validation,Decision-aware,P1,3
+validation,Feasibility,P1,14
+validation,Feasibility,P2,10
+validation,Feasibility,P4,1
+validation,Feasibility,P5,4
+validation,Interval calibration,P1,5
+validation,Interval calibration,P2,2
+validation,Interval calibration,P5,1
+validation,Point metrics,P1,52
+validation,Point metrics,P2,36
+validation,Point metrics,P4,3
+validation,Point metrics,P5,20
+validation,Stress test,P2,2
+validation,Stress test,P5,1
+validation,Uncertainty,P1,22
+validation,Uncertainty,P2,11
+validation,Uncertainty,P4,1
+validation,Uncertainty,P5,25
