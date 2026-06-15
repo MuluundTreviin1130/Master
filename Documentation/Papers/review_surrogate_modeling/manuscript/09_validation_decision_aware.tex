@@ -1,0 +1,323 @@
+\section{Validation: from RMSE to decision-aware metrics}
+\label{sec:validation}
+
+Most surrogate-modeling studies in energy-system optimization use RMSE,
+MAE and $R^{2}$ as validation metrics for a predictive model. However,
+whether the solution found with the surrogate is feasible in the actual
+optimization model is then treated merely as an application of the
+already \"validated\" model, without specifically testing the surrogate
+in the optimizer.
+
+This section argues that the dominant validation practice is necessary
+but not always sufficient. A surrogate that scores well on a regression
+benchmark can still produce solutions that are infeasible, dominated or
+unstable when used inside an optimizer, because the regression metric
+averages errors uniformly while the optimizer reacts to errors in active
+constraints and in regions where the posterior -- the predicted mean and
+spread at each input -- is locally biased.
+
+The subsections below review validation practice: standard point and
+interval metrics (SectionÂ~8.1); feasibility and violation severity
+(SectionÂ~8.2); decision-aware cost and gap metrics
+(SectionÂ~8.3); stress tests under extreme operating
+conditions (SectionÂ~8.4); out-of-distribution and policy-shift
+evaluation (SectionÂ~8.5); and reproducibility of reported results
+(SectionÂ~8.6). The corresponding metrics and test designs
+are summarized in
+TableÂ~\ref{tab:T4-validation}.
+
+\begin{table*}[!t]
+\centering
+\scriptsize
+\begin{tabularx}{\textwidth}{@{}L{0.22\textwidth} L{0.16\textwidth} L{0.26\textwidth} L{0.28@\textwidth} Metric / test & Tells you about & When it is@{}}
+\toprule
+useful (refs.) & Common misuses (refs.)\
+\\
+RMSE / MAE / $R^2$ & Average fit & Sanity / first screen
+\cite{Safta20172535,Schulte2020,Chen2022,Xu20223066} &
+Reported alone, without a decision-aware companion\
+Quantile / prediction-interval coverage & Calibration of posterior
+spread & Probabilistic surrogates, BO acquisition
+\cite{Xu20212696,Hu2024,Buchanan2024} &
+Optimistic on the training distribution; calibration not checked after
+distribution shift\
+\\
+Decision regret (cost gap to oracle) & Loss in decision quality &
+Surrogate inside optimizer (P1, P3)
+\cite{Chen20244723,Wu2022231,Liang20246508,Wu2024391} & Mean gap
+reported without its distribution or a fixed solver-time comparison\
+Feasibility rate & Constraint safety on the host problem &
+Hard-constrained problems (P1, P3, P5)
+\cite{Chen2022,Chen20244723,Liu20223726,Liang20246508} & Reported
+without violation severity\
+Violation severity (worst case + 95th percentile) & Robustness under
+tail load / contingencies & Safety-critical operation, stress regimes
+\cite{Chen2023657,Liang20246508,Chen20244723} & Average-only reporting;
+missing contingency stratification\
+Objective gap distribution (MIP gap, CVaR of gap) & Distributional
+fairness across instances & MILP / MINLP surrogate use
+\cite{Wu2022231,Chen20244723,Wu2024391} & Mean-only summaries hide tail
+behaviour\
+Distribution-shift test & Robustness beyond the training distribution &
+Changing topology, capacity mix or operating conditions
+\cite{Park2019,Subedi2026157,Liu20222679} & A single random IID split\
+\\
+Stress tests (peak load, low-renewable spell, cold spell) & Tail
+behaviour & ESM operation under extremes
+\cite{Hu2024,Buchanan2024,Bayani20231024,Sun20191497} & Only on
+average days; no explicit extreme-event block\
+Counterfactual policy shift (capacity mix, tariff regime) & Robustness
+\cite{Park2019} & Validation only on the historical or baseline mix\
+Scenario-shift / distribution-shift split & Generalisation beyond IID &
+Stochastic / robust use, OOD planning
+\cite{Subedi2026157,Liu20222679} & IID random split only\
+Holdout reproducibility (seeds, splits, code, data) & Trust and
+comparability & All surrogate classes \cite{Khazeiynasab2021,Zhang2025__7}
+& Single seed or split; missing code or data release\
+\end{tabularx}
+\end{table*}
+
+\subsection{Point and interval prediction metrics}
+\label{sec:val:point}
+
+Point and interval metrics remain the most widely employed validation
+metrics. Given a held-out test set of $n$ pairs $(\mathbf{x}_i, y_i)$,
+where $y_i$ denotes a quantity returned by the high-fidelity model and
+$\hat{y}_i$ the surrogate prediction, the most common point metrics are
+$$\begin{align}
+  \mathrm{MAE}  &= \frac{1}{n}\sum_{i=1}^{n}\lvert y_i - \hat{y}_i\rvert,
+  \label{eq:mae} \\
+  \mathrm{RMSE} &= \sqrt{\frac{1}{n}\sum_{i=1}^{n}(y_i - \hat{y}_i)^2},
+  \label{eq:rmse} \\
+  R^{2}         &= 1 - \frac{\sum_{i=1}^{n}(y_i - \hat{y}_i)^2}
+                       {\sum_{i=1}^{n}(y_i - \bar{y})^2},
+  \label{eq:r2}
+\end{align}$$
+
+with $\bar{y} = \frac{1}{n}\sum_i y_i$. MAE averages absolute errors and
+is easy to interpret in the units of $y$; RMSE penalizes large errors
+more heavily; $R^{2}$ measures how much variance in $y$ is explained
+relative to a constant baseline. Studies that employed these metrics in
+the energy system optimization domain include, for example, polynomial
+response surfaces for integrated electric--thermal scheduling
+\cite{Wang2020202933}), regional integrated energy system loads
+\cite{Shi2024__2}), LSTM surrogates for DH with thermal storage \cite{Du2025}),
+GP surrogates in MES microgrids \cite{Li2023__3}), and NN surrogates for
+distributed energy-system and MES optimization
+\cite{Perera2019191,Ren2024}).
+
+For probabilistic surrogates, validation additionally requires that the
+reported uncertainty band matches empirical coverage. A common check is
+the prediction-interval coverage probability (PICP): the fraction of
+test points that fall inside a $(1-\alpha)$ prediction interval
+$[\hat{y}_i^{\mathrm{lo}},
+\hat{y}_i^{\mathrm{hi}}]$,
+
+$$\begin{equation}
+  \mathrm{PICP} = \frac{1}{n}\sum_{i=1}^{n}
+  \mathbb{I}\!\left[\hat{y}_i^{\mathrm{lo}} \le y_i \le
+  \hat{y}_i^{\mathrm{hi}}\right],
+  \label{eq:picp}
+\end{equation}$$
+
+where $\mathbb{I}[\cdot]$ is the indicator function. Pinball loss and
+the continuous ranked probability score (CRPS) summarize quantile and
+full predictive-distribution accuracy, respectively
+\cite{Hu2024,Sun20191497}. Representative interval checks include
+Transformer--GP net-load forecasts \cite{Hu2024}), GPR renewable intervals
+for microgrid robust scheduling \cite{Yang2024__2}), linked GP emulators in
+municipal energy planning \cite{Volodina2022,Lawson201647}, and GP
+emulation of stochastic dispatch under wind uncertainty
+\cite{Hu2020,Hu2021671}. CNN-based inverter surrogates can retain low bulk
+RMSE while interval calibration breaks down in operating regions absent
+from the training set \cite{Subedi2026157}. The literature therefore treats
+point and interval scores as a screening filter rather than as a final
+acceptance criterion for surrogate- assisted optimization
+\cite{Khaloie2025,Lim2025}.
+
+\subsection{Constraint feasibility and violation severity}
+\label{sec:val:feasibility}
+
+When the surrogate is used inside the optimizer (P1, P3, P5),
+feasibility matters more than the point and interval prediction metrics
+described above because the key question is not how well it predicts on
+average, but whether the operating plan or design it produces is
+actually feasible. The primary validation metric is, hence, the
+feasibility rate $\phi_{\mathrm{feas}}$
+(Eq.Â~\eqref{eq:feas-rate}): on many test situations that were excluded
+from training, a plan is generated for each situation by the
+surrogate-based optimizer, and the share of plans that satisfy all
+limits of the full model (for example generation caps, line flows or
+voltage bounds) is recorded.
+
+$$\begin{equation}
+  \phi_{\mathrm{feas}}
+    = \frac{1}{N}\sum_{j=1}^{N}
+      \mathbb{I}\!\big[\mathbf{x}_j \in \mathcal{F}\big],
+  \label{eq:feas-rate}
+\end{equation}$$
+
+where $\mathcal{F}$ is the set of decisions that satisfy every
+constraint of the full optimization model. When a decision is
+infeasible, it also matters how far it exceeds the limits. The largest
+breach across the $N$ scenarios and the size of typical large breaches
+(for example at the 95th percentile) indicate whether errors remain
+small or become critical under e.g. peak load. When a constraint must
+hold only with a stated probability (chance constraints), the same check
+is applied on hold-out scenarios: whether violations occur at most at
+the promised rate, not only whether the surrogate error is small on
+average.
+
+For unit commitment, learned warm starts are evaluated for constraint
+satisfaction on line losses and unit limits \cite{Chen2022}. In hybrid AC/DC
+microgrid energy management, hard constraints are enforced during
+training of ReLU neural surrogates for converter losses, and feasibility
+of the resulting stochastic unit- commitment solutions is assessed
+\cite{Liu20242534}. For joint chance-constrained OPF with renewable
+generation, feasibility of quantile-regression surrogates is checked
+against chance limits \cite{Chen2023657}. For PV hosting-capacity planning
+in distribution networks, violations of voltage and thermal limits are
+reported relative to hosting limits \cite{Koirala20242284}.
+
+\subsection{Decision-aware metrics: regret, cost gap, MIP-gap distribution}
+\label{sec:val:decision}
+
+When the surrogate sits inside the optimizer, the validation question
+shifts from prediction accuracy
+(SectionÂ~8.1) and constraint satisfaction
+(SectionÂ~8.2) to objective quality: how much extra
+cost or lost revenue is caused by the surrogate-based model when
+evaluated in the high-fidelity model. As in
+SectionÂ~8.2, each test scenario is one operating
+condition excluded from surrogate training. On that scenario, the
+surrogate-based optimizer returns an operating decision
+$\hat{\mathbf{x}}$ and the high-fidelity model yields a reference
+optimum $\mathbf{x}^{*}$. The most common scalar summary is the relative
+cost gap (also called regret or optimality gap),
+
+Eq.Â~\eqref{eq:regret}: $$\begin{equation}
+  r \;=\; \frac{f(\hat{\mathbf{x}}) - f(\mathbf{x}^{*})}{f(\mathbf{x}^{*})},
+  \label{eq:regret}
+\end{equation}$$
+
+where $f(\cdot)$ is the objective of the high-fidelity optimization.
+Solver-time reduction is usually reported alongside $r$ because a
+speed-up without a bounded gap is not sufficient for acceptance. For
+mixed-integer problems, studies also report the MIP gap distribution
+across test scenarios under a common time limit: the share of instances
+solved to optimality and how large the remaining gaps are in the slow
+tail.
+
+For large-scale economic dispatch, optimality gaps and run-time
+reductions are reported for end-to-end neural proxies with repair layers
+\cite{Chen20244723}. For security-constrained unit commitment with wind and
+battery storage, optimality gaps are reported under a fixed solver
+budget \cite{Wu2022231}. For joint chance-constrained unit commitment, a
+regret percentage quantifies the extra cost of the accelerated method
+relative to a reference solver \cite{Liang20246508}. In MES with a ML market
+surrogate, annual revenue error relative to a validation simulation is
+reported for price-taker and market-aware formulations \cite{Jalving2023}.
+For unit commitment, near-optimality of overall solutions and average
+gaps relative to branch-and-cut benchmarks are reported when ML
+accelerates subproblem solving inside surrogate Lagrangian relaxation
+\cite{Wu2024391}. Recent reviews note that decision-aware metrics are still
+reported inconsistently and recommend cost-gap-style summaries as a
+default \cite{Ruan2021221,Khaloie2025,Lim2025}.
+
+\subsection{Stress tests: extreme weather, peak load, low-renewable spells}
+\label{sec:val:stress}
+
+Decision-aware metrics from
+SectionsÂ~8.2
+andÂ~8.3, when averaged over a uniform test set,
+underweight the operating regimes that drive cost spikes and constraint
+violations. A stress-test is therefore a deliberate subset of held-out
+test scenarios---for example high-demand hours, cold or heat waves or
+extreme weather conditions---on which the same feasibility, cost-gap or
+forecast metrics are reported separately rather than integrated into the
+overall mean.
+
+Hu et al.Â~combine a Transformer network with GP residual learning and
+report better net-load forecasts at peaks and during large PV
+variability on a hold-out period \cite{Hu2024}. Sun et al.Â~optimize Laplace
+predictive distributions with pinball loss across 99 wind-power
+quantiles and evaluate nine prediction-interval coverage levels on NREL
+test sites \cite{Sun20191497}. Du et al.Â~train an LSTM surrogate for an DH
+system with phase-change thermal storage and report peak heating
+demand---defined as the average of the three highest hourly
+loads---together with price-responsive heating costs under a
+peak-shaving strategy \cite{Du2025}. Yang et al.Â~use GP renewable intervals
+to build robust uncertainty sets and test day-ahead to intra-day
+microgrid scheduling under worst-case renewable scenarios
+\cite{Yang2024__2}. Hu et al.Â~emulate stochastic economic dispatch with a
+Karhunen--LoÃ¨ve-reduced GP and Chen et al.Â~train deep
+quantile-regression surrogates for joint chance-constrained OPF and
+evaluate constraint-violation quantiles under renewable uncertainty
+\cite{Chen2023657}. Liang et al.Â~report violation rates when sample-based
+chance constraints in accelerated unit commitment are stressed by many
+extreme renewable scenarios \cite{Liang20246508}. Khaloie et al., Lim et
+al.Â~note the absence of standardised stress-test
+designs for surrogate-assisted energy-system optimization
+\cite{Khaloie2025,Lim2025}.
+
+\subsection{Out-of-distribution and policy-shift checks}
+\label{sec:val:ood}
+
+A random hold-out split from the same historical regime tests
+interpolation within the training distribution, not extrapolation to the
+optimization problem. An out-of-distribution check therefore evaluates
+the surrogate on inputs deliberately drawn from a different regime than
+the training data, for example a future year, climate zone, DH network
+or power grid topology. A policy-shift block is the planning
+counterpart: the test scenarios use a counterfactual policy or
+investment decision (new storage, heat pumps, electrolyzers, tariff
+rules, or market formulations) rather than only resampling past weather.
+
+Park et al.Â~propose a physics-induced GNN for wind-farm power
+estimation, report transferable performance across turbine layouts and
+wind conditions, and test it in a layout-optimization experiment
+\cite{Park2019}. Subedi et al.Â~integrate CNN-based inverter surrogates into
+the open-source solver GridLAB-D, validate them dynamically against
+reference models, and assess cross-hardware generalization with transfer
+learning between inverter platforms \cite{Subedi2026157}. Volodina et
+al.Â~link GP emulators across a network of municipal energy models and
+propagate code uncertainty to input combinations in an OSeMOSYS-based
+case study \cite{Volodina2022}. Lawson et al.Â~use statistical emulators in a
+Bayesian power-network planning framework to quantify model-output
+uncertainty at parameter settings that were not included in the original
+design-of-experiments \cite{Lawson201647}. Liu et al.Â~design GP kernels for
+data-driven probabilistic load flow and select hyperparameters with a
+potential-game formulation so that the surrogate generalizes to datasets
+not used in training \cite{Liu20222679}. Jalving et al.Â~compare price-taker
+and market-aware energy system designs optimized with ML market
+surrogates against a full validation simulation in IDAES and report much
+lower annual revenue error for the market-aware formulation
+\cite{Jalving2023}. Khaloie et al., Lim et al.Â~and Mylonopoulos et
+al.Â~recommend that OOD and policy-shift evidence should
+accompany surrogate-assisted planning studies
+\cite{Khaloie2025,Lim2025,Mylonopoulos202332697}.
+
+\subsection{Reproducibility: seeds, splits, code, data}
+\label{sec:val:repro}
+
+Reported speed-ups, regret values and feasibility rates are only
+comparable when the full pipeline can be rerun. Reproducibility in
+surrogate-assisted optimization therefore requires, at minimum 1) the
+random seeds used to generate design points and training batches, 2) an
+explicit train/validation/test split rule, 3) the surrogate training
+code, 4) the optimization model and solver settings, 5) and access to
+the underlying data or and code. Missing any one element makes a
+decision-aware metric hard to interpret or compare across studies.
+
+Representative positive practice includes generator-parameter
+calibration with a stochastic RBF surrogate and documented calibration
+objectives \cite{Khazeiynasab2021}, and fuel-cell system calibration with an
+adaptive response surface, LHS and stated calibration targets
+\cite{Zhang2025__7}. Recent reviews of learning-assisted power-system
+optimization note uneven release of code and data, incomplete reporting
+of splits and seeds, and inconsistent use of decision-aware metrics,
+which limits cross- study comparison
+\cite{Ruan2021221,Khaloie2025,Lim2025,Mylonopoulos202332697}. One
+review explicitly lists reproducibility, open-source code and benchmark
+comparisons among desirable reporting practices for learning-based OPF
+\cite{Khaloie2025}.

@@ -1,0 +1,54 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+This review has mapped the methodological landscape and the
+application landscape of surrogate models in optimisation-based
+energy-system modelling, with an explicit narrowing to the
+intersection of multi-objective optimisation and multi-energy
+systems. The contribution is a structured synthesis along three
+complementary axes -- a method taxonomy
+(Section~\ref{sec:taxonomy}), an integration-pattern classification
+(Section~\ref{sec:integration}), and a decision-aware validation
+protocol (Section~\ref{sec:validation}) -- that together reframe how
+surrogate-assisted MES studies should be designed and reported. The
+application synthesis in Section~\ref{sec:applications} traces the
+five integration patterns through dispatch and unit commitment,
+optimal power flow, capacity expansion, district heating, multi-
+energy systems, microgrids, multi-objective design, and stochastic
+or robust planning, and shows that the dominant pattern shifts with
+the underlying decision: P1 dominates inner-loop replacement
+problems, P2 dominates expensive multi-objective design, P3 and P4
+emerge in real-time and decomposition contexts, and P5 covers
+chance-constrained and probabilistic planning.
+
+Three observations cut across the screened literature. First, the
+reported speed-ups are large and stable: one to three orders of
+magnitude relative to truth-model evaluation are routinely achieved
+across patterns and applications, and the principal source of gain is
+the structural mismatch between the cost of an inner truth-model
+evaluation and the number of times the host optimiser has to call it.
+Second, the reported \emph{decision-quality} loss is far less
+documented than the speed-up: regression metrics dominate the
+reporting practice, decision-aware metrics (regret, MIP-gap
+distribution, chance-constraint feasibility, calibrated tail
+behaviour) appear only in a minority of studies. Third, surrogate-
+assisted multi-objective design of multi-energy systems is the most
+active subdomain of the recent literature; its open question has
+shifted from \emph{whether} surrogates accelerate the Pareto search
+to \emph{how} the resulting front, with its surrogate-induced
+uncertainty, should be communicated to a decision maker.
+
+The six research directions in Section~\ref{sec:challenges} -- a
+decision-aware benchmark, calibrated uncertainty for surrogate-
+assisted MOO, out-of-distribution generalisation across capacity
+mixes, standardised public datasets, MCDM under surrogate
+uncertainty and a shared open-source toolchain -- collectively define
+a research agenda that aligns the methodological and the application
+side. The methodological side has produced a rich vocabulary of
+surrogate families and integration patterns; the application side
+needs benchmarks, datasets and reporting conventions that allow
+this vocabulary to be exercised under fair and reproducible
+conditions. We hope that the taxonomy, the integration-pattern
+classification, the decision-aware validation protocol and the
+publicly released curated bibliography in this review provide a
+concrete starting point for both sides.

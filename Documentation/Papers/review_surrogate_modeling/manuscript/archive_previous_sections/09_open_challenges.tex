@@ -1,0 +1,133 @@
+\section{Open challenges and research directions}
+\label{sec:challenges}
+
+The synthesis in Sections~\ref{sec:integration}--\ref{sec:applications}
+identifies recurring gaps that cut across surrogate families,
+integration patterns and application domains. We collect them here as
+six research directions. The intent is not to cover every issue raised
+in the literature but to pick the gaps that are repeatedly reported
+\emph{and} that would change the way surrogate-assisted MES studies
+are designed and reported.
+
+\subsection{Decision-aware benchmarking}
+\label{sec:ch:bench}
+
+The most consistent gap is the absence of decision-aware benchmarking.
+Studies report regression metrics on a held-out set and infer
+decision quality only indirectly; speed-ups are reported routinely,
+the corresponding regret distribution rarely
+\cite{Mylonopoulos202332697,Ruan2021221,Khaloie2025,Lim2025,Starke2025214,Perera2019191}.
+A decision-aware benchmark would fix the host optimization problem
+(security-constrained dispatch, AC OPF, multi-objective MES design)
+together with a public set of training and stress-test instances and
+require all submitted surrogate methods to report regret, feasibility
+rate, MIP-gap distribution and worst-case violation under a common
+solver-time budget. Recent learning-to-optimize work for security-
+constrained dispatch and unit commitment establishes the necessary
+building blocks but stops short of a shared benchmark
+\cite{Wu2022231,Chen20244723,Chen2022,Wu2024391,Liang20246508}. The
+construction of such a benchmark is plausibly the highest-leverage
+methodological intervention because it would make subsequent
+contributions directly comparable.
+
+\subsection{Calibrated uncertainty for surrogate-assisted MOO}
+\label{sec:ch:uq}
+
+Surrogate-assisted multi-objective optimization rests on calibrated
+posterior uncertainty: the acquisition function in P2 instances and
+the chance constraint in P5 instances both depend on it. Empirical
+evidence in the screened pool indicates that posterior calibration is
+checked far less often than mean-square error, and that calibration
+breakdown is the typical failure mode in operating regions that the
+training set did not cover
+\cite{Hu2020,Hu2021671,Volodina2022,Lawson201647,Hu2024,Buchanan2024,Subedi2026157}.
+Recent advances in deep ensembles, Bayesian last layers, conformal
+prediction and chance-constrained polynomial-chaos OPF provide
+practical instruments
+\cite{Chen2023657,Liang20246508,Muhlpfordt20194806,Koirala20242284,Xu20212696}.
+The open question is how to combine these instruments with the
+acquisition functions used in surrogate-assisted MOO so that the
+expected hypervolume improvement reflects the actual posterior
+spread on energy-system inputs, not a nominal Gaussian assumption.
+
+\subsection{Out-of-distribution generalisation across capacity mixes}
+\label{sec:ch:ood}
+
+Energy-system planning studies are intrinsically counterfactual:
+results matter precisely because they describe future capacity mixes,
+markets and weather patterns. The training distribution of an energy-
+system surrogate, however, is set by historical operation or by the
+optimizer that produced the synthetic data. Out-of-distribution
+robustness is therefore a planning-relevance criterion, not just a
+machine-learning hygiene requirement
+\cite{Park2019,Reynolds2017704,Subedi2026157,Khaloie2025,Lim2025,Starke2025214,Mylonopoulos202332697}.
+Two complementary research lines stand out. The first is invariant or
+physics-informed feature design that ties the surrogate to
+conservation laws (power balance, energy balance, mass flow) so that
+the surrogate respects them on inputs it has not seen
+\cite{Park2019,Su2022315,Liu20223726,Petrova2025,Du2025}. The second
+is transfer-learning protocols that explicitly fine-tune a base
+surrogate to a new climate, year or capacity mix using a small
+high-fidelity sample
+\cite{Chen202514792,De Castro20247710,Khayambashi202453}. Both lines
+need a shared evaluation protocol that distinguishes within-
+distribution from out-of-distribution performance.
+
+\subsection{Standardised public datasets and reproducibility}
+\label{sec:ch:data}
+
+The reproducibility audit in Section~\ref{sec:val:repro} indicates
+that standardised public datasets are scarce, particularly for the
+multi-energy and district-heating settings that are central to
+this review
+\cite{Khaloie2025,Lim2025,Starke2025214,Ruan2021221,Mylonopoulos202332697,Perera2019191,Schulte2016104,Chaudhry2024,Bianchi2020244}.
+Calibration-focused communities that depend on external reference
+data report reproducible artefacts more consistently
+\cite{Azevedo2021630,Khazeiynasab2021,Zhang2025__7,Ullah20255970}, but
+the bulk of MES surrogate studies still ship one-off case studies. A
+public dataset that pairs a high-fidelity district-heating, building
+or process-energy simulator with a published optimization problem,
+the corresponding training set, the train/validation/test split and
+solver settings would change the cost--benefit balance of releasing
+reproducible studies. Scenario-rich datasets that already exist for
+load and renewable forecasting
+\cite{Eseye201991463,Faraji2020157284,Hanifi2024,Sideratos2020,Tian2020,Madhukumar20228891}
+provide partial templates for what such a release should contain.
+
+\subsection{MCDM under surrogate uncertainty}
+\label{sec:ch:mcdm}
+
+The literature on multi-criteria decision making after surrogate-
+assisted MOO is sparse despite the central role that posterior
+decision making plays in the design of multi-energy systems. TOPSIS,
+VIKOR, AHP and PROMETHEE have been applied to surrogate-derived Pareto
+fronts in a small number of studies, typically without an explicit
+treatment of how surrogate uncertainty propagates through the MCDM
+ranking \cite{Roy2020,Roy2023}. Recent multi-objective design work
+selects compromise solutions on Pareto fronts produced by NSGA-style
+algorithms but treats the front as a deterministic object
+\cite{Hussien202415075,Liang2024__3,Hussien202190577,Dong2024,Salahinezhad2025,Cao2017,Zang2023813,Reis2025,Katkar2025,Guan2025,bian_multi-energy_2025,chen_multi-objective_2025-1,cortes-caicedo_multi-objective_2025,tezer_multi-objective_2025,tian_building_2025}.
+A consistent treatment would propagate the posterior uncertainty
+through the MCDM step and report a distribution over rankings rather
+than a single ranking; the lack of such a protocol is, in our view,
+the principal methodological gap on the decision-making side of the
+surrogate $\times$ MOO $\times$ MES intersection.
+
+\subsection{Open-source libraries and toolchain integration}
+\label{sec:ch:tooling}
+
+The screened pool contains several mature surrogate-and-optimisation
+toolchains -- polynomial-chaos OPF, learning-to-optimize for unit
+commitment, surrogate-assisted evolutionary frameworks for hybrid
+renewable systems -- but each toolchain typically reimplements its
+own data pipeline, validation harness and reporting interface
+\cite{Muhlpfordt20194806,Mitrovic2023__2,Mitrovic2023__3,Wu2022231,Chen20244723,Chen2022,Roth2019214,Hirvonen2017323,Schulte2020}.
+A shared open-source library that provides (i) a registry of host
+optimization problems, (ii) a uniform interface for surrogate
+training and prediction, (iii) the validation harness implied by
+Section~\ref{sec:validation}, and (iv) a reporting layer with
+decision-aware metrics would lower the cost of contributing new
+surrogate variants and would make the resulting evidence directly
+comparable. Existing energy-system optimisation frameworks (PyPSA,
+Calliope, oemof, SpineOpt, Backbone) provide the host side; the
+surrogate side is still fragmented.

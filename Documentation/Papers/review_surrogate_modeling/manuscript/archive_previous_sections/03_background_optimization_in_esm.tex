@@ -1,0 +1,178 @@
+\section{Background: optimization in energy system modeling}
+\label{sec:background}
+
+Surrogate models are useful only insofar as they sit inside an
+optimization problem; the choice of surrogate family is therefore not
+independent of the optimization formulation it has to live with. This
+section sets the optimization-side vocabulary that the rest of the
+review uses and identifies, for each problem class, where the
+computational pressure that motivates surrogate use actually comes
+from.
+
+% =====================================================================
+% Subsection 2.1 - Problem classes
+% =====================================================================
+
+\subsection{Problem classes}
+\label{sec:background:problem-classes}
+
+\paragraph{Linear and mixed-integer dispatch.}
+The largest single class of energy-system optimization problems is
+short-term operational dispatch in linear (LP) or mixed-integer linear
+(MILP) form. Economic dispatch, security-constrained economic dispatch
+and unit commitment are formulated as MILPs whenever start-up costs,
+minimum-up/down times or block start-ups are modelled
+\cite{Wu2022231,Chen20244723,Chen2022,Lu20232989,Safta20172535,Pang2023,Wang20211767,Lin2023,Dullinger20181646,Nikolaidis2021}.
+The same MILP backbone underpins the operational layer of capacity
+expansion and multi-energy planning models
+\cite{Rodgers2018951,Jahangiri20244849,Jahangiri2023,Han2018622,Fu20202904,Fu2022,Cao2023,Yin2024,Wang2020202933,Ren2024}.
+On the network side, optimal power flow (OPF) in either DC or AC
+form, and security- and chance-constrained variants thereof, define
+the rest of the dispatch landscape
+\cite{Muhlpfordt20194806,Su2022315,Deng2020831,Liu20223726,Chen2023657,Koirala20242284,Xu20212696,Srithapon202134395,Urgun20202791,Khaloie2025}.
+
+\paragraph{Mixed-integer non-linear programming.}
+Many energy applications are inherently non-linear: AC power flow
+with quadratic losses, district-heating dispatch with mixed-integer
+storage and flow direction, integrated electricity-heat systems with
+variable mass flow, hydrogen and synthesis chains, and integrated
+multi-energy hubs that include conversion characteristics
+\cite{Zheng20231907,Wu2021,Cao2023,Yin2024,Ren2024,Jalving2023,Dong2023,Wang2020202933}.
+Solving such MINLPs to global optimality is rarely possible at
+realistic system size, which is why surrogates that linearise or
+convexify the non-linear part play an outsize role in this class
+\cite{Liu20223726,Chen2023657,Su2022315,Deng2020831,Park2019}.
+
+\paragraph{Bilevel and equilibrium problems.}
+Strategic-bidding, market-design and regulator-versus-operator
+studies are typically posed as bilevel optimization problems with an
+outer decision (regulation, investment, bidding) and an inner
+clearing problem
+\cite{Han2018622,Wu2022231,Wang20211767,Cao2023}.
+The inner problem here is the natural target for a surrogate: it is
+re-solved many times during the outer search.
+
+\paragraph{Stochastic and robust optimization.}
+Where uncertainty cannot be hedged by reasonable conservatism in a
+deterministic model, two formulations dominate. Two-stage and
+multi-stage stochastic programming explicitly enumerates scenarios
+and computes recourse decisions
+\cite{Wang20211767,Safta20172535,Hu2021671,Hu2020,Volodina2022,Lawson201647,Lin2023,Pang2023,Zhou20181}.
+Robust and distributionally-robust optimization replaces the
+expectation by a worst-case bound over an uncertainty set
+\cite{Zhou20181,Yang2024,Dong2022,Dong2023,Liang20246508,Giorgetti2020,Fu20202904,Fu2022}.
+Chance-constrained formulations sit between the two and are often
+the entry point for polynomial-chaos and Gaussian-process surrogates
+\cite{Muhlpfordt20194806,Koirala20242284,Xu20212696,Chen2023657,Liang20246508}.
+
+\paragraph{Multi-objective optimization.}
+Energy system design problems almost always trade off cost,
+emissions, reliability, comfort and resource use, and the resulting
+multi-objective formulations have driven a large share of the
+surrogate-assisted-evolutionary-optimization literature
+\cite{Thrampoulidis2021,Hussien20211883,Wang2017,Schulte2020,Han2018622,Roth2019214,Giorgetti2020,Hirvonen2017323,Sun2020}.
+Because each evaluation along a Pareto front is itself an
+optimization run, the surrogate role here is acceleration of the
+outer search.
+
+\paragraph{Model predictive and rolling-horizon control.}
+A fifth class is online: model predictive control (MPC) and
+rolling-horizon dispatch repeatedly resolve a short-horizon problem
+under updated forecasts, which means total compute is dominated by
+the number of solves, not by their individual size
+\cite{Dullinger20181646,Lu20232989,Faraji2020157284,Reynolds2017704,Wang20192635,Yang2024,Dong2022}.
+Surrogates here are typically used to predict the recurrent solution
+or to replace expensive physics that lives inside the controller.
+
+% =====================================================================
+% Subsection 2.2 - Cost drivers
+% =====================================================================
+
+\subsection{Where computational load actually comes from}
+\label{sec:background:cost-drivers}
+
+It is useful to be explicit about which problem features make energy
+system optimization expensive, because the surrogate that helps for
+one driver does not necessarily help for another.
+
+\paragraph{Integer decisions.}
+Start-up/shut-down decisions, block-start configurations and discrete
+capacity sizes turn polynomial LP solves into exponential-worst-case
+MILPs and dominate solution time once the time horizon and the unit
+count grow
+\cite{Wu2022231,Chen20244723,Chen2022,Pang2023,Lin2023,Lu20232989,Wang20211767}.
+
+\paragraph{Time resolution and horizon.}
+Sub-hourly resolution is often necessary to capture renewable and
+flexibility dynamics; combined with multi-year horizons in
+expansion planning, this drives the temporal index size to numbers
+where direct solves are no longer viable
+\cite{Han2018622,Fu20202904,Fu2022,Rodgers2018951,Jahangiri20244849,Jahangiri2023,Hu2021671,Volodina2022,Schulte2016104}.
+
+\paragraph{Network detail.}
+AC network constraints (voltages, reactive power, line losses) are
+non-linear, and security-constrained variants multiply the
+constraint set by the contingency list
+\cite{Muhlpfordt20194806,Su2022315,Deng2020831,Liu20223726,Urgun20202791,Chen2023657,Koirala20242284,Xu20212696,Khaloie2025}.
+
+\paragraph{Multi-energy coupling.}
+Coupling electricity to heat, gas, hydrogen, transport and industrial
+processes through conversion devices and shared resources increases
+both the number of variables and the number of non-linear
+relationships, and creates the integrated electricity-heat and
+multi-energy planning problems for which surrogates are now common
+\cite{Zhou20181,Wang2021,Zheng20231907,Ren2024,Jalving2023,Dong2023,Yin2024,Cao2023,Wang2020202933,Roth2019214}.
+
+\paragraph{Scenario count.}
+Stochastic and robust formulations inflate the model with copies of
+the operational subproblem, one per scenario, and the marginal cost
+of an additional scenario is high
+\cite{Wang20211767,Safta20172535,Hu2021671,Hu2020,Volodina2022,Lawson201647,Liang20246508,Lin2023}.
+
+\paragraph{Outer-loop calls.}
+Multi-objective evolutionary search, Bayesian optimization, design
+exploration and bilevel formulations turn a single solve into an
+outer loop with hundreds to thousands of solves
+\cite{Thrampoulidis2021,Hussien20211883,Wang2017,Schulte2020,Han2018622,Roth2019214,Giorgetti2020,Hirvonen2017323,Pang2023,Xiao2018}.
+
+% =====================================================================
+% Subsection 2.3 - Decomposition + surrogate hooks
+% =====================================================================
+
+\subsection{Decomposition and what surrogates can replace}
+\label{sec:background:decomposition}
+
+For each cost driver above, the optimization community has developed
+decomposition strategies that surrogates can plug into
+\cite{Ruan2021221,Khaloie2025,Lim2025,Wu2022231,Chen2022,Chen20244723,Liu20223726}.
+Benders and L-shaped decomposition split the problem into a master
+and a recourse problem; the recourse function is a natural target for
+a Gaussian-process or neural surrogate that is queried millions of
+times during the outer iterations
+\cite{Hu2021671,Hu2020,Volodina2022,Lawson201647,Safta20172535,Liang20246508}.
+Lagrangean and column-generation methods iterate between a pricing
+subproblem and a master problem, and surrogate pricing or surrogate
+column quality predictors have been used in recent
+learning-to-optimize work
+\cite{Chen20244723,Chen2022,Wu2022231,Guo20222057,Xu20223066,Li202359995}.
+Scenario reduction and time-period aggregation reduce the size of
+stochastic and capacity-expansion problems, and surrogates can guide
+both the choice of representative scenarios and the assessment of
+their loss-of-fidelity penalty
+\cite{Hu2020,Volodina2022,Lin2023,Pang2023,Yang2024,Dong2023,Liang20246508,Fu20202904,Fu2022}.
+At the inner level, individual subproblems -- AC power flow, building
+or thermal-storage dynamics, an electrolyser conversion curve -- can
+be replaced by a learned surrogate that is much cheaper per call but
+still sufficient for the outer optimizer to converge
+\cite{Su2022315,Deng2020831,Liu20223726,Chen2023657,Koirala20242284,Xu20212696,Park2019,Thrampoulidis2021,Han2018622,Wang2021,Roth2019214,Hirvonen2017323,Reynolds2017704}.
+
+The recurring lesson from these case studies is that surrogates
+rarely replace the entire optimizer. They replace expensive
+\emph{components} -- recourse functions, AC subproblems, building
+detail, scenario response surfaces -- and the value they deliver
+depends on whether those components were actually the binding
+computational constraint of the model
+\cite{Ruan2021221,Khaloie2025,Lim2025,Mylonopoulos202332697,Starke2025214}.
+Section~\ref{sec:integration} formalises this observation as the
+five-pattern integration framework that organises the rest of the
+review.

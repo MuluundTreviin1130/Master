@@ -1,0 +1,521 @@
+\section{Training data and design of experiments}
+\label{sec:doe}
+
+The choice of training data, sampling design and fidelity strategy is
+not a preprocessing step but an integral part of the surrogate model.
+A design of experiments (DoE) specifies which input
+configurations are evaluated---and, in adaptive settings, in what
+order and at which model fidelity---to build or refine the
+surrogate. For multi-energy systems (MES) in particular, that design
+space spans coupled electricity, heat and sometimes cooling or gas
+inputs, so the sampling plan must cover the operating region the
+optimizer will explore rather than a single carrier in isolation.
+For a surrogate that is only deployed in forecasting, the training
+data can be drawn from historical operation and the usual forecasting
+practice applies. For a surrogate that is queried repeatedly inside an
+optimizer, the sampled inputs must instead cover the regions that the
+optimizer will actually visit, the surrogate outputs must match the
+objectives and constraints of the host problem, and the sampling
+protocol must be transparent and reproducible
+\cite{Perera2019191,Ruan2021221}. Reviews of learning-assisted
+power-system optimization and surrogate-assisted decision making echo
+the same requirement for problem-consistent simulation outputs and
+explicit data-generation protocols
+\cite{Khaloie2025,Lim2025,Ruan2021221}.
+This section reviews the four design choices that recur most often in
+the literature -- data sources, static space-filling designs, adaptive
+sampling, and multi-fidelity training -- and closes with the
+energy-data-specific pitfalls that affect each of them.
+
+% BEGIN inlined table table_T3_training_doe
+\begin{table*}[!t]
+  \centering
+  \footnotesize
+  \caption{Training data and design-of-experiments practice for
+  surrogate-assisted multi-energy-system and wider energy-system
+  optimization. ``Pairs naturally with'' lists surrogate families most
+  often combined with the strategy in the screened pool; ``Typical task''
+  lists the host optimization where the strategy is most often reported.}
+  \label{tab:T3-doe}
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabularx}{\textwidth}{@{}L{0.18\textwidth} L{0.30\textwidth} L{0.20\textwidth} L{0.26\textwidth}@{}}
+    \toprule
+    Strategy & Description & Pairs naturally with & Typical task (refs.) \\
+    \midrule
+    Latin hypercube sampling
+      & One sample per input stratum for even hyper-cube coverage before metamodel fitting
+      & Kriging, RBF, GP
+      & Multi-carrier microgrid and DES planning, solar district heating, dispatch emulation
+        \cite{Liu201914569,Seele20232480,Summ2025,Zhang2025__7,Hu2021671} \\
+    Sobol / quasi-MC
+      & Structured uncertainty points for polynomial-chaos propagation in stochastic optimization
+      & PCE, sparse grid
+      & Integrated energy dispatch and security regions; stochastic dispatch and chance-constrained OPF
+        \cite{Dong2023,Jiang2026620,Gaitanis2026,Safta20172535,Lu201991827} \\
+    Factorial / fractional FD
+      & All or reduced combinations of discrete factor levels for response-surface fitting
+      & RSM, GPR, low-order PCE
+      & CCHP and integrated energy system design, hydrogen and geothermal planning
+        \cite{Salahinezhad2025,Liu2025__4,Roy2023,Ahmad202451,Schulte2020} \\
+    Adaptive sampling
+      & Adds expensive model runs during search via infill or model-management rules
+      & Kriging, RBF, GP
+      & Multi-carrier microgrid planning, fuel-cell calibration, building energy design
+        \cite{Liu201914569,Zhang2025__7,Aghaei Pour2022303,Granacher20221573,Lin2023} \\
+    Active learning (BO)
+      & Acquisition function or active-learning rule selects the next high-fidelity run
+      & GP (preferred), kNN, ensembles
+      & Integrated energy systems, geothermal design, energy-market assessment
+        \cite{Griffith2025,Chen2025244,Chakrabarty2021,Uhrich2026211,Matta2026} \\
+    Multi-fidelity training
+      & Combines cheap low-fidelity sweeps with sparse high-fidelity evaluations
+      & Co-kriging, multi-fidelity GNN, MF GP
+      & Geothermal flow control, nuclear--renewable hybrid plants
+        \cite{Chen2025244,Chung2023} \\
+    Transfer learning
+      & Reuses a trained surrogate in a new context with few new runs
+      & NN, GBDT, GP
+      & Battery state-of-charge across ambient conditions
+        \cite{Chen202514792} \\
+    Counterfactual / synthetic
+      & Objectives and constraints from repeated high-fidelity model runs at prescribed inputs
+      & NN / L2O proxies, RSM, GP
+      & SCED/SCUC and OPF proxies; MES, DH and process superstructure metamodels
+        \cite{Liu20223726,Wu2022231,Liu201914569,Sánchez-Zabala2024,Granacher20221573} \\
+    Historical operational data
+      & Past measurements; serial correlation and future information leakage if not handled
+      & NN, GBDT, GP residuals
+      & Multi-carrier and single-carrier load/renewable forecasting for downstream planning
+        \cite{Shi2024__2,Dong2024,Koschwitz2018134,Bianchi2020244,Eseye201991463} \\
+    \bottomrule
+  \end{tabularx}
+\end{table*}
+% END inlined table table_T3_training_doe
+
+\subsection{Data sources: synthetic, historical, hybrid}
+\label{sec:doe:sources}
+
+We distinguish three regimes. Optimizer-synthetic data is
+generated by repeatedly running a high-fidelity model at prescribed
+input settings and recording the objectives, constraints and other
+responses the host optimizer would query. Because those outputs come
+from the same model the surrogate replaces, the approximation remains
+aligned with the optimization problem. In power-system studies, Liu
+et al. compress the sampling space and evaluate each candidate dispatch
+with full small-signal stability analysis before learning an explicit
+OPF constraint \cite{Liu20223726}. Xu et al. draw dependent uncertainty
+scenarios with copulas and build a polynomial-chaos response surface
+from repeated AC optimal power flow runs \cite{Xu20212696}. Chen et al.
+repeatedly evaluate a power-flow simulator at varied load and renewable
+settings to build a training set, then fit quantile predictors for
+chance-constrained OPF without explicit network parameters
+\cite{Chen2023657}. For market clearing, Wu et al., Chen et al. and
+Liang et al. train proxies from large batches of
+security-constrained unit commitment or economic dispatch solutions
+under varying load, renewable output and cost data
+\cite{Wu2022231,Chen2022,Liang20246508}. For buildings, Thrampoulidis
+et al. run many energy simulations for alternative retrofit and
+insulation choices in Zurich and train a surrogate from the resulting
+costs and system selections \cite{Thrampoulidis2021}. Aghaei Pour et al.
+apply the same idea to a site with several buildings: a fast surrogate
+narrows the search in repeated rounds, and the detailed building
+simulation is rerun only for configurations on the current shortlist or
+needed to keep the surrogate accurate \cite{Aghaei Pour2022303}. At district scale, Sánchez-Zabala
+et al. combine repeated building-performance simulation with a Modelica
+district-heating model to train metamodels for district optimization
+\cite{Sánchez-Zabala2024}, and Chaudhry et al. evaluate a
+high-fidelity fifth-generation district heating and cooling case study
+over uncertain markets and demands to train a surrogate inside robust
+design optimization \cite{Chaudhry2024}. Multi-carrier microgrid
+and combined cooling, heating and power studies follow the same pattern
+at system level: Liu et al. Latin-hypercube sample multi-energy-type
+microgrid configurations and refine a kriging model with adaptive infill
+\cite{Liu201914569}; Hirvonen et al. replace repeated solar-community
+simulations with a neural metamodel during multi-objective sizing
+\cite{Hirvonen2017323}; Gao et al. sweep battery, electrolyser and solid
+oxide fuel cell sizes in MATLAB--TRNSYS co-simulation
+\cite{Gao2025}. Geothermal design studies build response surfaces or
+classifiers from reservoir or aquifer simulation banks---Schulte et al.
+across an ensemble of geological models \cite{Schulte2020}, Petrova
+et al. for well-placement screening \cite{Petrova2025}. Where a cheap
+and an expensive model of the same plant both exist, Chen et al.\ combine
+coarse and fine surrogates with active learning for enhanced geothermal
+flow control \cite{Chen2025244}, and Chung and Wang train a co-kriging
+model from a detailed Simulink representation and a fast forward
+calculation of a nuclear--renewable hybrid plant linked to an industrial
+process \cite{Chung2023}. Nonlinear process and utility superstructure work
+selects simulation points adaptively within genetic or active-learning
+loops \cite{Granacher20221573,Amoedo2023929}.
+Historical operational data, by contrast, records how a system
+actually ran in the past rather than how a simulation would respond to a
+new design. The screened pool typically fits forecast models directly to
+measured time series that downstream planning models later consume.
+Eseye et al. select relevant inputs from two years of hourly building
+electricity use in Otaniemi and forecast short-term demand with a neural
+network \cite{Eseye201991463}. Faraji et al. train hybrid models on
+measured microgrid load and weather series to support day-ahead
+self-scheduling \cite{Faraji2020157284}. Wang et al. predict renewable
+output and load from operating records and pass the forecasts into
+hybrid-microgrid dispatch \cite{Wang20192635}. Sideratos et al. cluster
+historical load trajectories and train an ensemble network for week-ahead
+hourly forecasts \cite{Sideratos2020}. For coupled multi-carrier
+systems, Shi and Teh forecast several load types in a regional
+integrated energy system by splitting each measured history into quick
+fluctuations, slower variations and a long-term trend, predicting each
+part separately and adding the results back together
+\cite{Shi2024__2}. For a campus with coupled electricity, heat and other
+energy flows, Dong et al. update renewable forecasts each time new
+measurements of generation and demand arrive, and use the latest
+forecast to plan operation for the following day \cite{Dong2024}. At
+district scale, Koschwitz et al. predict monthly
+heating and cooling loads for a non-residential German district from
+archived building consumption \cite{Koschwitz2018134}, while Bianchi
+et al. extend autoregressive models of network heating load in Italy for
+horizons up to 48~h \cite{Bianchi2020244}. At single-carrier sites,
+Madhukumar et al. forecast day-ahead campus electricity use from several
+years of hourly meter readings together with weather data
+\cite{Madhukumar20228891}; Tian et al. decompose measured wind-speed
+series before short-horizon prediction \cite{Tian2020}; Hanifi et al. tune
+deep-learning models on recorded wind-power data \cite{Hanifi2024}; and
+Li et al. forecast photovoltaic output from past generation alone for
+horizons of 15--90~min \cite{Li2019}.
+Hybrid approaches combine the two sources above: model-based
+evaluation and recorded operation. Simulations are used to compare
+configurations or operating modes that the available operating record
+does not yet cover, while measurements or operating archives keep
+parameters realistic and tie predictions to how the plant has actually
+run. Sánchez-Zabala et al. train building
+metamodels from repeated performance simulation and link them to a
+Modelica district-heating network for district-scale optimisation
+\cite{Sánchez-Zabala2024}. Reich et al. fit approximations from selected
+recent measurements in a local heating network and embed them in dynamic
+simulation for predictive operation \cite{Reich2020}. Du et al. build
+district-heating surrogates from simulation runs under different thermal-
+storage control strategies for a system coupled to a data centre
+\cite{Du2025}. Ren et al. predict demand-response performance at
+building-cluster level from operating data to size battery and thermal
+storage across electricity and cooling services \cite{Ren2024}.
+Jalving et al. embed market surrogates trained from a library of annual
+power-market simulations into integrated energy-system design
+optimisation \cite{Jalving2023}. Dong et al. fit a polynomial-chaos
+model from historical integrated energy-system operation and use it in
+chance-constrained day-ahead dispatch \cite{Dong2023}. Yin et al. combine
+port operating records with a metamodel to size electricity and hydrogen
+storage in a coupled transport--energy system \cite{Yin2024}.
+The choice of regime determines the validity domain of the surrogate
+(Section~\ref{sec:val:ood}) and the type of validation evidence that
+can be produced (Section~\ref{sec:validation}).
+
+\subsection{Static designs: LHS, Sobol, factorial}
+\label{sec:doe:static}
+
+When the optimum is unknown in advance, the first training set must
+explore the full planning box. Static experimental designs fix
+that set before any surrogate is fitted. They differ in how points are
+spread through the input space and in what surrogate family they are
+meant to support. Three families appear repeatedly in the screened
+pool: Latin hypercube sampling (LHS), quasi-Monte Carlo and
+sparse-grid collocation, and factorial or response-surface designs.
+
+\paragraph{Latin hypercube sampling.}
+LHS divides each input dimension into equal intervals and places exactly
+one sample in each interval, with random permutations across dimensions.
+Compared with unstructured random sampling, LHS gives more even coverage
+of the planning hyper-cube; unlike factorial designs it does not require
+discrete factor levels (a fixed set of values per input, such as
+low/medium/high, rather than any point in a continuous range) and keeps
+the number of runs manageable in moderate dimension. It is therefore widely used to initialise smooth
+metamodels such as kriging or Gaussian processes before optimisation or
+adaptive refinement (Section~\ref{sec:doe:adaptive}).
+
+For a multi-carrier micro energy grid, Liu et al.\ use Latin hypercube
+samples to fit a kriging model of annual cost \cite{Liu201914569}.
+Seele et al.\ solve mixed-integer linear programs only at Latin hypercube
+samples to calibrate linear regression surrogates of total annualized
+cost for distributed energy-system planning under long-term uncertainty,
+accelerating subsequent Monte Carlo design comparison
+\cite{Seele20232480}. Summ et al.\ draw Latin hypercube samples from a
+validated thermo-hydraulic collector model to train supervised
+machine-learning metamodels before multi-objective optimisation of
+insulating-glass flat-plate collectors for solar district heating
+\cite{Summ2025}. Zhang et al.\ compare Latin hypercube against full
+factorial sampling when calibrating a low-pressure fuel cell energy
+system with a response surface and report better efficiency for LHS at
+equal metamodel accuracy \cite{Zhang2025__7}. In single-carrier
+dispatch emulation, Hu et al.\ apply LHS in a reduced wind-uncertainty
+space to train a Gaussian-process emulator of stochastic economic
+dispatch \cite{Hu2021671}.
+
+\paragraph{Quasi-Monte Carlo, sparse grids, and polynomial-chaos collocation.}
+When renewable generation, loads, or prices are uncertain, a stochastic
+optimizer often needs expected costs or violation probabilities.
+The straightforward Monte Carlo approach is to draw many random values
+of the uncertain inputs, solve the energy model once for each draw, and
+average the results. That becomes expensive when each solve is a full
+dispatch or network calculation. Quasi-Monte Carlo methods replace
+purely random draws with low-discrepancy point sets (Sobol and Halton
+sequences are common examples) that cover the uncertainty space more
+evenly. In the screened pool, however, this idea more often appears as
+sparse grids or quadrature/collocation nodes used to build a
+polynomial-chaos expansion (PCE): each node is one deterministic
+simulator run, and the PCE coefficients summarize how outputs respond
+to uncertain inputs.
+
+Latin hypercube sampling in the previous paragraph spreads design
+or planning inputs across a box to train a surrogate of cost or
+performance before optimisation. Sparse-grid and PCE designs instead
+pick uncertainty scenarios so the optimizer can estimate expected
+costs, output spread, or violation probabilities inside a stochastic
+formulation without thousands of repeated full-order solves.
+
+For integrated energy systems, Dong et al.\ use a data-driven sparse PCE
+to approximate day-ahead dispatch responses under chance constraints,
+learning from historical operating data so that iterative verification
+does not require repeated full-order solves \cite{Dong2023}. Jiang
+et al.\ apply PCE with Galerkin projection to approximate the
+security-region boundary of an electricity--gas integrated energy system,
+replacing repeated nonlinear solves during boundary search
+\cite{Jiang2026620}. Gaitanis et al.\ quantify capacity uncertainty in
+hybrid renewable systems with combined heat and power for commercial
+buildings using PCE after design optimization \cite{Gaitanis2026}. In
+power-system studies, Safta et al.\ propagate wind uncertainty in
+stochastic economic dispatch with PCE and sparse quadrature instead of
+Monte Carlo sampling \cite{Safta20172535}; Lu et al.\ use nested
+sparse-grid collocation under wind and photovoltaic uncertainty in
+stochastic economic dispatch \cite{Lu201991827}; Muhlpfordt et al.\
+formulate chance-constrained AC optimal power flow with PCE
+\cite{Muhlpfordt20194806}; Engelmann et al.\ combine PCE with
+distributed stochastic AC optimal power flow \cite{Engelmann20186188};
+Koirala et al.\ translate input uncertainty to photovoltaic
+hosting-capacity limits in low-voltage networks with general polynomial
+chaos, avoiding repeated power-flow solves \cite{Koirala20242284}; and
+Xu et al.\ use a polynomial-chaos response surface with dependent
+uncertain inputs for chance-constrained AC optimal power flow
+\cite{Xu20212696}. None of these papers name Sobol sequences explicitly;
+they illustrate the sparse-grid, quadrature, and PCE practice that
+Table~\ref{tab:T3-doe} groups under quasi-MC sampling.
+
+\paragraph{Factorial and response-surface designs.}
+Factorial and response-surface designs suit problems with only a few
+settings the planner can change---for example equipment size, stack
+temperature, or cooling technology---and where it matters how those
+settings combine: does a larger unit still help when the operating
+temperature is already high? A full factorial design runs the simulator
+at every combination of discrete factor levels (a fixed set of values
+per input, such as low/medium/high, rather than any point in a
+continuous range)---for example all four pairings in a $2^2$ layout of
+two binary factors. Fractional factorial, Box--Behnken, and related
+layouts reduce the run count while still estimating main effects and
+selected interactions. The fitted surface is typically a low-order
+polynomial metamodel. Unlike Latin hypercube sampling, the inputs are
+chosen from those predefined levels rather than spread continuously
+through a box; unlike sparse-grid or PCE designs, the goal is to
+explore a small set of design parameters rather than to propagate input
+uncertainty through a stochastic formulation.
+
+Salahinezhad et al.\ run a time-stepping plant model over the operating
+period for each candidate CCHP design, record energy, cost and
+emission indicators, and fit a response surface to those outputs before
+optimising trigeneration layout with solar and hydrogen subsystems;
+collector area, fuel-cell capacity, collector type and cooling
+technology enter as numeric and categorical factors
+\cite{Salahinezhad2025}.
+Liu et al.\ use Box--Behnken designs and response-surface fits to study
+how equipment capacity, price and energy coefficients affect annual cost
+and carbon emissions in an integrated energy system with an energy-hub
+model \cite{Liu2025__4}. Roy et al.\ employ response surface
+methodology to multi-objective optimisation of a biomass combined heat
+and power train with molten-carbonate fuel cell and externally fired gas
+turbine, linking exergy efficiency and levelised cost to current density,
+stack temperature and pressure ratio \cite{Roy2023}. Ahmad et al.\ use a
+Box--Behnken design over catalyst amount, electrode voltage and
+electrolysis time to model green-hydrogen production from wastewater
+electrolysis before genetic and swarm optimisers search the surface
+\cite{Ahmad202451}. Schulte et al.\ build Gaussian-process response
+surfaces from experimental-design sample batches over 18 geological
+realisations when optimising deep geothermal well placement under
+uncertainty \cite{Schulte2020}. Cao et al.\ apply experimental design with
+response-surface regression to select preplanned microgrid islanding
+schemes under stochastic short-term simulation \cite{Cao2017}. El
+Mestari et al.\ use a full factorial $2^2$ design to tune genetic-algorithm
+crossover and mutation coefficients for wind-farm layout
+\cite{El Mestari2025}, and Deodhar et al.\ combine $G$-optimal experimental
+designs with physical tests in iterative plant-and-controller optimisation
+for airborne wind energy \cite{Deodhar2018}. Priesmann et al.\ review how
+design of experiments can support resource-adequacy assessment but do not
+report a new factorial study themselves \cite{Priesmann2024}.
+
+Uniform static plans---whether hypercube-filled, quadrature-based or
+factorial---can still under-represent peak loads, near-feasibility bands
+and active constraint boundaries. That limitation motivates the adaptive
+designs in Section~\ref{sec:doe:adaptive}.
+
+\subsection{Adaptive sampling and active learning}
+\label{sec:doe:adaptive}
+
+Static designs from the previous subsection fix all simulation points
+before the surrogate is trained and used. Adaptive methods add further
+points while optimisation is already running---typically where the
+surrogate is inaccurate, near a constraint limit, or where the search
+still needs finer resolution. Two variants are treated below: infill
+rules inside surrogate-assisted search, and Bayesian optimization or
+active learning that pick the next high-fidelity run.
+
+\subsubsection{Infill rules}
+\label{sec:doe:infill}
+
+Infill rules choose the next expensive model run from the current
+surrogate state. For a multi-carrier micro energy grid, Liu et al.\
+start from Latin hypercube samples and then add kriging infill points
+using minimum surrogate value, trust-region and mean-squared-error
+criteria until the annual-cost model is accurate enough for planning
+\cite{Liu201914569}. For low-pressure fuel-cell energy systems, Zhang
+et al.\ use an adaptive response surface method that shrinks the
+parameter search space each iteration and reuses sample points after
+each reduction, cutting calibration time compared with fixed
+response-surface designs \cite{Zhang2025__7}. In building
+energy-system design, Aghaei Pour et al.\ search in rounds: a few
+candidate layouts are shown at a time, stated preferences among their
+cost-versus-emissions trade-offs steer the next search step, and a
+model-management rule picks which candidates are re-evaluated with the
+expensive building model to update the surrogate
+\cite{Aghaei Pour2022303}. Granacher et al.\ predict whether each
+candidate layout of an industrial utility system---which units to
+include, how they are connected, and how they are operated---is
+Pareto-optimal, and run the detailed process model next where that
+prediction is most uncertain \cite{Granacher20221573}. Lin et al.\ update kriging surrogates online
+with a new infilling rule while searching combined economic and
+emission dispatch on large power systems \cite{Lin2023}. Deng et al.\
+embed kriging in genetic and particle-swarm solvers so that most
+candidate optimal power flow evaluations use the surrogate and only
+promising points trigger a full AC power flow solve
+\cite{Deng2020831}.
+
+\subsubsection{Bayesian optimization and active learning}
+\label{sec:doe:bo_al}
+
+Bayesian optimization fits a Gaussian process (or related probabilistic
+surrogate). An acquisition function scores where to simulate next: it
+favours inputs that look strong on the surrogate and inputs where the
+surrogate is still uncertain, and the highest-scoring candidate receives
+the next high-fidelity run. Griffith et al.\ apply this framework to
+techno-economic sizing of an integrated plant with thermal storage---the
+Natrium reactor-and-storage benchmark from Idaho National
+Laboratory---and report comparable or better designs with fewer
+expensive model runs than gradient descent \cite{Griffith2025}. For enhanced
+geothermal flow-control design, Chen et al.\ combine multi-fidelity
+surrogates with active learning that queries the most informative
+simulation points during optimization \cite{Chen2025244}. Chakrabarty
+et al.\ calibrate 17 coupled building and HVAC parameters with scalable
+Bayesian optimization, tightening and slicing the search domain as the
+cost surface is learned \cite{Chakrabarty2021}. Uhrich et al.\ use
+active learning to pick training runs for electricity-market metamodels
+in resource-adequacy assessment, reporting large runtime reductions
+with limited training data \cite{Uhrich2026211}. Matta et al.\ use
+active learning with k-nearest-neighbour and Gaussian-process
+surrogates to find near-optimal islanded microgrid groupings after only
+a few full evaluations \cite{Matta2026}. Nikolaidis et al.\ use
+Gaussian-process Bayesian optimization for data-driven unit commitment
+under volatile renewable behaviour \cite{Nikolaidis2021}. Amoedo et al.\
+couple active learning with a genetic algorithm and compare nine
+surrogate types on a biogas separation case \cite{Amoedo2023929}. Zhang
+et al.\ train surrogates for multilevel Monte Carlo resource-adequacy
+assessment with a vote-by-committee active learning rule when
+pre-labelled training data are unavailable \cite{Zhang2025__6}.
+
+Reported benefits are problem-dependent, but these studies generally
+reach comparable optima or Pareto sets with fewer expensive evaluations
+than a one-shot static grid \cite{Liu201914569,Matta2026,Granacher20221573}.
+The trade-off is tighter coupling between surrogate, query rule and host
+optimizer, which complicates reproducibility and non-standard validation
+(Section~\ref{sec:val:repro}).
+
+\subsection{Multi-fidelity training and transfer learning}
+\label{sec:doe:multifidelity}
+
+Many energy-system studies already have models at different cost and
+accuracy levels: a detailed time-stepping plant or network simulation
+at the top, faster linearised or reduced-order versions in the middle,
+and simple analytic approximations at the bottom. Multi-fidelity
+training deliberately mixes data from these levels---many cheap runs
+plus a few expensive ones---so the surrogate learns where the cheap
+model is trustworthy and where the expensive model must be consulted.
+In the screened pool, the clearest multi-carrier examples are geothermal
+reservoir flow control and nuclear--renewable hybrid plants with coupled
+industrial loads \cite{Chen2025244,Chung2023}. Transfer learning solves
+a different problem. The simulation model stays the same, but the
+operating context changes---for example another ambient temperature,
+market year or geological realisation. Instead of training a surrogate
+from scratch in the new context, one reuses what it already learned and
+updates it with only a small number of new runs there.
+
+\subsubsection{Combining low- and high-fidelity runs}
+\label{sec:doe:mf_combine}
+
+For enhanced geothermal systems, Chen et al.\ fit a low-fidelity
+surrogate on a subset of well-control variables and a high-fidelity
+surrogate on the full set; knowledge from the coarse model guides search
+for the fine model, and active learning adds reservoir simulations at the
+most informative points \cite{Chen2025244}. Chung and Wang study
+a nuclear--renewable hybrid plant that also feeds an industrial process:
+a detailed Simulink model supplies high-fidelity training data and a
+fast forward calculation supplies low-fidelity data, and a co-kriging
+surrogate trained on both predicts control settings across timescales
+\cite{Chung2023}. Power-system studies use the same pattern at grid
+level. Taghizadeh et al.\ train a graph neural network on many
+low-fidelity and fewer high-fidelity power-flow solves, cutting training
+cost while keeping accuracy for uncertain operating points
+\cite{Taghizadeh2024}; Khayambashi et al.\ apply an enhanced
+multi-fidelity graph-neural-network surrogate to chance-constrained optimal
+power flow \cite{Khayambashi202453}. Xu et al.\ propagate large
+sample sets through cheap polynomial-chaos surrogates and call the full
+power-system model only to correct rare high-risk tail events
+\cite{Xu20203127}.
+
+\subsubsection{Transfer learning across operating conditions}
+\label{sec:doe:transfer}
+
+Multi-fidelity training mixes cheap and expensive versions of the
+same model. Transfer learning keeps one model and reuses a surrogate
+already trained in one context when a similar new context appears. The goal is to avoid repeating a large initial training
+campaign: most of the mapping is retained, and only a few new
+simulations or measurements in the new conditions are needed to adapt
+it. Chen et al.\ illustrate this for battery state-of-charge estimation:
+a recurrent network with a Gaussian-process layer is first trained at
+one ambient temperature and then adapted quickly when the temperature
+changes \cite{Chen202514792}. The same idea is attractive for
+multi-objective energy-system design when a planning study moves to a
+new climate year, geological realisation or market scenario, even
+though the screened example above is battery estimation rather than a
+full plant model.
+
+Both multi-fidelity training and transfer learning reduce the number of
+expensive evaluations needed before optimisation or uncertainty
+analysis, but they also tie surrogate quality to how well the cheap
+model, the source scenario and the target scenario align---a mismatch
+can bias Pareto sets or constraint satisfaction if not checked in
+validation (Section~\ref{sec:validation}).
+
+\subsection{Pitfalls specific to energy data}
+\label{sec:doe:pitfalls}
+
+Energy surrogates fail quietly when training data do not match how the
+system is operated or validated. Four points from the screened
+literature are worth separating at the design stage.
+
+Du et al.\ report that variability in training datasets is often
+overlooked when fitting long short-term memory surrogates for district
+heating with thermal storage, even though operating strategy strongly
+affects robustness under peak demand \cite{Du2025}. Faraji et al.\ use
+load and weather forecasts in day-ahead microgrid scheduling
+\cite{Faraji2020157284}; a review of learning-assisted power-system
+decision making describes exogenous forecasts as inputs to optimisation
+problems \cite{Lim2025}.
+Sánchez-Zabala et al.\ note that data-driven district metamodels
+generalise only as far as the quality and availability of their training
+simulations allow \cite{Sánchez-Zabala2024}. Extreme heat can dominate
+cooling requirements \cite{Morakinyo201973}, and probabilistic risk
+studies keep the full power-system model for rare high-risk tail events
+that cheap surrogates mishandle \cite{Xu20203127}. These checks belong in
+validation (Section~\ref{sec:validation}), not in average offline error
+alone.

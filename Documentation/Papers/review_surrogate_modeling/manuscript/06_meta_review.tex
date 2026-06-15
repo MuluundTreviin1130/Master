@@ -1,0 +1,280 @@
+\section{Meta review of surrogate modeling and multi-energy systems}
+\label{sec:related-reviews}
+
+TableÂ~\ref{tab:T7-related-reviews} compares prior review studies
+identified through our literature selection process.
+
+\begin{table*}[!t]
+\centering
+\scriptsize
+\begin{tabularx}{\textwidth}{@{}@ L{0.015\textwidth} C{0.025\textwidth} L{0.050\textwidth} L{0.150\textwidth} L{0.155\textwidth} L{0.25\textwidth} L{0.30\textwidth} @ Ref. & Year &@{}}
+\toprule
+Reviewed material & Method scope & Application scope & Main outcome &
+Research gaps identified\
+\\
+\cite{Bhosekar2018} & 2018 & ref. list: 126 & Surrogate modelling,
+feasibility analysis, derivative-free optimization; RBF and kriging &
+Generic engineering and chemical-engineering optimization & Reviews
+surrogate models for modelling, feasibility analysis and optimization;
+emphasizes problem-dependent surrogate choice. & Need for better
+model-selection guidance and more reliable surrogate use in constrained
+expensive optimization.\
+\cite{DiazManriquez2016} & 2016 & ref. list: 64 & Surrogate-assisted MOEAs;
+fitness replacement; evolution control & Generic expensive
+multi-objective optimization & Classifies surrogate-assisted MOEAs by
+how the surrogate interacts with the evolutionary search. & Need to
+control surrogate error and avoid false Pareto fronts when true
+evaluations are replaced.\
+\cite{FernandezGodino2023} & 2023 & ref. list: 116 & Multi-fidelity
+surrogate modelling and uncertainty quantification & Generic
+engineering, simulation and optimization & Reviews strategies for
+combining low- and high-fidelity models to reduce computational cost. &
+Need for robust fidelity management, uncertainty propagation and
+validation across heterogeneous model fidelities.\
+\cite{Starke2025214} & 2025 & 126 selected studies & ML-based
+metamodelling and surrogate modelling & Energy systems & Reviews model
+applications, ML techniques and error indicators across energy-system
+metamodels. & Need for standardized error analysis and comparison of
+accuracy together with computational efficiency.\
+\\
+\cite{Westermann2019} & 2019 & 57 studies & GP, ANN, SVM, RBF, MARS, PCE, RF
+and related surrogates & Sustainable building design and building
+performance simulation & Establishes surrogate modelling as a practical
+emulator for design feedback, sensitivity analysis, uncertainty analysis
+and optimization. & Need for careful validation, sampling design and
+practical integration into building-design workflows.\
+\cite{Elwy2024} & 2024 & 72 papers & ML-based surrogates, sampling
+strategies and building-performance optimization & Sustainable building
+design optimization & Reviews surrogate-assisted building performance
+optimization and identifies dominant variables, objectives, sampling
+methods and workflows. & Need for adaptive sampling, better
+generalization across climates and more standardized surrogate-based
+building optimization.\
+\cite{Zhang2026_building} & 2026 & 114 studies & AI-driven surrogates,
+ML/DL, MOO algorithms and MCDM & Parametric optimization in sustainable
+building design & Proposes a six-step AI-surrogate MOO framework from
+dataset construction to optimization and decision-making. & Limited deep
+learning use, weak interpretability, insufficient uncertainty treatment
+and inadequate block-scale decarbonization analysis.\
+\cite{Khan2024_DT} & 2024 & Review / framework & AI-driven surrogate modelling,
+uncertainty quantification and digital twins & Hybrid and sustainable
+energy systems & Positions surrogate modelling as a computational
+accelerator for hybrid energy-system simulation and digital-twin
+applications. & Lack of large-scale HES datasets, limited experimental
+validation and need for uncertainty-aware surrogate/digital-twin
+frameworks.\
+\cite{Elsheikh2019622} & 2019 & ref. list: 166 & Artificial neural networks;
+MLP, WNN, RBF and Elman networks & Solar energy devices & Reviews ANN
+applications for predicting and optimizing solar-device performance. &
+Mainly device-level ANN prediction; limited treatment of system-level
+optimization and surrogate integration.\
+\cite{Etghani2025} & 2025 & ref. list: 170 & ANN, Taguchi methods, GRA and
+TOPSIS & Engines, thermal storage, solar/wind systems, heat exchangers
+and HRES & Synthesizes ANN--Taguchi approaches for prediction and robust
+parameter optimization. & Need for broader ANN--Taguchi frameworks,
+uncertainty treatment and validation in complex energy systems.\
+\\
+\cite{Ruan2021221} & 2021 & 62 selected studies & ML-assisted optimization;
+surrogate models and hybrid models & Power-system optimization,
+including OPF, UC and economic dispatch & Reviews how ML can assist
+power-system optimization and distinguishes prediction, surrogate and
+hybrid optimization roles. & Need for deeper ML--optimization
+integration, reliability guarantees and scalable deployment in volatile
+power systems.\
+\cite{Khaloie2025} & 2025 & ref. list: 180 & E2E OPF learning and L2O;
+supervised, unsupervised, RL and graph learning & Transmission-level
+optimal power flow & Provides a detailed taxonomy and evaluation
+framework for learning-based OPF. & Challenges include feasibility,
+generalization, topology changes, scalability and reliable
+benchmarking.\
+\cite{Mohammadi2024} & 2024 & ref. list: 106 & Analytical and learned
+surrogate models for OPF & Optimal power flow at transmission and
+distribution levels & Classifies OPF surrogates into analytical and
+learned surrogates. & Need for stronger constraint handling, topology
+generalization and hybrid structures preserving hard OPF constraints.\
+\cite{Tan2026} & 2026 & ref. list: 152 & Gaussian processes and uncertainty
+quantification & Power-system forecasting, modelling, risk assessment,
+optimization and control & Reviews GP fundamentals and power-system
+applications with emphasis on uncertainty-aware prediction. & Key
+challenges are GP scalability, robustness and integration with modern
+data-driven methods.\
+\cite{Lim2025} & 2025 & ref. list: 284 & Deep learning; learning to predict,
+surrogate and optimize & Power-system decision-making & Classifies
+neural networks by functional role in power-system decisions. & Need for
+modular/hybrid architectures, domain-specific foundation models and
+clearer role-specific evaluation.\
+\\
+\cite{Manco2024} & 2024 & 6 case studies & LP, MILP, NLP, MINLP;
+uncertainty, flexibility, storage and thermal networks & Multi-energy
+systems, energy hubs and polygeneration & Provides a
+formulation-oriented guide showing how modelling choices affect problem
+class, solver selection and complexity. & Need for explicit mathematical
+formulations, better thermal-network/storage modelling and scalable MES
+optimization.\
+\cite{Klemm2021} & 2021 & 145 tools & MILP, LP, dynamic modelling and
+bottom-up/hybrid approaches & MES optimization in mixed-use urban
+districts & Identifies model requirements and shows that only few tools
+are suitable for mixed-use district MES optimization. & Many tools lack
+optimization, sector coverage, suitable spatial scale, temporal
+resolution or non-financial criteria.\
+\cite{Fattahi2020} & 2020 & 19 national ESMs & Integrated ESMs, MCA,
+hard/soft linking, optimization and simulation suites & National
+low-carbon energy-system models & Identifies seven low-carbon modelling
+challenges and maps them to required model capabilities. & Current ESMs
+inadequately capture flexibility, decentralization, emerging
+technologies, macroeconomic feedbacks and social behaviour.\
+\cite{Mylonopoulos202332697} & 2023 & ref. list: 88 & Physics-based and
+data-driven modelling; design, EMS/control and combined optimization &
+Ship power and propulsion energy systems & Reviews modelling and
+optimization of ship energy systems and identifies surrogate-assisted
+optimization as promising. & Limited data-driven and surrogate-assisted
+optimization literature for integrated ship energy systems.\
+\cite{agha_kassab_comprehensive_2024} & 2024 & ref. list: 144 & Heuristic,
+mathematical and hybrid optimization; sizing and EMS & Microgrid
+planning with PV and renewables & Reviews microgrid sizing and
+energy-management strategies and stresses integrated sizing--EMS
+planning. & Need for integrated sizing--EMS methods, more MOO, better
+degradation/load models and EV/smart-grid integration.\
+\cite{nallolla_multi-objective_2023} & 2023 & ref. list: 157 &
+Multi-objective optimization algorithms for AC/DC and hybrid microgrids
+& Hybrid AC/DC microgrids with renewable energy & Reviews MOO algorithms
+and objective functions for hybrid AC/DC microgrid planning and
+operation. & Need for better algorithm selection, renewable
+intermittency handling and practical validation of MOO-based designs.\
+\cite{salgueiro_multi-objective_2019} & 2019 & n.r. & Multi-objective
+metaheuristics; NSGA, MOPSO, MOEA/D & Microgrid planning and management
+& Surveys technical challenges in applying multi-objective
+metaheuristics to microgrid planning and operation. & Need for robust
+algorithm design, better performance assessment and stronger treatment
+of uncertainty.\
+\cite{malla_sg_optimization_2024} & 2024 & n.r. & MILP, MOO and Power-to-X
+optimization methods & MES with Power-to-X, hydrogen and district-scale
+applications & Reviews optimization approaches for sector-coupled MES
+with Power-to-X technologies. & Need for stronger integration of
+Power-to-X flexibility, storage and sector-coupled operational
+constraints.\
+\cite{Zhou2024__2} & 2024 & ref. list: 147 & Sizing methods, MOO, Monte
+Carlo simulation and AI-assisted sizing & Centralized and distributed
+renewable-storage systems & Compares renewable-storage sizing approaches
+and identifies AI-assisted sizing as emerging. & Need for
+climate-adaptive sizing, predictive energy management and
+lifecycle-oriented storage sizing.\
+\cite{Li2025_hydrogen} & 2025 & ref. list: 103 & Mathematical models,
+simulation tools, intelligent optimization and physics-assisted AI &
+Hydrogen-integrated hybrid renewable energy systems & Reviews
+configurations, models, tools and AI-driven optimization for
+hydrogen-based HRES. & Need for better data availability,
+interpretability, stochastic/physics-assisted AI and broader
+social-environmental factors.\
+\cite{vahidinasab_overview_2020} & 2020 & ref. list: 184 & Planning models,
+single-/multi-objective optimization, uncertainty handling and
+decomposition & Distribution network expansion planning with DERs &
+Reviews DEP objectives, constraints, horizons, variables, DER expansion
+and uncertainty treatment. & Need for integrated planning linking DER
+expansion, uncertainty, MOO and district-energy interactions.\
+\cite{Conti2026} & 2026 & ref. list: 158 & Forecasting and optimization;
+deterministic, stochastic, metaheuristic and hybrid methods &
+Large-scale PV integration in smart distribution networks & Reviews
+optimization strategies for PV integration and links forecasting, ESS
+coordination and MOO. & Need for scalable optimization under
+uncertainty, better grid constraints and deployment-oriented
+validation.\
+\cite{batista_optimizing_2023} & 2023 & 374 records; 38% selected &
+Bibliometric analysis, systematic review, Portfolio Theory and PSO &
+HRES-powered reverse-osmosis desalination & Maps optimization approaches
+for HRES-powered RO plants and proposes PT--PSO for energy management. &
+Need for integrated HRES--RO optimization and better treatment of
+storage, reliability and water-energy trade-offs.\
+\\
+\cite{ChenRenZhou2023} & 2023 & Review & Prior, posterior and
+interactive MOO methods; preference-based classification & Long-term
+energy-system models & Classifies objectives into economic,
+environmental, social and energy-security dimensions. & Need for more
+social/security objectives, interactive methods and comparisons by
+accuracy and efficiency.\
+\cite{Sahoo2025} & 2025 & ref. list: 41 & MCDM methods including AHP,
+TOPSIS, VIKOR, fuzzy and hybrid models & Energy management, renewable
+energy, grid management and policy planning & Reviews MCDM applications
+in energy management and identifies common methods and domains. & Need
+for uncertainty handling, real-time data integration and hybrid MCDM
+with AI, IoT and blockchain.\
+\cite{arar_tahir_scientific_2023} & 2023 & 2307 Scopus records &
+Bibliometric mapping and science mapping with SciMAT & Optimization of
+renewable-energy microgrids & Maps thematic evolution of microgrid,
+renewable-energy and optimization research. & Challenges include
+stakeholder, technical and financial barriers and renewable-generation
+uncertainty.\
+\cite{velasquez_intelligence_2023} & 2023 & ref. list: 274 & Bibliometric
+mapping of AI/intelligence techniques & Sustainable energy research
+across AI application domains & Maps AI-related publication trends,
+topics and co-occurrence structures in sustainable energy. & Broad
+bibliometric scope; need for more method-specific and decision-oriented
+synthesis.\
+\end{tabularx}
+\end{table*}
+
+Bhosekar and Ierapetritou \cite{Bhosekar2018} review surrogate models for modeling, feasibility
+analysis and derivative-free optimization, with emphasis on model
+choice, sampling and the use of Kriging and radial-basis-function
+models. DÃ­az-ManrÃ­quez et al.Â~\cite{DiazManriquez2016} focus on surrogate-assisted MOO
+evolutionary algorithms and classify methods according to how the
+surrogate is used inside the evolutionary search algorithm, including
+fitness replacement and evolution control. FernÃ¡ndez-Godino \cite{FernandezGodino2023} reviews
+multi-fidelity surrogate models and uncertainty quantification, where
+low- and high-fidelity models are combined to reduce computational
+effort. Starke and da Silva \cite{Starke2025214} discuss
+machine-learning-based metamodeling.
+
+In the energy domain, Westermann and Evins \cite{Westermann2019} review surrogate modeling for
+sustainable building design and show how surrogates are used for
+sensitivity analysis, uncertainty analysis and optimization. Elwy and
+Hagishima \cite{Elwy2024} review surrogate-assisted building-performance optimization, including
+sampling strategies, design variables, objectives and optimization
+workflows, and Zhang et al.Â~\cite{Zhang2026_building} use AI-driven surrogates from data
+generation to design selection. Khan et al.Â~\cite{Khan2024_DT} discuss AI-driven
+surrogate modeling in HRES from a digital-twin perspective, focusing on
+uncertainty and validation. Elsheikh et al.Â~\cite{Elsheikh2019622} review ANN models for
+predicting and optimizing solar-energy devices, while Etghani et
+al.Â~\cite{Etghani2025}
+summarize ANN--Taguchi approaches for prediction and parameter
+optimization in engines, thermal systems, solar and wind systems, heat
+exchangers and HRES.
+
+Ruan et al.Â~\cite{Ruan2021221} review how machine learning supports power-system
+optimization and distinguish prediction, surrogate and hybrid
+optimization roles across optimal power flow and economic dispatch.
+Khaloie et al.Â~\cite{Khaloie2025} provide a review of learning-based optimal power flow,
+including supervised and unsupervised learning, reinforcement learning,
+and graph learning. Mohammadi et al.Â~\cite{Mohammadi2024} focus on surrogate models for
+optimal power flow, and Tan et al.Â~\cite{Tan2026} review Gaussian processes in power
+systems, especially for uncertainty-aware prediction, risk assessment,
+optimization and control. Lim et al.Â~\cite{Lim2025} classify deep learning in
+power-system decision making into learning to predict, learning to
+surrogate and learning to optimize.
+
+MancÃ² et al.Â~\cite{Manco2024} provide a review of MES optimization and discuss how LP,
+MILP, NLP and MINLP formulations, storage, thermal networks, uncertainty
+and flexibility affect model complexity. Klemm and Vennemann \cite{Klemm2021} review 145 tools
+for MES optimization in mixed-use districts and show that only few tools
+satisfy requirements on optimization capability, sector coverage,
+spatial scale, temporal resolution and non-financial criteria.
+Fattahi et al.Â~\cite{Fattahi2020} review 19 national energy-system models and identify gaps
+related to flexibility, electrification, decentralization, and emerging
+technologies. Mylonopoulos et al.Â~\cite{Mylonopoulos202332697} review modeling and optimization
+of ship energy systems and identify surrogate-assisted optimization as a
+promising direction. Agha Kassab et al.Â~\cite{agha_kassab_comprehensive_2024} review microgrid
+sizing and energy-management strategies with PV and renewable
+integration, while Nallolla et al.Â~\cite{nallolla_multi-objective_2023} focus on MOO
+algorithms for HRES microgrids. Salgueiro et
+al.Â~\cite{salgueiro_multi-objective_2019}
+summarize MOO metaheuristics for microgrid planning and management, and
+Malla et al.Â~\cite{malla_sg_optimization_2024} discuss optimization approaches for MES
+and Power-to-X conversion. Zhou \cite{Zhou2024__2} reviews renewable-storage
+sizing methods and identifies AI-assisted optimization as an emerging
+direction. Li et al.Â~\cite{Li2025_hydrogen} review hydrogen-integrated HRES,
+simulation tools and AI-driven optimization.
+Vahidinasab et al.Â~\cite{vahidinasab_overview_2020} review distribution-network expansion
+planning, while Conti et al.Â~\cite{Conti2026} review optimization strategies for
+large-scale PV integration in smart distribution networks.
+Batista et al.Â~\cite{batista_optimizing_2023} combine bibliometric analysis with a review
+of HRES in reverse osmosis desalination.

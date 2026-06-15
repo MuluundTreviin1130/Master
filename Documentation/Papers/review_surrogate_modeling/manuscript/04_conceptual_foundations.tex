@@ -1,0 +1,118 @@
+\section{Conceptual foundations: multi-energy systems, surrogate models and optimization bottlenecks}
+
+\subsection{Multi-energy systems}
+
+The analysis of MES becomes increasingly important in energy system
+modeling due to the ongoing electrification of the heating, transport,
+and industry sectors, the shift towards decentralized energy production,
+and the intermittent nature of renewable energy systems (RES) that
+requires substantial investments in storage capacities and grid
+extension. Although a clear definition of MES is absent, MES can be
+understood as an extension of hybrid renewable energy systems (HRES),
+where HRES usually denote systems combining two or more renewable
+generation and storage technologies for reliable renewable electricity
+supply, such as PV, Wind, and battery storage, while MES broaden this
+scope to coupled electricity, heating, cooling, industry and transport
+sectors through centralized and decentralized generation, storage and
+conversion technologies, as illustrated in Figure
+\ref{fig:multienergysystem}. This cross-sectoral assessment is
+crucial owing to the ongoing electrification of the transport and
+heating sectors and the intermittency challenge of renewable energy that
+necessitates the provision of system flexibilities of a resilient,
+cost-efficient, and decarbonized energy system.
+
+While the definition of MES and integrated energy systems (IES) is often
+used synonomously, MES refers to the technical modeling of sector
+coupling (electricity, heating, transport, industry) and physical energy
+flows between sectors. IES, on the other hand, encompass not only the
+physical modeling but also regulatory and systemic operational
+integration of energy sectors, infrastructures, and markets with the aim
+of coordinated planning and operation of all RES and infrastructures.
+MES builds thus the physical basis of IES which is the overarching
+systemic concept for planning of including grid expansion, market
+integration, and energy policies.
+
+Coupling electricity to heat, gas, hydrogen, transport and industrial
+processes in optimization models increases both the number of variables
+and the number of non-linear relationships, and creates computationally
+expensive problems for which surrogates are increasingly used.
+\cite{Zhou20181,Zheng20231907,Ren2024,Jalving2023,Dong2023,Yin2024,Cao2023,Wang2020202933}.
+
+\subsection{Surrogate models}
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=\textwidth]{./Surrogate_classification.png}
+\caption{Conceptual positioning and classification of surrogate models in energy-system optimization. The figure illustrates how surrogate models mainly act as predictive approximations of expensive energy-system models, but acquire a prescriptive role when embedded in optimization workflows. The lower panel summarizes the four classification axes used in this review: model family, surrogate target, optimizer role and trust mechanism.}
+\label{fig:surrogate-classification}
+\end{figure*}
+
+Surrogate models, also referred to as metamodels or emulators, are
+computationally cheap approximations of an expensive original model.
+They are constructed from input--output evaluations of the original
+model and are then used to replace, approximate or support selected
+parts of an analysis or optimization workflow
+\cite{Bhosekar2018,Westermann2019,FernandezGodino2023}. In energy system
+optimization, the expensive original model may be a detailed building
+simulation, MES optimization, an optimal-power-flow formulation, a
+mixed-integer dispatch model, or another high-fidelity numerical model
+\cite{Westermann2019,Hirvonen2017323,Manco2024,Klemm2021,Ruan2021221}.
+The purpose of the surrogate is therefore not to replace the physical or
+optimization model, but to reduce the number, duration or complexity of
+expensive model evaluations during design, operation, uncertainty
+analysis or multi-objective search
+\cite{Bhosekar2018,DiazManriquez2016,Hirvonen2017323}.
+
+In the basic workflow, a set of representative system configurations is
+sampled at first. Second, the original model is evaluated for these
+configurations, producing training data. Third, a statistical or
+machine-learning model is fitted to approximate the mapping from inputs
+to outputs based on the generated training data. Once validated, the
+surrogate can be evaluated much faster than the original model and can
+therefore be used for repeated evaluations inside optimization,
+sensitivity or uncertainty analysis
+\cite{Bhosekar2018,Westermann2019,FernandezGodino2023}. In building
+applications, for example, detailed simulation models, e.g. TRNSYS or
+EnergyPlus, are used to generate training samples, while surrogate
+models are then used to accelerate optimization
+\cite{Hirvonen2017323,Westermann2019,Elwy2024,Zhang2026_building}. In
+the solar-community study by Hirvonen et al., a neural network-based
+surrogate model is updated iteratively during multi-objective
+optimization where candidate solutions are predicted by the surrogate
+and re-evaluated in the full TRNSYS model and subsequently added to the
+training set \cite{Hirvonen2017323}. Surrogate modeling can either be an
+offline approximation step or a part of the optimization loop itself
+(in-loop).
+
+\subsection{Optimization problem classes and computational bottlenecks}
+\label{sec:optimization-bottlenecks}
+
+Surrogate models become relevant where energy-system optimization
+problems are repeatedly solved, computationally expensive, or physically
+too detailed to be evaluated multiple times inside a search loop at high
+spatio-temporal resolution. The relevant problem classes include
+short-term dispatch and unit commitment, optimal power flow, capacity
+and generation expansion, district-heating and MES design, stochastic or
+robust planning considering uncertainty, and highly constrained
+multi-objective optimization
+\cite{Wu2022231,Chen20244723,Chen2022,Muhlpfordt20194806,Deng2020831,Khaloie2025,Rodgers2018951,Han2018622,Hirvonen2017323,Zhou20181}.
+
+The computational burden arises from several sources: Dispatch and
+models become difficult because of intertemporal storage constraints,
+binary on/off decisions, and start-up costs of dispatchable sources.
+Moreover, network-constrained problems such as AC OPF add nonlinear
+voltage, reactive-power and security constraints require further
+computational resources. Capacity-expansion, microgrid-sizing and
+MES-design problems are expensive because each candidate solution
+usually requires multiple dispatch evaluations. Sector coupling in MES
+increases problem size through electricity-heat-gas-hydrogen conversion
+technologies, storage State-of-charge (SoC) states and nonlinear
+relationships
+\cite{Safta20172535,Pang2023,Su2022315,Chen2023657,Koirala20242284,Zheng20231907,Ren2024,Jalving2023,Dong2023,Yin2024}.
+
+Additionally, if uncertainty is considered, stochastic
+chance-constrained formulations add scenarios, recourse decisions or
+probabilistic constraints, while MOO problem create outer loops in which
+multiple candidate solutions must be evaluated to approximate Pareto
+fronts
+\cite{Hu2020,Hu2021671,Volodina2022,Liang20246508,Thrampoulidis2021,Hussien20211883,Schulte2020,Han2018622}.

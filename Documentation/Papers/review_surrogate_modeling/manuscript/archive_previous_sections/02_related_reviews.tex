@@ -1,0 +1,668 @@
+\section{Related reviews and the gap addressed by this work}
+\label{sec:related-reviews}
+
+The intersection of surrogate modelling, optimization-based energy-
+system modelling, multi-objective optimization (MOO) and multi-energy
+systems (MES) sits between four parent literatures, each of which has
+already produced its own review tradition. We position the present
+work explicitly against those reviews. The intent is twofold: to
+acknowledge that the methodological vocabulary, the application
+classifications and several of the recurring observations in this
+review are not novel in isolation, and to make precise where the
+present work contributes a synthesis that the existing reviews leave
+open. Table~\ref{tab:T7-related-reviews} compares thirty-two prior
+reviews -- selected from the strict review classifier in our
+bibliography (title, abstract and keyword markers, see
+Appendix~\ref{app:search}) and from a curated set of externally
+supplied PDFs that fall outside the Scopus search-string keyword cone
+(Comp.~Chem.~Eng., Comp.~Intelligence and Neuroscience,
+mathematics venues, MCDM journals; collected in
+\texttt{references/external\_reviews.bib} and abstract-verified
+case-by-case) -- along four scope axes (method scope, application
+scope, MOO inclusion, MES inclusion) and along the auxiliary axis of
+decision-aware validation that we treat as a primary diagnostic in
+Section~\ref{sec:validation}. The thirty-two rows are arranged in
+four blocks that mirror the four parent literatures.
+
+% BEGIN inlined table table_T7_related_reviews
+\begin{table*}[!t]
+  \centering
+  \scriptsize
+  \caption{Meta-review of recent review studies in the surrogate $\times$
+  optimization $\times$ energy-system literature, grouped by primary
+  focus (surrogate methodology, multi-energy systems, multi-objective
+  optimization and MCDM, energy-system optimization). ``Method
+  scope'' abbreviates the surrogate or optimization families covered
+  (\textsc{gp}: Gaussian process / kriging, \textsc{rsm}: response
+  surface, \textsc{pce}: polynomial chaos, \textsc{rbf}: radial basis
+  function, \textsc{nn}: neural network, \textsc{l2o}: learning-to-
+  optimize, \textsc{piml}: physics-informed machine learning,
+  \textsc{mf}: multi-fidelity, \textsc{moea}: multi-objective
+  evolutionary algorithm, \textsc{mcdm}: multi-criteria decision
+  making). ``MOO'' indicates whether multi-objective optimization is
+  part of the review's scope; ``MES'' whether multi-energy systems
+  are; ``DA-val'' whether decision-aware validation (regret,
+  feasibility, OOD, calibrated tails) is treated beyond standard
+  regression metrics. The last column states the gap that each
+  review leaves open and that the present work therefore addresses.}
+  \label{tab:T7-related-reviews}
+  \renewcommand{\arraystretch}{1.15}
+  \begin{tabularx}{\textwidth}{@{}L{0.10\textwidth} L{0.04\textwidth} L{0.16\textwidth} L{0.18\textwidth} C{0.04\textwidth} C{0.04\textwidth} C{0.04\textwidth} L{0.30\textwidth}@{}}
+    \toprule
+    Reference & Year & Method scope & Application scope & MOO & MES & DA-val & Gap left open / addressed here \\
+    \midrule
+    \multicolumn{8}{@{}l}{\textit{Surrogate methodology}} \\
+    \cite{Bhosekar2018}
+      & 2018
+      & \textsc{rbf}, \textsc{gp}, derivative-free
+      & Generic chemical-engineering optimization
+      & part.\ & -- & part.
+      & Generic methodology; no MES, no MOO Pareto search; pre-dates the L2O / decision-focused wave \\
+    \cite{DiazManriquez2016}
+      & 2016
+      & Surrogate-assisted \textsc{moea} (8 classes)
+      & Generic expensive MO benchmarks
+      & yes & -- & --
+      & Generic benchmarks; no energy applications; integration patterns enumerated, not formalised across host optimizers \\
+    \cite{FernandezGodino2023}
+      & 2023
+      & \textsc{mf} surrogates (combination methods)
+      & Engineering / UQ / optimization
+      & part.\ & -- & part.
+      & Methodology-only; energy-system applications absent; UQ-MOO interplay not isolated \\
+    \cite{Westermann2019}
+      & 2019
+      & \textsc{gp}, \textsc{nn}, \textsc{rbf}, \textsc{rsm}
+      & Sustainable building design
+      & part.\ & -- & --
+      & Single sector (buildings); no MES coupling; integration patterns informal \\
+    \cite{Mohammadi2024}
+      & 2024
+      & Data-driven + \textsc{piml}
+      & Optimal power flow
+      & -- & -- & part.
+      & OPF-only; no MOO Pareto search; no MES coverage \\
+    \cite{Tan2026}
+      & 2026
+      & \textsc{gp} (probabilistic, UQ-focused)
+      & Power-system analysis and control
+      & part.\ & -- & part.
+      & GP-only family; no MOO Pareto search; no MES coverage; integration patterns implicit \\
+    \cite{Khan2024_DT}
+      & 2024
+      & AI-driven surrogate, digital twin
+      & Hybrid sustainable energy systems
+      & part.\ & yes & part.
+      & DT framing; surrogate role broad but not split by integration pattern; MOO not isolated \\
+    \cite{Khaloie2025}
+      & 2025
+      & ML across families
+      & Optimal power flow
+      & -- & -- & part.
+      & Single problem class (OPF); no UC, CapEx, MES, MOO; integration patterns implicit \\
+    \cite{Lim2025}
+      & 2025
+      & Deep learning only
+      & Power system decision making
+      & -- & -- & part.
+      & DL-only; no PCE, GP-BO or surrogate-assisted NSGA; no MES, no MOO Pareto search \\
+    \cite{Starke2025214}
+      & 2025
+      & ML metamodelling (general)
+      & Engineering / partial energy
+      & part.\ & part.\ & part.
+      & General engineering scope; does not isolate ESM-specific pitfalls or MOO-MES intersection \\
+    \cite{Ruan2021221}
+      & 2021
+      & \textsc{nn}, \textsc{gp}, RL, \textsc{l2o}
+      & Power system optimization (UC, OPF, ED)
+      & -- & -- & part.
+      & No MES coverage; MOO not treated; integration patterns mostly enumerated, not classified \\
+    \cite{Elsheikh2019622}
+      & 2019
+      & ANN only
+      & Solar energy systems
+      & -- & -- & --
+      & Methodologically narrow (ANN); no MOO, no host-optimizer integration; predates surrogate-assisted MOO wave \\
+    \cite{Elwy2024}
+      & 2024
+      & ML surrogate + \textsc{moea}
+      & Sustainable building design
+      & yes & -- & part.
+      & Single sector (buildings); MOO present but MES absent; integration patterns not formalised \\
+    \cite{Zhang2026_building}
+      & 2026
+      & AI surrogate (\textsc{ml}/\textsc{dl}) + \textsc{moea} + \textsc{mcdm}
+      & Sustainable building design (114 studies, 5 dimensions)
+      & yes & -- & part.
+      & Single sector (buildings); MES coupling absent; flags DL interpretability and uncertainty handling as open gaps \\
+    \midrule
+    \multicolumn{8}{@{}l}{\textit{MES-domain reviews}} \\
+    \cite{Mylonopoulos202332697}
+      & 2023
+      & Physics-based + data-driven + hybrids
+      & Ship energy systems
+      & part.\ & yes & part.
+      & Domain-specific (ships); does not extract surrogate-MOO patterns transferable to MES at large \\
+    \cite{Manco2024}
+      & 2024
+      & MILP / NLP / MOO formulations
+      & Multi-energy systems (energy hubs, polygeneration)
+      & yes & yes & --
+      & Optimization-side review with detailed math formulation; surrogate role implicit \\
+    \cite{Klemm2021}
+      & 2021
+      & MILP, LP, dynamic
+      & MES in mixed-use districts (145 tools surveyed)
+      & part.\ & yes & --
+      & Tool inventory rather than methodology; surrogate axis not separated \\
+    \cite{Fattahi2020}
+      & 2020
+      & Optimization + simulation suites
+      & National integrated ESMs (TIMES, MARKAL, REMix, PRIMES, METIS)
+      & part.\ & yes & --
+      & Macro-ESM perspective; no link to surrogate-assisted intra-model acceleration \\
+    \cite{agha_kassab_comprehensive_2024}
+      & 2024
+      & Heuristic + mathematical + hybrid
+      & Microgrid sizing and energy management
+      & part.\ & yes & --
+      & Sizing and EMS treated jointly but at the optimization-method axis, not the surrogate axis; integration patterns not formalised \\
+    \cite{nallolla_multi-objective_2023}
+      & 2023
+      & Evolutionary MOO algorithms
+      & Hybrid AC/DC microgrid with RES
+      & yes & yes & --
+      & Algorithm-side MOO survey; surrogate role absent; no decision-aware validation \\
+    \cite{malla_sg_optimization_2024}
+      & 2024
+      & MILP, MOO
+      & MES with Power-to-X, P2H$_2$, district scale
+      & yes & yes & --
+      & Method-side MES review for P2X; surrogate use not made explicit; integration patterns not classified \\
+    \cite{Li2025_hydrogen}
+      & 2025
+      & AI-driven + physics-assisted
+      & Hydrogen-integrated HRES (solar, wind)
+      & part.\ & yes & part.
+      & Domain-narrow (hydrogen-HRES); MOO partial; surrogate role not abstracted into integration patterns \\
+    \midrule
+    \multicolumn{8}{@{}l}{\textit{MOO and MCDM methodology}} \\
+    \cite{ChenRenZhou2023}
+      & 2023
+      & MOO methods (preference-based)
+      & Long-term energy system models
+      & yes & part.\ & --
+      & Methods catalogue without surrogate axis; long-term horizon only \\
+    \cite{salgueiro_multi-objective_2019}
+      & 2019
+      & MOO metaheuristics (NSGA, MOPSO, MOEA/D)
+      & Microgrid planning and management
+      & yes & yes & part.
+      & MOO methodology focus; surrogate-assisted MOO not isolated; integration patterns informal \\
+    \cite{Sahoo2025}
+      & 2025
+      & \textsc{mcdm} (AHP, TOPSIS, hybrid), bibliometric
+      & Energy management 2010--2025
+      & yes & part.\ & --
+      & MCDM-only methodology axis; surrogate-assisted decision making not treated \\
+    \cite{Etghani2025}
+      & 2025
+      & ANN + Taguchi (+ GRA, TOPSIS)
+      & ICE, TES, solar/wind, heat exchangers, HRES
+      & yes & part.\ & part.
+      & Methods pair (ANN+Taguchi) only; integration patterns not formalised; OOD/feasibility not treated \\
+    \midrule
+    \multicolumn{8}{@{}l}{\textit{ESM-optimization and bibliometric reviews}} \\
+    \cite{Zhou2024__2}
+      & 2024
+      & Sizing methods (incl.\ surrogates)
+      & Renewable-storage sizing
+      & part.\ & part.\ & --
+      & Sizing-only; no operational MES dispatch, no chance-constrained P5 patterns \\
+    \cite{vahidinasab_overview_2020}
+      & 2020
+      & Optimization methods (planning)
+      & Distribution network expansion planning
+      & part.\ & part.\ & part.
+      & Planning-side review; surrogate role implicit; uncertainty handling not unified across methods \\
+    \cite{Conti2026}
+      & 2026
+      & Forecasting + optimization (det.\ / stoch.\ / metaheuristic / hybrid)
+      & Large-scale PV in smart distribution networks
+      & part.\ & part.\ & part.
+      & Domain-narrow (PV $\times$ distribution); MOO not principal organising axis; surrogate role not formalised \\
+    \cite{arar_tahir_scientific_2023}
+      & 2023
+      & Bibliometric (scientific mapping)
+      & Microgrids integrated with renewable energy
+      & part.\ & yes & --
+      & Mapping-only output; no methodological taxonomy of surrogate families and integration patterns \\
+    \cite{batista_optimizing_2023}
+      & 2023
+      & Bibliometric + Portfolio Theory + PSO
+      & Hybrid renewable energy systems for reverse osmosis
+      & yes & yes & --
+      & Single application (RO water); MOO with PT--PSO only; surrogate role not abstracted \\
+    \cite{velasquez_intelligence_2023}
+      & 2023
+      & Bibliometric (clustering, co-occurrence)
+      & AI techniques for sustainable energy (decade survey)
+      & part.\ & part.\ & --
+      & Macro-bibliometric; does not enter the surrogate $\times$ optimization-method axis at the resolution this work targets \\
+    \midrule
+    \multicolumn{4}{@{}l}{\textit{This work}}
+      & yes & yes & yes
+      & Joint coverage of all four axes; explicit five-pattern integration framework
+        (Section~\ref{sec:integration}); decision-aware validation protocol
+        (Section~\ref{sec:validation}); software-package landscape
+        (Table~\ref{tab:T8-software-packages}) \\
+    \bottomrule
+  \end{tabularx}
+\end{table*}
+% END inlined table table_T7_related_reviews
+
+\subsection{Surrogate-methodology reviews}
+\label{sec:related-surrogate}
+
+The surrogate-methodology line is the most mature. It traces back to
+the systematic taxonomy of \cite{Bhosekar2018}, who organise surrogate
+methods around three problem types -- modelling, feasibility analysis
+and derivative-free optimization -- and benchmark Kriging and radial
+basis functions on a battery of test problems. The same paper
+contains an explicit software-implementations section that has shaped
+how subsequent reviews report tooling. \cite{DiazManriquez2016}
+sharpen the focus to surrogate-assisted multi-objective evolutionary
+algorithms (MOEAs) and propose an integration-pattern classification
+that is the conceptual ancestor of the five-pattern framework we use
+in Section~\ref{sec:integration}: they distinguish surrogate-assisted
+fitness approximation, model management with infill criteria, and
+hierarchical evaluation, but they stay on generic MO benchmarks and
+do not enter the energy domain. \cite{FernandezGodino2023} closes the
+methodological frontier with a comprehensive multi-fidelity review
+that classifies combination methods (linear additive, multiplicative,
+hierarchical co-Kriging, deep multi-fidelity nets) and is the source
+of the multi-fidelity vocabulary used throughout
+Section~\ref{sec:training-doe}.
+
+The energy-system surrogate reviews follow this methodological
+backbone but each restricts the application scope. \cite{Tan2026}
+covers Gaussian processes in power systems exhaustively, with a
+strong focus on probabilistic prediction and uncertainty
+quantification; \cite{Mohammadi2024} restricts to the optimal-power-
+flow (OPF) problem and contrasts data-driven and physics-informed
+approaches; \cite{Khaloie2025} reviews the broader ML-OPF field
+with a similar problem-class restriction; \cite{Lim2025} surveys deep
+learning across power-system decision making but excludes Gaussian
+processes, polynomial chaos and surrogate-assisted NSGA;
+\cite{Starke2025214} broadens to ML metamodelling of energy systems
+in general but stops short of the MOO-MES intersection;
+\cite{Ruan2021221} catalogues learning-assisted power-system
+optimization (UC, OPF, ED) including reinforcement learning and
+learning-to-optimize, and \cite{Elsheikh2019622} provides a focused
+ANN review for solar systems that predates the surrogate-assisted
+MOO wave. Three recent additions push the scope outward.
+\cite{Khan2024_DT} place surrogate modelling inside a digital-twin
+framework for hybrid sustainable energy systems and discuss the
+associated uncertainty handling. \cite{Westermann2019} and
+\cite{Elwy2024} document the parallel development in sustainable
+building design, including 57 and 72 publications respectively that
+combine surrogate models with optimization, with Latin Hypercube
+Sampling and adaptive sampling on Gaussian processes as the
+dominant practice. \cite{Zhang2026_building} extends this trajectory
+to the most recent state of the art with a 114-study systematic
+review that, uniquely among the surrogate-side reviews, organises the
+field along five workflow dimensions -- parametric simulation,
+dataset construction, surrogate model state of the art, optimization-
+algorithm selection and \emph{multi-criteria decision-making for
+design-scheme selection} -- and explicitly couples surrogate-assisted
+MOO with the downstream MCDM step. The same review identifies four
+open gaps that align tightly with the agenda of the present paper:
+limited deep-learning exploration relative to classical ML
+surrogates, lack of surrogate interpretability, insufficient handling
+of uncertain parameters during optimization, and inadequate scaling
+from single-building to block-level decarbonisation.
+
+\paragraph{Where the surrogate-side reviews leave gaps.}
+Three gaps are visible across all fourteen surrogate-side reviews.
+First, the MOO axis is rarely organising. With the exception of
+\cite{DiazManriquez2016}, \cite{Elwy2024} and \cite{Zhang2026_building},
+the surrogate reviews either ignore Pareto-front search or treat it
+as a closing desideratum. Second, MES coupling is absent: even
+\cite{Khan2024_DT}, which mentions hybrid systems, does not separate
+electricity from heat, gas or hydrogen as distinct vectors, and the
+remaining reviews are restricted to a single sector. Third,
+decision-aware validation -- regret, feasibility rate, calibrated
+tail behaviour -- is mentioned only at the methodology level and
+never turned into a structured protocol that complements the
+standard regression metrics; the closest formalisation is in
+\cite{Khaloie2025,Lim2025,Tan2026}, but only as ``future-work''
+sections. The present work consolidates these three gaps into the
+five-pattern integration framework (Section~\ref{sec:integration}),
+the decision-aware validation protocol
+(Section~\ref{sec:validation}), and the application synthesis
+(Section~\ref{sec:applications}).
+
+\subsection{MES-domain reviews}
+\label{sec:related-mes}
+
+The MES-domain reviews discuss optimization methods at length but
+treat the surrogate as one of several modelling ingredients rather
+than as an organising axis. \cite{Manco2024} is, at the time of this
+writing, the most explicit attempt to give a mathematical formulation
+of MES optimization that future surrogate work can attach to; the
+review iterates through six case studies and identifies model
+choices (MILP versus NLP, time-step granularity, thermal-network
+inclusion) that change the nature of the problem and therefore
+change which surrogate is admissible. \cite{Klemm2021} take a
+complementary tool-inventory perspective and survey 145 modelling
+tools for mixed-use districts; only thirteen are usable for MES
+optimization and only two remain when open-source availability and
+non-financial assessment criteria are imposed -- a finding that
+motivates the software-landscape table in
+Section~\ref{sec:software}. \cite{Fattahi2020} extends the inventory
+to nineteen national integrated ESMs (TIMES, MARKAL, REMix, PRIMES,
+METIS) and uses Multi-Criteria Analysis to identify modelling gaps
+at the macro scale, but the surrogate axis is implicit (machine-
+learning-assisted forecasting and load disaggregation are mentioned
+only as prospective extensions). The remaining MES reviews are
+domain-specific: ships in \cite{Mylonopoulos202332697}, microgrids
+with PV and other renewables in \cite{agha_kassab_comprehensive_2024}
+and \cite{nallolla_multi-objective_2023}, MES with Power-to-X in
+\cite{malla_sg_optimization_2024}, hydrogen-integrated HRES in
+\cite{Li2025_hydrogen}.
+
+\paragraph{Where the MES-side reviews leave gaps.}
+The MES reviews establish that the optimization side of the field is
+mature -- MILP, NLP, MOO formulations are well-documented -- and
+that surrogate-assisted variants exist but are scattered. None of
+the eight MES reviews extracts a transferable surrogate $\times$
+integration-pattern classification, and none links the surrogate
+choice to the host optimizer. \cite{Klemm2021} is particularly clear
+on this gap: of 145 tools, only two are open-source and capable of
+MES optimization, but the report does not extend to which surrogate
+machinery these two tools embed or whether external surrogate
+libraries can be plugged in. The decision-aware validation axis is
+absent in all eight MES reviews.
+
+\subsection{MOO and MCDM-methodology reviews}
+\label{sec:related-moo-mcdm}
+
+The MOO and MCDM line is best represented by four complementary
+contributions. \cite{salgueiro_multi-objective_2019} surveys multi-
+objective metaheuristic challenges in microgrid planning and
+management; the review is methodologically sharp on the algorithmic
+side (NSGA-II/III, MOEA/D, MOPSO, hybrid evolutionary--metaheuristic
+schemes) but the surrogate is not isolated as a category in its own
+right. \cite{ChenRenZhou2023} broadens the lens to long-term energy-
+system models and classifies MOO methods by the preferential
+expression of the decision maker (a priori, interactive, a
+posteriori), placing MCDM and weighted-sum methods on the same
+spectrum as evolutionary search. \cite{Sahoo2025} provides the
+bibliometric counterpart with a 2010--2025 review of MCDM
+applications in energy management; the dominant methods are AHP,
+TOPSIS and hybrid models, and the review documents the recent shift
+from single-method MCDM to AI-enhanced hybrid frameworks.
+\cite{Etghani2025} is the most application-driven of the four,
+combining ANN surrogates with Taguchi-based design of experiments
+and Grey Relational Analysis or TOPSIS for multi-objective
+selection; reported gains are 20--30~\% on multi-objective scenarios
+across internal-combustion engines, thermal-energy storage, solar
+and wind systems, heat exchangers and HRES.
+
+\paragraph{Where the MOO/MCDM-side reviews leave gaps.}
+The MOO and MCDM reviews jointly cover the algorithm axis (NSGA,
+MOEA/D, MOPSO, AHP, TOPSIS, GRA), the preference-modelling axis (a
+priori, interactive, a posteriori), and the bibliometric axis. They
+do not, however, isolate the surrogate as a category in its own
+right. Surrogate-assisted MOO appears as one of several speed-up
+strategies rather than as a class with its own integration patterns
+(P1--P5) and validation needs (RMSE-to-regret, feasibility rate, OOD
+robustness). The MCDM-on-Pareto-front step in particular -- where a
+surrogate is interrogated for many candidate solutions before an
+MCDM rule selects one -- is treated only at the workflow level and
+never with the calibration questions that this paper raises in
+Section~\ref{sec:validation}.
+
+\subsection{ESM-optimization and bibliometric reviews}
+\label{sec:related-esm-opt}
+
+The optimization-side and bibliometric reviews
+\cite{Zhou2024__2,vahidinasab_overview_2020,Conti2026,arar_tahir_scientific_2023,batista_optimizing_2023,velasquez_intelligence_2023}
+are useful as macro-maps of the field. \cite{arar_tahir_scientific_2023}
+analyses 2{,}307 Scopus records on microgrid optimization and shows
+a clear shift towards MOO-flavoured studies after 2016;
+\cite{velasquez_intelligence_2023} extends the lens to 18{,}715
+articles on AI in sustainable energy and identifies AI-MOO and AI-
+MCDM clusters as the fastest-growing topical groups;
+\cite{batista_optimizing_2023} narrows to hybrid renewable systems
+for reverse-osmosis water and pairs the bibliometric output with a
+concrete Portfolio-Theory + PSO MOO design. \cite{Zhou2024__2}
+focuses on sizing approaches for centralised and distributed
+renewable storage and is the most cited recent state-of-the-art
+review on the sizing axis. \cite{vahidinasab_overview_2020} and
+\cite{Conti2026} cover distribution-network expansion planning and
+PV integration in smart distribution networks respectively, both
+flagging surrogate-assisted forecasting and chance-constrained
+optimization as emerging directions.
+
+\paragraph{Where the ESM-optimization-side reviews leave gaps.}
+These reviews establish that the surrogate $\times$ MOO $\times$
+MES intersection is growing fast and that it touches sizing,
+capacity expansion, distribution planning and operation. They do
+not, however, enter the surrogate $\times$ optimization-method
+axis at the resolution that this paper targets: the bibliometric
+analyses
+\cite{arar_tahir_scientific_2023,batista_optimizing_2023,velasquez_intelligence_2023}
+extract topical clusters and citation maps but do not produce a
+methodological taxonomy of surrogate families and integration
+patterns; the planning-side reviews
+\cite{Zhou2024__2,vahidinasab_overview_2020,Conti2026} keep the
+surrogate role implicit.
+
+\subsection{Synthesis: three observations and the contribution gap}
+\label{sec:related-synthesis}
+
+\emph{What has been done.}
+The thirty-two prior reviews jointly cover four mature research
+directions: (i) surrogate methodology with a clear taxonomy of model
+families, sampling strategies and accuracy diagnostics
+\cite{Bhosekar2018,DiazManriquez2016,FernandezGodino2023,Westermann2019,Tan2026,Mohammadi2024,Starke2025214,Zhang2026_building};
+(ii) MES optimization with detailed mathematical formulations,
+tool inventories and domain studies
+\cite{Manco2024,Klemm2021,Fattahi2020,agha_kassab_comprehensive_2024,nallolla_multi-objective_2023,malla_sg_optimization_2024,Li2025_hydrogen,Mylonopoulos202332697};
+(iii) MOO and MCDM methodology with algorithm catalogues and
+preference-modelling spectra
+\cite{salgueiro_multi-objective_2019,ChenRenZhou2023,Sahoo2025,Etghani2025};
+and (iv) bibliometric and macro-mapping reviews that document the
+acceleration of AI-flavoured contributions
+\cite{arar_tahir_scientific_2023,batista_optimizing_2023,velasquez_intelligence_2023}.
+The current research focus, visible across all four blocks, is on
+combining AI/ML surrogates with stochastic or robust formulations
+\cite{Khaloie2025,Lim2025,Tan2026,Khan2024_DT,Li2025_hydrogen} and
+on coupling them with multi-objective decision-making
+\cite{DiazManriquez2016,Etghani2025,nallolla_multi-objective_2023,Sahoo2025,Elwy2024,Zhang2026_building}.
+
+\emph{What is missing.}
+\emph{First}, no prior review treats the surrogate $\times$ MOO
+$\times$ MES intersection as its primary subject; the four parent
+literatures each cover three out of the four scope axes at most,
+and the cell that contains all four is empty. \emph{Second}, the
+integration pattern that connects a surrogate to its host optimizer
+is rarely the organising principle. Where the integration is
+treated, it is typically split by optimization method (Bayesian
+optimization, evolutionary, MILP) rather than by the role the
+surrogate plays in the workflow (inner-loop replacement, outer-loop
+acceleration, warm start, decomposition cut, uncertainty
+propagation). The five-pattern classification in
+Section~\ref{sec:integration} (P1--P5) is, to our knowledge, the
+first explicit attempt to organise the surrogate-in-ESM literature
+along this axis. \emph{Third}, decision-aware validation is
+mentioned as a desideratum in the closing sections of the most
+recent reviews
+\cite{Khaloie2025,Lim2025,Starke2025214,Ruan2021221,Tan2026}
+but is not turned into a structured protocol that complements the
+standard regression metrics. The RMSE-to-regret argument in
+Section~\ref{sec:validation} consolidates the diagnostics that the
+recent literature has identified one by one and connects each
+diagnostic to one of the five integration patterns.
+
+\emph{Interesting cross-review aspects.}
+Three patterns are worth highlighting. (a) The shift from black-box
+ML surrogates to physics-informed and physics-guided approaches is
+visible in the most recent surrogate-side reviews
+\cite{Mohammadi2024,Tan2026,Khan2024_DT,Li2025_hydrogen} and is
+named explicitly as the dominant near-term research direction. (b)
+The open-source bottleneck is cross-cutting: \cite{Klemm2021} report
+that only 2 of 145 MES tools are open-source and capable of
+optimization, and \cite{Bhosekar2018} catalogue surrogate libraries
+along the same dimension; we revisit this bottleneck in
+Section~\ref{sec:software} and Table~\ref{tab:T8-software-packages}.
+(c) Multi-fidelity is the connective tissue between the surrogate-
+side and the MES-domain literatures: \cite{FernandezGodino2023}
+provide the methodology, \cite{Klemm2021,Manco2024,Fattahi2020}
+provide the application domains where high-fidelity simulation is
+prohibitively expensive, but no review yet links the two.
+
+The present review is therefore intended as the joint contribution
+that the four parent literatures have not yet produced: a
+methodological taxonomy (Section~\ref{sec:taxonomy}), an integration-
+pattern classification (Section~\ref{sec:integration}), a decision-
+aware validation protocol (Section~\ref{sec:validation}), an
+application-level synthesis (Section~\ref{sec:applications}) and a
+software-package landscape (Section~\ref{sec:software},
+Table~\ref{tab:T8-software-packages}) that together bracket the
+surrogate $\times$ MOO $\times$ MES intersection. The remaining
+sections develop these contributions in turn.
+
+\subsection{Software-package landscape}
+\label{sec:software}
+
+The reviewed literature consistently points at the software-package
+landscape as a key bottleneck. \cite{Bhosekar2018} dedicate
+Section~7 to surrogate-specific packages (DAKOTA, the SUMO
+toolbox, the Surrogates Toolbox, \texttt{scikit-learn}, MATLAB's
+Statistics and Machine Learning Toolbox, R-side packages, ARGONAUT)
+and observe that maintenance and language coverage are uneven;
+\cite{Klemm2021} flag open-source availability as a hard filter
+that drops 143 of 145 MES tools and explicitly inventories
+\texttt{PyPSA}, \texttt{oemof}, \texttt{Calliope},
+\texttt{OSeMOSYS}, \texttt{TIMES}, \texttt{MARKAL} and
+\texttt{REMix}; \cite{Mohammadi2024} note that physics-informed
+surrogates depend strongly on PyTorch- or JAX-based ecosystems;
+\cite{Etghani2025} report that ANN-Taguchi pipelines are typically
+built in MATLAB even though the constituent methods exist in open-
+source Python. Table~\ref{tab:T8-software-packages} consolidates
+the resulting landscape into five blocks (general-purpose ML,
+surrogate-specific, MOO and MCDM, optimization solvers, energy-
+system-specific) along six attributes -- language, GPU support,
+deep-learning support, maintenance status, primary use and
+\emph{Sources}. The latter column is generated automatically by
+\texttt{paper\_library/verify\_T8\_software\_cites.py}, which scans
+the full text of every PDF in \texttt{paper\_library/fulltexts/} for
+an alias of the package name and lists the cite-keys whose review
+explicitly mentions the package; entries marked ``--$^\dagger$''
+are those for which no review-side mention was found in our PDF
+corpus and that we kept on common-knowledge grounds (typical
+example: \texttt{pymoo}, \texttt{Pyomo}, \texttt{JuMP} -- documented
+in their own publications and widely used in the underlying
+primary literature, but not named in any of the surveyed reviews).
+The companion CSV \texttt{paper\_library/software\_landscape.csv}
+records the same data in machine-readable form, including the
+``confidence'' flag (``high'' if at least one PDF mention, ``ck''
+otherwise) used to populate the table.
+
+% BEGIN inlined table table_T8_software_packages
+\begin{table*}[!t]
+  \centering
+  \scriptsize
+  \caption{Software-package landscape for surrogate modelling, multi-objective and multi-criteria optimization, and energy-system optimization. \textit{Sources} lists the reviews from Table~\ref{tab:T7-related-reviews} whose full text explicitly mentions the package; the mapping is generated automatically from \texttt{paper\_library/verify\_T8\_software\_cites.py}, which scans the corresponding PDFs in \texttt{paper\_library/fulltexts/} for an alias of the package name. Entries marked ``--$^\dagger$'' are kept on common-knowledge grounds (the package is documented in the package's own publication or repository but is not named in any of the surveyed reviews); they are flagged here so the reader can distinguish review-documented practice from broader engineering practice. ``GPU'' indicates whether GPU acceleration is a first-class feature (yes), present via a dependency (part.), or absent (--). ``DL'' indicates whether deep-learning models are first-class (yes), present but not the focus (part.), or absent (--). ``Maint.''\ is the maintenance status as of 2026 (active, semi-active, dormant, commercial), drawn from the package's public repository. All packages are open-source unless marked as commercial. License and version pins are kept in \texttt{paper\_library/software\_landscape.csv}.}
+  \label{tab:T8-software-packages}
+  \renewcommand{\arraystretch}{1.10}
+  \begin{tabularx}{\textwidth}{@{}L{0.13\textwidth} L{0.06\textwidth} C{0.04\textwidth} C{0.04\textwidth} L{0.07\textwidth} L{0.42\textwidth} L{0.18\textwidth}@{}}
+    \toprule
+    Package & Language & GPU & DL & Maint. & Primary use & Sources \\
+    \midrule
+    \multicolumn{7}{@{}l}{\textit{General-purpose ML / surrogate frameworks}} \\
+    \texttt{scikit-learn} & Python & -- & -- & active & Linear/kernel/tree regressors used as cheap surrogates & \cite{Tan2026,Bhosekar2018,Westermann2019,Khan2024_DT} \\
+    \texttt{XGBoost} & Python, R & yes & -- & active & Gradient-boosted ensembles for forecasting and infill modelling & \cite{Khaloie2025,Conti2026,Zhang2026_building} \\
+    \texttt{LightGBM} & Python & yes & -- & active & Fast gradient-boosted ensembles for high-dim ESM features & \cite{Lim2025,Elwy2024} \\
+    \texttt{TensorFlow} & Python, C++ & yes & yes & active & Generic NN surrogate stack & \cite{Tan2026,FernandezGodino2023} \\
+    \texttt{PyTorch} & Python & yes & yes & active & NN, GP-on-PyTorch and PINN backbones & \cite{Lim2025,Westermann2019,FernandezGodino2023} \\
+    \texttt{Keras} & Python (TF) & yes & yes & active & High-level API for ANN surrogates in building / HRES studies & --\textsuperscript{$\dagger$} \\
+    \texttt{JAX} & Python & yes & yes & active & Differentiable programming for PINN and large-scale BO & --\textsuperscript{$\dagger$} \\
+    \multicolumn{7}{@{}l}{\textit{Surrogate-specific libraries (GP, PCE, RBF, MF, BO, UQ)}} \\
+    \texttt{SMT} & Python & -- & -- & active & GP, RBF, RMTS, mixture-of-experts; multi-fidelity & \cite{Westermann2019,Khan2024_DT} \\
+    \texttt{GPy} & Python & -- & -- & semi-active & Vanilla Gaussian-process regression and classification & \cite{Tan2026} \\
+    \texttt{GPyTorch} & Python (PyTorch) & yes & part. & active & Scalable / variational GPs on GPU & \cite{Tan2026} \\
+    \texttt{botorch} & Python (PyTorch) & yes & part. & active & Bayesian optimization, qEHVI for MOO Pareto search & \cite{Tan2026} \\
+    \texttt{chaospy} & Python & -- & -- & active & Polynomial chaos expansion and Sobol indices & --\textsuperscript{$\dagger$} \\
+    \texttt{OpenTURNS} & Python, C++ & -- & -- & active & UQ / PCE / Kriging / sensitivity & --\textsuperscript{$\dagger$} \\
+    \texttt{Modulus} & Python & yes & yes & active & NVIDIA framework for PINN and physics-guided NN & --\textsuperscript{$\dagger$} \\
+    \texttt{DeepXDE} & Python & yes & yes & active & PINN library for forward and inverse PDE problems & --\textsuperscript{$\dagger$} \\
+    \multicolumn{7}{@{}l}{\textit{Multi-objective optimization and MCDM}} \\
+    \texttt{pymoo} & Python & -- & -- & active & NSGA-II/III, MOEA/D, MOPSO, RVEA, indicator metrics & --\textsuperscript{$\dagger$} \\
+    \texttt{DEAP} & Python & -- & -- & semi-active & Evolutionary algorithm framework with multi-objective support & --\textsuperscript{$\dagger$} \\
+    \texttt{pyDecision} & Python & -- & -- & active & MCDM (AHP, TOPSIS, VIKOR, PROMETHEE, ELECTRE) & --\textsuperscript{$\dagger$} \\
+    \multicolumn{7}{@{}l}{\textit{Optimization solvers and modelling languages}} \\
+    \texttt{Pyomo} & Python & part. & -- & active & Algebraic modelling for MILP/NLP/MINLP & --\textsuperscript{$\dagger$} \\
+    \texttt{JuMP} & Julia & part. & -- & active & Julia algebraic modelling for MILP/NLP/MINLP & --\textsuperscript{$\dagger$} \\
+    \texttt{CVXPY} & Python & part. & -- & active & Convex optimization for surrogate-feasibility projection & --\textsuperscript{$\dagger$} \\
+    \texttt{GAMS} & GAMS & -- & -- & commercial & Algebraic modelling backbone for TIMES, MARKAL, REMix & \cite{agha_kassab_comprehensive_2024,malla_sg_optimization_2024,Fattahi2020,Klemm2021,ChenRenZhou2023} \\
+    \texttt{Gurobi} & solver & -- & -- & commercial & Backend MILP/QP/SOCP solver & \cite{Lim2025,Manco2024} \\
+    \texttt{CPLEX} & solver & -- & -- & commercial & Backend MILP/QP/SOCP solver & \cite{Lim2025,arar_tahir_scientific_2023,Manco2024,Fattahi2020} \\
+    \texttt{Mosek} & solver & -- & -- & commercial & Backend QP/SOCP/conic solver & \cite{Mylonopoulos202332697,Fattahi2020} \\
+    \texttt{IPOPT} & solver & -- & -- & active & Open-source NLP solver behind surrogate-feasible glue code & \cite{Khaloie2025,Westermann2019} \\
+    \texttt{BARON} & solver & -- & -- & commercial & Global solver for non-convex MINLP and surrogate-DFO loops & \cite{Bhosekar2018} \\
+    \multicolumn{7}{@{}l}{\textit{Energy-system-specific frameworks}} \\
+    \texttt{PyPSA} & Python & -- & -- & active & Power-system optimization (UC, OPF, CapEx) with stochastic extensions & \cite{Klemm2021} \\
+    \texttt{oemof} & Python & -- & -- & active & Modular MES framework (oemof.solph) for sector coupling & \cite{Klemm2021} \\
+    \texttt{Calliope} & Python & -- & -- & active & Multi-scale MES optimization with renewables and storage & \cite{Klemm2021} \\
+    \texttt{OSeMOSYS} & GAMS, Python & -- & -- & active & Long-term capacity expansion and operations & \cite{Fattahi2020,Klemm2021} \\
+    \texttt{HOMER Pro} & proprietary & -- & -- & commercial & Microgrid sizing and HRES techno-economic optimization & \cite{agha_kassab_comprehensive_2024,Mylonopoulos202332697,nallolla_multi-objective_2023,velasquez_intelligence_2023,arar_tahir_scientific_2023,batista_optimizing_2023,Klemm2021,Li2025_hydrogen,ChenRenZhou2023} \\
+    \texttt{TIMES} & GAMS & -- & -- & active & Long-term integrated ESM (national / EU scale) & \cite{Fattahi2020,Klemm2021} \\
+    \texttt{MARKAL} & GAMS & -- & -- & active & Long-term integrated ESM (precursor of TIMES) & \cite{Fattahi2020,Klemm2021,ChenRenZhou2023} \\
+    \texttt{REMix} & Python, GAMS & -- & -- & active & Integrated ESM with high temporal/spatial resolution & \cite{Fattahi2020,Klemm2021} \\
+    \texttt{EnergyPlus} & C++ & -- & -- & active & Whole-building energy simulation; reference simulator & \cite{Westermann2019,Klemm2021,Zhang2026_building} \\
+    \texttt{TRNSYS} & proprietary & -- & -- & commercial & Transient simulation of building / HVAC / renewable systems & \cite{Elsheikh2019622,batista_optimizing_2023,Westermann2019,Klemm2021,Li2025_hydrogen,Etghani2025} \\
+    \texttt{Modelica/Dymola} & Modelica & -- & -- & active & Multi-physics simulation for thermal MES & \cite{Klemm2021,Elwy2024} \\
+    \texttt{MATLAB} & MATLAB & part. & part. & commercial & General host environment for ANN, Taguchi and DoE pipelines & \cite{Tan2026,agha_kassab_comprehensive_2024,Mylonopoulos202332697,nallolla_multi-objective_2023,Lim2025,arar_tahir_scientific_2023,Bhosekar2018,Westermann2019,Li2025_hydrogen,Khan2024_DT,FernandezGodino2023,Elwy2024,Zhang2026_building} \\
+    \bottomrule
+  \end{tabularx}
+
+  \vspace{2pt}
+  \footnotesize
+  $^\dagger$ No mention of the package was found in the full text of
+  the thirty-one review PDFs in \texttt{paper\_library/fulltexts/}.
+  The entry is retained because the package is part of the de-facto
+  practice for surrogate $\times$ MOO $\times$ MES workflows
+  (e.g.\ \texttt{pymoo}, \texttt{Pyomo}, \texttt{JuMP}) and
+  removing it would obscure the open-source bottleneck reported in
+  \cite{Klemm2021,Bhosekar2018}.
+\end{table*}
+% END inlined table table_T8_software_packages
+
+The table reveals three structural patterns. \emph{First}, the
+surrogate-specific Python ecosystem (\texttt{SMT}, \texttt{GPy},
+\texttt{GPyTorch}, \texttt{botorch}, \texttt{chaospy},
+\texttt{OpenTURNS}, \texttt{Modulus}, \texttt{DeepXDE}) is
+fragmented: no single package covers the GP--PCE--RBF--PINN
+continuum, and the GPU-aware GP fork (\texttt{GPyTorch},
+\texttt{botorch}) lives inside the deep-learning ecosystem rather
+than the classical surrogate ecosystem. \emph{Second}, the energy-
+system tools (\texttt{PyPSA}, \texttt{oemof}, \texttt{Calliope},
+\texttt{OSeMOSYS}, \texttt{TIMES}, \texttt{MARKAL}, \texttt{REMix})
+almost universally lack a built-in surrogate interface; the
+surrogate has to be wired into the host optimizer through ad-hoc
+Python or Julia glue code. \emph{Third}, the review-mention
+distribution is itself revealing: \texttt{HOMER}, \texttt{MATLAB}
+and \texttt{GAMS} dominate (9, 13 and 5 review mentions
+respectively), while the entire MOO and MCDM Python block
+(\texttt{pymoo}, \texttt{DEAP}, \texttt{pyDecision}) carries no
+review mention at all -- a quantitative confirmation of the
+``algorithm-axis-without-software-axis'' gap discussed in
+Section~\ref{sec:related-moo-mcdm}. All three observations
+reinforce the open-challenge agenda in
+Section~\ref{sec:open-challenges} (open-source tooling for
+decision-aware surrogates, public datasets, MES-aware MOO
+benchmarks).

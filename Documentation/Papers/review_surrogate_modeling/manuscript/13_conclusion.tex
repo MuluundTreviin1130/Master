@@ -1,0 +1,47 @@
+\section{Conclusion}
+\label{sec:conclusion}
+This review set out to examine surrogate-assisted energy system
+optimization with a particular focus on multi-energy systems and
+multi-objective settings. The main result is not a single best model
+class, but a clearer picture of how the field is structured. Model class
+alone is not enough to explain the literature. The same Gaussian
+process, neural network or polynomial surrogate can serve different
+purposes depending on what it approximates, where it is inserted into
+the optimization workflow, and how its output is validated. For that
+reason, the review organized the field along four linked dimensions:
+model class, surrogate target, integration depth and trust mechanism.
+This was complemented by a synthesis of training-data generation,
+design-of-experiments choices, integration patterns, validation
+practice, and application evidence.
+Three observations stand out across the reviewed studies. First,
+surrogates are already used in several distinct ways rather than in one
+generic pattern. Some studies replace expensive inner evaluations,
+others accelerate search, provide warm starts, support decomposition, or
+handle uncertainty. The dominant pattern depends on the underlying
+decision problem. Second, substantial computational savings are reported
+across many applications, but the supporting evidence is uneven. Runtime
+reductions are usually shown more clearly than their effect on decision
+quality. Third, the most active application area is multi-objective
+design in microgrids, hybrid renewable systems and broader MES
+configurations, while stronger validation practice is more common in
+dispatch, unit commitment and OPF studies.
+The evidence map also shows where the field is still thin. Publicly
+reusable datasets are scarce, especially for district heating and
+sector-coupled MES cases. Validation is often still centered on
+predictive fit rather than on feasibility, regret or ranking stability.
+Many studies mix surrogate modeling, optimization and domain
+engineering effectively at case-study level, but the reporting style
+does not yet make those studies easy to compare or reuse. This is where
+the six challenge areas discussed above become important: common
+benchmarks, calibrated uncertainty, better handling of distribution
+shift, reproducible datasets, explicit treatment of uncertainty in MCDM,
+and less fragmented toolchains.
+Taken together, the review provides a structured and quantitative
+overview of surrogate-assisted energy system optimization. It contributes
+a taxonomy for organizing the literature, an evidence map for tracing
+connections between methods and applications, and a more concrete basis
+for discussing where surrogate models already work well and where the
+current evidence is still weak. If the field moves toward clearer
+benchmarks, better reporting and more reusable case-study artefacts,
+surrogate-assisted optimization can become easier to compare, easier to
+reproduce and more useful for practical MES decision support.

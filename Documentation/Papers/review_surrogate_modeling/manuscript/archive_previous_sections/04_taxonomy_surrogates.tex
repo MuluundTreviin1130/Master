@@ -1,0 +1,353 @@
+\section{A taxonomy of surrogate models for energy system optimization}
+\label{sec:taxonomy}
+
+Authors typically choose a surrogate family for one of three reasons:
+data efficiency on small training sets, ease of integration into a
+specific solver class, or familiarity from a neighbouring domain.
+Table~\ref{tab:T1-taxonomy} consolidates the families we observe in
+the reviewed literature, the type of output they produce (point or
+interval/posterior), their compatibility with the dominant optimizer
+classes (gradient-based, convex, mixed-integer), and their typical
+failure modes. The subsections below describe each family in turn,
+focusing on the energy-system applications that have driven its
+adoption.
+
+% BEGIN inlined table table_T1_taxonomy
+\begin{table*}[!t]
+  \centering
+  \footnotesize
+  \caption{Taxonomy of surrogate model families used for optimization in
+  energy-system modeling. ``Output'' is point ($p$) or interval / posterior
+  ($i$). ``Optimizer compat.'' indicates natural embedding in
+  gradient-based ($\nabla$), convex ($\circ$) or mixed-integer
+  ($\square$) solvers. References are representative, not exhaustive;
+  the per-entry assignment lives in the curated paper library.}
+  \label{tab:T1-taxonomy}
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabularx}{\textwidth}{@{}L{0.16\textwidth} C{0.05\textwidth} C{0.08\textwidth} L{0.21\textwidth} L{0.20\textwidth} L{0.22\textwidth}@{}}
+    \toprule
+    Family & Output & Opt.\ compat. & Strengths & Typical failure modes & Where it dominates (refs.) \\
+    \midrule
+    Polynomial RSM / PCE
+      & $p$,$i$ & $\nabla$ $\circ$ $\square$
+      & Closed-form moments; analytic chance constraints; parsimonious
+      & Curse of dimensionality; smoothness assumption; sparse-grid cost
+      & Chance-constrained AC OPF, stochastic dispatch
+        \cite{Muhlpfordt20194806,Muhlpfordt20174490,Koirala20242284,Xu20212696,Engelmann20186188} \\
+    Kriging / Gaussian process
+      & $p$,$i$ & $\nabla$
+      & Calibrated posterior; Bayesian acquisition; small-sample friendly
+      & $O(n^3)$ scaling; stationarity assumption; kernel choice sensitive
+      & Bayesian optimization for UC, MES design
+        \cite{Hu2020,Hu2021671,Volodina2022,Schulte2020,Roth2019214,Liu20222679} \\
+    Radial basis functions
+      & $p$    & $\nabla$
+      & Smooth interpolant; cheap; metaheuristic-friendly
+      & Centre placement is heuristic; weak in extrapolation
+      & Surrogate-assisted evolutionary OPF and HRES sizing
+        \cite{Liu20223726,Mahapatra2022721,Mahapatra20161921,Hussien20211883} \\
+    Random forest / GBDT
+      & $p$,$i$ & $\square$
+      & Categorical inputs; robust to outliers; quantile output
+      & Step responses break gradients; piecewise-constant tails
+      & Forecasting-as-input for planning; scenario screening
+        \cite{Eseye201991463,Faraji2020157284,Hanifi2024,Madhukumar20228891} \\
+    Neural networks (MLP / CNN / RNN)
+      & $p$ & $\nabla$ ($\square$)
+      & Universal approximation; large-data scaling; transfer learning
+      & Black-box; calibration drift; overconfidence on OOD
+      & End-to-end OPF, demand and price forecasting
+        \cite{Chen20244723,Chen2022,Wu2022231,Xu20223066,Guo20222057,Li202359995} \\
+    Input-convex / monotone NN
+      & $p$ & $\nabla$ $\circ$
+      & Preserves convexity; embeddable in LP/QP outer loops
+      & Limited expressiveness; harder to train
+      & Cost-curve and conversion-loss surrogates in MES dispatch
+        \cite{Liu20242534,Wu2024391,Pang2023,Lin2023} \\
+    Piecewise-linear MIP-friendly NN
+      & $p$ & $\square$
+      & Exact embedding into MILP; supports branch-and-bound
+      & Big-M tightness; MILP size grows with width
+      & MIP-embedded UC, OPF, and capacity expansion proxies
+        \cite{Wu2022231,Liu20223726,Liang20246508,Pang2023} \\
+    Graph neural networks
+      & $p$    & $\nabla$
+      & Topology-aware; transferable across grid sizes
+      & Message-passing depth; oversmoothing on radial DH/grid trees
+      & Power-flow surrogates, multi-fidelity GNN OPF
+        \cite{Park2019,Su2022315,Khayambashi202453,Taghizadeh2024} \\
+    Physics-informed NN
+      & $p$,$i$ & $\nabla$
+      & Encodes balance / KKT residuals; better OOD behaviour
+      & PDE-loss tuning hard; convergence sensitive to weighting
+      & PINN-OPF, building-energy and thermal-network emulators
+        \cite{Park2019,Petrova2025,Du2025,Chaudhry2024} \\
+    Decision-focused / L2O proxies
+      & $p$ & $\nabla$
+      & Trained for decision quality, not regression error
+      & Feasibility restoration needed; dataset is optimizer-synthetic
+      & Learning-to-optimize for SCED / SCUC / OPF
+        \cite{Wu2022231,Chen20244723,Chen2022,Liu20223726,Wu2024391,Liang20246508} \\
+    \bottomrule
+  \end{tabularx}
+\end{table*}
+% END inlined table table_T1_taxonomy
+
+% =====================================================================
+% 3.1 Polynomial response surfaces and polynomial chaos expansions
+% =====================================================================
+
+\subsection{Polynomial response surfaces and polynomial chaos
+expansions}
+\label{sec:tax:rsm}
+
+Polynomial response surfaces have the longest track record in
+energy-system optimization. Their main attractions are interpretability,
+ease of fit on small designs and direct compatibility with
+gradient-based and convex solvers. Response-surface methodology
+(RSM) appears in PV control parameter tuning
+\cite{Hasanien2018168}, in nano-fluid heat-exchanger design and other
+thermal-system optimization problems
+\cite{Sami20181416,Ahmad202451,Sun2020}, in chance-constrained
+AC optimal power flow as an iterative response-surface refinement
+\cite{Xu20212696}, and in green-hydrogen and process-energy
+applications \cite{Ahmad202451,Zulfiqar20211026}. The key practical
+limitation is the curse of dimensionality: classical low-order
+polynomial fits become unreliable above ten to fifteen design
+variables \cite{Torun20192128,Meng20191219,Hasanien2018168}.
+
+Polynomial chaos expansions (PCE) generalise RSM to a probabilistic
+setting by representing the output as an orthogonal-polynomial series
+in random inputs. PCE is the dominant surrogate for chance-constrained
+and uncertainty-quantified power-system problems. M\"uhlpfordt et
+al.~\cite{Muhlpfordt20194806} pioneered the chance-constrained AC OPF
+using PCE; recent work extends the formulation to general PCE-based
+hosting-capacity calculations \cite{Koirala20242284}, to data-driven
+distribution planning \cite{Fu20202904,Fu2022}, and to efficient
+uncertainty quantification in stochastic economic dispatch
+\cite{Safta20172535}. PCE delivers analytic moments of the output,
+which is exactly what chance-constraint reformulations and
+distributionally-robust formulations need; but it scales poorly with
+the number of stochastic dimensions and with output non-smoothness
+\cite{Muhlpfordt20194806,Safta20172535,Koirala20242284,Xu20212696}.
+
+% =====================================================================
+% 3.2 Gaussian process and kriging emulators
+% =====================================================================
+
+\subsection{Gaussian process and kriging emulators}
+\label{sec:tax:gp}
+
+Gaussian process (GP) regression and its geostatistical variant
+kriging are the canonical surrogates for sample-efficient global
+optimization and Bayesian uncertainty quantification. They produce a
+posterior over outputs at every input, which is what acquisition
+functions in surrogate-assisted evolutionary search and Bayesian
+optimization use to balance exploitation and exploration.
+
+In dispatch and operations, Nikolaidis et
+al.~\cite{Nikolaidis2021} used GP-based Bayesian optimization for
+data-driven unit commitment, demonstrating order-of-magnitude
+reductions in the number of MILP evaluations needed to converge.
+Hu et al.~\cite{Hu2020,Hu2021671} use GP emulators to propagate
+uncertainty in stochastic economic dispatch, with a Bayesian-network
+extension in \cite{Volodina2022}. Wang et al.~\cite{Wang2023} embed
+GP regression in an LSTM-based hybrid for wind-power forecasting and
+downstream dispatch, and a comparable hybrid is used by Zhang et
+al.~\cite{Zhang2019270}. In Bayesian power-network planning
+\cite{Lawson201647} GPs serve as the core uncertainty-aware emulator
+for transmission expansion under uncertainty.
+
+In design and expansion problems, kriging-assisted surrogate
+evolutionary computation has been used to solve large optimal power
+flow instances \cite{Deng2020831} and to optimise battery thermal
+management with Gaussian-process-based screening
+\cite{Li2021,Babaeiyazdi2021,Kong2021}. The GP family is by far the
+most common choice for surrogate-assisted multi-objective and
+many-objective design search in microgrids, building retrofits and
+energy hubs \cite{Wang2017,Schulte2020,Hussien20211883,Thrampoulidis2021,Roth2019214}.
+Cost grows cubically with the training-set size, which is why kernel
+sparsification, local GPs and inducing-point variants appear when
+data scales beyond a few thousand simulator runs
+\cite{Hu2020,Volodina2022,Liu20222679}.
+
+% =====================================================================
+% 3.3 Radial-basis-function networks and kernel regressors
+% =====================================================================
+
+\subsection{Radial-basis-function networks and kernel regressors}
+\label{sec:tax:rbf}
+
+Radial-basis-function (RBF) networks share the same kernel intuition
+as GPs but trade the posterior for cheaper deterministic fits. They
+are popular in power-system stability classification and in
+contingency screening, where the surrogate is queried inside an outer
+sampling loop. Urgun et al.~\cite{Urgun20202791} use multilabel
+RBF classification for importance-sampled composite-power-system
+reliability, and Karamichailidou et al.~\cite{Karamichailidou20212137}
+use RBF networks to model wind-turbine power curves for downstream
+dispatch. RBF networks also dominate the photovoltaic-power forecast
+component in optimization-coupled hybrid pipelines
+\cite{Yang2020415,Tian2020}, and they appear as the regression
+back-end in extreme-learning-machine load forecasting
+\cite{Zeng2017175,Sideratos2020,Madhukumar20228891,Rafi202132436}.
+In building-energy applications, kernel regressors have driven the
+data-driven heating and cooling load surrogates that feed
+district-energy optimisation
+\cite{Koschwitz2018134,Hirvonen2017323,Reynolds2017704,Jia2022553}.
+Strengths are speed and small-data robustness; the price is poor
+extrapolation outside the training cloud, which is why authors who
+use RBFs in optimization loops typically combine them with a
+trust-region or active-sampling layer
+\cite{Deng2020831,Tian2020,Han2018622,Pang2023}.
+
+% =====================================================================
+% 3.4 Tree ensembles
+% =====================================================================
+
+\subsection{Tree ensembles: random forests and gradient boosting}
+\label{sec:tax:trees}
+
+Tree ensembles such as random forests, gradient-boosted trees and
+XGBoost are the everyday workhorse of energy-data regression and
+classification. Their advantages are tabular data robustness, low
+hyperparameter sensitivity, and built-in feature-importance
+diagnostics. They appear as predictive components in optimization
+pipelines for microgrid scheduling
+\cite{Eseye201991463,Faraji2020157284,Wang20192635,Nematollahi2021},
+distribution-system planning under uncertainty
+\cite{Fu20202904,Fu2022,Jahangiri20244849,Jahangiri2023}, and
+short-term wind, solar and load forecasting that drives downstream
+dispatch \cite{Li2020,Hanifi2024,Alkesaiberi2022,Madhukumar20228891}.
+Tree models do not have natural smooth gradients, which complicates
+embedding them in MILP or NLP formulations directly; the practical
+workaround is either to use the tree only outside the optimizer
+(prediction stage) or to recompile it as a piecewise-linear
+big-M MILP
+\cite{Ren2024,Lin2023,Pang2023,Wang20211767}.
+
+Tree ensembles also feature in surrogate-assisted multi-objective
+optimization where they classify candidate decisions as feasible or
+infeasible before more expensive simulator calls
+\cite{Han2018622,Schulte2020,Pang2023,Xiao2018}.
+
+% =====================================================================
+% 3.5 Neural networks
+% =====================================================================
+
+\subsection{Neural surrogates: MLP, recurrent and graph
+architectures}
+\label{sec:tax:nn}
+
+Neural networks dominate the recent literature, both because of their
+flexibility and because of the rise of physics-informed and
+graph-aware variants that fit naturally on power and heat networks.
+
+Multi-layer perceptrons (MLPs) are the default choice when the
+surrogate has fixed-dimensional input and output and has to be
+queried millions of times during an outer optimization loop. MLPs are
+used as cost or feasibility proxies in security-constrained
+economic dispatch
+\cite{Chen2022,Chen20244723,Wu2022231,Xu20223066,Guo20222057,Li202359995},
+as the response-surface back-end of metamodel-based design search
+\cite{Roth2019214,Hirvonen2017323,Jia2022553,Li2023,Wang2020202933},
+and as the surrogate for building retrofit decisions
+\cite{Thrampoulidis2021,Reynolds2017704,Koschwitz2018134}.
+
+Recurrent and convolutional architectures (LSTM, GRU, CNN, hybrid
+CNN-LSTM) appear when the input is itself a time series and the
+surrogate has to learn temporal dependencies. They are widely used
+to feed dispatch and storage scheduling
+\cite{Rafi202132436,Sideratos2020,Li2019,Tian2020,Yang2020415,Wang2023,Shi2024,Lu20232989,Hanifi2024}.
+The downside in optimization use is that recurrent surrogates are
+hard to embed in MILP and gradient-based solvers without unrolling.
+
+Graph neural networks (GNNs) are increasingly used as surrogates for
+network-structured quantities -- power flows, voltage magnitudes,
+contingency severity -- because their inductive bias matches the
+topology of the underlying grid
+\cite{Park2019,Su2022315,Liu20223726,Chen2023657}. Where the
+underlying physics is well understood, physics-informed neural
+networks (PINNs) build a residual constraint into the loss, which
+sharpens calibration and reduces extrapolation error
+\cite{Park2019,Su2022315,Liu20222679,Chen2023657}.
+
+% =====================================================================
+% 3.6 Constraint-aware and structure-preserving surrogates
+% =====================================================================
+
+\subsection{Constraint-aware and structure-preserving surrogates}
+\label{sec:tax:structured}
+
+A central practical issue with neural and tree surrogates is that
+the optimization layer has to trust their outputs even on inputs
+they have not been trained on. Several recent threads address this
+by enforcing structural properties on the surrogate itself.
+Convex-mapping formulations
+\cite{Roth2019214,Wang2020202933,Hirvonen2017323}, monotone or
+input-convex neural networks for energy applications
+\cite{Liu20223726,Chen2023657,Chen20244723}, and
+piecewise-linear neural networks that can be re-expressed as MILPs
+\cite{Wu2022231,Chen2022,Xu20223066,Lin2023} all fall under this
+heading. Surrogates that explicitly predict the active-set or the
+optimal solution under feasibility guarantees -- end-to-end feasible
+optimization proxies \cite{Chen20244723} and learn-to-solve methods
+with hard linear constraints \cite{Li202359995} -- close the loop:
+the surrogate is no longer just a cheap function evaluator but a
+near-feasible decision proposer that the optimizer can validate or
+fine-tune. This sub-family is currently the most active part of the
+literature and is essential for surrogate-in-MILP use cases that
+must respect operational constraints.
+
+% =====================================================================
+% 3.7 Hybrid and physics-informed surrogates
+% =====================================================================
+
+\subsection{Hybrid and physics-informed surrogates}
+\label{sec:tax:pinn}
+
+Several recent contributions combine a cheap physical baseline with
+a learned residual on top, which inherits the
+extrapolation behaviour of the physical model and the data-fitting
+power of the learner
+\cite{Park2019,Liu20223726,Chen2023657,Liu20222679,Wang2021,Ren2024,Jalving2023,Zheng20231907}.
+Hybrid surrogates are particularly common in district heating and
+multi-energy applications, where partial physical knowledge of pipe
+dynamics, heat-pump performance maps and storage charging curves is
+much cheaper to encode than to learn from scratch
+\cite{Schulte2016104,Petrova2025,Gao2025,Reynolds2017704,Jia2022553,Hirvonen2017323,Zhou2024}.
+The same idea underpins surrogate-assisted multi-objective
+optimization in ship and aircraft energy systems
+\cite{Mylonopoulos202332697,Zhang2022,Zhu2024318}.
+
+% =====================================================================
+% 3.8 Decision-focused / L2O proxies
+% =====================================================================
+
+\subsection{Decision-focused and ``learning to optimize'' surrogates}
+\label{sec:tax:l2o}
+
+A distinct paradigm replaces the simulator-of-the-system with the
+optimizer-of-the-system: a surrogate is trained to predict the
+optimal solution (or a feasible near-optimal one) given a problem
+instance. This is the ``learning to optimize'' (L2O) family.
+Wu et al.~\cite{Wu2022231} train a deep neural network to solve
+security-constrained unit commitment with uncertain wind power.
+Chen et al.~\cite{Chen2022,Chen20244723} learn optimization proxies
+for large-scale security-constrained economic dispatch with feasibility
+guarantees. Guo et al.~\cite{Guo20222057} learn optimal power
+allocation in islanded microgrids. Xu et al.~\cite{Xu20223066}
+train an ensemble deep network for non-convex economic dispatch.
+Li et al.~\cite{Li202359995} learn to solve optimization problems
+with hard linear constraints. Liang et al.~\cite{Liang20246508}
+combine the L2O idea with statistically feasible robust optimization
+for joint chance-constrained unit commitment. Recent reviews track
+the explosive growth of this sub-family in power-system
+applications \cite{Khaloie2025,Lim2025,Ruan2021221}.
+The promise of L2O is the largest speed-up of any surrogate
+pattern (orders of magnitude over re-solving the MILP from scratch)
+because the surrogate replaces the entire optimizer; the price is
+that feasibility and optimality have to be enforced separately,
+and that the surrogate is validated under a much tighter standard
+than a regression model would be
+(Section~\ref{sec:validation}).

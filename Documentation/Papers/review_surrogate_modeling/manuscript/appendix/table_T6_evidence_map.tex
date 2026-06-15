@@ -1,0 +1,175 @@
+% T6 evidence-map longtable. Rows: tables/build_table_T6_evidence_map.py
+% (writes this file and a synced copy under tables/table_T6_evidence_map.tex).
+% 142 entries; mode=compact; rebuild via build_table_T6_evidence_map.py
+\begin{longtable}{@{}p{0.16\textwidth} p{0.04\textwidth} p{0.28\textwidth} p{0.14\textwidth} p{0.14\textwidth} p{0.14\textwidth}@{}}
+  \caption{Evidence map of the MES-focused curated subset
+  (Section~\ref{sec:applications}). Rows cover multi-energy and sector-
+  coupled systems, microgrids and energy hubs, district heating, and
+  closely related economic dispatch, OPF, expansion and stochastic
+  planning studies; component-level material, vehicle, geothermal,
+  maritime, aircraft and battery-technology papers are omitted.
+  Topic is the OpenAlex \texttt{primary\_topic}; surrogate class,
+  design-of-experiments (DoE) practice (cf.\ Table~\ref{tab:T3-doe})
+  and validation evidence (cf.\ Table~\ref{tab:T4-validation}) follow
+  bucket tags in \texttt{review\_paper\_library\_manifest.csv}, with
+  title- and PDF-text inference (first \(N\) pages under
+  \texttt{Literatur/}) when a bucket axis is silent. Review-only
+  entries are omitted. The full curated library (\(N=285\)) is in
+  \texttt{review\_paper\_library\_manifest.csv}.}
+  \label{tab:T6-evidence-map} \\
+  \toprule
+  Reference & Year & Topic & Surrogate class & DoE & Validation \\
+  \midrule
+  \endfirsthead
+
+  \toprule
+  Reference & Year & Topic & Surrogate class & DoE & Validation \\
+  \midrule
+  \endhead
+
+  \bottomrule
+  \endfoot
+
+  \cite{Matta2026} & 2026 & Microgrid Control and Optimization & GP / kriging & Active learning & Interval calibration; Point metrics (RMSE/MAE/R²); Uncertainty (problem UQ) \\
+  \cite{Du2025} & 2025 & Integrated Energy Systems Optimization & Neural network & Factorial / DoE & Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²) \\
+  \cite{Franzoso2025} & 2025 & Integrated Energy Systems Optimization & Neural network & -- & Point metrics (RMSE/MAE/R²) \\
+  \cite{Katkar2025} & 2025 & Optimal Power Flow Distribution & GP / kriging & Active learning & Point metrics (RMSE/MAE/R²) \\
+  \cite{Kiani20253021} & 2025 & Microgrid Control and Optimization & GP / kriging & Adaptive sampling & Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²) \\
+  \cite{Prusty2025} & 2025 & Frequency Control in Power Systems & GP / kriging & Adaptive sampling & -- \\
+  \cite{Reis2025} & 2025 & Advanced Multi-Objective Optimization Algorithms & Neural network & Active learning & Point metrics (RMSE/MAE/R²) \\
+  \cite{Ren20252375} & 2025 & Real-time simulation and control systems & Hybrid / PINN & Active learning & -- \\
+  \cite{Salahinezhad2025} & 2025 & Integrated Energy Systems Optimization & PCE / RSM & Factorial / DoE & Point metrics (RMSE/MAE/R²) \\
+  \cite{Tian2025} & 2025 & Energy Load and Power Forecasting & Neural network & -- & -- \\
+  \cite{Yang2025} & 2025 & Adaptive multi-objective Bayesian optimization approach for capacity planning of the interconnected offshore wind farms & Tree ensembles & Active learning & Point metrics (RMSE/MAE/R²); Uncertainty (problem UQ) \\
+  \cite{alahmad_enhancing_2025} & 2025 & Enhancing renewable energy integration through strategic stochastic optimization planning of distributed energy resources (Wind/\{PV\}/\{SBESS\}/\{MBESS\}) in distribution systems & PCE / RSM & LHS / quasi-MC & Uncertainty (problem UQ); Feasibility rate; Point metrics (RMSE/MAE/R²) \\
+  \cite{alahmad_optimizing_2025} & 2025 & Optimizing renewable energy and green technologies in distribution systems through stochastic planning of distributed energy resources & PCE / RSM & LHS / quasi-MC & Stress test; Uncertainty (problem UQ) \\
+  \cite{ali_optimizing_2025} & 2025 & Optimizing Hydrogen Systems and Demand Response for Enhanced Integration of \{RES\} and \{EVs\} in Smart Grids & PCE / RSM & LHS / quasi-MC & Point metrics (RMSE/MAE/R²) \\
+  \cite{an_multi-objective_2025} & 2025 & Multi-objective optimization for optimal placement of shared battery energy storage systems in urban energy communities & PCE / RSM & LHS / quasi-MC & Feasibility rate \\
+  \cite{anoune_microgrid_2025} & 2025 & Microgrid Optimization Using a Developed Model of Genetic Algorithm Under \{MATLAB\} & PCE / RSM & Factorial / DoE & -- \\
+  \cite{bagheri_miqcp-based_2025} & 2025 & An \{MIQCP\}-based multi-objective optimal operation strategy for renewables-integrated smart distribution systems considering transformer loss of life and environmental emissions & Neural network & -- & Point metrics (RMSE/MAE/R²); Uncertainty (problem UQ) \\
+  \cite{bendriss_novel_2025} & 2025 & A novel improved Frilled Lizard algorithm for solving the optimal planning problem of renewable energy sources within distribution grids under uncertainties & PCE / RSM & LHS / quasi-MC & Uncertainty (problem UQ) \\
+  \cite{bian_multi-energy_2025} & 2025 & Multi-energy Complementary Planning for Regional Integrated Energy System Considering Flexibility and Economy & PCE / RSM & Factorial / DoE & -- \\
+  \cite{chen_multi-objective_2025-1} & 2025 & Multi-objective optimization of multi-energy complementary systems integrated biomass-solar-wind energy utilization in rural areas & PCE / RSM & Factorial / DoE & Feasibility rate \\
+  \cite{cortes-caicedo_multi-objective_2025} & 2025 & A multi-objective optimization approach based on the Non-Dominated Sorting Genetic Algorithm \{II\} for power coordination in battery energy storage systems for \{DC\} distribution network applications & PCE / RSM & Factorial / DoE & Point metrics (RMSE/MAE/R²) \\
+  \cite{tezer_multi-objective_2025} & 2025 & Multi-objective optimization of hybrid renewable energy systems with green hydrogen integration and hybrid storage strategies & PCE / RSM & Factorial / DoE & Point metrics (RMSE/MAE/R²) \\
+  \cite{tian_building_2025} & 2025 & Building design and operation multi-objective optimization: Energy costs vs. Emissions & Neural network & Historical data & Feasibility rate; Point metrics (RMSE/MAE/R²) \\
+  \cite{Ahmad202451} & 2024 & Hybrid Renewable Energy Systems & PCE / RSM & Factorial / DoE & Point metrics (RMSE/MAE/R²); Interval calibration \\
+  \cite{Chaturvedi2024149} & 2024 & Microgrid Control and Optimization & Neural network & -- & Point metrics (RMSE/MAE/R²) \\
+  \cite{Chaudhry2024} & 2024 & Integrated Energy Systems Optimization & PCE / RSM & LHS / quasi-MC & Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²) \\
+  \cite{Chen20244723} & 2024 & Electric Power System Optimization & Neural network & -- & Decision-aware (regret/gap); Feasibility rate; Point metrics (RMSE/MAE/R²) \\
+  \cite{Dong2024} & 2024 & Energy Load and Power Forecasting & PCE / RSM & Factorial / DoE & Point metrics (RMSE/MAE/R²) \\
+  \cite{Han2024} & 2024 & Smart Grid Energy Management & GP / kriging & Adaptive sampling & Uncertainty (problem UQ) \\
+  \cite{Hussien202415075} & 2024 & Microgrid Control and Optimization & PCE / RSM & Factorial / DoE & Point metrics (RMSE/MAE/R²) \\
+  \cite{Jahangiri20244849} & 2024 & Integrated Energy Systems Optimization & Neural network & -- & Stress test; Point metrics (RMSE/MAE/R²) \\
+  \cite{Khayambashi202453} & 2024 & Energy Load and Power Forecasting & Neural network & Multi-fidelity & Uncertainty (problem UQ) \\
+  \cite{Koirala20242284} & 2024 & Probabilistic and Robust Engineering Design & PCE / RSM & LHS / quasi-MC & Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²) \\
+  \cite{Lei20247417} & 2024 & Electric Power System Optimization & Constraint-aware NN & Adaptive sampling & Uncertainty (problem UQ); Feasibility rate; Point metrics (RMSE/MAE/R²) \\
+  \cite{Liang20246508} & 2024 & Electric Power System Optimization & Constraint-aware NN & -- & Uncertainty (problem UQ); Interval calibration \\
+  \cite{Liu20242534} & 2024 & Microgrid Control and Optimization & Neural network & Historical data & Point metrics (RMSE/MAE/R²); Interval calibration \\
+  \cite{Pan20244422} & 2024 & Electric Power System Optimization & PCE / RSM & LHS / quasi-MC & Uncertainty (problem UQ); Feasibility rate; Point metrics (RMSE/MAE/R²) \\
+  \cite{Ren2024} & 2024 & Building Energy and Comfort Optimization & Neural network & LHS / quasi-MC & Point metrics (RMSE/MAE/R²) \\
+  \cite{Shi2024__2} & 2024 & Energy Load and Power Forecasting & GP / kriging & Adaptive sampling & Point metrics (RMSE/MAE/R²) \\
+  \cite{Sánchez-Zabala2024} & 2024 & Building Energy and Comfort Optimization & RBF / kernel & Factorial / DoE & Interval calibration \\
+  \cite{Wang2024} & 2024 & Hybrid Renewable Energy Systems & Neural network & Historical data & Feasibility rate; Point metrics (RMSE/MAE/R²) \\
+  \cite{Wu2024391} & 2024 & Optimal Power Flow Distribution & Tree ensembles & -- & Feasibility rate \\
+  \cite{Yang2024__2} & 2024 & Smart Grid Energy Management & PCE / RSM & LHS / quasi-MC & Uncertainty (problem UQ); Stress test; Point metrics (RMSE/MAE/R²) \\
+  \cite{Zhang2024821} & 2024 & Energy Load and Power Forecasting & GP / kriging & Adaptive sampling & Uncertainty (problem UQ) \\
+  \cite{abbas_optimal_2024} & 2024 & Optimal scheduling and management of grid-connected distributed resources using improved decomposition-based many-objective evolutionary algorithm & PCE / RSM & LHS / quasi-MC & Feasibility rate; Point metrics (RMSE/MAE/R²); Uncertainty (problem UQ) \\
+  \cite{liang_high_2024} & 2024 & High fidelity modeling of pumped storage units for optimal operation of a multi-energy co-generation system & PCE / RSM & Multi-fidelity & Point metrics (RMSE/MAE/R²) \\
+  \cite{malla_sg_optimization_2024} & 2024 & Optimization of Multi-Energy Systems for Efficient Power-to-X Conversion & PCE / RSM & Factorial / DoE & Point metrics (RMSE/MAE/R²) \\
+  \cite{Angizeh2023134995} & 2023 & Smart Grid Energy Management & GP / kriging & Adaptive sampling & Point metrics (RMSE/MAE/R²); Uncertainty (problem UQ) \\
+  \cite{Cao2023__2} & 2023 & Process Optimization and Integration & -- & LHS / quasi-MC & Point metrics (RMSE/MAE/R²) \\
+  \cite{Chen2023657} & 2023 & Optimal Power Flow Distribution & Constraint-aware NN & -- & Uncertainty (problem UQ); Feasibility rate; Interval calibration \\
+  \cite{Dong2023} & 2023 & Integrated Energy Systems Optimization & PCE / RSM & LHS / quasi-MC & Uncertainty (problem UQ); Feasibility rate; Point metrics (RMSE/MAE/R²) \\
+  \cite{Dong2023__2} & 2023 & Integrated Energy Systems Optimization & PCE / RSM & LHS / quasi-MC & Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²) \\
+  \cite{Jahangiri2023} & 2023 & Energy Load and Power Forecasting & Neural network & -- & Point metrics (RMSE/MAE/R²) \\
+  \cite{Jalving2023} & 2023 & Integrated Energy Systems Optimization & Neural network & Factorial / DoE & Point metrics (RMSE/MAE/R²) \\
+  \cite{Lalitha20231401} & 2023 & Power Systems Fault Detection & Neural network & Active learning & Point metrics (RMSE/MAE/R²) \\
+  \cite{Li202359995} & 2023 & Advanced Neural Network Applications & Neural network & Transfer learning & Decision-aware (regret/gap); Feasibility rate \\
+  \cite{Li2023__2} & 2023 & Building Energy and Comfort Optimization & Tree ensembles & Historical data & Feasibility rate; Point metrics (RMSE/MAE/R²) \\
+  \cite{Li2023__3} & 2023 & Building Energy and Comfort Optimization & Tree ensembles & -- & Point metrics (RMSE/MAE/R²) \\
+  \cite{Lin2023} & 2023 & Electric Power System Optimization & GP / kriging & Active learning & Point metrics (RMSE/MAE/R²) \\
+  \cite{Lu20232989} & 2023 & Smart Grid Energy Management & RBF / kernel & Historical data & Feasibility rate; Point metrics (RMSE/MAE/R²) \\
+  \cite{Mitrovic2023__2} & 2023 & Electric Power System Optimization & GP / kriging & Adaptive sampling & Uncertainty (problem UQ); Feasibility rate; Point metrics (RMSE/MAE/R²) \\
+  \cite{Mitrovic2023__3} & 2023 & Electric Power System Optimization & GP / kriging & Adaptive sampling & Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²) \\
+  \cite{Pang2023} & 2023 & Electric Power System Optimization & Neural network & Active learning & Point metrics (RMSE/MAE/R²) \\
+  \cite{Pourmohammadi2023} & 2023 & Advanced Multi-Objective Optimization Algorithms & PCE / RSM & LHS / quasi-MC & Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²) \\
+  \cite{Pérez-Uresti2023} & 2023 & Hybrid Renewable Energy Systems & Neural network & -- & Point metrics (RMSE/MAE/R²) \\
+  \cite{Zhang20234075} & 2023 & Hybrid Renewable Energy Systems & GP / kriging & LHS / quasi-MC & Point metrics (RMSE/MAE/R²) \\
+  \cite{Zheng20231907} & 2023 & Integrated Energy Systems Optimization & GP / kriging & Adaptive sampling & Feasibility rate \\
+  \cite{arar_tahir_scientific_2023} & 2023 & Scientific mapping of optimisation applied to microgrids integrated with renewable energy systems & PCE / RSM & LHS / quasi-MC & Point metrics (RMSE/MAE/R²); Uncertainty (problem UQ) \\
+  \cite{batista_optimizing_2023} & 2023 & Optimizing methodologies of hybrid renewable energy systems powered reverse osmosis plants & PCE / RSM & LHS / quasi-MC & Point metrics (RMSE/MAE/R²) \\
+  \cite{velasquez_intelligence_2023} & 2023 & Intelligence Techniques in Sustainable Energy: Analysis of a Decade of Advances & RBF / kernel & -- & Point metrics (RMSE/MAE/R²) \\
+  \cite{Chen2022} & 2022 & Smart Grid Energy Management & Neural network & Historical data & Feasibility rate; Point metrics (RMSE/MAE/R²) \\
+  \cite{Chen2022__2} & 2022 & Smart Grid Energy Management & Neural network & -- & Point metrics (RMSE/MAE/R²) \\
+  \cite{Dong2022} & 2022 & Integrated Energy Systems Optimization & GP / kriging & Adaptive sampling & Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²) \\
+  \cite{Fu2022} & 2022 & Optimal Power Flow Distribution & PCE / RSM & Factorial / DoE & Uncertainty (problem UQ); Feasibility rate \\
+  \cite{Guo20222057} & 2022 & Microgrid Control and Optimization & Neural network & Historical data & Point metrics (RMSE/MAE/R²) \\
+  \cite{Hussien20226442} & 2022 & Microgrid Control and Optimization & PCE / RSM & Factorial / DoE & Point metrics (RMSE/MAE/R²) \\
+  \cite{Jia2022553} & 2022 & Building Energy and Comfort Optimization & RBF / kernel & -- & -- \\
+  \cite{Kaewdornhan2022130373} & 2022 & Smart Grid Energy Management & Neural network & Active learning & Feasibility rate; Point metrics (RMSE/MAE/R²); Uncertainty (problem UQ) \\
+  \cite{Liu20222679} & 2022 & Probabilistic and Robust Engineering Design & GP / kriging & Adaptive sampling & Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²) \\
+  \cite{Liu20223726} & 2022 & Power System Optimization and Stability & RBF / kernel & LHS / quasi-MC & Point metrics (RMSE/MAE/R²) \\
+  \cite{Mahapatra2022721} & 2022 & Power System Optimization and Stability & RBF / kernel & -- & Point metrics (RMSE/MAE/R²) \\
+  \cite{Su2022315} & 2022 & Power System Optimization and Stability & Neural network & LHS / quasi-MC & Point metrics (RMSE/MAE/R²); Uncertainty (problem UQ) \\
+  \cite{Van Acker2022} & 2022 & Probabilistic and Robust Engineering Design & PCE / RSM & LHS / quasi-MC & Feasibility rate; Point metrics (RMSE/MAE/R²); Uncertainty (problem UQ) \\
+  \cite{Volodina2022} & 2022 & Building Energy and Comfort Optimization & GP / kriging & LHS / quasi-MC & Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²); Interval calibration \\
+  \cite{Wang2022812} & 2022 & Integrated Energy Systems Optimization & PCE / RSM & LHS / quasi-MC & Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²) \\
+  \cite{Wu2022231} & 2022 & Electric Power System Optimization & Neural network & LHS / quasi-MC & Decision-aware (regret/gap); Feasibility rate; Point metrics (RMSE/MAE/R²) \\
+  \cite{Xu20223066} & 2022 & Electric Power System Optimization & Neural network & -- & Point metrics (RMSE/MAE/R²) \\
+  \cite{Gan2021695} & 2021 & Smart Grid Energy Management & GP / kriging & Adaptive sampling & Point metrics (RMSE/MAE/R²) \\
+  \cite{Guo202115024} & 2021 & Electric Power System Optimization & Neural network & -- & Point metrics (RMSE/MAE/R²) \\
+  \cite{Hu2021671} & 2021 & Electric Power System Optimization & GP / kriging & LHS / quasi-MC & Uncertainty (problem UQ) \\
+  \cite{Hussien20211883} & 2021 & Microgrid Control and Optimization & PCE / RSM & Factorial / DoE & Point metrics (RMSE/MAE/R²) \\
+  \cite{Hussien202190577} & 2021 & Microgrid Control and Optimization & PCE / RSM & Factorial / DoE & Point metrics (RMSE/MAE/R²) \\
+  \cite{Kim2021} & 2021 & Wind Energy Research and Development & GP / kriging & Adaptive sampling & Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²) \\
+  \cite{Nematollahi2021} & 2021 & Optimal Power Flow Distribution & GP / kriging & Adaptive sampling & Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²) \\
+  \cite{Nikolaidis2021} & 2021 & Electric Power System Optimization & GP / kriging & Active learning & Feasibility rate; Point metrics (RMSE/MAE/R²) \\
+  \cite{Rafi202132436} & 2021 & Energy Load and Power Forecasting & RBF / kernel & -- & Point metrics (RMSE/MAE/R²); Uncertainty (problem UQ) \\
+  \cite{Rixhon2021} & 2021 & Integrated Energy Systems Optimization & PCE / RSM & LHS / quasi-MC & Point metrics (RMSE/MAE/R²) \\
+  \cite{Srithapon202134395} & 2021 & Optimal Power Flow Distribution & Neural network & Active learning & Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²) \\
+  \cite{Wang2021} & 2021 & Short-Term Time Wind Speed Forecasting Based on Spatio-Temporal Geostatistical Approach and Kriging Method & GP / kriging & Adaptive sampling & -- \\
+  \cite{Wang20211767} & 2021 & Smart Grid Energy Management & RBF / kernel & -- & Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²) \\
+  \cite{Wu2021} & 2021 & Integrated Energy Systems Optimization & RBF / kernel & Active learning & Point metrics (RMSE/MAE/R²) \\
+  \cite{Wu2021__2} & 2021 & Integrated Energy Systems Optimization & RBF / kernel & -- & Point metrics (RMSE/MAE/R²) \\
+  \cite{Xu20212696} & 2021 & Probabilistic and Robust Engineering Design & PCE / RSM & LHS / quasi-MC & Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²) \\
+  \cite{Bianchi2020244} & 2020 & Gaussian Processes and Bayesian Inference & GP / kriging & Adaptive sampling & Uncertainty (problem UQ) \\
+  \cite{Deng2020831} & 2020 & Optimal Power Flow Distribution & GP / kriging & Adaptive sampling & Point metrics (RMSE/MAE/R²) \\
+  \cite{Faraji2020157284} & 2020 & Smart Grid Energy Management & RBF / kernel & -- & Point metrics (RMSE/MAE/R²) \\
+  \cite{Fu20202904} & 2020 & Energy Load and Power Forecasting & PCE / RSM & LHS / quasi-MC & Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²) \\
+  \cite{Hu2020} & 2020 & Electric Power System Optimization & GP / kriging & LHS / quasi-MC & Uncertainty (problem UQ) \\
+  \cite{Reich2020} & 2020 & Integrated Energy Systems Optimization & GP / kriging & Adaptive sampling & Point metrics (RMSE/MAE/R²) \\
+  \cite{Simonson202036} & 2020 & Integrated Energy Systems Optimization & GP / kriging & Adaptive sampling & Uncertainty (problem UQ) \\
+  \cite{Urgun20202791} & 2020 & Power System Reliability and Maintenance & RBF / kernel & LHS / quasi-MC & Point metrics (RMSE/MAE/R²); Uncertainty (problem UQ) \\
+  \cite{Wang2020202933} & 2020 & Integrated Energy Systems Optimization & PCE / RSM & LHS / quasi-MC & Point metrics (RMSE/MAE/R²); Uncertainty (problem UQ) \\
+  \cite{Zhang20203731} & 2020 & Microgrid Control and Optimization & RBF / kernel & Transfer learning & Uncertainty (problem UQ); Feasibility rate; Point metrics (RMSE/MAE/R²) \\
+  \cite{Eseye201991463} & 2019 & Energy Load and Power Forecasting & GP / kriging & Adaptive sampling & Point metrics (RMSE/MAE/R²); Uncertainty (problem UQ) \\
+  \cite{Li20191438} & 2019 & Probabilistic and Robust Engineering Design & PCE / RSM & LHS / quasi-MC & Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²) \\
+  \cite{Lu201991827} & 2019 & Electric Power System Optimization & PCE / RSM & LHS / quasi-MC & Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²) \\
+  \cite{Muhlpfordt20194806} & 2019 & Probabilistic and Robust Engineering Design & PCE / RSM & LHS / quasi-MC & Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²) \\
+  \cite{Park2019} & 2019 & Energy Load and Power Forecasting & Neural network & Historical data & Point metrics (RMSE/MAE/R²); Interval calibration \\
+  \cite{Roth2019214} & 2019 & Hybrid Renewable Energy Systems & Neural network & Factorial / DoE & Point metrics (RMSE/MAE/R²) \\
+  \cite{Wang20192635} & 2019 & Energy Load and Power Forecasting & RBF / kernel & Historical data & Point metrics (RMSE/MAE/R²) \\
+  \cite{Yan2019625} & 2019 & Energy Load and Power Forecasting & GP / kriging & Adaptive sampling & Point metrics (RMSE/MAE/R²); Uncertainty (problem UQ) \\
+  \cite{salgueiro_multi-objective_2019} & 2019 & Multi-objective Metaheuristics' Challenges in the Optimization of Microgrids Planning and Management & PCE / RSM & Factorial / DoE & -- \\
+  \cite{Dullinger20181646} & 2018 & Advanced Control Systems Optimization & RBF / kernel & -- & -- \\
+  \cite{Engelmann20186188} & 2018 & Optimal Power Flow Distribution & PCE / RSM & LHS / quasi-MC & Uncertainty (problem UQ); Feasibility rate; Point metrics (RMSE/MAE/R²) \\
+  \cite{Han2018622} & 2018 & Electric Power System Optimization & RBF / kernel & LHS / quasi-MC & Point metrics (RMSE/MAE/R²); Uncertainty (problem UQ) \\
+  \cite{Kanwal2018117} & 2018 & Solar Radiation and Photovoltaics & GP / kriging & Adaptive sampling & Point metrics (RMSE/MAE/R²) \\
+  \cite{Rodgers2018951} & 2018 & Electric Power System Optimization & PCE / RSM & Factorial / DoE & Feasibility rate; Point metrics (RMSE/MAE/R²) \\
+  \cite{Shao201858} & 2018 & Islanding Detection in Power Systems & GP / kriging & Adaptive sampling & Point metrics (RMSE/MAE/R²) \\
+  \cite{Weinberger2018555} & 2018 & Integrated Energy Systems Optimization & Neural network & Factorial / DoE & Point metrics (RMSE/MAE/R²) \\
+  \cite{Xu20184696} & 2018 & Microgrid Control and Optimization & PCE / RSM & LHS / quasi-MC & Point metrics (RMSE/MAE/R²); Uncertainty (problem UQ) \\
+  \cite{Zhou20181} & 2018 & Integrated Energy Systems Optimization & GP / kriging & Adaptive sampling & Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²) \\
+  \cite{Cao2017} & 2017 & Optimal Power Flow Distribution & PCE / RSM & LHS / quasi-MC & Uncertainty (problem UQ) \\
+  \cite{Goudarzi2017667} & 2017 & Electric Power System Optimization & RBF / kernel & -- & Point metrics (RMSE/MAE/R²); Uncertainty (problem UQ) \\
+  \cite{Hirvonen2017323} & 2017 & Building Energy and Comfort Optimization & Neural network & Factorial / DoE & Feasibility rate; Point metrics (RMSE/MAE/R²) \\
+  \cite{Muhlpfordt20174490} & 2017 & Probabilistic and Robust Engineering Design & PCE / RSM & LHS / quasi-MC & Uncertainty (problem UQ) \\
+  \cite{Perera2017187} & 2017 & Hybrid Renewable Energy Systems & Neural network & Active learning & Feasibility rate; Point metrics (RMSE/MAE/R²); Uncertainty (problem UQ) \\
+  \cite{Reynolds2017704} & 2017 & Building Energy and Comfort Optimization & Neural network & -- & -- \\
+  \cite{Rigo-Mariani20171762} & 2017 & Microgrid Control and Optimization & GP / kriging & LHS / quasi-MC & Point metrics (RMSE/MAE/R²) \\
+  \cite{Safta20172535} & 2017 & Probabilistic and Robust Engineering Design & PCE / RSM & LHS / quasi-MC & Uncertainty (problem UQ); Feasibility rate; Point metrics (RMSE/MAE/R²) \\
+  \cite{Wang2017} & 2017 & Microgrid Control and Optimization & GP / kriging & Adaptive sampling & Point metrics (RMSE/MAE/R²) \\
+  \cite{Lawson201647} & 2016 & Electric Power System Optimization & GP / kriging & LHS / quasi-MC & Uncertainty (problem UQ); Point metrics (RMSE/MAE/R²) \\
+  \cite{Mahapatra20161921} & 2016 & Power System Optimization and Stability & RBF / kernel & -- & Point metrics (RMSE/MAE/R²) \\
+\end{longtable}

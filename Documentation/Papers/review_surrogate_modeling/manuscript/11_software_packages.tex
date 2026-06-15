@@ -1,0 +1,66 @@
+\section{Software-packages in surrogate modeling and multi-energy systems}
+\label{sec:software}
+
+This section reports only software mentions that were found in the review PDFs
+scanned by \texttt{paper\_library/verify\_T8\_software\_cites.py}. The table is
+therefore a conservative mention map, not a feature comparison, package
+recommendation, maintenance audit, or proof that a package was used in the
+primary studies. Packages without a review-PDF mention are omitted, even if
+they are widely used in practice.
+
+\begin{table*}[!t]
+\centering
+\scriptsize
+\caption{Software packages and environments explicitly mentioned in the review PDFs scanned for this paper. The table records mention evidence only; it does not claim package maintenance status, GPU support, license, or built-in surrogate--MES integration.}
+\label{tab:T8-software-packages}
+\renewcommand{\arraystretch}{1.10}
+\begin{tabularx}{\textwidth}{@{}L{0.20\textwidth} L{0.18\textwidth} L{0.34\textwidth} L{0.20\textwidth}@{}}
+\toprule
+Package / environment & Software block & Conservative use/context from review-PDF mentions & PDF-screen evidence \\
+\midrule
+\texttt{ALAMO}; \texttt{Eureqa}; Surrogates Toolbox; \texttt{SUMO}; \texttt{ARGONAUT}; \texttt{scikit-learn}; R-side packages &
+Surrogate / ML software &
+Surrogate modelling, validation, derivative-free optimization, and general ML regression in the surrogate-methodology review context. &
+Bhosekar et al. mention these packages and toolboxes \cite{Bhosekar2018}. \\
+\texttt{GPML}; \texttt{GPy}; \texttt{GPflow}; \texttt{GPyTorch}; \texttt{BoTorch}; \texttt{PyMC3}; \texttt{Pyro} &
+GP / probabilistic software &
+Gaussian-process modelling, probabilistic programming, and Bayesian-optimization-related tooling in a GP-for-power-systems review context. &
+Tan et al. mention these GP and probabilistic software packages \cite{Tan2026}. \\
+\texttt{XGBoost}; \texttt{LightGBM}; \texttt{TensorFlow}; \texttt{PyTorch}; \texttt{MATLAB} &
+ML / engineering environments &
+Learning-assisted power-system models, building-energy or HRES surrogate contexts, digital-twin workflows, and general engineering optimization environments, depending on the review. &
+PDF-screen mentions in learning-assisted power, surrogate, digital-twin, building-energy and HRES reviews \cite{Khaloie2025,Conti2026,Zhang2026_building,Lim2025,Elwy2024,Tan2026,FernandezGodino2023,Westermann2019,Li2025_hydrogen,Etghani2025}. \\
+\texttt{SMT} &
+Surrogate toolbox &
+Surrogate-modelling toolbox mentioned in energy-related surrogate or digital-twin review contexts. &
+PDF-screen mentions in Westermann et al. and Khan et al. \cite{Westermann2019,Khan2024_DT}. \\
+\texttt{GAMS}; \texttt{Gurobi}; \texttt{CPLEX}; \texttt{Mosek}; \texttt{IPOPT}; \texttt{BARON} &
+Modelling language / solvers &
+Algebraic modelling and mathematical optimization backends in ESM, MES, power-system learning, or surrogate-optimization review contexts. This does not imply a surrogate-specific interface. &
+PDF-screen mentions in ESM, MES, power-system learning and surrogate-methodology reviews \cite{Fattahi2020,Klemm2021,Manco2024,Lim2025,Khaloie2025,Westermann2019,Bhosekar2018,Mylonopoulos202332697}. \\
+\texttt{PyPSA}; \texttt{oemof}; \texttt{Calliope}; \texttt{OSeMOSYS}; \texttt{TIMES}; \texttt{MARKAL}; \texttt{REMix} &
+Energy-system modelling tools &
+MES, district-scale, national, or long-term energy-system modelling frameworks discussed as host modelling tools. The screen does not show native surrogate interfaces. &
+PDF-screen mentions in MES and national/long-term ESM reviews \cite{Klemm2021,Fattahi2020,ChenRenZhou2023}. \\
+\texttt{HOMER}; \texttt{iHOGA}; \texttt{RETScreen} &
+Microgrid / HRES tools &
+Microgrid, hybrid-renewable-system, ship-energy, hydrogen, or broader energy-system assessment and optimization contexts. &
+PDF-screen mentions in microgrid, HRES, hydrogen and broader energy-review PDFs \cite{agha_kassab_comprehensive_2024,Mylonopoulos202332697,nallolla_multi-objective_2023,velasquez_intelligence_2023,arar_tahir_scientific_2023,batista_optimizing_2023,Klemm2021,Li2025_hydrogen,ChenRenZhou2023}. \\
+\texttt{EnergyPlus}; \texttt{TRNSYS}; \texttt{Modelica/Dymola} &
+Simulation environments &
+Building-energy, transient HVAC/renewable-system, thermal-system or multi-physics simulation contexts that can act as high-fidelity models in surrogate workflows. &
+PDF-screen mentions in building-surrogate, MES-tool, HRES and thermal-system review PDFs \cite{Westermann2019,Klemm2021,Zhang2026_building,Elsheikh2019622,batista_optimizing_2023,Li2025_hydrogen,Etghani2025,Elwy2024}. \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+
+Two cautious observations follow from this evidence. First, the review-level
+software evidence is fragmented: surrogate-methodology reviews discuss
+surrogate and GP software, whereas MES and HRES reviews mostly discuss
+modelling environments, simulators and optimization solvers. Second, the
+scanned reviews do not provide enough evidence to claim a mature,
+standardized interface between surrogate libraries, multi-objective decision
+workflows and energy-system modelling tools. For this reason, the open
+challenge is not that a specific package is missing, but that
+review-documented evidence for reproducible surrogate--MES toolchain
+integration remains limited.

@@ -1,0 +1,117 @@
+\section{Search strategy and screening pipeline}
+\label{app:search}
+
+\subsection{Database, scope and time window}
+\label{app:search:scope}
+
+The literature search was conducted in Scopus advanced search over
+the time window 2016--2026 inclusive. Document types are restricted
+to article, review and conference paper. The language is English.
+The subject areas are energy, engineering, computer science,
+environmental science and mathematics. The year filter is set in the
+Scopus user interface; the query string itself contains neither
+\texttt{TITLE-ABS-KEY} nor \texttt{PUBYEAR} so that the same query
+body can be reused with adjusted side-bar filters.
+
+\subsection{Active search strings}
+\label{app:search:strings}
+
+Two complementary search strings define the union from which the
+evidence base is built. The first targets the explicit surrogate-
+modelling vocabulary in conjunction with energy-system and
+optimization context. The second imports the user's earlier
+multi-criteria multi-objective Scopus export, which serves as the
+application backbone for multi-energy systems, microgrids, energy
+communities, hybrid renewable energy systems, district heating and
+cooling, combined cooling-heating-power and sector-coupled systems.
+Two narrower helper queries (surrogate~$\times$~stochastic/robust
+and surrogate~$\times$~multi-objective) ensure that nuanced
+sub-fields are not lost in the noise of the main search.
+
+\subsection{Offline screening pipeline}
+\label{app:search:offline}
+
+The Scopus export of the main search returned 3129 entries; the
+multi-objective multicriteria export contributed 2369 additional
+entries. A manual review of every record is not feasible, but a
+fully automated keyword filter would either over-trim relevant
+implicit surrogate work or under-trim noise. We therefore use a
+tiered offline screening implemented in \texttt{filter\_bib.py} and
+documented in \texttt{references/screening\_log.md}.
+
+\paragraph{Tier A -- explicit surrogate work.} Entries match a closed
+vocabulary of explicit surrogate-method terms (e.g. \emph{surrogate},
+\emph{metamodel}, \emph{response surface}, \emph{kriging}, \emph{Gaussian
+process}, \emph{polynomial chaos}, \emph{learning-to-optimize}) in
+conjunction with a closed vocabulary of energy-system terms (e.g.
+\emph{energy system}, \emph{power system}, \emph{district heating},
+\emph{unit commitment}, \emph{optimal power flow}, \emph{microgrid}).
+Tier-A entries are accepted automatically.
+
+\paragraph{Tier B -- implicit surrogate work.} Entries that do not match
+Tier A are accepted as candidates if they jointly satisfy four
+conditions: (i) they mention a machine-learning or regression method,
+(ii) they mention an optimization context, (iii) they mention an
+energy-system context, and (iv) at least one ``proxy hint''
+(\emph{proxy}, \emph{approximate}, \emph{accelerate}, \emph{replace},
+\emph{computationally expensive}, etc.) signals that the model is used
+as a substitute for an expensive component. Tier-B entries are
+flagged for manual review.
+
+\paragraph{Hard exclusions.} A noise vocabulary (\emph{fault diagnosis},
+\emph{site selection}, \emph{image recognition}, \emph{drug discovery},
+etc.) demotes Tier-B entries that show two or more strong noise
+signals; Tier-A entries are flagged but kept, on the assumption that
+explicit surrogate vocabulary outweighs an isolated noise term.
+
+\paragraph{Merging.} The two raw exports are merged with
+\texttt{build\_review\_bibliography.py}. Deduplication is DOI-first
+and citation-key-second. Duplicate citation keys in the merged
+bibliography are deterministically suffixed (e.g. \texttt{Wang2025}
+$\rightarrow$ \texttt{Wang2025\_\_2}) so that all keys remain unique.
+Per-entry provenance is recorded in
+\texttt{review\_mes\_moo\_surrogates\_manifest.csv}.
+
+\paragraph{Curated paper library.} A second screening stage
+(\texttt{paper\_library/select\_paper\_library.py}) selects a curated
+subset of approximately 260 entries that align with the manuscript
+narrative. The selection enforces two conditions: every citation key
+that appears in the manuscript text is included as a mandatory entry,
+and the remaining slots are filled by a bucket-based top-up that
+mirrors the manuscript's section structure (Sections~\ref{sec:taxonomy}
+through~\ref{sec:applications}). The selection writes
+\texttt{review\_paper\_library.bib}, a per-entry manifest, a buckets
+table and a citation plan. Scopus-specific telemetry (URLs to
+\texttt{scopus.com}, ``Cited by'' notes, source/publication-stage/
+type fields, author keywords) is stripped on emission so the curated
+bibliography is publication-grade. The screening pipeline is
+deterministic and re-runnable from the raw exports.
+
+\subsection{Run-level statistics}
+\label{app:search:stats}
+
+The combined manuscript bibliography
+(\texttt{review\_mes\_moo\_surrogates.bib}) contains 2906 deduplicated
+entries from 2944 inputs. The curated paper library
+(\texttt{review\_paper\_library.bib}) contains 260 entries, of which
+132 are mandatory citations from the manuscript text and 128 are
+top-up entries selected by citation count within their assigned
+bucket. The bucket-level distribution and per-entry mapping are
+recorded in
+\texttt{paper\_library/review\_paper\_library\_buckets.csv} and in
+\texttt{paper\_library/review\_paper\_library\_citation\_plan.md};
+they are reproduced in compact form in
+Section~\ref{app:evidence-map}.
+
+\section{Evidence map (extended manifest)}
+\label{app:evidence-map}
+
+The compact per-study evidence map in
+Table~\ref{tab:T6-evidence-map} (Section~\ref{sec:applications})
+lists the MES-focused subset used in the synthesis. The full curated
+library cross-tabulates all 285 screened entries against the same
+surrogate-family, task-class and integration-role axes in
+\texttt{paper\_library/review\_paper\_library\_manifest.csv} and
+\texttt{paper\_library/review\_paper\_library\_buckets.csv}. The
+map is regenerated deterministically by
+\texttt{tables/build\_table\_T6\_evidence\_map.py}.

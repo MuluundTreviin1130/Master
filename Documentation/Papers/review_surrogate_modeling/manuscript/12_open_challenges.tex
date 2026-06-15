@@ -1,0 +1,107 @@
+\section{Open challenges and research directions}
+\label{sec:challenges}
+The evidence map and the section-level synthesis point to six recurring
+weaknesses in the current literature. These weaknesses cut across model
+classes, integration patterns and application domains. They are not
+about whether surrogate models can be useful; they concern how studies
+are assembled, validated, compared and reported. The following
+subsections focus on those gaps that appear repeatedly and that are most
+relevant for future surrogate-assisted MES work.
+\subsection{Decision-aware benchmarking}
+\label{sec:ch:bench}
+The most immediate gap is the lack of decision-aware benchmarks.
+Predictive metrics are reported in many studies, but direct evidence on
+decision quality is often limited to a few example runs. Speed-up claims
+are common; regret distributions, feasibility rates and worst-case
+violations are much rarer
+\cite{Mylonopoulos202332697,Ruan2021221,Khaloie2025,Lim2025,Perera2019191}.
+This makes it difficult to compare methods across papers, even when they
+address similar tasks. A useful benchmark would fix the host problem,
+the training set, the stress-test set and the solver-time budget, and
+would require all methods to report the same decision-oriented outputs:
+regret, feasibility rate, MIP-gap distribution, violation severity and
+wall-clock savings. Recent learning-to-optimize work for
+security-constrained dispatch and unit commitment shows that these
+metrics can be reported in a systematic way
+\cite{Wu2022231,Chen20244723,Chen2022,Wu2024391,Liang20246508}, but
+the field still lacks a shared benchmark that would make results
+directly comparable.
+\subsection{Calibrated uncertainty for surrogate-assisted MOO}
+\label{sec:ch:uq}
+Uncertainty handling remains uneven. In surrogate-assisted MOO and in
+chance-constrained formulations, the optimization logic depends on
+posterior uncertainty, not only on the mean prediction. Yet calibration
+is checked much less often than pointwise fit, and several studies
+report breakdown precisely in those operating regions that are weakly
+covered by the training set
+\cite{Hu2020,Hu2021671,Volodina2022,Lawson201647,Hu2024,Buchanan2024,Subedi2026157}.
+The field already has practical tools such as deep ensembles, Bayesian
+last layers, conformal prediction and polynomial-chaos-based chance
+constraints
+\cite{Chen2023657,Liang20246508,Muhlpfordt20194806,Koirala20242284,Xu20212696}.
+The unresolved issue is how to combine these tools with surrogate-
+assisted search and uncertainty-constrained optimization so that the
+reported uncertainty still reflects what the optimizer sees at the
+relevant points in the design or operating space.
+\subsection{Out-of-distribution generalisation across capacity mixes}
+\label{sec:ch:ood}
+Planning studies use surrogates to say something about systems that do
+not yet exist in their final form. This means that the relevant test is
+often out-of-distribution by construction: another capacity mix, another
+weather year, another operating regime, or another policy setting. Many
+surrogates, however, are trained on historical operation or on samples
+generated from a much narrower design space
+\cite{Park2019,Reynolds2017704,Subedi2026157,Khaloie2025,Lim2025,Mylonopoulos202332697}.
+Two practical responses appear in the literature. One is to build more
+physics-aware surrogates that preserve balances, monotonicity or other
+structural constraints
+\cite{Park2019,Su2022315,Liu20223726,Petrova2025,Du2025}. The other
+is to fine-tune a base surrogate with a small number of new
+high-fidelity runs when climate, year or capacity mix changes
+\cite{Chen202514792,De Castro20247710}. What is
+still missing is a common way of reporting this distinction, so that
+within-distribution accuracy is not confused with planning-relevant
+robustness.
+\subsection{Standardised public datasets and reproducibility}
+\label{sec:ch:data}
+The reproducibility audit in Section 8.6 showed a familiar pattern:
+many studies describe the case study and the model idea, but not the
+full artefacts needed to reproduce the result. Our evidence audit found
+few public datasets, especially for district heating, sector-coupled MES
+and other settings in which surrogate-assisted optimization would be
+most useful.
+The bulk of MES surrogate work is still built around individual case
+studies. A useful minimum standard would be a public optimization
+instance, the corresponding training data, an explicit train/validation/
+test split, solver settings and a small number of reference truth-model
+runs. Existing load and renewable forecasting datasets
+\cite{Eseye201991463,Faraji2020157284,Hanifi2024,Sideratos2020,Tian2020,Madhukumar20228891}
+show that this level of release is feasible.
+\subsection{MCDM under surrogate uncertainty}
+\label{sec:ch:mcdm}
+The literature on multi-criteria decision making after surrogate-
+assisted MOO is still thin, although this is exactly the step at which a
+planner or designer needs a final decision. Some studies combine
+response-surface MOO with a subsequent multi-criteria selection
+\cite{Roy2020}, but the reviewed literature rarely propagates surrogate
+uncertainty into that final ranking. In most multi-objective studies,
+the Pareto set is presented and a compromise design is selected without
+quantifying whether surrogate error could change the ordering.
+For MES planning, this is a concrete gap: uncertainty should not stop at
+the Pareto front but should be carried through to the final ranking or
+selection step.
+\subsection{Open-source libraries and toolchain integration}
+\label{sec:ch:tooling}
+The final gap is practical rather than conceptual. Several strands of
+the literature already have working toolchains -- for example
+polynomial-chaos OPF, learning-to-optimize for dispatch, or surrogate-
+assisted evolutionary design -- but each strand tends to build its own
+data pipeline, evaluation logic and reporting format
+\cite{Muhlpfordt20194806,Mitrovic2023__2,Mitrovic2023__3,Wu2022231,Chen20244723,Chen2022,Hirvonen2017323,Schulte2020}.
+This fragmentation makes reuse difficult and slows down comparison
+across model classes and applications. A shared open-source layer would
+not need to replace existing host optimizers; it would be enough to
+standardize surrogate input/output interfaces, validation routines and
+reporting formats. Frameworks such as PyPSA, Calliope, oemof, SpineOpt
+and Backbone already provide a basis on the optimization side. The
+surrogate side is still scattered.

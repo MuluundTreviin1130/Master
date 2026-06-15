@@ -1,5 +1,164 @@
 # Worklog
 
+## 2026-06-12
+
+### Target-layer update: sector-coupled MES with planetary boundaries / LCA scenario bridge
+
+- Rechecked the over-arching target documentation after clarifying that the
+  PhD theme is the sector-coupled MES, not only the current DH/ThermFlex
+  paper slice.
+- Confirmed that the repo already contains an initial PB/LCA implementation
+  seed under `Sustainability/planetary_boundaries/`:
+  global safe-operating-space values, allocation logic, per-year SoSOS
+  conversion, PB constraint mapping, and a basic LCA ledger.
+- Reviewed two external anchor sources for the target-layer update:
+  - `Odenweller_2026_Prog._Energy_8_025001.pdf`
+    - IAM (`REMIND`) plus high-resolution ESM (`PyPSA-Eur`) via iterative
+      soft coupling for sector-coupled transition pathways
+  - `978-3-031-69856-9.pdf`
+    - energy-system design framed explicitly within planetary boundaries /
+      absolute sustainability
+- Updated `Documentation/Target/vienna_mes_2040.md` so the target now states
+  explicitly:
+  - sector-coupled MES remains the core
+  - absolute sustainability / planetary boundaries are part of the intended
+    optimisation and assessment logic
+  - IAM scenario backgrounds should feed LCA/technology backgrounds via
+    `premise` or an equivalent translator
+  - a high-resolution ESM layer (`PyPSA`-like or alternative) should support
+    sector-coupled dispatch and expansion pathway scenarios
+  - surrogate modelling is part of the tractability strategy for large
+    scenario and pathway spaces
+- Added `Documentation/Sources/planetary_boundaries_mes_target_notes_2026-06-12.md`
+  as the concise source note for this target update.
+- Added follow-up architecture points to `Documentation/Planning/TODO.md`
+  instead of hardcoding a framework or prematurely activating new runtime
+  behaviour.
+
+## Current State Summary: ThermFlex Paper Boxplot (2026-06-05)
+
+- Final paper boxplot contract is strict:
+  - price years: `2021` low, `2024` medium, `2022` high
+  - weather years: `2020` average, `2021` cold, `2024` mild
+  - extra historical weather years are diagnostic-only unless the manuscript
+    explicitly changes the sensitivity contract.
+- Current paper-facing plot artifact:
+  `Documentation/Papers/thermflex_paper/figures/png/fig_sensitivity_combined_boxplot_coverage_tau4.png`.
+- Current plot input surface:
+  `Documentation/Papers/thermflex_paper/tables/boxplot_pool_tau4_window_long.csv`.
+  It is built by `build_boxplot_pool_tau4.py` from selected-window MILP source
+  tables, diagnostic extra-weather screens, and full-heating-period KNN rows.
+- Current boxplot KPIs are cost saving, CO2 emissions saving, shifted heat, and
+  peak reduction.
+- Current main figure render uses cost saving, CO2 emissions saving, and peak
+  reduction; shifted heat remains available in the pool for diagnostics.
+- Full-heating-period KNN rows are evidence-tagged diagnostics, not complete
+  crossed MILP truth.
+- Full-heating-period surrogate work now uses an aggregate inventory/effect
+  contract instead of daily/weekly R2 as the main objective:
+  - `Documentation/Papers/thermflex_paper/tables/full_heating_period_aggregate_training_tau4.csv`
+  - `Documentation/Papers/thermflex_paper/tables/full_heating_period_effect_estimator_tau4_matrix.csv`
+  - `Documentation/Papers/thermflex_paper/tables/full_heating_period_effect_estimator_tau4_gap_ranking.csv`
+  The current additive effect estimator removes the earlier extreme percentage
+  artifacts, but is not paper-ready because several full-period case/scenario
+  estimates still predict negative cost savings and crossed price/weather
+  interaction truth is not yet validated.
+- The FHP aggregate inventory now also builds one deduplicated central MILP
+  union per use case across full screens, checkpoints, and retry bundles.
+  Current central CO2 savings are positive for eight cases (`0.50%` to
+  `3.56%`) and negative only for `2K, 1 h` (`-4.65%`).
+- The existing sensitivity plot now overlays these central MILP FHP CO2 values
+  as diamond markers. The underlying FHP boxes remain the old KNN/marginal
+  sensitivity estimates and are still mostly negative, confirming that the
+  negative FHP CO2 story is primarily a sensitivity-estimation problem rather
+  than the central season MILP result.
+- Extra historical weather-year runs (`2016`, `2017`, `2018`, `2019`, `2022`,
+  `2023`, `2025`) were computed for diagnostics only and must not be silently
+  mixed into the final plot.
+- Active TODO was compacted on 2026-06-05. The previous long TODO was archived
+  at
+  `Documentation/Planning/archive/TODO_legacy_before_boxplot_ssot_2026-06-05.md`.
+
+## 2026-06-03
+
+### Review paper: main.md transfer and citation evidence audit
+
+- Treated `Documentation/Papers/review_surrogate_modeling/manuscript/main.md`
+  as the current manuscript source for the review paper.
+- Added `manuscript/convert_main_md_to_tex.py`, which converts the downloaded
+  Markdown into `manuscript/Current_manuscript.tex` plus 13 current section
+  files and checks all
+  Markdown cite keys against the canonical Overleaf bibliography
+  `paper_library/review_paper_library.bib` using `elsarticle-num`.
+- Confirmed that the four split Markdown citation keys with spaces are
+  rejoined to the canonical BibTeX keys already present in
+  `review_paper_library.bib` (`Aghaei Pour2022303`,
+  `De Castro20247710`, `El Mestari2025`, `Van Acker2022`).
+- Citation audit output: `_tmp_main_md_citation_audit.csv`. Five cite keys
+  are not currently present in `review_paper_library.bib`:
+  `Aslam2025`, `Dudek2026`, `Mirshekali2025_LLM`, `Ramya2024_P2X`,
+  `Rituraj2024`.
+- Added `manuscript/audit_main_md_claim_evidence.py` for conservative
+  metadata/PDF-availability triage of citation contexts. Outputs:
+  `_tmp_main_md_claim_context_audit.csv` and
+  `_tmp_main_md_claim_context_audit_summary.md`.
+- First audit pass: 220 citation contexts, 128 table contexts, 8 contexts
+  with missing BibTeX keys, 60 contexts with at least one key lacking a
+  verified local PDF, and 165 contexts with weak title/abstract/keyword
+  overlap. These are triage flags, not automatic falsification.
+- Local LaTeX smoke compile was not run because neither `pdflatex` nor
+  `latexmk` is available in the environment.
+- Cleaned the manuscript root by moving previous-draft overlapping section
+  files (`02_related_reviews.tex` through old `10_conclusion.tex`) into
+  `manuscript/archive_previous_sections/` with a README. The root now keeps
+  the current `01_...` to `13_...` section chain derived from `main.md`.
+- Replaced the generated Section 11 software-package text with a conservative
+  converter override. The revised `manuscript/11_software_packages.tex`
+  reports only review-PDF software mentions from the T8 verification workflow,
+  removes package maintenance/GPU/license claims, and avoids claiming native
+  surrogate interfaces for energy-system tools. Added
+  `_tmp_sec11_software_package_audit.md`.
+
+### ThermFlex paper: 100h sensitivity-run preflight
+
+- Tau-sensitivity runner rechecked for `tau = 2/8/12`, 9 use cases and 4 selected days: dry-run yields 27 case/tau jobs with 4 dates each, i.e. 108 day solves.
+- Weather selected-window runner extended with explicit `--dates` so December CO2 coverage can run only `2023-12-02` instead of the legacy 21-day selected-window matrix.
+- Weather runner and weather aggregation now accept explicitly requested historical years beyond the representative `2020/2021/2024` labels; unknown requested years are labelled `historical_weather_<year>` and still fail fast if Settings/Data cannot build them.
+- Full-heating-period KNN builder now accepts explicit `--price-years` and `--weather-years`; this keeps the expanded weather scenario set aligned with the December coverage run.
+- Preflight loaded the physical 2016 weather context successfully from Settings/Data; no long MILP solve was started in this preparation step.
+
+## 2026-05-28
+
+### Review paper: Section 08 evidence map (PDF-backed narrative)
+
+- Pipeline: `paper_library/build_sec8_evidence_cards.py` (128 T6 rows with PDF) → `sec8_evidence_cards.csv` / `sec8_by_subsection.json` → `render_sec8_narrative.py` → `manuscript/08_application_evidence_map.tex`.
+- Subsection order: MES → MOO → microgrid → DH → dispatch → OPF → expansion → stochastic; per-study sentences with author, surrogate class (§4), pattern P1–P5 (§6), DoE (§5), validation (§7); tiered detail vs compact lists.
+- MES bucket requires B21 **and** sector-coupling title hint (reduces false MES from OpenAlex topic only).
+
+### Review paper: Section 06 integration patterns audit
+
+- Vollstaendiges Citation-/Claim-Audit fuer `06_integration_patterns.tex`, inline T2 und T5 gegen `review_paper_library.bib` (Abstract-only).
+- P2--P5 auf MES-first, anwendungsfallgenaue Beschreibungen reduziert; falsche P4-Zitate entfernt (`Shao201858`, `Amjady2017`, `Ghosh2023`, `Shi2024__2`, `abbas_optimal_2024`).
+- T2 offensichtlich falsche Zellen bereinigt (z. B. Forecast/BO-Verwechslungen, P4-Luecken ehrlich als `--`).
+- T5 safety hooks ohne unbelegte generische Diagnostics; Pattern-Ueberlappung in Section-Intro dokumentiert.
+- `tables/table_T5_integration_patterns.tex` synchronisiert.
+
+## 2026-05-26
+
+### Thermflex: Truth-Only Common Best-Day Figure
+
+- Neuer paper-lokaler Builder angelegt: `Documentation/Papers/thermflex_paper/figures/runners/build_fig_17_best_day_truth_mechanism_tau4.py`.
+- Neuer Output gerendert:
+  - `Documentation/Papers/thermflex_paper/figures/png/fig_17_best_day_truth_mechanism_tau4.png`
+  - `Documentation/Papers/thermflex_paper/figures/csv/fig_17_best_day_truth_mechanism_tau4.csv`
+- Figur auf den gemeinsamen Main-Table-Best-Day `2023-01-01` festgezogen, nicht auf case-spezifische strongest-day Selektion. Dadurch bleibt der Plot voll truth-only und haengt nicht an den noch teils surrogate-gestuetzten strongest-horizon Reihen.
+- Darstellung bewusst kompakt gehalten: drei direkte Truth-Cases (`upper-only 24 h`, `upper+lower 1 K 12 h`, `upper+lower 2 K 12 h`), oben district-level 24 h shift gegen Referenz, unten kohortenspezifische preheat/release/net-Tagesbeitraege je m2.
+- Implementierung auf einen Gold-Run pro Flex-Case reduziert; der erste Entwurf hatte Timeseries- und Member-Arrays getrennt evaluiert und war fuer `2 K, 12 h` unnoetig teuer.
+- Zusaetzlich kompakte Use-Case-Notationstabelle fuer das Manuskript angelegt:
+  `Documentation/Papers/thermflex_paper/tables/table_use_case_notation_tau4.tex`
+  mit `Preheating-only` vs `Bidirectional thermal flexibility`, Relaxation `[K]`
+  und Duration `[h/day]`.
+
 ## 2026-05-19
 
 ### Thermflex: Main-Paper-Table Scope
@@ -55,7 +214,7 @@
 
 - Gecachter Punktläufe für Fig. 16 (Oktober–April, Durations 1/4/8/12 h): erster Hintergrundjob nach ~4.8 h **abgebrochen** (kein sauberer Exit; Log endete in April).
 - Cache im Ordner `_fig_16_duration_performance_cache/`: vor Abbruch nahezu vollständig; **April** fehlten noch **dur4/dur8/dur12** (nur `apr_dur1` vorhanden).
-- **Nachlauf** gestartet: `py -3 Documentation/Papers/thermflex_paper/figures/build_fig_16_flexibility_performance_map.py` (skipped bereits vorhandene Cache-Paare; ergänzt fehlende April-Fälle und rendert `fig_16_flexibility_performance_map.*`).
+- **Nachlauf** gestartet: `py -3 Documentation/Papers/thermflex_paper/figures/runners/build_fig_16_flexibility_performance_map.py` (skipped bereits vorhandene Cache-Paare; ergänzt fehlende April-Fälle und rendert `fig_16_flexibility_performance_map.*`).
 - **Zweiter Versuch** (~2026-05-10): nach ~**2,3 min** wieder **abgebrochen** (`exit_code unknown`); Log endete bei April-MILP (ThermFlex, Block 2/8). Cache **April** weiterhin nur `apr_dur1`; `dur4`/`dur8`/`dur12` fehlen. Empfehlung: gleichen Befehl **außerhalb** des IDE-Terminals (eigenes PowerShell-Fenster) laufen lassen, bis alle drei Fälle geschrieben sind, dann ggf. ohne MILP nur `--render-only`.
 - **Dokumentation / Render:** `_fig_16_duration_performance_cache/README.md` listet die **gerechneten Monate** (Oktober–April, sieben Perioden) und Startdaten; `figures/README.md` Eintrag zu Fig. 16. Builder-Flag **`--allow-incomplete-duration-cache`** (nur mit `--render-only`): rendert bei fehlenden April-Durations mit **stderr-Warnungen** (Figur bis Nachrechnen der drei Fälle unvollständig). Ausgeführt: `… --render-only --allow-incomplete-duration-cache` → aktualisiert `fig_16_flexibility_performance_map.png` + `.csv`.
 
@@ -793,9 +952,9 @@ Naechste Schritte:
   - System-KPIs separat in einer Referenztag-Tabelle berichten
   - kohortenspezifischen `T_in - setpoint`-Tagesverlauf als eigene Figure-Komponente vorsehen
 - Neue duration-spezifische Kohortenmechanismus-Figure umgesetzt:
-  - Builder: `Documentation/Papers/thermflex_paper/figures/build_fig_05_cohort_duration_mechanism.py`
-  - Output: `Documentation/Papers/thermflex_paper/figures/fig_05_cohort_duration_mechanism.png`
-  - Daten-Export: `Documentation/Papers/thermflex_paper/figures/fig_05_cohort_duration_mechanism_data.csv`
+  - Builder: `Documentation/Papers/thermflex_paper/figures/runners/build_fig_05_cohort_duration_mechanism.py`
+  - Output: `Documentation/Papers/thermflex_paper/figures/png/fig_05_cohort_duration_mechanism.png`
+  - Daten-Export: `Documentation/Papers/thermflex_paper/figures/csv/fig_05_cohort_duration_mechanism_data.csv`
   - Inhalt:
     - 8 kuratierte Referenztage
     - `max_flex_duration_h = 1/4/12/24`
@@ -807,9 +966,9 @@ Naechste Schritte:
   - `T_in - setpoint` bleibt als Tagesverlauf, aber nur fuer `1/4/12 h`
   - neue Version wurde aus der bestehenden CSV gerendert, ohne weitere MILP-Laeufe
 - Neue entkoppelte Tagessummen-Figure erzeugt:
-  - Builder: `Documentation/Papers/thermflex_paper/figures/build_fig_06_cohort_duration_daily_sums.py`
-  - Output: `Documentation/Papers/thermflex_paper/figures/fig_06_cohort_duration_daily_sums.png`
-  - Datenexport: `Documentation/Papers/thermflex_paper/figures/fig_06_cohort_duration_daily_sums.csv`
+  - Builder: `Documentation/Papers/thermflex_paper/figures/runners/build_fig_06_cohort_duration_daily_sums.py`
+  - Output: `Documentation/Papers/thermflex_paper/figures/png/fig_06_cohort_duration_daily_sums.png`
+  - Datenexport: `Documentation/Papers/thermflex_paper/figures/csv/fig_06_cohort_duration_daily_sums.csv`
   - Inhalt: nur daily shifted/release `Wh/m2` je Referenztag, Duration und Residential-Kohorte
   - Temperaturverlaeufe bleiben als separater Figure-Pfad erhalten.
 - Figure 06 auf drei Duration-Stufen reduziert (`1/4/12 h`) und neu gerendert.
@@ -846,9 +1005,9 @@ Naechste Schritte:
   - `winter_sunny_heat_day`
   - `shoulder_typical_day`
 - Neue Figure:
-  - `Documentation/Papers/thermflex_paper/figures/fig_02_representative_upper_only_shift.png`
+  - `Documentation/Papers/thermflex_paper/figures/png/fig_02_representative_upper_only_shift.png`
 - Neuer Builder:
-  - `Documentation/Papers/thermflex_paper/figures/build_fig_02_representative_upper_only_shift.py`
+  - `Documentation/Papers/thermflex_paper/figures/runners/build_fig_02_representative_upper_only_shift.py`
 - Darstellung bewusst reduziert:
   - Referenz in grau
   - `upper_only`-Fall in Farbe
@@ -2641,7 +2800,7 @@ Naechste Schritte:
 - Der fruehere 8er-Teacher-Grid bleibt als explorativer Nebenpfad erhalten,
   ist aber nicht mehr die bevorzugte Hauptfigur.
 - Neuer paper-spezifischer Builder:
-  - `Documentation/Papers/thermflex_paper/figures/build_teacher_flow_quadrants.py`
+  - `Documentation/Papers/thermflex_paper/figures/archive/old/build_teacher_flow_quadrants.py`
 - Neue lesbarere Teacher-Hauptassets:
   - `fig_00_teacher_flow_quadrant_winter_reference_week.png`
   - `fig_00_teacher_flow_quadrant_winter_cutback_event.png`
@@ -2717,7 +2876,7 @@ Naechste Schritte:
 - Den `winter_reference_week`-Teacherbatch fuer alle 8 Kohorten neu gerechnet:
   - [run_energyplus_teacher_plausibility_batch.py](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Technical_model/technologies/buildings/calibration/run_energyplus_teacher_plausibility_batch.py)
 - Danach die aktive Paper-Figur neu gebaut:
-  - [fig_00_teacher_reference_flow_comparison.png](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/fig_00_teacher_reference_flow_comparison.png)
+  - [fig_00_teacher_reference_flow_comparison.png](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/png/fig_00_teacher_reference_flow_comparison.png)
 - Neuer harter Befund:
   - `window solar gains` differenzieren jetzt auch innerhalb der vier Residential-Perioden klar:
     - `residential_pre1975`: `654.0 kWh`
@@ -2807,8 +2966,8 @@ Naechste Schritte:
   - `repday_winter_typical_day`
   - `repday_shoulder_typical_day`
 - Danach die aktive Figure-0-Logik von `winter_reference_week` auf diese Day-Types umgestellt:
-  - [build_teacher_reference_flow_comparison.py](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/build_teacher_reference_flow_comparison.py)
-  - [fig_00_teacher_reference_flow_comparison.png](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/fig_00_teacher_reference_flow_comparison.png)
+  - [build_teacher_reference_flow_comparison.py](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/runners/build_teacher_reference_flow_comparison.py)
+  - [fig_00_teacher_reference_flow_comparison.png](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/png/fig_00_teacher_reference_flow_comparison.png)
 - Aktueller Schnitt:
   - je ein Panel pro repräsentativem Tagtyp
   - alle 8 Archetypen gleichzeitig
@@ -2829,8 +2988,8 @@ Naechste Schritte:
 - Als Hauptschnitt derzeit ein repräsentativer Wintertag:
   - `repday_winter_typical_day`
 - Aktualisiert:
-  - [build_teacher_reference_flow_comparison.py](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/build_teacher_reference_flow_comparison.py)
-  - [fig_00_teacher_reference_flow_comparison.png](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/fig_00_teacher_reference_flow_comparison.png)
+  - [build_teacher_reference_flow_comparison.py](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/runners/build_teacher_reference_flow_comparison.py)
+  - [fig_00_teacher_reference_flow_comparison.png](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/png/fig_00_teacher_reference_flow_comparison.png)
 ### Figure 0 mit gemeinsamer y-Skalierung zwischen den Perioden rebuilt
 
 - Die Residential-Grid-Figur so geschaerft, dass die vertikale Achse nicht mehr
@@ -2843,8 +3002,8 @@ Naechste Schritte:
   - Groessenordnungsunterschiede zwischen den Perioden werden nicht mehr
     optisch nivelliert
 - Rebuilt:
-  - [build_teacher_reference_flow_comparison.py](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/build_teacher_reference_flow_comparison.py)
-  - [fig_00_teacher_reference_flow_comparison.png](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/fig_00_teacher_reference_flow_comparison.png)
+  - [build_teacher_reference_flow_comparison.py](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/runners/build_teacher_reference_flow_comparison.py)
+  - [fig_00_teacher_reference_flow_comparison.png](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/png/fig_00_teacher_reference_flow_comparison.png)
 
 ### Figure 0 Layout weiter bereinigt
 
@@ -2883,15 +3042,15 @@ Naechste Schritte:
 - Die gemeinsame Figurlegende wieder aus der Hauptgrafik entfernt, weil sie den
   Satzspiegel noch stoert.
 - Stattdessen ein separates, transparentes Legend-Asset exportiert:
-  - [fig_00_teacher_reference_flow_comparison_legend.png](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/fig_00_teacher_reference_flow_comparison_legend.png)
+  - [fig_00_teacher_reference_flow_comparison_legend.png](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/png/fig_00_teacher_reference_flow_comparison_legend.png)
 - Gleichzeitig den Abstand zwischen den vier Periodenpanels weiter reduziert,
   damit die Hauptfigur kompakter bleibt.
 
 ### Neue Paper-Figur fuer den eigentlichen Thermflex-Mechanismus gebaut
 
 - Neue paper-lokale Figur direkt im Manuskriptpfad aufgebaut:
-  - [build_fig_01_use_case_shift_boiler.py](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/build_fig_01_use_case_shift_boiler.py)
-  - [fig_01_use_case_shift_boiler.png](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/fig_01_use_case_shift_boiler.png)
+  - [build_fig_01_use_case_shift_boiler.py](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/runners/build_fig_01_use_case_shift_boiler.py)
+  - [fig_01_use_case_shift_boiler.png](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/png/fig_01_use_case_shift_boiler.png)
 - Schnitt:
   - kein eigener Referenz-Use-Case als Zeile
   - die graue Referenz (`constant_no_thermflex`) ist in jedem Panel eingebettet
@@ -2994,7 +3153,7 @@ Naechste Schritte:
     setpoint enforcement in the new runtime heating model
 - 2026-04-18
   - Figure fix for the thermflex use-case paper plot:
-    - [build_fig_01_use_case_shift_boiler.py](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/build_fig_01_use_case_shift_boiler.py)
+    - [build_fig_01_use_case_shift_boiler.py](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/runners/build_fig_01_use_case_shift_boiler.py)
       now uses `dh_total_demand` on the left axis instead of
       `district_space_heat_demand_ref`.
     - Reason:
@@ -3005,7 +3164,7 @@ Naechste Schritte:
       - `dh_total_demand` stays positive on the same slice and is the safer
         system-level load series for the current paper figure
     - Rebuilt:
-      - [fig_01_use_case_shift_boiler.png](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/fig_01_use_case_shift_boiler.png)
+      - [fig_01_use_case_shift_boiler.png](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/png/fig_01_use_case_shift_boiler.png)
 
 ## 2026-04-18 - Cohort runtime solar path moved off legacy `Solar_gains.csv`
 
@@ -3061,9 +3220,9 @@ Naechste Schritte:
     - `district_space_heat_demand_ref[07:00..12:00]`
       `= [2000442.61, 1930869.66, 969947.51, 1777086.71, 1674375.73, 1544727.73]`
 - Paper assets updated:
-  - [fig_00_teacher_reference_flow_comparison.png](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/fig_00_teacher_reference_flow_comparison.png)
+  - [fig_00_teacher_reference_flow_comparison.png](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/png/fig_00_teacher_reference_flow_comparison.png)
     rebuilt and now explicitly shown in `W/m²`
-  - [fig_01_use_case_shift_boiler.png](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/fig_01_use_case_shift_boiler.png)
+  - [fig_01_use_case_shift_boiler.png](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/png/fig_01_use_case_shift_boiler.png)
     rebuilt on the repaired dispatch path
 ## 2026-04-19 - Thermflex Figure 1 shift-plot correction
 
@@ -3079,7 +3238,7 @@ Naechste Schritte:
   - colored case demand line,
   - shaded area between reference and case.
 - Rebuilt:
-  - `Documentation/Papers/thermflex_paper/figures/fig_01_use_case_shift_boiler.png`
+  - `Documentation/Papers/thermflex_paper/figures/png/fig_01_use_case_shift_boiler.png`
 - Updated:
   - `Documentation/Papers/thermflex_paper/figures/fig_01_use_case_shift_boiler.md`
 
@@ -3094,7 +3253,7 @@ Naechste Schritte:
   - `2023-10-15`
   - `2023-11-20`
 - Rebuilt:
-  - `Documentation/Papers/thermflex_paper/figures/fig_02_representative_upper_only_shift.png`
+  - `Documentation/Papers/thermflex_paper/figures/png/fig_02_representative_upper_only_shift.png`
 
 ## 2026-04-19 - Teacher flow comparison moved to a colder winter day
 
@@ -3111,7 +3270,7 @@ Naechste Schritte:
 - Relabeled the heating series as `Space-heating rate` to avoid conflating it
   with norm/design heat load.
 - Rebuilt:
-  - `Documentation/Papers/thermflex_paper/figures/fig_00_teacher_reference_flow_comparison.png`
+  - `Documentation/Papers/thermflex_paper/figures/png/fig_00_teacher_reference_flow_comparison.png`
 
 ## 2026-04-19 - Added compact Thermflex paper tables layer
 
@@ -3146,7 +3305,7 @@ Naechste Schritte:
   - `Optimization/validation/model_validation/overrides/thermflex/vienna_ref2023_dh_baseline_constant_no_thermflex_paper_day_ahead.json`
   - `Optimization/validation/model_validation/overrides/thermflex/vienna_ref2023_dh_baseline_constant_thermflex_lb22p5_dur1_evt1_upper_only_paper_day_ahead.json`
 - Rebuilt:
-  - `Documentation/Papers/thermflex_paper/figures/fig_02_representative_upper_only_shift.png`
+  - `Documentation/Papers/thermflex_paper/figures/png/fig_02_representative_upper_only_shift.png`
 - Full-year check on the updated active reference path:
   - annual DH demand: `6.138 TWh`
   - peak DH demand: `3.084 GW`
@@ -3179,7 +3338,7 @@ Naechste Schritte:
   - active DH annual demand stays `6.138 TWh/a`
   - active DH peak drops further to about `2.941 GW`
 - Rebuilt:
-  - `Documentation/Papers/thermflex_paper/figures/fig_02_representative_upper_only_shift.png`
+  - `Documentation/Papers/thermflex_paper/figures/png/fig_02_representative_upper_only_shift.png`
 
 ## 2026-04-19 - Experimental surrogate path prepared for upper-only biobjective search
 
@@ -3392,8 +3551,8 @@ Naechste Schritte:
   - the previously used paper days `2023-03-15` and `2023-11-20` remain decent but are not on the absolute top frontier,
   - `2023-04-24` remains weak for system KPIs despite visible shifting and should likely not stay a main KPI day.
 - Added a separate candidate paper figure for the top-savings story without touching the existing representative-day figure:
-  - builder: [build_fig_03_top_savings_upper_only_shift.py](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/build_fig_03_top_savings_upper_only_shift.py)
-  - output: [fig_03_top_savings_upper_only_shift.png](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/fig_03_top_savings_upper_only_shift.png)
+  - builder: [build_fig_03_top_savings_upper_only_shift.py](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/runners/build_fig_03_top_savings_upper_only_shift.py)
+  - output: [fig_03_top_savings_upper_only_shift.png](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/png/fig_03_top_savings_upper_only_shift.png)
   - day set now expanded to `2023-01-17`, `2023-02-21`, `2023-03-04`, `2023-03-18`, `2023-03-16`, `2023-03-23`, `2023-04-01`, `2023-02-23`
 - Updated [table_03_representative_day_kpi_summary.md](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/tables/table_03_representative_day_kpi_summary.md) to the same 8-day top-savings set.
 
@@ -3525,9 +3684,9 @@ Naechste Schritte:
     - zeigt fuer die grossen Savings-Tage die kohortenspezifischen Shift-Unterschiede zwischen `upper_only` und dem `1 K`-Fall
 - 2026-04-22: Ersten Trade-off-Figurenpfad fuer den Thermflex-Paperstrang gebaut.
   - Neue Figure:
-    [fig_04_tradeoff_day_map.png](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/fig_04_tradeoff_day_map.png)
+    [fig_04_tradeoff_day_map.png](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/png/fig_04_tradeoff_day_map.png)
   - Neuer Builder:
-    [build_fig_04_tradeoff_day_map.py](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/build_fig_04_tradeoff_day_map.py)
+    [build_fig_04_tradeoff_day_map.py](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/runners/build_fig_04_tradeoff_day_map.py)
   - Revidierter Zuschnitt nach dem ersten Wurf:
     - nur noch gruppierte Balken, kein oberes Scatter-/Quadrantenpanel
     - klar getrennte Taggruppen:
@@ -3565,29 +3724,29 @@ Naechste Schritte:
   - Dieser Override ist jetzt der saubere Kandidat fuer den naechsten Heizperioden-Screen und fuer den erneuten Vergleich `upper_only` vs. `1 K`.
 - 2026-04-23: Zwei neue aktive Thermflex-Paperfiguren fuer Ergebnisdarstellung und Solar-Mechanismus gebaut.
   - Neue Outcome-Atlas-Figure:
-    [fig_07_flexibility_outcome_atlas.png](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/fig_07_flexibility_outcome_atlas.png)
+    [fig_07_flexibility_outcome_atlas.png](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/png/fig_07_flexibility_outcome_atlas.png)
   - Neuer Outcome-Atlas-Builder:
-    [build_fig_07_flexibility_outcome_atlas.py](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/build_fig_07_flexibility_outcome_atlas.py)
+    [build_fig_07_flexibility_outcome_atlas.py](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/runners/build_fig_07_flexibility_outcome_atlas.py)
   - Neue Solar-Counterfactual-Figure:
-    [fig_08_solar_assisted_shift_counterfactual.png](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/fig_08_solar_assisted_shift_counterfactual.png)
+    [fig_08_solar_assisted_shift_counterfactual.png](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/png/fig_08_solar_assisted_shift_counterfactual.png)
   - Neuer Solar-Builder:
-    [build_fig_08_solar_assisted_shift_counterfactual.py](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/build_fig_08_solar_assisted_shift_counterfactual.py)
+    [build_fig_08_solar_assisted_shift_counterfactual.py](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/archive/old/build_fig_08_solar_assisted_shift_counterfactual.py)
   - Beide Builder lesen die vorhandenen Paper-Tabellen und brechen bei fehlenden Pflichtspalten ab.
   - `build_fig_06_cohort_duration_daily_sums.py` wurde so angepasst, dass die aktive Tages-Summen-CSV nach dem Entfernen von Fig. 05 als reproduzierbarer Plot-Input dient.
 - 2026-04-23: Den Solar-Counterfactual vorerst wieder aus dem aktiven Figure-Layer genommen.
   - nach `figures/old/` verschoben:
     - [fig_08_solar_assisted_shift_counterfactual.png](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/old/fig_08_solar_assisted_shift_counterfactual.png)
     - [fig_08_solar_assisted_shift_counterfactual.csv](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/old/fig_08_solar_assisted_shift_counterfactual.csv)
-    - [build_fig_08_solar_assisted_shift_counterfactual.py](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/old/build_fig_08_solar_assisted_shift_counterfactual.py)
+    - [build_fig_08_solar_assisted_shift_counterfactual.py](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/archive/old/build_fig_08_solar_assisted_shift_counterfactual.py)
   - Grund:
     - als Tabelle bzw. knappe Seitenanalyse ist der Solar-Strang im aktuellen Manuskript lesbarer als als dritte aktive Mechanismusfigur
 - 2026-04-23: Neue Quellen-Redispatch-Figure fuer den aktiven `upper_only dur24 evt24`-Pfad gebaut.
   - Neue Figure:
-    [fig_10_source_redispatch_facets.png](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/fig_10_source_redispatch_facets.png)
+    [fig_10_source_redispatch_facets.png](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/png/fig_10_source_redispatch_facets.png)
   - Neuer Builder:
-    [build_fig_10_source_redispatch_facets.py](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/build_fig_10_source_redispatch_facets.py)
+    [build_fig_10_source_redispatch_facets.py](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/runners/build_fig_10_source_redispatch_facets.py)
   - Exportierte Summary:
-    [fig_10_source_redispatch_facets.csv](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/fig_10_source_redispatch_facets.csv)
+    [fig_10_source_redispatch_facets.csv](/c:/Users/Philipp%20Thunshirn/Desktop/PhD/Python%20model/Master/Documentation/Papers/thermflex_paper/figures/csv/fig_10_source_redispatch_facets.csv)
   - Inhaltlicher Befund:
     - auf dem aktiven Pfad wird der Nutzen an starken Savings-Tagen sichtbar ueber den Gas-Peak-Boiler erzielt
     - die `district_gas_chp_thermal_generation` bleibt auf den geprueften Tagen nahezu unveraendert
@@ -4044,7 +4203,7 @@ Naechste Schritte:
     - Gu et al. 2017 und Zheng et al. 2018 fuer DH-Netz-/Gebaeudetraegheit in integrierten Dispatchmodellen.
   - TODO ergaenzt: optionaler `dh_bus_aggregation`-Pfad ohne kuenstliche Raumwaerme-Nutzungsprofile, mit settingsgefuehrter kausaler DH-Bus-Verzoegerung/Glaettung und klarer Trennung von Gebaeude- und Dispatch-KPIs.
 - 2026-04-27: Visuellen Vorcheck fuer aggregierte DH-Bus-Traegheit erstellt.
-  - Neuer Builder: `Documentation/Papers/thermflex_paper/figures/build_fig_13_dh_bus_inertia_sensitivity.py`.
+  - Neuer Builder: `Documentation/Papers/thermflex_paper/figures/runners/build_fig_13_dh_bus_inertia_sensitivity.py`.
   - Output:
     - `fig_13_dh_bus_inertia_sensitivity.png`
     - `fig_13_dh_bus_inertia_sensitivity.csv`
@@ -4092,13 +4251,13 @@ Naechste Schritte:
     - CHP-Rampen-/Traegheitslogik waere ein separater naechster Erzeugerpfad, weil Peak-Boiler selbst fachlich schnell reagieren koennen.
 - 2026-04-27: Fig. 12 auf den experimentellen `tau_h = 4`-DH-Bus-Dispatch umgestellt.
   - Builder geaendert:
-    - `Documentation/Papers/thermflex_paper/figures/build_fig_12_weekly_dispatch_shift.py`
+    - `Documentation/Papers/thermflex_paper/figures/runners/build_fig_12_weekly_dispatch_shift.py`
   - Fig. 12 nutzt nun einen zusammenhaengenden `168 h`-Goldlauf mit `dispatch.horizon_h = 24`, statt einzelne 25h-Tages-Slices zu konkatenieren.
   - Der Dispatch wird gegen die geglaettete DH-Buslast gerechnet.
   - Die gestrichelte Linie zeigt weiterhin die raw/building-side Nachfrage, damit die Netz-/Busglaettung visuell sichtbar bleibt.
   - Output aktualisiert:
-    - `Documentation/Papers/thermflex_paper/figures/fig_12_weekly_dispatch_shift.png`
-    - `Documentation/Papers/thermflex_paper/figures/fig_12_weekly_dispatch_shift.csv`
+    - `Documentation/Papers/thermflex_paper/figures/png/fig_12_weekly_dispatch_shift.png`
+    - `Documentation/Papers/thermflex_paper/figures/csv/fig_12_weekly_dispatch_shift.csv`
   - Wochenbilanz aus dem aktualisierten CSV:
     - DH-Bus-Referenzpeak `1397.7 MW`, Building-Referenzpeak `1973.2 MW`
     - Upper-only vs Referenz:
@@ -4122,10 +4281,10 @@ Naechste Schritte:
     - Fig. 12 stellt Waste als erzeugte Must-run-Waerme dar:
       - `district_waste_incineration_generation + district_waste_incineration_thermal_spillage`
   - Neue/aktualisierte Outputs:
-    - `Documentation/Papers/thermflex_paper/figures/fig_12_weekly_dispatch_shift.png`
-    - `Documentation/Papers/thermflex_paper/figures/fig_12_weekly_dispatch_shift.csv`
-    - `Documentation/Papers/thermflex_paper/figures/fig_12_cold_weekly_dispatch_shift.png`
-    - `Documentation/Papers/thermflex_paper/figures/fig_12_cold_weekly_dispatch_shift.csv`
+    - `Documentation/Papers/thermflex_paper/figures/png/fig_12_weekly_dispatch_shift.png`
+    - `Documentation/Papers/thermflex_paper/figures/csv/fig_12_weekly_dispatch_shift.csv`
+    - `Documentation/Papers/thermflex_paper/figures/png/fig_12_cold_weekly_dispatch_shift.png`
+    - `Documentation/Papers/thermflex_paper/figures/csv/fig_12_cold_weekly_dispatch_shift.csv`
   - Aktuelle Fig.-12-Top-savings-Woche (`2023-11-01`, `tau_h = 4`):
     - Cost `-0.375 %`
     - CO2 `-1.319 %`
@@ -4610,7 +4769,7 @@ Naechste Schritte:
     - `integrated_energy_system.py` reicht `district_gas_chp_heat_allocated_fuel_input_kwh`, `district_gas_chp_heat_allocated_co2_t` und aktive heat-allocated Objective-Terme sauber durch
     - Rolling-/Block-Aggregation summiert nun nur aktive Objective-Komponenten plus echte Penalty-Terme, damit `fuel_cost` und `heat_allocated_fuel_cost` nicht gemeinsam in den KPI-Breakdown gelangen
   - Smoke:
-    - Befehl: `py -3 Documentation/Papers/thermflex_paper/figures/build_fig_12_weekly_dispatch_shift.py --piecewise-chp-smoke --smoke-variant good_feb --smoke-hours 24`
+    - Befehl: `py -3 Documentation/Papers/thermflex_paper/figures/runners/build_fig_12_weekly_dispatch_shift.py --piecewise-chp-smoke --smoke-variant good_feb --smoke-hours 24`
     - Ref-Block: optimal, ca. `0.4 s`; Flex-Block: optimal, ca. `9.1 s`
     - Ref mode-share sums: power-led `2.846`, mixed `5.287`, heat-led `11.175`
     - Flex mode-share sums: power-led `7.339`, mixed `0.623`, heat-led `12.266`
@@ -4668,9 +4827,9 @@ Naechste Schritte:
     - stundenweise Objective-Terme werden aus `integrated_energy_system.py` bis in den Analyse-Exporter durchgereicht; dadurch koennen Warm-up-Stunden sauber aus Kosten-KPIs herausgeschnitten werden
     - Fig.-12-Heat-Cost summiert bei heat-allocated Objective explizit nur `objective_heat_allocated_fuel_cost`, `objective_heat_allocated_co2_cost` und `objective_variable_opex`; physische `objective_fuel_cost`/`objective_co2_cost` bleiben Diagnose und werden nicht doppelt gezaehlt
   - Render:
-    - Befehl: `py -3 Documentation/Papers/thermflex_paper/figures/build_fig_12_weekly_dispatch_shift.py --variant good_feb`
-    - Ausgabe: `Documentation/Papers/thermflex_paper/figures/fig_12_good_week_february_dispatch_shift.png`
-    - CSV: `Documentation/Papers/thermflex_paper/figures/fig_12_good_week_february_dispatch_shift.csv`
+    - Befehl: `py -3 Documentation/Papers/thermflex_paper/figures/runners/build_fig_12_weekly_dispatch_shift.py --variant good_feb`
+    - Ausgabe: `Documentation/Papers/thermflex_paper/figures/png/fig_12_good_week_february_dispatch_shift.png`
+    - CSV: `Documentation/Papers/thermflex_paper/figures/csv/fig_12_good_week_february_dispatch_shift.csv`
   - Ergebnis:
     - sichtbare Woche `2023-02-19` bis `2023-02-25`, mit 24h Warm-up ab `2023-02-18`
     - Heat operating cost `-0.345 %`
@@ -4682,9 +4841,9 @@ Naechste Schritte:
     - weitere Wochen sollten selektiv per `--variant <slug>` laufen; nicht wieder pauschal alle Varianten starten
 
 - 2026-05-04: Fig. 12 `good_jan` selektiv neu gerendert.
-  - Befehl: `py -3 Documentation/Papers/thermflex_paper/figures/build_fig_12_weekly_dispatch_shift.py --variant good_jan`
-  - Ausgabe: `Documentation/Papers/thermflex_paper/figures/fig_12_good_week_january_dispatch_shift.png`
-  - CSV: `Documentation/Papers/thermflex_paper/figures/fig_12_good_week_january_dispatch_shift.csv`
+  - Befehl: `py -3 Documentation/Papers/thermflex_paper/figures/runners/build_fig_12_weekly_dispatch_shift.py --variant good_jan`
+  - Ausgabe: `Documentation/Papers/thermflex_paper/figures/png/fig_12_good_week_january_dispatch_shift.png`
+  - CSV: `Documentation/Papers/thermflex_paper/figures/csv/fig_12_good_week_january_dispatch_shift.csv`
   - Settings:
     - sichtbare Woche ab `2023-01-15`, 24h Warm-up ab `2023-01-14`
     - piecewise Gas-CHP aktiv
@@ -4705,8 +4864,8 @@ Naechste Schritte:
     - Fig. 12 setzt `FIGURE_GAS_BOILER_VARIABLE_OPEX_ADDER_EUR_PER_KWH_TH = 0.006`, d.h. Basis `1 EUR/MWh_th` plus Addierer `6 EUR/MWh_th`
     - Cache-/CSV-Schema-Version auf `boiler_opex7eurmwh` erhoeht
   - `good_jan` Render:
-    - Ausgabe: `Documentation/Papers/thermflex_paper/figures/fig_12_good_week_january_dispatch_shift.png`
-    - CSV: `Documentation/Papers/thermflex_paper/figures/fig_12_good_week_january_dispatch_shift.csv`
+    - Ausgabe: `Documentation/Papers/thermflex_paper/figures/png/fig_12_good_week_january_dispatch_shift.png`
+    - CSV: `Documentation/Papers/thermflex_paper/figures/csv/fig_12_good_week_january_dispatch_shift.csv`
     - Heat operating cost `-0.034 %`
     - waermeallokierte CO2 `-0.036 %`
     - Peak-boiler energy `-0.353 %`
@@ -4733,8 +4892,8 @@ Naechste Schritte:
     - damit bleibt jeder Punkt bei `eta_total=0.75`
     - Cache-/CSV-Version auf `piecewise_chp_eta75...boiler_opex7eurmwh` erhoeht
   - `good_jan` Render:
-    - Ausgabe: `Documentation/Papers/thermflex_paper/figures/fig_12_good_week_january_dispatch_shift.png`
-    - CSV: `Documentation/Papers/thermflex_paper/figures/fig_12_good_week_january_dispatch_shift.csv`
+    - Ausgabe: `Documentation/Papers/thermflex_paper/figures/png/fig_12_good_week_january_dispatch_shift.png`
+    - CSV: `Documentation/Papers/thermflex_paper/figures/csv/fig_12_good_week_january_dispatch_shift.csv`
     - maximale Gas-CHP-Waerme sinkt von ca. `1440 MW_th` auf `1178 MW_th`
     - Heat operating cost `-0.032 %`
     - waermeallokierte CO2 `-0.033 %`
@@ -4763,8 +4922,8 @@ Naechste Schritte:
       - `heat_led`: `eta_el=0.30`, `eta_th=0.50`
       - maximale Gas-CHP-Waerme ca. `1309 MW_th`
   - `good_jan` Render:
-    - Ausgabe: `Documentation/Papers/thermflex_paper/figures/fig_12_good_week_january_dispatch_shift.png`
-    - CSV: `Documentation/Papers/thermflex_paper/figures/fig_12_good_week_january_dispatch_shift.csv`
+    - Ausgabe: `Documentation/Papers/thermflex_paper/figures/png/fig_12_good_week_january_dispatch_shift.png`
+    - CSV: `Documentation/Papers/thermflex_paper/figures/csv/fig_12_good_week_january_dispatch_shift.csv`
     - Heat operating cost `-0.033 %`
     - waermeallokierte CO2 `-0.034 %`
     - Peak-boiler energy `-0.188 %`
@@ -4775,9 +4934,9 @@ Naechste Schritte:
     - damit ist die fehlende Talnutzung nicht nur durch zu hohe Gas-CHP-Waermekapazitaet erklaert
 
 - 2026-05-05: Fig. 12 `good_mar` selektiv mit aktuellem eta80-Pfad neu gerendert.
-  - Befehl: `py -3 Documentation/Papers/thermflex_paper/figures/build_fig_12_weekly_dispatch_shift.py --variant good_mar`
-  - Ausgabe: `Documentation/Papers/thermflex_paper/figures/fig_12_good_week_march_dispatch_shift.png`
-  - CSV: `Documentation/Papers/thermflex_paper/figures/fig_12_good_week_march_dispatch_shift.csv`
+  - Befehl: `py -3 Documentation/Papers/thermflex_paper/figures/runners/build_fig_12_weekly_dispatch_shift.py --variant good_mar`
+  - Ausgabe: `Documentation/Papers/thermflex_paper/figures/png/fig_12_good_week_march_dispatch_shift.png`
+  - CSV: `Documentation/Papers/thermflex_paper/figures/csv/fig_12_good_week_march_dispatch_shift.csv`
   - Lauf:
     - 24h Warm-up, `horizon_h = 36`, `rolling_commit_h = 24`
     - piecewise Gas-CHP mit `eta_total = 0.80`
@@ -4810,8 +4969,8 @@ Naechste Schritte:
     - `2023-02-26`: Peak boiler `0.900 -> 0.883 GWh`, ca. `-1.86 %`
     - `2023-03-05`: Peak boiler `0.177 -> 0.050 GWh`, ca. `-71.9 %`, aber absolut klein
   - `march_savings` (`2023-03-01`) wurde auf eta80 gerendert:
-    - Ausgabe: `Documentation/Papers/thermflex_paper/figures/fig_12_march_weekly_dispatch_shift.png`
-    - CSV: `Documentation/Papers/thermflex_paper/figures/fig_12_march_weekly_dispatch_shift.csv`
+    - Ausgabe: `Documentation/Papers/thermflex_paper/figures/png/fig_12_march_weekly_dispatch_shift.png`
+    - CSV: `Documentation/Papers/thermflex_paper/figures/csv/fig_12_march_weekly_dispatch_shift.csv`
     - Heat operating cost `-0.233 %`
     - waermeallokierte CO2 `-0.243 %`
     - Peak boiler `0.601 -> 0.453 GWh`, ca. `-24.5 %`
@@ -4841,7 +5000,7 @@ Naechste Schritte:
     - offizieller Fernwaermeabsatz-Anker 2023: `5.427 TWh`
     - daraus folgt: der DH-Demand ist im aktuellen Paperpfad eher nicht zu klein, sondern bereits oberhalb des offiziellen Absatzankers
   - Zusaetzlicher aktueller eta80-Screen fuer weitere Startwochen:
-    - Output: `Documentation/Papers/thermflex_paper/figures/fig_12_eta80_week_candidate_screen.csv`
+    - Output: `Documentation/Papers/thermflex_paper/figures/csv/fig_12_eta80_week_candidate_screen.csv`
     - `2023-12-15`: Peak boiler `16.632 -> 16.526 GWh`, ca. `-0.635 %`
     - `2023-12-22`: Peak boiler `7.919 -> 7.825 GWh`, ca. `-1.186 %`
     - `2023-01-29`: Peak boiler `7.680 -> 7.666 GWh`, ca. `-0.182 %`
@@ -4853,8 +5012,8 @@ Naechste Schritte:
     - In boiler-relevanten Wochen bleibt der Boiler fast unveraendert; starke relative Reduktion tritt nur bei sehr kleinem Boiler-Rest auf.
 
 - 2026-05-05: Fig.-12-Tau-/Nachfragesensitivitaet fuer die Peak-Boiler-Story geprueft.
-  - Output: `Documentation/Papers/thermflex_paper/figures/fig_12_tau_demand_sensitivity_screen.csv`
-  - Zusaetzlicher Diagnoseplot: `Documentation/Papers/thermflex_paper/figures/fig_12_sensitivity_mar05_tau2_share35_peak_boiler_reduction.png`
+  - Output: `Documentation/Papers/thermflex_paper/figures/csv/fig_12_tau_demand_sensitivity_screen.csv`
+  - Zusaetzlicher Diagnoseplot: `Documentation/Papers/thermflex_paper/figures/png/fig_12_sensitivity_mar05_tau2_share35_peak_boiler_reduction.png`
   - Gepruefte Sensitivitaeten:
     - `2023-03-05`, `tau_h = 2`, `district_heating.share = 0.35`: Peak boiler `1.480 -> 1.212 GWh`, Peak `238.6 -> 190.0 MW`, Cost `-2.338 %`, CO2 `-2.473 %`
     - `2023-03-05`, `tau_h = 4`, `district_heating.share = 0.40`: Peak boiler `4.404 -> 4.192 GWh`, Peak `300.4 -> 277.7 MW`, Cost `-0.564 %`, CO2 `-0.584 %`
@@ -4865,8 +5024,8 @@ Naechste Schritte:
     - Fuer eine belastbare Gas-CHP-Vorheizstory sind die vorhandenen `march_savings`- bzw. `good_nov`-Plots besser geeignet: dort gibt es mehrere Vorheizstunden mit Gas-CHP-Zunahme und spaetere Boiler-Reduktion.
 
 - 2026-05-05: Boiler-OPEX-/Peak-Boiler-Energy-Sensitivitaet fuer `march_savings` gerechnet.
-  - Output: `Documentation/Papers/thermflex_paper/figures/fig_12_boiler_penalty_sensitivity_screen.csv`
-  - Diagnoseplot: `Documentation/Papers/thermflex_paper/figures/fig_12_sensitivity_march_savings_boiler_opex50eurmwh.png`
+  - Output: `Documentation/Papers/thermflex_paper/figures/csv/fig_12_boiler_penalty_sensitivity_screen.csv`
+  - Diagnoseplot: `Documentation/Papers/thermflex_paper/figures/png/fig_12_sensitivity_march_savings_boiler_opex50eurmwh.png`
   - Getestete Boiler-OPEX-Addierer:
     - `+20 EUR/MWh_th`: Peak boiler `0.601 -> 0.443 GWh`, Peak `138.2 -> 138.2 MW`, Gas-CHP `-0.166 GWh`, Cost `-0.253 %`, CO2 `-0.248 %`
     - `+50 EUR/MWh_th`: Peak boiler `0.601 -> 0.397 GWh`, Peak `138.2 -> 131.0 MW`, Gas-CHP `-0.098 GWh`, Cost `-0.294 %`, CO2 `-0.231 %`
@@ -4879,10 +5038,10 @@ Naechste Schritte:
     - Damit ist der schwache Preheat-Effekt nicht nur ein zu niedriger Boiler-Preis im Objective.
 
 - 2026-05-05: Hourly ThermFlex-State-Diagnostic fuer Fig. 12 `march_savings` ergaenzt.
-  - Neuer Builder: `Documentation/Papers/thermflex_paper/figures/build_fig_12_thermflex_state_diagnostic.py`
+  - Neuer Builder: `Documentation/Papers/thermflex_paper/figures/runners/build_fig_12_thermflex_state_diagnostic.py`
   - Output:
-    - `Documentation/Papers/thermflex_paper/figures/fig_12_march_savings_thermflex_state_diagnostic.csv`
-    - `Documentation/Papers/thermflex_paper/figures/fig_12_march_savings_thermflex_state_diagnostic.png`
+    - `Documentation/Papers/thermflex_paper/figures/csv/fig_12_march_savings_thermflex_state_diagnostic.csv`
+    - `Documentation/Papers/thermflex_paper/figures/png/fig_12_march_savings_thermflex_state_diagnostic.png`
   - Der Builder verwendet die bestehende Fig.-12-CSV als Dispatch-Anker und evaluiert nur den Upper-only-Flex-State neu; fehlende Member-State-Arrays schlagen fail-fast fehl.
   - Wichtigste Diagnose:
     - Beim ersten grossen Peak `2023-03-02 03:00-07:00` gibt es in den Stunden davor praktisch keine ThermFlex-Aktivitaet; alle 8 Member liegen exakt bei `22.5 C`.
@@ -4894,7 +5053,7 @@ Naechste Schritte:
     - Zusaetzlich ist im aktuellen Upper-only-Diagnosepfad `therm_flex_active` bewusst kontinuierlich, daher sind `active_members` member-aequivalente Werte und nicht zwingend ganze Zahlen.
 
 - 2026-05-05: Single-Block-Boundary-Probe fuer den ersten `march_savings`-Morgenpeak ausgewertet.
-  - Output: `Documentation/Papers/thermflex_paper/figures/fig_12_march_single_block_boundary_probe.csv`
+  - Output: `Documentation/Papers/thermflex_paper/figures/csv/fig_12_march_single_block_boundary_probe.csv`
   - Setup:
     - einzelner 36h-Block ab `2023-03-01 00:00`, also ohne 24h-Commit-Stitching an der kritischen Stelle
     - gleiche Fig.-12-Methodik, nur Boiler-OPEX-Addierer als Diagnose variiert
@@ -4956,7 +5115,7 @@ Naechste Schritte:
     - Heat-Fuel-Cost ca. `68.8 EUR/MWh_th`
     - heat-allocated CO2 ca. `0.253 tCO2/MWh_th`
   - Tabellarischer Screen ohne Plotrender:
-    - Output: `Documentation/Papers/thermflex_paper/figures/fig_12_peak_boiler_mix50_screen.csv`
+    - Output: `Documentation/Papers/thermflex_paper/figures/csv/fig_12_peak_boiler_mix50_screen.csv`
     - `good_dec`: Cost `-0.195 %`, CO2 `+0.112 %`, Peak boiler `25.070 -> 23.825 GWh` (`-4.97 %`), Peak fast unveraendert
     - `good_jan`: Cost `-0.029 %`, CO2 `-0.030 %`, Peak boiler `50.098 -> 50.070 GWh` (`-0.054 %`), Peak fast unveraendert
     - `good_feb`: Cost `-0.243 %`, CO2 `-0.271 %`, Peak boiler `0.346 -> 0.303 GWh` (`-12.53 %`), Peak `74.3 -> 73.6 MW`
@@ -4974,7 +5133,7 @@ Naechste Schritte:
     - `event_preheat_peak_bound_multiplier = 1.50`, danach als Fig.-12-Default gesetzt
     - Zeitraum: Dezember 2023 sowie Januar bis Maerz 2023, jeweils Wochenfenster mit Warm-up-Tag
   - Output:
-    - `Documentation/Papers/thermflex_paper/figures/fig_12_dec_mar_multiplier15_week_screen.csv`
+    - `Documentation/Papers/thermflex_paper/figures/csv/fig_12_dec_mar_multiplier15_week_screen.csv`
   - Bester All-KPI-Kandidat:
     - Woche ab `2023-03-05`
     - Cost `-0.715 %`
@@ -4990,13 +5149,13 @@ Naechste Schritte:
 
 - 2026-05-05: Fig. 12 fuer den neuen Maerz-Peak-Boiler-Reduction-Kandidaten gerendert.
   - Geaendert:
-    - `Documentation/Papers/thermflex_paper/figures/build_fig_12_weekly_dispatch_shift.py`
+    - `Documentation/Papers/thermflex_paper/figures/runners/build_fig_12_weekly_dispatch_shift.py`
     - neuer Variant-Slug `march_peak_reduction` fuer Woche ab `2023-03-05`
     - eigene Outputs, damit bestehende Maerz-Dateien nicht ueberschrieben werden
     - Cache-Versionen auf `peak_bounds150` erhoeht, damit keine Serien mit altem `1.25`-Bound wiederverwendet werden
   - Outputs:
-    - `Documentation/Papers/thermflex_paper/figures/fig_12_march_peak_reduction_dispatch_shift.png`
-    - `Documentation/Papers/thermflex_paper/figures/fig_12_march_peak_reduction_dispatch_shift.csv`
+    - `Documentation/Papers/thermflex_paper/figures/png/fig_12_march_peak_reduction_dispatch_shift.png`
+    - `Documentation/Papers/thermflex_paper/figures/csv/fig_12_march_peak_reduction_dispatch_shift.csv`
   - Ergebnis:
     - Cost `-0.715 %`
     - CO2 `-0.721 %`
@@ -5008,12 +5167,12 @@ Naechste Schritte:
     - Der Peak-Boiler faellt relativ stark, aber absolut nur um ca. `0.143 GWh_th`; deshalb bleibt der direkte Kosteneffekt begrenzt.
     - Die heat-allocated Objective sinkt um ca. `81.3 kEUR`; neben der Boiler-Reduktion tragen mehr External Heat, Biomass und Heat Pump sowie weniger Gas-CHP-Waerme zur Einsparung bei.
   - Verifikation:
-    - `python -m py_compile Documentation/Papers/thermflex_paper/figures/build_fig_12_weekly_dispatch_shift.py`
+    - `python -m py_compile Documentation/Papers/thermflex_paper/figures/runners/build_fig_12_weekly_dispatch_shift.py`
     - Einzelrender `--variant march_peak_reduction` erfolgreich abgeschlossen
 
 - 2026-05-05: Aktuelle `tau = 2/3/4 h`-Diagnose fuer sichtbarere Peak-Boiler-Reduktion durchgefuehrt.
   - Output:
-    - `Documentation/Papers/thermflex_paper/figures/fig_12_tau234_current_week_screen.csv`
+    - `Documentation/Papers/thermflex_paper/figures/csv/fig_12_tau234_current_week_screen.csv`
   - Gepruefte Wochen:
     - `2023-12-15`
     - `2023-12-22`
@@ -5032,8 +5191,8 @@ Naechste Schritte:
   - Reproduzierbarer Render:
     - `build_fig_12_weekly_dispatch_shift.py` unterstuetzt nun variant-spezifisches `bus_inertia_tau_h`
     - neuer Variant-Slug `march_peak_reduction_tau2`
-    - Plot: `Documentation/Papers/thermflex_paper/figures/fig_12_march_peak_reduction_tau2_dispatch_shift.png`
-    - CSV: `Documentation/Papers/thermflex_paper/figures/fig_12_march_peak_reduction_tau2_dispatch_shift.csv`
+    - Plot: `Documentation/Papers/thermflex_paper/figures/png/fig_12_march_peak_reduction_tau2_dispatch_shift.png`
+    - CSV: `Documentation/Papers/thermflex_paper/figures/csv/fig_12_march_peak_reduction_tau2_dispatch_shift.csv`
   - Interpretation:
     - Eine kleinere DH-Bus-Zeitkonstante macht die Peak-Boiler-Story klar sichtbar und verbessert gleichzeitig Kosten und CO2.
     - Das ist methodisch sauberer als zuerst einen zusaetzlichen freien Boiler-Penalty einzufuehren; ein Boiler-Penalty sollte hoechstens als Sensitivitaet folgen.
@@ -5042,7 +5201,7 @@ Naechste Schritte:
 
 - 2026-05-06: Tau-2-Winterscreen fuer Dezember, Januar und Februar nach besserer Fig.-12-Woche durchgefuehrt.
   - Output:
-    - `Documentation/Papers/thermflex_paper/figures/fig_12_tau2_winter_week_screen.csv`
+    - `Documentation/Papers/thermflex_paper/figures/csv/fig_12_tau2_winter_week_screen.csv`
   - Ergebnis:
     - Dezemberwochen haben die groessten absoluten Boiler-Reduktionen, aber CO2 wird meistens leicht positiv.
     - `2023-12-01` bleibt CO2-seitig knapp negativ, reduziert den Peak aber fast nicht (`520.9 -> 515.0 MW`).
@@ -5054,8 +5213,8 @@ Naechste Schritte:
       - Peak-Boiler-Leistung `262.2 -> 230.5 MW` (`-12.1 %`)
   - Reproduzierbarer Render:
     - neuer Variant-Slug `february_peak_reduction_tau2`
-    - Plot: `Documentation/Papers/thermflex_paper/figures/fig_12_february_peak_reduction_tau2_dispatch_shift.png`
-    - CSV: `Documentation/Papers/thermflex_paper/figures/fig_12_february_peak_reduction_tau2_dispatch_shift.csv`
+    - Plot: `Documentation/Papers/thermflex_paper/figures/png/fig_12_february_peak_reduction_tau2_dispatch_shift.png`
+    - CSV: `Documentation/Papers/thermflex_paper/figures/csv/fig_12_february_peak_reduction_tau2_dispatch_shift.csv`
   - Technischer Hinweis:
     - erste Render-Wiederholung scheiterte nicht methodisch, sondern an Windows-Pfadlaenge beim langen Cache-Dateinamen.
     - `FEBRUARY_PEAK_REDUCTION_TAU2_CACHE_VERSION` wurde deshalb kurz auf `fig12_feb_peak_tau2_pb150_v1` gesetzt.
@@ -5069,7 +5228,7 @@ Naechste Schritte:
     - `build_fig_12_weekly_dispatch_shift.py` unterstuetzt nun variant-spezifisches `gas_boiler_variable_opex_adder_eur_per_kwh_th`
     - Wert wird in Cache-Metadaten und CSV geschrieben
   - Screen:
-    - `Documentation/Papers/thermflex_paper/figures/fig_12_february_tau2_boiler_opex_sensitivity_screen.csv`
+    - `Documentation/Papers/thermflex_paper/figures/csv/fig_12_february_tau2_boiler_opex_sensitivity_screen.csv`
     - Adders: `+6`, `+10`, `+15`, `+20`, `+30`, `+50 EUR/MWh_th`
   - Ergebnis:
     - `+30 EUR/MWh_th` ist ein brauchbarer Mittelweg:
@@ -5081,8 +5240,8 @@ Naechste Schritte:
     - Auch mit `+30` verschwinden die Boiler-Peaks nicht vollstaendig; es bleiben offenbar notwendige Reststunden.
   - Render:
     - neuer Slug `february_peak_reduction_tau2_boiler_opex30`
-    - Plot: `Documentation/Papers/thermflex_paper/figures/fig_12_february_peak_reduction_tau2_boiler_opex30_dispatch_shift.png`
-    - CSV: `Documentation/Papers/thermflex_paper/figures/fig_12_february_peak_reduction_tau2_boiler_opex30_dispatch_shift.csv`
+    - Plot: `Documentation/Papers/thermflex_paper/figures/png/fig_12_february_peak_reduction_tau2_boiler_opex30_dispatch_shift.png`
+    - CSV: `Documentation/Papers/thermflex_paper/figures/csv/fig_12_february_peak_reduction_tau2_boiler_opex30_dispatch_shift.csv`
 
 - 2026-05-06: Peak-Boiler-Startlogik als explizite MILP-Sensitivitaet umgesetzt.
   - Modell:
@@ -5093,11 +5252,11 @@ Naechste Schritte:
   - Fig.-12-Sensitivitaet:
     - neuer Slug `february_peak_reduction_tau2_boiler_start`
     - Settings: `tau = 2 h`, Boiler-Mindestlast `15 %`, Startkosten `50 EUR/MW/start`
-    - kurzer 72h-Screen: `Documentation/Papers/thermflex_paper/figures/fig_12_february_startcost_72h_screen.csv`
+    - kurzer 72h-Screen: `Documentation/Papers/thermflex_paper/figures/csv/fig_12_february_startcost_72h_screen.csv`
     - kleinste getestete wirksame Stufe war `50 EUR/MW/start`; damit verschwindet der Boiler im 72h-Flexfenster.
   - Wochenrender:
-    - Plot: `Documentation/Papers/thermflex_paper/figures/fig_12_february_peak_reduction_tau2_boiler_start_dispatch_shift.png`
-    - CSV: `Documentation/Papers/thermflex_paper/figures/fig_12_february_peak_reduction_tau2_boiler_start_dispatch_shift.csv`
+    - Plot: `Documentation/Papers/thermflex_paper/figures/png/fig_12_february_peak_reduction_tau2_boiler_start_dispatch_shift.png`
+    - CSV: `Documentation/Papers/thermflex_paper/figures/csv/fig_12_february_peak_reduction_tau2_boiler_start_dispatch_shift.csv`
     - Woche `2023-02-26`:
       - Cost `-4.462 %`
       - CO2 `-0.534 %`
@@ -5112,8 +5271,8 @@ Naechste Schritte:
     - Die Stack-Logik zieht Spillage bei normalen Dispatch-Generationsreihen nicht mehr ab, weil diese Reihen bereits nutzbare DH-Waerme darstellen.
     - Dadurch verschwinden die weissen Flaechen in den oberen Dispatch-Panels; gepruefte Restluecke nur numerisches Rauschen (`~1e-12 MW`).
   - Neu gerendert:
-    - `Documentation/Papers/thermflex_paper/figures/fig_12_february_peak_reduction_tau2_boiler_start_dispatch_shift.png`
-    - `Documentation/Papers/thermflex_paper/figures/fig_12_february_peak_reduction_tau3_boiler_start_dispatch_shift.png`
+    - `Documentation/Papers/thermflex_paper/figures/png/fig_12_february_peak_reduction_tau2_boiler_start_dispatch_shift.png`
+    - `Documentation/Papers/thermflex_paper/figures/png/fig_12_february_peak_reduction_tau3_boiler_start_dispatch_shift.png`
   - Vergleich:
     - `tau=2`: Cost `-4.462 %`, CO2 `-0.534 %`, Peak-Boiler-Energie/Peak jeweils `-100 %`.
     - `tau=3`: Cost `-3.190 %`, CO2 `+0.180 %`, Peak-Boiler-Energie/Peak jeweils `-100 %`.
@@ -5127,7 +5286,7 @@ Naechste Schritte:
     - CSV/KPIs und MILP-Zeitreihen bleiben unveraendert roh
     - geglaettete Stack-Komponenten werden pro Stunde wieder auf die geglaettete DH-Buslast skaliert, damit keine visuellen Luecken entstehen
   - Neu gerendert:
-    - `Documentation/Papers/thermflex_paper/figures/fig_12_february_peak_reduction_tau3_boiler_start_dispatch_shift.png`
+    - `Documentation/Papers/thermflex_paper/figures/png/fig_12_february_peak_reduction_tau3_boiler_start_dispatch_shift.png`
   - CO2-Hinweis:
     - `tau=3` bleibt mit CO2 `+0.180 %` leicht positiv.
     - Ursache im Wochenvergleich: Flex reduziert zwar Boiler vollstaendig, erhoeht aber die DH-Busenergie um ca. `2.58 GWh`; die Zusatzdeckung kommt vor allem aus Gas-CHP, waehrend External-Heat-Zuwachs kleiner ist als bei `tau=2`.
@@ -5137,8 +5296,8 @@ Naechste Schritte:
   - Sie werden deshalb nicht mehr als Fig.-12-Quellen exportiert/geplottet.
   - Der Stack bleibt geschlossen, weil der eigentliche Lueckenfix weiterhin ist: nutzbare `generation`-Reihen werden nicht mehr um Spillage gekuerzt.
   - `tau=3`-Plot/CSV neu aufgebaut:
-    - `Documentation/Papers/thermflex_paper/figures/fig_12_february_peak_reduction_tau3_boiler_start_dispatch_shift.png`
-    - `Documentation/Papers/thermflex_paper/figures/fig_12_february_peak_reduction_tau3_boiler_start_dispatch_shift.csv`
+    - `Documentation/Papers/thermflex_paper/figures/png/fig_12_february_peak_reduction_tau3_boiler_start_dispatch_shift.png`
+    - `Documentation/Papers/thermflex_paper/figures/csv/fig_12_february_peak_reduction_tau3_boiler_start_dispatch_shift.csv`
 
 - 2026-05-06: Fig.-12-Wochenplots auf den aktuellen Plot-/KPI-Stand neu gerendert und alte Outputs archiviert.
   - Archiv:
@@ -5181,7 +5340,7 @@ Naechste Schritte:
 
 - 2026-05-07: Neue Fig. 14 als Heizperioden-Mechanismusplot aufgebaut.
   - Neuer Builder:
-    - `Documentation/Papers/thermflex_paper/figures/build_fig_14_heating_period_dispatch_response.py`
+    - `Documentation/Papers/thermflex_paper/figures/runners/build_fig_14_heating_period_dispatch_response.py`
   - Plotlogik:
     - drei Spalten fuer `2023-12-05` bis `2023-12-07`, `2023-02-27` bis `2023-03-03` und `2023-04-04` bis `2023-04-07`
     - Reihe 1: Reference dispatch als Fig.-12-Stackplot
@@ -5190,10 +5349,10 @@ Naechste Schritte:
     - keine Einsparungsannotation; Legenden liegen ausserhalb der Panels
   - Daten:
     - Dispatch kommt aus den bestehenden aktiven Fig.-12-CSV-Dateien.
-    - ThermFlex-State-Reihen werden in `Documentation/Papers/thermflex_paper/figures/_fig_14_state_cache/` separat gecacht und mit Metadata fail-fast geprueft.
+    - ThermFlex-State-Reihen werden in `Documentation/Papers/thermflex_paper/figures/cache/_fig_14_state_cache/` separat gecacht und mit Metadata fail-fast geprueft.
   - Outputs:
-    - `Documentation/Papers/thermflex_paper/figures/fig_14_heating_period_dispatch_response.png`
-    - `Documentation/Papers/thermflex_paper/figures/fig_14_heating_period_dispatch_response.csv`
+    - `Documentation/Papers/thermflex_paper/figures/png/fig_14_heating_period_dispatch_response.png`
+    - `Documentation/Papers/thermflex_paper/figures/csv/fig_14_heating_period_dispatch_response.csv`
   - Verifikation:
     - `py_compile` erfolgreich.
     - CSV enthaelt `72 h` Dezember, `120 h` Februar/Maerz und `96 h` April.
@@ -5204,7 +5363,7 @@ Naechste Schritte:
     - `Preheat above ref` und `Avoided heat below ref` sind wieder als transparente Flaechen im Upper-only-Dispatch-Panel sichtbar.
     - Temperaturdiagnostik unten separat mit `T_in_mean` und `T_in_max`.
   - Neu gerendert:
-    - `Documentation/Papers/thermflex_paper/figures/fig_14_heating_period_dispatch_response.png`
+    - `Documentation/Papers/thermflex_paper/figures/png/fig_14_heating_period_dispatch_response.png`
   - Verifikation:
     - `py_compile` erfolgreich; Re-Render aus vorhandenen Fig.-14-State-Caches ohne neue MILP-Loesung.
 
@@ -5214,7 +5373,7 @@ Naechste Schritte:
     - `Preheat above ref` und `Avoided heat below ref` im Upper-only-Dispatch-Panel staerker eingefarbt und durch gestrichelte Referenz-Buslinie besser lesbar gemacht.
     - Setpoint-/untere Komforttemperatur `22.5 deg C` als gestrichelte Linie im Temperaturpanel eingezeichnet.
   - Neu gerendert:
-    - `Documentation/Papers/thermflex_paper/figures/fig_14_heating_period_dispatch_response.png`
+    - `Documentation/Papers/thermflex_paper/figures/png/fig_14_heating_period_dispatch_response.png`
 
 - 2026-05-07: Fig. 14 auf einheitliche `2 h`-Darstellungsglaettung gestellt.
   - Aenderung:
@@ -5222,7 +5381,7 @@ Naechste Schritte:
     - geglaettet werden nur die gezeichneten Werte: Dispatch-Stacks, Buslinien, Ref/Flex-Schattierung, Preheat/Cutback-Balken und Temperaturkurven
     - exportierte CSV-Zeitreihen bleiben roh
   - Neu gerendert:
-    - `Documentation/Papers/thermflex_paper/figures/fig_14_heating_period_dispatch_response.png`
+    - `Documentation/Papers/thermflex_paper/figures/png/fig_14_heating_period_dispatch_response.png`
 
 - 2026-05-07: Fig. 14 Testvariante mit `1 h`-Display-Smoothing und erweitertem Dezemberfenster gerendert.
   - Aenderung:
@@ -5239,12 +5398,12 @@ Naechste Schritte:
     - State-Cache/CSV exportiert nun `t_in_cohort_01_c` bis `t_in_cohort_08_c`
     - Temperaturpanel zeichnet die acht Kohortenlinien farblich abgestuft; `T_in_mean`, `T_in_max` und Setpoint bleiben erhalten
   - Neu gerendert:
-    - `Documentation/Papers/thermflex_paper/figures/fig_14_heating_period_dispatch_response.png`
+    - `Documentation/Papers/thermflex_paper/figures/png/fig_14_heating_period_dispatch_response.png`
 
 - 2026-05-07: Gas-CHP-Kapazitaetssensitivitaet fuer das Februar/Maerz-Fig.-14-Panel gescreent.
   - Neuer Screen:
-    - `Documentation/Papers/thermflex_paper/figures/build_fig_14_gas_chp_capacity_sensitivity_screen.py`
-    - Output: `Documentation/Papers/thermflex_paper/figures/fig_14_gas_chp_capacity_sensitivity_screen.csv`
+    - `Documentation/Papers/thermflex_paper/figures/runners/build_fig_14_gas_chp_capacity_sensitivity_screen.py`
+    - Output: `Documentation/Papers/thermflex_paper/figures/csv/fig_14_gas_chp_capacity_sensitivity_screen.csv`
   - Setup:
     - Variante `february_peak_reduction_tau3_boiler_start`
     - thermische Gas-CHP-Reduktionen `0`, `50`, `100`, `150 MWth`
@@ -5259,8 +5418,8 @@ Naechste Schritte:
     - Die reduzierten Dispatch- und State-Zeitreihen werden in `_fig_14_state_cache/` mit Metadata fail-fast gecacht.
     - Temperaturdiagnostik aggregiert die acht ThermFlex-Mitglieder zu vier Baualterslinien: `<1975`, `1975-1990`, `1990-2000`, `2000-2014`; `T_in_mean`, `T_in_max` und Setpoint bleiben erhalten.
   - Neu gerendert:
-    - `Documentation/Papers/thermflex_paper/figures/fig_14_heating_period_dispatch_response.png`
-    - `Documentation/Papers/thermflex_paper/figures/fig_14_heating_period_dispatch_response.csv`
+    - `Documentation/Papers/thermflex_paper/figures/png/fig_14_heating_period_dispatch_response.png`
+    - `Documentation/Papers/thermflex_paper/figures/csv/fig_14_heating_period_dispatch_response.csv`
   - Verifikation:
     - `py_compile` erfolgreich.
     - CSV enthaelt `gas_chp_thermal_reduction_mw = 100.0` fuer alle `312` Stunden und die vier `t_in_vintage_*`-Spalten.
@@ -5274,13 +5433,13 @@ Naechste Schritte:
     - Februar/Maerz: Nicht-Boiler-Grenze bei Gas-CHP-Cap liegt bei rund `1499 MW`.
     - Referenz-Boiler steigt auf `375 MW` Peak und `7218 MWh`; Upper-only braucht wegen der staerkeren Kapazitaetsreduktion noch `5677 MWh` Boiler.
   - Neu gerendert:
-    - `Documentation/Papers/thermflex_paper/figures/fig_14_heating_period_dispatch_response.png`
-    - `Documentation/Papers/thermflex_paper/figures/fig_14_heating_period_dispatch_response.csv`
+    - `Documentation/Papers/thermflex_paper/figures/png/fig_14_heating_period_dispatch_response.png`
+    - `Documentation/Papers/thermflex_paper/figures/csv/fig_14_heating_period_dispatch_response.csv`
 
 - 2026-05-07: Februar/Maerz-Fig.-14-Mechanismus auf fehlendes Vorheizen in frueheren Taelern diagnostiziert.
   - Screens:
-    - `Documentation/Papers/thermflex_paper/figures/fig_14_feb_mar_preheat_bound_screen.csv`
-    - `Documentation/Papers/thermflex_paper/figures/fig_14_feb_mar_boiler_cost_screen.csv`
+    - `Documentation/Papers/thermflex_paper/figures/csv/fig_14_feb_mar_preheat_bound_screen.csv`
+    - `Documentation/Papers/thermflex_paper/figures/csv/fig_14_feb_mar_boiler_cost_screen.csv`
   - Befund:
     - Hoeherer `event_preheat_peak_bound_multiplier` (`1.25`, `1.5`, `2.0`) aendert Boiler/Preheat praktisch nicht; der Peak-Bound ist daher nicht der aktuelle Engpass.
     - Deutlich hoehere Boiler-Startkosten (`250 EUR/MW/start`) fuehren zu massiv mehr Vorheizen vor den frueheren Peaks und eliminieren den Flex-Boiler in diesem Screen.
@@ -5302,7 +5461,7 @@ Naechste Schritte:
 
 - 2026-05-07: Startkosten-Schwelle fuer Februar/Maerz-Fig.-14 gescreent.
   - Output:
-    - `Documentation/Papers/thermflex_paper/figures/fig_14_feb_mar_startcost_threshold_screen.csv`
+    - `Documentation/Papers/thermflex_paper/figures/csv/fig_14_feb_mar_startcost_threshold_screen.csv`
   - Ergebnis:
     - `75 EUR/MW/start`: `4589 MWh` Flex-Boiler bleiben.
     - `100 EUR/MW/start`: `3364 MWh` Flex-Boiler bleiben.
@@ -5318,8 +5477,8 @@ Naechste Schritte:
     - Cache-Version `fig14_tau3_start150_min15_chpminus320_vintage_state_v1`.
     - Rote `T_in max`-Linie wird nicht mehr gezeichnet; Temperaturpanel zeigt nur Baualterslinien, `T_in mean` und Setpoint.
   - Neu gerendert:
-    - `Documentation/Papers/thermflex_paper/figures/fig_14_heating_period_dispatch_response.png`
-    - `Documentation/Papers/thermflex_paper/figures/fig_14_heating_period_dispatch_response.csv`
+    - `Documentation/Papers/thermflex_paper/figures/png/fig_14_heating_period_dispatch_response.png`
+    - `Documentation/Papers/thermflex_paper/figures/csv/fig_14_heating_period_dispatch_response.csv`
   - Verifikation:
     - CSV weist `gas_boiler_startup_cost_eur_per_mw_start = 150.0` und `gas_chp_thermal_reduction_mw = 320.0` aus.
     - Februar/Maerz Upper-only-Boiler bleibt `0.00 MWh`.
@@ -5340,9 +5499,9 @@ Naechste Schritte:
 
 - 2026-05-07: Ersten echten Lower-Relaxation-KPI-Screen fuer Februar/Maerz ausgefuehrt.
   - Neues Diagnose-Skript:
-    - `Documentation/Papers/thermflex_paper/figures/build_fig_14_lower_relaxation_kpi_screen.py`
+    - `Documentation/Papers/thermflex_paper/figures/runners/build_fig_14_lower_relaxation_kpi_screen.py`
   - Output:
-    - `Documentation/Papers/thermflex_paper/figures/fig_14_lower_relaxation_kpi_screen.csv`
+    - `Documentation/Papers/thermflex_paper/figures/csv/fig_14_lower_relaxation_kpi_screen.csv`
   - Setup:
     - Variante `february_peak_reduction_tau3_boiler_start`
     - aktive Fig.-14-Settings: `tau_h=3`, `150 EUR/MW/start`, `15%` Boiler-Mindestlast, `-320 MWth` Gas-CHP-Kapazitaet
@@ -5361,7 +5520,7 @@ Naechste Schritte:
 
 - 2026-05-07: Lower-Relaxation-KPI-Screen auf `0.5/1.0/2.0 K` Sensitivitaet erweitert und gerechnet.
   - Output aktualisiert:
-    - `Documentation/Papers/thermflex_paper/figures/fig_14_lower_relaxation_kpi_screen.csv`
+    - `Documentation/Papers/thermflex_paper/figures/csv/fig_14_lower_relaxation_kpi_screen.csv`
   - Ergebnis gegen Upper-only:
     - `0.5 K`: Waermekosten `-2.36%`, heat-allocated CO2 `-2.30%`, Gas-CHP-Waerme `-3.26 GWh`, Preheat `-2.61 GWh`, Cutback `+0.65 GWh`, `T_in_min=22.0 C`.
     - `1.0 K`: Waermekosten `-4.16%`, heat-allocated CO2 `-4.03%`, Gas-CHP-Waerme `-5.71 GWh`, Preheat `-4.27 GWh`, Cutback `+1.49 GWh`, `T_in_min=21.5 C`.
@@ -5372,9 +5531,9 @@ Naechste Schritte:
 
 - 2026-05-07: Fenster-Sensitivitaet fuer `1.0 K` Lower Relaxation im Februar/Maerz-Screen gerechnet.
   - Neues Diagnose-Skript:
-    - `Documentation/Papers/thermflex_paper/figures/build_fig_14_lower_relaxation_window_screen.py`
+    - `Documentation/Papers/thermflex_paper/figures/runners/build_fig_14_lower_relaxation_window_screen.py`
   - Output:
-    - `Documentation/Papers/thermflex_paper/figures/fig_14_lower_relaxation_window_screen.csv`
+    - `Documentation/Papers/thermflex_paper/figures/csv/fig_14_lower_relaxation_window_screen.csv`
   - Getestete Fenster:
     - `morning_only`: taeglich `00:00-10:00`
     - `morning_evening`: taeglich `00:00-10:00` und `17:00-22:00`
@@ -5389,7 +5548,7 @@ Naechste Schritte:
 
 - 2026-05-07: Max-Hours-Alternative fuer Lower Relaxation technisch angetestet.
   - Neues Diagnose-Skript:
-    - `Documentation/Papers/thermflex_paper/figures/build_fig_14_lower_relaxation_max_hours_screen.py`
+    - `Documentation/Papers/thermflex_paper/figures/runners/build_fig_14_lower_relaxation_max_hours_screen.py`
   - Setup:
     - `lower_bound_delta_k=1.0` ueber den gesamten Bewertungszeitraum
     - bestehendes `constraints.thermflex.max_flex_duration_h=6` als Tagesbudget
@@ -5404,7 +5563,7 @@ Naechste Schritte:
 
 - 2026-05-07: Lower-Relaxation-Zeitfenster gegen Peak-/Cutback-Stunden weiterer Fig.-12-Wochen geprueft.
   - Output:
-    - `Documentation/Papers/thermflex_paper/figures/fig_14_lower_relaxation_window_peak_alignment_screen.csv`
+    - `Documentation/Papers/thermflex_paper/figures/csv/fig_14_lower_relaxation_window_peak_alignment_screen.csv`
   - Befund:
     - Die Top-Referenz-Boiler- und Top-DH-Buslaststunden liegen in den geprueften Heizwochen praktisch durchgehend in den Morgenstunden `00:00-10:00`.
     - Die Top-Upper-only-Cutback-Stunden liegen haeufig in den spaeten Abendstunden, oft auch `22:00`/`23:00`.
@@ -5419,7 +5578,7 @@ Naechste Schritte:
     - `build_fig_14_lower_relaxation_kpi_screen.py` nutzt nun taeglich `00:00-10:00` und `17:00-24:00`.
     - Fig. 14 wurde nicht gerendert; nur der KPI-Screen wurde neu gerechnet.
   - Output aktualisiert:
-    - `Documentation/Papers/thermflex_paper/figures/fig_14_lower_relaxation_kpi_screen.csv`
+    - `Documentation/Papers/thermflex_paper/figures/csv/fig_14_lower_relaxation_kpi_screen.csv`
   - Ergebnis gegen Upper-only:
     - `0.5 K`: Waermekosten `-2.36%`, heat-allocated CO2 `-2.30%`, Gas-CHP-Waerme `-3.26 GWh`, Preheat `-2.50 GWh`, Cutback `+0.76 GWh`, `T_in_min=22.0 C`.
     - `1.0 K`: Waermekosten `-4.19%`, heat-allocated CO2 `-4.07%`, Gas-CHP-Waerme `-5.77 GWh`, Preheat `-4.04 GWh`, Cutback `+1.75 GWh`, `T_in_min=21.5 C`.
@@ -5430,7 +5589,7 @@ Naechste Schritte:
 
 - 2026-05-07: Fig. 15 Builder fuer Upper-only vs. Upper+Lower vorbereitet, ohne zu rendern.
   - Neue Datei:
-    - `Documentation/Papers/thermflex_paper/figures/build_fig_15_upper_lower_relaxation_dispatch_response.py`
+    - `Documentation/Papers/thermflex_paper/figures/runners/build_fig_15_upper_lower_relaxation_dispatch_response.py`
   - Setup:
     - eigene Ausgabeziele `fig_15_upper_lower_relaxation_dispatch_response.png/.csv`
     - eigener Cache `_fig_15_state_cache/`
@@ -5445,8 +5604,8 @@ Naechste Schritte:
 
 - 2026-05-07: Fig. 15 Upper+Lower-Relaxation gerendert.
   - Output:
-    - `Documentation/Papers/thermflex_paper/figures/fig_15_upper_lower_relaxation_dispatch_response.png`
-    - `Documentation/Papers/thermflex_paper/figures/fig_15_upper_lower_relaxation_dispatch_response.csv`
+    - `Documentation/Papers/thermflex_paper/figures/png/fig_15_upper_lower_relaxation_dispatch_response.png`
+    - `Documentation/Papers/thermflex_paper/figures/csv/fig_15_upper_lower_relaxation_dispatch_response.csv`
   - Setup:
     - drei Spalten analog Fig. 14: Dezember, Februar/Maerz, April
     - Reihen: Reference, Upper-only, Upper+Lower `1 K`, Preheat/Cutback, Indoor-Temperatur
@@ -5470,8 +5629,8 @@ Naechste Schritte:
     - Morning-Fenster `00:00-10:00`: Bound `21.5 C` bis `10:00`, dann `21.83 C`, `22.17 C`, ab `13:00` wieder `22.5 C`.
     - Abendfenster `17:00-24:00` analog; Ueberlappung mit dem naechsten Morning-Fenster bleibt bei maximal `1 K` Absenkung.
   - Output:
-    - `Documentation/Papers/thermflex_paper/figures/fig_15_upper_lower_relaxation_dispatch_response.png`
-    - `Documentation/Papers/thermflex_paper/figures/fig_15_upper_lower_relaxation_dispatch_response.csv`
+    - `Documentation/Papers/thermflex_paper/figures/png/fig_15_upper_lower_relaxation_dispatch_response.png`
+    - `Documentation/Papers/thermflex_paper/figures/csv/fig_15_upper_lower_relaxation_dispatch_response.csv`
   - Validierung:
     - `py_compile` erfolgreich.
     - Schedule-Smoke fuer `2023-12-05 08:00-15:00`: `21.5, 21.5, 21.5, 21.833, 22.167, 22.5, 22.5, 22.5`.
@@ -5578,7 +5737,7 @@ Naechste Schritte:
 
 - 2026-05-08: Neue Fig.-06b Cohort-Duration-Figure vorbereitet, Render wegen Lower-Duration-Solvezeit gestoppt.
   - Aenderung:
-    - Neuer additiver Builder `Documentation/Papers/thermflex_paper/figures/build_fig_06b_cohort_duration_upper_lower.py`.
+    - Neuer additiver Builder `Documentation/Papers/thermflex_paper/figures/runners/build_fig_06b_cohort_duration_upper_lower.py`.
     - Alte Fig. 06 bleibt unveraendert.
     - Ziel-Layout: drei Fig.-15-Perioden, zwei Reihen (`upper-only`, `upper+lower 1K`), Duration-Balken `1/4/8/12/24 h`, tau 4.
     - Eigener validierter Cache unter `_fig_06b_duration_cache/`.
@@ -5641,13 +5800,13 @@ Naechste Schritte:
     - Auch upper-only ohne MIP-Gap kann einzelne Blöcke sehr lange beim Optimalitätsbeweis halten; der exakte April-4h-Case lief in Block 2 ca. 10610 s.
     - Mit dokumentiertem 0.5%-Gap wurde die vollstaendige upper-only-Figur in ca. 62 min gerendert.
   - Output:
-    - `Documentation/Papers/thermflex_paper/figures/fig_06b_cohort_duration_upper_lower_tau4.png`
-    - `Documentation/Papers/thermflex_paper/figures/fig_06b_cohort_duration_upper_lower_tau4.csv`
+    - `Documentation/Papers/thermflex_paper/figures/png/fig_06b_cohort_duration_upper_lower_tau4.png`
+    - `Documentation/Papers/thermflex_paper/figures/csv/fig_06b_cohort_duration_upper_lower_tau4.csv`
 
 - 2026-05-10: Fig. 16 Flexibility-Performance-Map als erster Scatterplot-Builder angelegt.
   - Aenderung:
     - Neuer additiver Builder:
-      - `Documentation/Papers/thermflex_paper/figures/build_fig_16_flexibility_performance_map.py`
+      - `Documentation/Papers/thermflex_paper/figures/runners/build_fig_16_flexibility_performance_map.py`
     - Der Builder liest ausschliesslich vorhandene Fig.-15-CSVs und startet keine MILP-Laeufe.
     - Jeder Punkt entspricht `period x case x tau`.
   - Kodierung:
@@ -5657,8 +5816,8 @@ Naechste Schritte:
     - Marker: `Upper-only` vs. `Upper + lower 1 K`
     - Punktgroesse: Peak-Boiler-Energie-Reduktion [%]
   - Output:
-    - `Documentation/Papers/thermflex_paper/figures/fig_16_flexibility_performance_map.png`
-    - `Documentation/Papers/thermflex_paper/figures/fig_16_flexibility_performance_map.csv`
+    - `Documentation/Papers/thermflex_paper/figures/png/fig_16_flexibility_performance_map.png`
+    - `Documentation/Papers/thermflex_paper/figures/csv/fig_16_flexibility_performance_map.csv`
   - Befund fuer naechste Iteration:
     - Prozentuale Peak-Boiler-Reduktion macht Februar/Maerz-Punkte sehr gross, weil der Boiler dort in einigen Faellen praktisch auf null faellt.
     - Fuer die Paper-Version wahrscheinlich absolute Boiler-Reduktion in MWh/GWh als Punktgroesse pruefen.
@@ -8778,7 +8937,7 @@ Naechste Schritte:
       - tau `2/4/8/12 h`
       - optionaler Table-09 export pro neuem heating-season screen
   - Neuer Quadrant-/Sensitivity-Builder:
-    - `Documentation/Papers/thermflex_paper/figures/build_fig_scatter_concept_flexibility_performance_map.py`
+    - `Documentation/Papers/thermflex_paper/figures/runners/build_fig_scatter_concept_flexibility_performance_map.py`
     - liest vorhandene `daily_thermflex_screen_*` Artefakte direkt ein
     - aggregiert saisonale Kosten/CO2/Shifted/Rebound/Boiler-KPIs
     - schreibt explizite Begleitdaten:
@@ -9125,3 +9284,1156 @@ Naechste Schritte:
   - The remaining gaps are now solve-contract failures, not unattempted days;
     paper-facing outputs must retain evidence labels and should not describe
     these rows as complete full-season MILP truth.
+
+- 2026-05-26: Thermflex paper `tables/` folder surface cleaned up.
+  - Created `Documentation/Papers/thermflex_paper/tables/logs/` as the explicit
+    sink for transient table-run execution traces.
+  - Moved obvious overnight logs, queue detail logs, stdout/stderr captures,
+    bootstrap traces, and temporary queue/process test files out of the
+    top-level `tables/` folder into `tables/logs/`.
+  - Tightened `Documentation/Papers/thermflex_paper/tables/README.md` so the
+    top-level contract is explicit:
+    - active builders plus current table outputs stay at top level
+    - transient run traces live under `logs/`
+    - superseded exports stay under `old/`
+    - exploratory surrogate screens stay under `surrogate_screens/`
+  - Added `table_main_central_results_tau4.tex` as the current LaTeX export of
+    the agreed central-results master table (`Days / Weeks / Heating period`
+    with cost, CO$_2$, shifted heat, rebound heat, and peak change).
+
+- 2026-05-26: Sensitivity-quadrant holdout basis consolidated.
+  - Added
+    `Documentation/Papers/thermflex_paper/figures/sensitivity_quadrant_holdout_status_tau_duration.md`
+    as the current evidence note for the `tau x duration` expansion decision.
+  - Confirmed that the strong paper-facing seasonal KPI surrogate path remains
+    the only clean basis for a broad quadrant:
+    - heat-cost `R2 ~ 0.983`
+    - CO$_2$ `R2 ~ 0.967`
+    - shifted `R2 ~ 0.982`
+    - rebound `R2 ~ 0.957`
+    - peak `R2 ~ 0.988`
+  - Confirmed that older direct tau-aware daily-results surrogate families
+    remain too weak for the quadrant foundation.
+  - Current widening blocker is therefore explicit higher-`tau` truth coverage,
+    especially for `upper_lower_2k` at `tau8/12`, not figure design.
+  - Added
+    `Documentation/Papers/thermflex_paper/figures/sensitivity_quadrant_target_matrix_tau_duration.md`
+    to translate the paper goal into explicit
+    `family x tau x duration` readiness cells.
+  - This makes the next expansion order explicit:
+    - first `upper_lower_2k`
+    - then `upper_lower_1k`
+    - then `upper_only`
+  - Added
+    `Documentation/Papers/thermflex_paper/figures/sensitivity_quadrant_truth_expansion_plan.md`
+    with the concrete next truth blocks and the existing runner entry points.
+  - Added `Optimization/run/analysis/run_lower1k_tau_evt24_heating_season_screen_bundle.py`
+    as the explicit sibling bundle runner for the `LOWER1K` tau/duration grid.
+  - Probed the expensive end of the planned sensitivity truth collection with a
+    direct guarded run of `LOWER2K dur1 tau8`.
+    - Under the current `900 s / 1%` contract, the run advanced only to late
+      March after about one hour.
+    - Conclusion: broad tau-sensitivity truth should not be collected as a
+      naive immediate `full season x all cells` replay. The next efficient
+      contract must be a curated season-spanning date block per
+      `family x tau x duration` cell.
+
+- 2026-05-26: Added a tau4 annual Vienna system-context figure for the paper.
+  - Added `Documentation/Papers/thermflex_paper/figures/runners/build_fig_18_vienna_system_context_tau4.py`.
+  - The builder evaluates the baseline no-ThermFlex Vienna dispatch over all of
+    2023 with the active Fig.-12-style tau4 bus-inertia contract, aggregates
+    hourly truth to daily sums, and now renders a compact two-panel reference
+    system figure:
+    - left: daily district source mix as a smoothed stacked area with the
+      smoothed DH-demand line and a secondary MW axis
+    - right: daily reference dispatch heat-operating cost as raw daily values
+      plus a 7-day rolling mean
+  - Rendered and cached:
+    - `fig_18_vienna_system_context_tau4.png`
+    - `fig_18_vienna_system_context_tau4.csv`
+    - `_fig_18_context_cache/`
+  - Runtime check: the annual baseline tau4 dispatch replay completed
+    cleanly in about four minutes, so this context figure does not need an
+    overnight run.
+
+- 2026-05-26: Added a residential cohort-context figure for the ThermFlex paper.
+  - Added
+    `Documentation/Papers/thermflex_paper/figures/runners/build_fig_19_vienna_residential_cohort_context.py`.
+  - The builder reads the current manuscript cohort tables directly, normalizes
+    the cohort labels explicitly for joining, and verifies that the duplicated
+    annual-heat / design-load / tau values remain numerically consistent across
+    the two paper tables.
+  - Rendered:
+    - `fig_19_vienna_residential_cohort_context.png`
+    - `fig_19_vienna_residential_cohort_context.csv`
+  - The final panel contract is intentionally descriptive and non-result-based:
+    - left: residential GFA share by cohort
+    - right: annual space-heat intensity with calibrated `tau` overlay and
+      design-load labels
+
+- 2026-05-27: ThermFlex sensitivity-regime contract preflighted.
+  - Verified from the implemented MILP objective that
+    `gas_chp_electric_value` is subtracted from the objective when active, so
+    historical price regimes must be selected by net-objective relevance rather
+    than raw price means alone.
+  - Added
+    `Documentation/Papers/thermflex_paper/tables/build_price_regime_audit.py`
+    and exported
+    `price_regime_objective_proxy_audit.csv/md`.
+    Current net-cost regime selection:
+    - low: `2021`
+    - medium: `2024`
+    - high: `2022`
+  - Added
+    `Documentation/Papers/thermflex_paper/tables/build_sensitivity_regime_preflight.py`
+    and exported daily/window context checks for the planned boxplot windows:
+    `best_day`, the three paper weeks, and full heating period (`212` days).
+  - The preflight confirms the intended separation:
+    - weather block varies weather/load years `2024/2020/2021` while fixing
+      the economic regime to `2024`
+    - price block varies economic years `2021/2024/2022` while fixing
+      weather/load to `2020`
+  - Remaining gap before paper-grade boxplots: convert the preflight context
+    into full surrogate inference frames with policy and reference-dispatch
+    features, then validate against targeted MILP anchors for regime R2/error.
+
+- 2026-05-27: ThermFlex central tau4 sensitivity surrogate diagnostics advanced.
+  - Added explicit `policy_tau_h` filtering to the daily repeated-holdout,
+    flow-reconstruction, and window-holdout evaluators to avoid mixing
+    `DEFAULTTAU` rows with explicit tau4 truth.
+  - Backfilled additional explicit tau4 daily truth for the central lower
+    relaxation matrix under the guarded `300 s` / `1%` / skip-hard-days
+    contract. Current explicit tau4 coverage is strongest for `1K dur4`
+    (`197` days) and `2K dur1` (`205` days); sparse central sensitivity cells
+    now sit around `16-20` explicit tau4 days.
+  - Diagnostics on the filtered tau4 lower-relaxation subset show that direct
+    daily Blackbox learning of `dispatch_heat_operating_cost_eur_delta` and
+    `co2_emissions_total_t_delta` is still not paper-grade. Stateful features
+    improve the mean R2 only to about `0.15-0.18`.
+  - Flow reconstruction isolates the bottleneck: true source-flow deltas
+    reconstruct CO2 perfectly, but heat-cost only to about `0.85` R2; cost
+    becomes exact only when exported fuel/CO2/variable cost components are
+    included. The next surrogate step should therefore be a CHP/cost-component
+    router, not another broad direct daily KPI model.
+
+- 2026-05-28: Boxplot-horizon tau4 surrogate diagnostics and truth backfill.
+  - Added `Learning/thermflex_daily_results/evaluate_boxplot_horizons.py` to
+    evaluate only the paper boxplot horizons (`best_day`, three selected weeks,
+    heating period) with grouped out-of-fold day predictions and horizon-level
+    aggregation.
+  - Fixed central tau4 truth backfill planning so reusable existing days can be
+    required to carry the complete dispatch-economics/state contract. Also
+    fixed daily-result deduplication to prefer duplicate policy-day rows with
+    the richer stateful dispatch contract over older v2 rows without CHP/storage
+    state.
+  - Backfilled targeted stateful truth for the central tau4 matrix:
+    - completed most missing `1K dur4` boxplot-week rows,
+    - added adjacent April/shoulder and February/winter days,
+    - retried the remaining hard selected anchors with `900 s` / `1%` / skip
+      contract.
+  - Current stateful dataset hash after these fills:
+    `8b3d61a6e7aec44ade5ad8fd5072c197ace1ea0fd3836e7c8c46b7fbe9abc591`
+    (`6076` raw truth rows, `3294` selected stateful rows).
+  - Best current strict grouped boxplot-horizon results are mixed:
+    - December and February cost can reach paper-grade in the global hybrid
+      path before adding the hardest anchors (`R2` about `0.98`).
+    - Adding newly solved hard anchors makes the validation set stricter and
+      exposes remaining out-of-family errors; April cost/CO2 remain far below
+      target under direct global KNN/ExtraTrees paths.
+    - Shifted heat is consistently strong on selected weeks; rebound and peak
+      are still horizon/family dependent.
+  - Conclusion: more truth alone under the same daily direct-target model is not
+    sufficient. The next step should be a real component/router path for
+    dispatch economics and mechanism outputs, plus a season inference evaluator;
+    avoid another blind broad backfill until residuals identify a specific
+    missing regime.
+
+- 2026-05-28: Central tau4 boxplot-horizon anchor basis promoted.
+  - Added `boxplot_horizon_anchor_tau4.*` to assemble the required central
+    windows from full MILP screens and dense V2 daily anchors:
+    `best_day`, December/February/April weeks, and full heating period.
+  - Best day and all selected weeks are exact anchor horizons for every central
+    tau4 case. Full heating-period rows are either complete MILP/merged anchors
+    or near-full anchor rows with explicit estimated-day counts.
+  - Added `fig_main_results_horizon_anchor_tau4.*` as a non-synthetic diagnostic
+    figure for central tau4 cost, CO2, shifted heat per day, and peak change.
+  - Interpretation: the poor April R2 in the strict daily ML surrogate does not
+    invalidate the central 2023 April-week result, because that horizon is
+    already backed by exact anchors. Weather/price uncertainty still needs a
+    separate validated regime surrogate or explicit MILP anchor strategy.
+
+- 2026-05-28: Weather/price boxplot surrogate path corrected.
+  - Re-centered the sensitivity boxplot contract on low/medium/high price years
+    and mild/average/cold weather years; central 2023 anchors are validation
+    context only, not boxplot samples.
+  - Refreshed the hourly-dispatch learning dataset from available artifacts:
+    `bd5787c0a9dd493a8bf54cee68684e60883aa55f233809d1c43b4cde884b9fba`
+    (`19,104` selected hourly rows, `164` bundles).
+  - New XGB oracle-load dispatch holdout on the refreshed dataset is
+    paper-grade for the boxplot economics path:
+    heat-cost delta min R2 `0.962`, CO2 delta min R2 `0.978`, fuel-cost delta
+    min R2 `0.955`, CO2-cost delta min R2 `0.980`.
+  - The deployable predicted-load bridge remains the blocker: global XGB
+    predicted-load bridge reaches only about `0.67-0.75` R2 on daily dispatch
+    deltas; current-matrix sliced checks show especially weak `dur1`, `1K`,
+    and upper-only families. A naive family router did not improve this.
+  - Conclusion: do not plot weather/price uncertainty boxes yet. Next useful
+    work is to improve the flex-load/mechanism predictor or provide explicit
+    flex-load generation for the regime inference frame; the downstream
+    dispatch/cost surrogate itself is not the limiting layer.
+
+- 2026-05-28: Weather/price boxplot tau4 truth contract tightened.
+  - Extended `sensitivity_boxplot_contract_readiness_tau4.*` so exact tau4
+    dispatch and mechanism truth coverage is shown separately from older
+    any-tau artifacts.
+  - Current boxplot matrix status:
+    - `upper_only dur24`: exact tau4 truth exists, but the deployable flex-load
+      path is still below target.
+    - `1K dur4`: exact tau4 dispatch/mechanism truth exists, but the current
+      system/case support contract is still not promoted for the full boxplot
+      inference path.
+    - all other `1K/2K dur1/8/12` and `2K dur4`: blocked by missing exact tau4
+      truth in at least one required learning layer.
+  - This means the immediate blocker for most boxplot cases is not another
+    generic XGB run; it is either targeted tau4 truth collection or an explicit,
+    documented decision to treat older `policy_tau_h == 0` artifacts as proxy
+    evidence.
+
+- 2026-05-28: Targeted tau4 truth added for weather/price boxplot cases.
+  - Extended the `LOWER1K` and `LOWER2K` tau/duration bundle runners with an
+    explicit `--write-hourly-dispatch` pass-through so new screens can feed the
+    hourly dispatch learning layer directly.
+  - Ran targeted tau4 boxplot-window truth for:
+    - `1K dur1/8/12`,
+    - `2K dur1/4/8/12`,
+    using the selected boxplot dates (`best_day`, February week, April week,
+    December week), `300 s` per day, `1%` MIP gap, and explicit skip-on-failure
+    contract.
+  - Refreshed hourly-dispatch dataset:
+    `c2b44bd14cf11e1b9ed24833710d5b6a5fd5167bb6454cf8d3253a00861be4b9`
+    (`22,200` selected hourly rows, `171` bundles).
+  - New exact tau4 hourly-dispatch coverage is now roughly `16-20` boxplot
+    anchor days for the previously missing `1K/2K` duration cells.
+  - Validation after truth refresh:
+    - oracle-load dispatch remains paper-grade for cost/CO2:
+      heat-cost delta R2 `0.983`, CO2 delta R2 `0.987`, fuel-cost delta R2
+      `0.980`, CO2-cost delta R2 `0.988`.
+    - global predicted-load bridge is still not paper-grade on the harder
+      refreshed matrix: heat-cost delta R2 about `0.555`, CO2 delta R2 about
+      `0.485` in the quick 1-seed check.
+  - Conclusion: the dispatch/cost response model remains strong; the next
+    blocker is family-specific flex-load/mechanism generation. More global
+    pooling alone will not solve the deployable boxplot surrogate.
+
+- 2026-05-28: Price-year sensitivity run contract implemented for KPI boxplots.
+  - Added explicit dispatch settings
+    `historical_price_year_override` and
+    `historical_gas_boiler_uses_day_ahead_price`.
+  - Wired the integrated energy system so a price-year override remaps
+    electricity, gas and CO2 lookup timestamps while keeping the physical load
+    day unchanged; missing price inputs fail fast.
+  - Extended the heating-season screen runner with `--price-year` and
+    `--historical-gas-boiler-uses-day-ahead-price`. Rows and metadata now carry
+    the active price-year contract, and price-year resumes are guarded against
+    accidental mixing.
+  - Added
+    `Optimization/run/analysis/run_price_sensitivity_selected_windows_tau4.py`
+    for tau4 selected-window KPI truth under price years `2021`, `2024`, and
+    `2022`.
+  - Preflight solved one price-year 2024 upper-only day successfully, confirming
+    that the re-optimization path runs through the actual MILP objective rather
+    than post-hoc repricing.
+
+- 2026-05-28: Flex-load bottleneck rechecked for deployable KPI boxplots.
+  - Added a diagnostic routed load-delta bridge for hourly dispatch:
+    `Learning/thermflex_hourly_dispatch/evaluate_delta_load_router.py`.
+  - Added explicit router labels to the dispatch family-router diagnostic:
+    `lower_duration_tau` and `flex_case_label`.
+  - Latest quick checks on hourly-dispatch family
+    `c2b44bd14cf11e1b9ed24833710d5b6a5fd5167bb6454cf8d3253a00861be4b9`:
+    - oracle/flex-load-known dispatch remains strong from the prior run
+      (`dispatch_heat_operating_cost_eur_delta` R2 about `0.983`,
+      `co2_emissions_total_t_delta` R2 about `0.987`).
+    - deployable load-delta bridge is not solved: best quick route is still
+      only about `0.64` R2 for heat-cost delta and `0.59` R2 for CO2 delta.
+    - finer `flex_case_label` routing worsened the result because many slices
+      have too little independent date support and fall back heavily.
+  - Latest daily boxplot-horizon reevaluation on daily-results family
+    `4a24d1ddce8cb476ca393b27270e7cfdb7aad0260bff9fe508eec664809f5639`
+    confirms the same direction: shifted heat is strong, but Cost/CO2 remain
+    below target on selected April/February week OOF checks.
+  - Conclusion: do not spend more effort on generic routing labels alone.
+    The next useful model change must be a mechanism/state flex-load generator
+    or explicit MILP truth for selected price/weather windows.
+
+- 2026-05-28: Daily-sequence load bridge tested for dispatch KPI surrogate.
+  - Added
+    `Learning/thermflex_hourly_dispatch/evaluate_daily_sequence_load_bridge.py`
+    to predict coherent 24-hour load-delta sequences before dispatch.
+  - Quick checks improved the deployable path versus the plain row-wise
+    predicted-load bridge but did not close the gap:
+    - full refreshed family after small truth backfill:
+      heat-cost delta R2 about `0.72`, CO2 delta R2 about `0.65-0.68`;
+    - daily-sum load-delta R2 about `0.83-0.84`, absolute flexible-load daily
+      R2 about `0.99`.
+  - Adding explicit predicted sequence-state features (positive/negative mass,
+    first negative trigger hour, positive mass after trigger) did not improve
+    cost/CO2; it slightly worsened the quick check.
+  - Updated `run_central_tau4_truth_backfill.py` so it can:
+    - count existing exact tau4 days from hourly-dispatch artifacts, not only
+      daily screen rows,
+    - write hourly-dispatch truth during central tau4 backfill.
+  - Small targeted backfill ran for `1K/2K` tau4 lower-relax families:
+    six new/updated `2023-12-31` hourly-dispatch anchors solved, while
+    `2K dur12` hit the `300 s` time limit and was skipped.
+  - New hourly-dispatch dataset:
+    `a71e93ec9f0131277131dec1cc1738093b3016884b0170c62b02c65f341585a2`
+    (`22,344` selected rows, `172` bundles).
+  - Conclusion: more exact tau4 hourly truth is still useful, but the next R2
+    jump likely requires a CHP/boiler regime classifier or component dispatch
+    router. The old Rebound state trick explains load-shape states but does not
+    by itself solve cost/CO2 switching.
+
+- 2026-05-29: Price-year selected-window MILP truth collected for the KPI boxplot.
+  - Ran `run_price_sensitivity_selected_windows_tau4.py` for price years
+    `2021`, `2024`, and `2022` with tau fixed at `4 h`, selected best-day/week
+    windows, all planned upper-only and bidirectional duration cases, `300 s`
+    per-day solve limit, `1%` relative gap, and explicit incomplete-day
+    manifests.
+  - Output folders are under
+    `Optimization/run/results/Vienna/gold/daily_thermflex_screen_price<year>_*_windows_*`.
+  - Coverage summary:
+    - upper-only and all `1K dur1` cases solved `22/22` days for all price
+      years;
+    - long `2K` cases are usable but incomplete because high-price and long
+      duration solves frequently hit the explicit `300 s` limit;
+    - worst slice is `2022 2K dur8/dur12`, with `13/22` solved and `9` known
+      skips.
+  - Interpretation: the selected-window price-regime boxplot truth is now
+    available without post-hoc repricing. Aggregation must carry solved/failed
+    counts and avoid silently treating skipped days as zero.
+
+- 2026-05-29: Strict price-regime boxplot aggregation and targeted retries.
+  - Added
+    `Documentation/Papers/thermflex_paper/tables/build_price_regime_boxplot_inputs_tau4.py`.
+    It reads explicit `price2021/2024/2022` selected-window MILP screens,
+    merges retry folders, and writes:
+    - `price_regime_boxplot_inputs_tau4.csv`,
+    - `price_regime_boxplot_inputs_tau4.md`,
+    - `price_regime_boxplot_inputs_tau4_sources.csv`.
+  - Added
+    `Optimization/run/analysis/run_price_sensitivity_failed_day_retry_tau4.py`
+    to retry only failed case/date combinations from the strict boxplot input
+    table.
+  - Fixed the daily screen runner so an allow-incomplete retry with zero solved
+    rows no longer crashes after writing a failure manifest.
+  - Targeted high-limit retries completed the price-regime best-day slice:
+    all three price years now have complete best-day rows for all nine tau-4
+    use cases.
+  - Remaining price-regime incompleteness is in selected weekly windows, mostly
+    long 2K duration cases. These rows remain explicitly marked
+    `partial_with_known_solver_skips`; no skipped day is filled as zero.
+
+- 2026-05-29: Diagnostic hybrid fill path for price-regime boxplot inputs.
+  - Added
+    `Documentation/Papers/thermflex_paper/tables/build_price_regime_boxplot_inputs_tau4_hybrid_filled.py`.
+    It keeps exact selected-window MILP rows, fills only known solver-skip
+    dates with explicit daily surrogate rows, and writes:
+    - `price_regime_boxplot_inputs_tau4_hybrid_filled.csv`,
+    - `price_regime_boxplot_inputs_tau4_hybrid_filled.md`,
+    - `price_regime_boxplot_inputs_tau4_hybrid_filled_sources.csv`,
+    - `price_regime_boxplot_inputs_tau4_hybrid_filled_daily_sources.csv`,
+    - `price_regime_boxplot_inputs_tau4_hybrid_filled_model_metrics.csv`.
+  - The run produced 108 complete period rows: 76 MILP-only rows and 32
+    hybrid MILP+surrogate rows; 53 selected-window solver-skip days were
+    filled and no unfilled dates remain in this diagnostic output.
+  - Important caveat: the available daily fill models are explicitly marked
+    `diagnostic_not_paper_grade_current_daily_models`; their current holdout
+    metrics are not sufficient for final paper claims. The strict MILP-only
+    `price_regime_boxplot_inputs_tau4.*` remains the current truth SSOT, while
+    the hybrid file is a coverage-complete diagnostic until a stronger
+    surrogate path or targeted MILP truth replaces the filled days.
+
+- 2026-05-29: Weather-year sensitivity contract started; price retry prepared.
+  - Added `dispatch.historical_weather_year_override` and wired it into the
+    precompute adapter so weather-year sensitivity changes physical outdoor
+    temperature, irradiance, solar gains, building heat demand and DH load
+    before MILP dispatch. This is intentionally separate from price-year
+    repricing.
+  - Added screen-level `--weather-year` support and persisted
+    `weather_year_override` in daily rows, failure manifests and screen meta.
+  - Added
+    `Optimization/run/analysis/run_weather_sensitivity_selected_windows_tau4.py`
+    for the selected best-day/week tau-4 weather-regime matrix using
+    cold/average/mild years `2021/2020/2024`.
+  - Added overnight helper scripts:
+    - `Optimization/run/analysis/run_price_retry_tau4_overnight.ps1`
+    - `Optimization/run/analysis/run_weather_sensitivity_tau4_overnight.ps1`
+  - Smoke-tested the weather path on `weather_year=2021`, upper-only tau4,
+    `2023-01-01`, `60 s` limit. REF solved; FLEX correctly reached the
+    explicit time limit and wrote a failure manifest carrying
+    `weather_year_override=2021`, proving the physical weather contract reaches
+    the screen path. Use a higher limit for production runs.
+  - Background process launch via this sandbox was not reliable enough to
+    claim that the overnight jobs are running; scripts are reproducible and
+    ready for direct terminal execution.
+
+- 2026-05-30: Price-year selected-window retries continued with strict MILP.
+  - Ran two targeted `tau=4 h` retry passes for the remaining selected-window
+    price-year solver skips using `1800 s` per day and `1%` relative MIP gap.
+  - Rebuilt `price_regime_boxplot_inputs_tau4.*` after the retries.
+  - Current strict selected-window coverage is `94/108` complete period rows
+    and `14/108` `partial_with_known_solver_skips` rows.
+  - There are no `missing_days` in the strict table; remaining gaps are
+    explicit solver failures with `failed_dates` carried in the CSV/Markdown
+    evidence. No failed day was filled with zero or surrogate output.
+  - Remaining partial rows are concentrated in weekly windows, especially
+    2K duration cases and a few 1K dur4/dur8 cases on hard February/April
+    dates. Further completion would require another deliberate MILP retry
+    policy, likely longer than `1800 s`, or accepting visible partial coverage.
+
+- 2026-05-31: Weather-year selected-window MILP truth and strict aggregation.
+  - Ran the tau-4 selected-window weather-regime matrix through
+    `Optimization/run/analysis/run_weather_sensitivity_tau4_overnight.ps1`.
+    Weather years are physical-load overrides, not post-hoc price changes.
+  - The run produced `27` weather screen directories for `2021`
+    (`cold_weather`), `2020` (`average_weather`) and `2024` (`mild_weather`)
+    across the planned nine use cases.
+  - Daily screen coverage is `489/594` solved day rows and `105/594`
+    explicit solver failures.
+  - Added
+    `Documentation/Papers/thermflex_paper/tables/build_weather_regime_boxplot_inputs_tau4.py`.
+    It validates `weather_year_override`, aggregates the same KPI block as
+    the price-year builder, and writes:
+    - `weather_regime_boxplot_inputs_tau4.csv`,
+    - `weather_regime_boxplot_inputs_tau4.md`,
+    - `weather_regime_boxplot_inputs_tau4_sources.csv`.
+  - Current weather selected-window period coverage is `48/108` complete,
+    `38/108` partial with known solver skips, and `22/108` failed-only period
+    rows. There are no `missing_days`; all incomplete rows carry explicit
+    failed dates.
+
+- 2026-06-01: Weather-year best-day retry checked and stopped.
+  - Added
+    `Optimization/run/analysis/run_weather_sensitivity_failed_day_retry_tau4.py`
+    to retry only failed/missing weather-year case/date combinations from the
+    strict weather boxplot input table.
+  - Ran a focused `2023-01-01` best-day retry with `1800 s` per day. Weather
+    coverage improved from `48/108` complete, `38/108` partial and `22/108`
+    failed-only period rows to `52/108` complete, `38/108` partial and
+    `18/108` failed-only rows.
+  - A subsequent `3600 s` best-day retry pass produced only additional
+    time-limit failure manifests before being stopped deliberately. Rebuilding
+    `weather_regime_boxplot_inputs_tau4.*` after stopping left coverage
+    unchanged at `52/108` complete, `38/108` partial and `18/108` failed-only.
+  - No Python weather retry process remains active after the stop.
+
+- 2026-06-01: Targeted weather-week retry for near-complete partial rows.
+  - Extended `run_weather_sensitivity_failed_day_retry_tau4.py` with horizon
+    and per-period failed-day filters so retries can target rows where exactly
+    one failed date blocks a complete weekly period.
+  - Retried the 16 weather weekly rows with `6/7` solved days using `1800 s`
+    per day and `1%` relative MIP gap.
+  - Rebuilt `weather_regime_boxplot_inputs_tau4.*`. Weather selected-window
+    coverage improved from `52/108` complete, `38/108` partial and `18/108`
+    failed-only rows to `62/108` complete, `28/108` partial and `18/108`
+    failed-only rows.
+  - Stopped one lingering Python child after the retry outputs had been
+    written; no Python process remains active.
+
+- 2026-06-01: Final small weather-week retry for remaining 6/7 rows.
+  - Re-ran the remaining weekly rows with exactly one failed date using the
+    same `1800 s` per-day retry policy under a 9-hour foreground budget.
+  - Two additional period-blocking dates solved and four remained explicit
+    time-limit failures.
+  - Rebuilt `weather_regime_boxplot_inputs_tau4.*`. Weather selected-window
+    coverage is now `64/108` complete, `26/108` partial and `18/108`
+    failed-only rows.
+  - Four weekly rows still have exactly one failed date; further MILP retries
+    would be low-yield unless there is a specific paper need for those slices.
+
+- 2026-06-02: Sensitivity boxplot probe from strict selected-window inputs.
+  - Added
+    `Documentation/Papers/thermflex_paper/figures/runners/build_fig_sensitivity_boxplot_probe_tau4.py`.
+  - The probe reads strict price- and weather-regime selected-window inputs,
+    filters to complete period rows, writes
+    `fig_sensitivity_boxplot_probe_tau4_long.csv`, and renders
+    `fig_sensitivity_boxplot_probe_tau4.png`.
+  - The diagnostic plot confirms that the price-year boxplot is well supported
+    by complete rows, while weather-year boxes remain visually sparse for some
+    long 2K cases despite the improved MILP coverage.
+
+- 2026-06-02: Combined price-weather boxplot probe.
+  - Added
+    `Documentation/Papers/thermflex_paper/figures/runners/build_fig_sensitivity_combined_boxplot_probe_tau4.py`.
+  - The builder creates a selected-window `Price x Weather` diagnostic boxplot
+    in the main-results mockup layout and writes
+    `fig_sensitivity_combined_boxplot_probe_tau4_long.csv` plus
+    `fig_sensitivity_combined_boxplot_probe_tau4.png`.
+  - Important caveat: current outputs are an interaction-free product
+    approximation from marginal price and weather MILP screens:
+    `central_anchor + price_offset + weather_offset`. They are suitable for
+    visual/layout testing, not final joint price-weather evidence.
+
+- 2026-06-02: Final 4-row weather-week retry checked.
+  - Retried the four remaining weather weekly rows with `6/7` solved days
+    using the same `1800 s` per-day policy and `1%` relative MIP gap.
+  - All four candidate dates again ended as explicit time-limit failures.
+  - Rebuilt `weather_regime_boxplot_inputs_tau4.*`. Weather selected-window
+    coverage remains `64/108` complete, `26/108` partial and `18/108`
+    failed-only rows.
+  - The remaining `6/7` rows are all `2024` mild-weather slices:
+    `february_week upper_lower_1k_dur8_evt24`,
+    `february_week upper_lower_1k_dur12_evt24`,
+    `december_week upper_lower_2k_dur4_evt24`, and
+    `february_week upper_lower_2k_dur4_evt24`.
+
+- 2026-06-02: Coverage-aware combined sensitivity boxplot dataset.
+  - Added
+    `Documentation/Papers/thermflex_paper/figures/runners/build_fig_sensitivity_combined_boxplot_coverage_tau4.py`.
+  - The builder reads strict price-year and weather-year selected-window MILP
+    inputs plus the central anchor table and writes:
+    - `fig_sensitivity_combined_boxplot_coverage_tau4_long.csv`,
+    - `fig_sensitivity_combined_boxplot_coverage_tau4_paper_candidate_long.csv`,
+    - `fig_sensitivity_combined_boxplot_coverage_tau4_summary.csv`,
+    - `fig_sensitivity_combined_boxplot_coverage_tau4.png`.
+  - Boxplot boxes use only joint rows where both marginal inputs are complete;
+    partial marginal rows are kept as explicit diagnostic points and source
+    tags, never silently promoted to complete-week evidence.
+  - Current output contains `664` KPI-long paper-candidate rows and `416`
+    KPI-long partial-diagnostic rows across the selected windows. The joint
+    value contract remains the marginal-offset approximation, not full crossed
+    price-weather MILP truth.
+
+- 2026-06-02: Boxplot cost-sign diagnostic.
+  - Added
+    `Documentation/Papers/thermflex_paper/tables/build_boxplot_cost_sign_diagnostic_tau4.py`.
+  - The diagnostic writes `boxplot_cost_sign_diagnostic_tau4.csv/.md` and
+    compares the selected-window sensitivity input cost metric
+    (`dispatch_heat_operating_cost`) against the older central selected-window
+    net cost metric (`dispatch_operating_cost`).
+  - Main finding: positive weekly boxplot heat-cost deltas are real in the
+    current heat-cost input contract, while the older April savings statement
+    mostly refers to net dispatch-operating-cost deltas where increased CHP
+    electric value can offset higher fuel/CO2 heat costs.
+
+- 2026-06-02: Cost metric comparison for sensitivity plot.
+  - Extended the strict price/weather boxplot aggregators to export
+    `operating_cost_delta_meur` and `operating_cost_delta_pct` from the same
+    solved daily screen rows; no new MILP coverage is required.
+  - Added
+    `Documentation/Papers/thermflex_paper/figures/runners/build_fig_sensitivity_cost_metric_comparison_tau4.py`.
+  - The diagnostic writes
+    `fig_sensitivity_cost_metric_comparison_tau4_long.csv`,
+    `fig_sensitivity_cost_metric_comparison_tau4_summary.csv`, and
+    `fig_sensitivity_cost_metric_comparison_tau4.png`.
+  - Net dispatch cost restores clear April savings in the selected-window
+    price/weather approximation, but December and February remain mostly
+    positive in the current marginal-offset combination. Net dispatch cost
+    percentages also show extreme outliers, so absolute MEUR values are kept
+    in the same export for decision-making.
+
+- 2026-06-02: Economic activation policy applied to the combined boxplot.
+  - Updated
+    `Documentation/Papers/thermflex_paper/figures/runners/build_fig_sensitivity_combined_boxplot_coverage_tau4.py`
+    to use net dispatch operating cost as the activation gate.
+  - Joint samples are plotted only as savings when the approximated net
+    dispatch cost delta is negative; otherwise the paper-facing cost saving,
+    CO2 saving, shifted heat and peak effect are set to zero.
+  - The CSV keeps raw joint KPI values, raw net-cost deltas, activation status,
+    and coverage tags, so the savings guarantee is explicit and auditable.
+  - The current selected-window marginal-offset surface has all best-day
+    complete samples active, April mostly active, and December/February
+    complete samples mostly not activated under this policy.
+
+- 2026-06-02: Diagnosed winter-week sensitivity cost-sign break.
+  - Added
+    `Documentation/Papers/thermflex_paper/tables/build_boxplot_joint_cost_mechanism_diagnostic_tau4.py`
+    and exported `boxplot_joint_cost_mechanism_diagnostic_tau4.csv/.md`.
+  - The central selected-window 2023 table remains cost-saving for all
+    December and February cases, so the winter-week issue is not caused by the
+    originally selected periods alone.
+  - Complete marginal price/weather sensitivity MILP rows already contain many
+    positive net dispatch-cost deltas before the price x weather approximation.
+  - Critical contract mismatch found: the central table uses non-`tau4h`
+    overrides, while the sensitivity runners use explicit `*_tau4h.json`
+    overrides with DH bus inertia enabled; price/weather sensitivity runners
+    also set `historical_gas_boiler_uses_day_ahead_price=True`.
+
+- 2026-06-02: Fig. 15 mechanism probe on boxplot coverage windows.
+  - Rendered
+    `Documentation/Papers/thermflex_paper/figures/png/fig_15_upper_lower_relaxation_dispatch_response_tau4_coverage_windows_probe.png`
+    and CSV with the Fig.-15 mechanism builder on the already selected
+    sensitivity windows: `2023-12-02..08`, `2023-02-19..25`,
+    `2023-04-01..07`.
+  - This is a visual mechanism probe for the medium 2023 case, not a new
+    price/weather sensitivity dataset. It confirms that the existing coverage
+    windows can still illustrate ThermFlex load shifting graphically.
+
+- 2026-06-02: Existing sensitivity-window candidate scan.
+  - Added
+    `Documentation/Papers/thermflex_paper/tables/build_sensitivity_window_candidate_scan_tau4.py`.
+  - The scan uses only already solved price/weather sensitivity daily screens
+    and ranks contiguous 1-7 day windows by coverage, saving share, median
+    cost saving, CO2, shifted heat and peak reduction.
+  - No additional full winter week with strong savings was found in the
+    current solved sensitivity coverage. Best winter candidates are shorter:
+    `2023-12-07`, `2023-12-07..08`, and `2023-02-23..24`. April windows are
+    robust, with several 2-4 day candidates at full saving share.
+
+- 2026-06-02: Joint cost and CO2 window scan.
+  - Extended
+    `Documentation/Papers/thermflex_paper/tables/build_sensitivity_window_candidate_scan_tau4.py`
+    with joint cost-and-CO2 saving shares and heat-allocated CO2 diagnostics.
+  - The best day remains clean for both cost and CO2 across all solved
+    sensitivity samples. `2023-04-01` and `2023-04-01..02` are the strongest
+    additional already-solved windows with both cost and total-CO2 savings.
+  - The current December and February candidate windows mainly improve net
+    dispatch cost, while total CO2 often increases. This is consistent with
+    the export contract where net dispatch cost includes CHP electric value,
+    but `co2_emissions_total_t` counts gas boiler plus gas CHP emissions.
+  - Updated
+    `Documentation/Papers/thermflex_paper/figures/runners/build_fig_sensitivity_combined_boxplot_coverage_tau4_candidate_windows.py`
+    and re-rendered `fig_sensitivity_combined_boxplot_coverage_tau4.png` with
+    an additional `2023-04-01..2023-04-02` April candidate row. This short
+    April window keeps good cost savings while making CO2 savings visible.
+  - Revised the figure to focus on cost and CO2 savings only. Shifted heat and
+    peak reduction were removed from this candidate boxplot, and the point
+    overlays/fliers were hidden so the boxes alone represent the pooled
+    marginal sensitivity spread.
+  - The current plotting contract uses KPI-specific windows within the same
+    seasonal period where needed: April cost uses `2023-04-01..07` while April
+    CO2 uses `2023-04-01..02`; December CO2 uses `2023-12-02`; February CO2
+    uses `2023-02-23`. CO2 values remain gated by cost savings in their own
+    KPI window.
+  - After the focused current-window retry batch, re-ran the price/weather
+    strict aggregators, current-window coverage-value scan, sensitivity-window
+    scan and candidate boxplot render. The batch solved `4/17` targeted tasks:
+    February gained one weather sample, December cost gained three weather
+    samples, and April remained unchanged because its targeted hard gaps failed
+    again.
+
+- 2026-06-03: Full-heating-period surrogate contract inventory.
+  - Added
+    `Documentation/Papers/thermflex_paper/tables/build_full_heating_period_surrogate_contract_tau4.py`.
+  - Outputs:
+    `full_heating_period_surrogate_contract_tau4.csv`,
+    `full_heating_period_surrogate_evidence_tau4.csv`, and
+    `full_heating_period_surrogate_contract_tau4.md`.
+  - Scope is deliberately limited to tau `4 h`, the nine current boxplot use
+    cases, and paper KPIs `cost_saving` plus `co2_saving`.
+  - Current readiness is blocked, not paper-ready: CO2 has strong oracle
+    dispatch evidence (`R2 ~= 0.987`) but no validated deployable full-period
+    flex-load generator; net dispatch operating cost lacks matching target
+    evidence because the strong existing dispatch evidence is for
+    `dispatch_heat_operating_cost_eur_delta`.
+  - Updated the contract with an explicit net-cost reconstruction check:
+    `dispatch_operating_cost_eur_delta =
+    dispatch_heat_operating_cost_eur_delta - gas_chp_electric_value_eur_delta`.
+    This identity holds on `1085` current tau4 daily-screen rows with maximum
+    absolute error below `1.2e-9 EUR`.
+  - Net cost therefore has strong oracle-only reconstructed evidence
+    (`R2 ~= 0.977` from the weaker component), so the remaining full-period
+    blocker is the same as for CO2: validated deployable full-period
+    ThermFlex/Flex-load mechanism inputs.
+  - Added
+    `Documentation/Papers/thermflex_paper/tables/build_full_heating_period_flex_load_bridge_readiness_tau4.py`
+    and exported
+    `full_heating_period_flex_load_bridge_readiness_tau4.csv/.md`.
+  - Existing deployable bridges are below threshold for full-period paper use:
+    the tau4 daily-sequence bridge is around `R2 ~= 0.56` for heat cost and
+    `R2 ~= 0.53` for total CO2, while the broader daily-sequence bridge reaches
+    only about `R2 ~= 0.71` / `0.66`. Existing bridge summaries also do not
+    include `gas_chp_electric_value_eur_delta`, which is required to
+    reconstruct net dispatch cost.
+  - Rechecked the older `fe23b4...` end-to-end bridge diagnostics because the
+    earlier surrogate quality looked stronger in memory. The strong result was
+    the oracle-load ceiling, not the deployable fill path: daily-sum
+    `oracle_load` reaches about `R2 = 0.970` for heat cost, `0.990` for CO2
+    and `0.946` for `gas_chp_electric_value_eur_delta`; the corresponding
+    `predicted_load` path remains below paper threshold at about `0.683`,
+    `0.615` and `0.636`. The readiness report now lists both variants
+    explicitly.
+  - Extended the current deployable bridge diagnostics so the target filters
+    include `gas_chp_electric_value_eur_delta`. Re-ran the current boxplot
+    truth-refresh consistency bridge, the tau4 daily-sequence bridge, and the
+    broader daily-sequence bridge. The missing-metric gap is closed, but the
+    result still blocks promoted full-period sensitivity fills:
+    `load_bridge_consistency_boxplot_truthrefresh` is about `R2 = 0.555`,
+    `0.485`, `0.609`; `daily_sequence_tau4_boxmix` is about `0.558`, `0.549`,
+    `0.525`; and the broader `daily_sequence_state_quick` is about `0.713`,
+    `0.662`, `0.616` for heat cost, CO2 and CHP electric value respectively.
+
+- 2026-06-04: Tau and December-weather coverage block for paper figures.
+  - Ran selected-day tau sensitivity for tau `2 h`, `8 h`, and `12 h` across
+    the nine current use cases and four selected periods. Solved coverage:
+    tau2 `29/36`, tau8 `36/36`, tau12 `35/36`; remaining gaps are explicit
+    solver/time-limit failures, mostly tau2 long-duration cases.
+  - Ran additional December CO2 weather coverage for exact date `2023-12-02`
+    and weather years `2016`, `2017`, `2018`, `2019`, `2022`, `2023`, `2025`
+    with tau4. Solved coverage: 2016 `5/9`, 2017 `9/9`, 2018 `9/9`, 2019
+    `9/9`, 2022 `9/9`, 2023 `9/9`, 2025 `8/9`.
+  - The only new Weather-2025 failure is `upper_lower_2k_dur12_evt24` at the
+    December CO2 date. Weather-2016 remains the main difficult year with four
+    unsolved December CO2 cases.
+  - No strict table aggregation or figure re-render was run after this compute
+    block yet; next step is to rebuild weather inputs, the full-heating-period
+    KNN draft if desired, and then the selected-window boxplot.
+
+- 2026-06-05: Restored strict paper sensitivity-year contract.
+  - A later weather-coverage attempt briefly expanded to extra historical
+    weather years (`2016`, `2017`, `2018`, `2019`, `2023`, `2025`) to widen
+    visual box samples. This is not the intended paper contract and those
+    extra years should remain diagnostic-only.
+  - Rebuilt `weather_regime_boxplot_inputs_tau4.*` strictly with weather
+    years `2020`, `2021`, `2024`, rebuilt the full-heating-period KNN draft
+    with price years `2021`, `2024`, `2022` and weather years `2020`, `2021`,
+    `2024`, and re-rendered
+    `fig_sensitivity_combined_boxplot_coverage_tau4.png`.
+  - Current strict-contract selected-window sample counts are mostly
+    sufficient for the paper-facing plot: February candidate rows are `n=5..6`
+    and full-heating-period rows are `n=9`; best-day Weather MILP remains hard,
+    so best-day rows stay at `n=3..5` with mostly price-year support.
+
+- 2026-06-05: Diagnostic extended CO2 weather coverage for thin panels.
+  - Added diagnostic exact-date tau4 weather coverage for additional
+    historical weather years `2016`, `2017`, `2018`, `2019`, `2022`, `2023`,
+    and `2025`.
+  - Best day `2023-01-01` was attempted for all nine use cases. Coverage:
+    2016 `6/9`, 2017 `9/9`, 2018 `0/9`, 2019 `0/9`, 2022 `9/9`, 2023 `0/9`,
+    2025 `9/9`; total `33/63`. Weather years 2018, 2019, and 2023 are hard
+    solver regimes for this exact date at the current 1800 s budget.
+  - February CO2 date `2023-02-23` was run for the targeted cases
+    `upper_only_dur24`, `upper_lower_1k_dur1_evt24`,
+    `upper_lower_1k_dur4_evt24`, `upper_lower_2k_dur1_evt24`, and
+    `upper_lower_2k_dur4_evt24`; all targeted runs solved (`35/35`).
+  - These extra historical years remain diagnostic-only unless the manuscript
+    explicitly changes the weather-sensitivity contract beyond `2020`, `2021`,
+    and `2024`.
+
+- 2026-06-05: Added draft quantitative taxonomy figure for the review paper.
+  - Added `Documentation/Papers/review_surrogate_modeling/figures/build_taxonomy_bubble_draft.py`.
+  - Generated `fig_taxonomy_bubble_draft.png/.pdf` and
+    `fig_taxonomy_bubble_draft_counts.csv` from the curated
+    `review_paper_library_manifest.csv` plus bucket tags.
+  - The draft uses conservative bucket-level labels only; it is intended as a
+    visual prototype before any stronger PDF/abstract-based claim audit.
+
+- 2026-06-05: Added draft evidence-rigor and optimizer-embedding maps.
+  - Added `Documentation/Papers/review_surrogate_modeling/figures/build_evidence_rigor_and_optimizer_maps_draft.py`.
+  - Generated `fig_evidence_rigor_quadrant_draft.png/.pdf` from
+    PDF-backed Section-8 evidence cards to show reported DoE depth versus
+    validation depth.
+  - Generated `fig_optimizer_embedding_taxonomy_draft.png/.pdf` from the
+    broader curated library to show optimizer integration role versus
+    surrogate target criticality with dominant model class and trust signal.
+  - Both figures are draft visual encodings and should remain labelled as
+    bucket/evidence-card based until a stricter PDF/abstract audit is added.
+
+- 2026-06-05: Added four-panel taxonomy synthesis draft figure.
+  - Added `Documentation/Papers/review_surrogate_modeling/figures/build_four_panel_taxonomy_synthesis_draft.py`.
+  - Generated `fig_four_panel_taxonomy_synthesis_draft.png/.pdf` and count
+    export. The figure combines model class by optimizer role, surrogate
+    target by optimizer role, reported DoE by validation depth, and a stacked
+    application-target bar panel.
+  - Panels A/B/D use the broader curated library bucket layer; Panel C uses
+    PDF-backed evidence cards because DoE and validation are explicit there.
+
+- 2026-06-05: Added alternative four-panel taxonomy synthesis with fewer bubble panels.
+  - Added `Documentation/Papers/review_surrogate_modeling/figures/build_four_panel_taxonomy_synthesis_v2_draft.py`.
+  - Generated `fig_four_panel_taxonomy_synthesis_v2_draft.png/.pdf`; this version uses heatmaps for model-class/role and DoE/validation, keeps one bubble panel for target/role, and keeps the stacked application-target bar panel.
+
+- 2026-06-05: Added integration-pattern profile heatmap draft.
+  - Added `Documentation/Papers/review_surrogate_modeling/figures/build_integration_pattern_profile_heatmaps_draft.py`.
+  - Generated `fig_integration_pattern_profile_heatmaps_draft.png/.pdf` and count export. The figure keeps integration patterns on the x-axis and profiles model class, training/DoE, and validation signals as three aligned heatmaps from PDF-backed evidence cards.
+
+- 2026-06-05: Added taxonomy flow and top-archetype draft figures.
+  - Added `Documentation/Papers/review_surrogate_modeling/figures/build_taxonomy_flow_and_archetypes_draft.py`.
+  - Generated `fig_taxonomy_alluvial_flow_draft.png/.pdf` for model-class to target to optimizer-role flows and `fig_taxonomy_archetypes_lollipop_draft.png/.pdf` for the most frequent complete taxonomy archetypes.
+  - Both use conservative bucket-derived labels from the curated library and remain draft visual encodings pending stricter audit.
+
+- 2026-06-05: Added four-panel final-candidate taxonomy draft.
+  - Added `Documentation/Papers/review_surrogate_modeling/figures/build_four_panel_final_candidate_draft.py`.
+  - Generated `fig_four_panel_final_candidate_draft.png/.pdf` combining a model-class/optimizer-role bubble map, model-class to validation to optimizer-role alluvial flow, DoE-by-pattern heatmap, and application-target stacked bars.
+  - Panels A/D use curated-library bucket tags; Panels B/C use PDF-backed evidence cards.
+
+- 2026-06-05: Added evidence-based four-panel taxonomy figure from PDF-backed cards.
+  - Added `Documentation/Papers/review_surrogate_modeling/figures/build_four_panel_taxonomy_evidence.py`.
+  - Generated `fig_four_panel_taxonomy_evidence.png/.pdf` and count export from `paper_library/sec8_evidence_cards.csv` only. All 128 records in this source have matched local PDFs.
+  - The figure omits unassigned cells per panel, uses consistent validation colors across the bubble and alluvial panels, and sorts the application-target stacked bars by total PDF-backed paper count.
+  - The curated BibTeX library contains abstracts for nearly all entries (`292/293`), but this figure deliberately does not auto-extend beyond the PDF-backed evidence cards until the abstract-derived assignments for DoE and validation are separately audited.
+
+- 2026-06-08: Extracted standalone model-class evidence figures.
+  - Added `Documentation/Papers/review_surrogate_modeling/figures/build_model_class_evidence_figures.py`.
+  - Generated `fig_model_class_integration_bubble_evidence.png/.pdf` as the standalone version of the previous bubble panel.
+  - Generated `fig_model_class_prevalence_evidence.png/.pdf` as a non-redundant alternative for the model-class section, showing ranked counts and shares for 127 explicitly assigned PDF-backed studies.
+
+- 2026-06-08: Replaced the standalone model-class bubble color dimension with audited surrogate targets.
+  - Added a fail-closed title/abstract/keyword and PDF audit using only the five target categories defined in the manuscript taxonomy.
+  - Classified 66 of 128 evidence-card studies at high confidence; the remaining 62 stay unassigned and are omitted from the target-colored bubbles.
+  - Regenerated `fig_model_class_integration_bubble_evidence.png/.pdf` with model class and integration pattern as axes, paper count as bubble size, and dominant surrogate target as color.
+
+- 2026-06-08: Reorganized the review figure layer.
+  - Moved all Python figure builders to `figures/runners/`, CSV inputs and count exports to `figures/csv/`, and Excel workbooks to `figures/source_data/`.
+  - Archived existing PDF exports and superseded figure drafts under `figures/old_figures/`; the figure root now contains only current PNGs and its README.
+  - Updated runner paths after the move and disabled default PDF generation. The active model-class runner now produces only the selected bubble figure.
+
+- 2026-06-08: Added an evidence-based DoE integration bubble figure.
+  - Added `paper_library/build_doe_evidence_audit.py`, which separately audits the manuscript's named DoE strategies and synthetic/historical/hybrid data-source claims from titles, abstracts, evidence-card PDF prose, and available PDFs.
+  - The strict source audit supported only four data-source assignments and two complete source-based plot records, so data source was not used as a quantitative color dimension.
+  - Generated `fig_doe_integration_bubble_evidence.png` from 34 high-confidence DoE assignments. Axes are DoE strategy and integration pattern; bubble size is study count and color is the dominant assigned surrogate model class.
+
+- 2026-06-08: Rebuilt the taxonomy alluvial figure from the full curated evidence base.
+  - Added `paper_library/build_alluvial_evidence_audit.py` and screened 261 non-review records using all abstracts plus 194 matched PDFs, with up to 35 PDF pages read per paper.
+  - Corrected the model-class layer to the five classes used by the manuscript; physics-informed and constraint-aware formulations remain neural-network variants rather than a separate class.
+  - Extended the existing alluvial runner to show `Model class -> DoE/training strategy -> Integration pattern -> Validation` for a constant cohort of 197 securely assigned model-class studies.
+  - Missing explicit evidence is retained as `Not explicitly identified`, preserving `n=197` at every stage without forced classification.
+
+- 2026-06-08: Diagnosed ThermFlex tau4 REF/FLEX contract mismatch.
+  - Added `diagnose_piecewise_chp_market_thermflex.py` for selected-day
+    market-price, CHP-mode, cost, penalty, storage, spillage, and CO2 checks.
+  - Piecewise CHP reacts in the intended direction: extra CHP electricity is
+    produced in high-price hours while added building heat occurs in low-price
+    hours.
+  - The material CO2 anomaly came from a more fundamental mismatch: tau4 was
+    active in FLEX but absent from the shared no-ThermFlex REF override.
+  - On `2023-04-21`, the mismatched contract produced `10.16 GWh` REF versus
+    `18.30 GWh` FLEX bus load despite nearly equal building heat. With tau4 on
+    both sides, physical CO2 delta fell from about `+1.81 kt` to `0.00 t`.
+  - Matching tau4 also reduced the selected-day physical CO2 deltas to
+    `+0.09 t` on `2023-10-11` and `-33.3 t` on `2023-01-01`.
+  - Existing tau4 deltas must therefore not be treated as final until they are
+    rebased against a tau4-consistent no-ThermFlex reference.
+
+- 2026-06-08: Rebased available Full Heating Period tau4 truth.
+  - Added an explicit fixed-ratio no-ThermFlex tau4 override and solved the
+    reusable central reference for all `212/212` heating-period days.
+  - Added a REF-only resumable runner and a non-destructive rebase builder;
+    no ThermFlex MILPs were rerun and no plot was rendered.
+  - Tightened the FHP inventory so only persisted FLEX overrides explicitly
+    containing `tau4h` qualify as tau4 evidence. Older no-tau runs are no
+    longer silently included.
+  - Corrected available-evidence results:
+    - all eight bidirectional cases now show positive dispatch-cost savings
+      (`0.23%` to `12.94%`)
+    - short-duration physical CO2 effects are approximately neutral
+      (`-0.22%` to `+0.09%` saving for 1K1h/1K4h/1K8h/1K12h/2K1h/2K4h)
+    - `2K8h` and `2K12h` retain positive CO2 savings (`1.12%`, `0.70%`)
+  - Explicit tau4 FHP coverage is `206` days for `2K1h`, `35-62` days for the
+    other bidirectional cases, and zero for upper-only.
+
+- 2026-06-08: Rebased the displayed selected-window sensitivity evidence.
+  - Extended the tau4 reference-only runner with a fail-fast explicit date
+    contract and solved `78/78` matched reference days: 13 displayed-window
+    dates for price years `2021/2024/2022` and weather years `2020/2021/2024`.
+  - Retained all existing absolute FLEX results and produced separate
+    old-versus-rebased diagnostic tables; the plot source and figure were not
+    modified.
+  - All retained FLEX rows use explicit `tau4h` overrides. Missing FLEX days
+    remain visible and are not filled by the reference pass.
+  - The corrected medians show that the old mismatch strongly inflated the
+    best-day result. December and February remain mostly plausible, while
+    April retains genuine scenario-dependent CO2 trade-offs.
+
+- 2026-06-08: Corrected only the Full Heating Period CO2 plot layer.
+  - Left all cost values and all Best Day/December/February/April plot values
+    unchanged.
+  - Shifted the FHP CO2 sensitivity distributions for the eight bidirectional
+    cases to their available explicit tau4 evidence levels while preserving
+    the existing price/weather scenario spread.
+  - Kept `upper_only_dur24` unchanged because no explicit tau4 FHP anchor is
+    available; the plot marks only available rebased central evidence.
+
+- 2026-06-08: Extracted standalone Panel D application-target figure.
+  - Added `Documentation/Papers/review_surrogate_modeling/figures/runners/build_panel_d_application_targets_sorted.py`.
+  - Generated `fig_panel_d_application_targets_sorted.png` from the existing
+    `D_app` rows in `fig_four_panel_final_candidate_draft_counts.csv`.
+  - Sorted model-class bars and application legend by tagged paper count, with
+    the legend placed outside the plot area for readability.
+
+- 2026-06-08: Added a bibliometric keyword-only word cloud.
+  - Added `Documentation/Papers/review_surrogate_modeling/figures/runners/build_bibliometric_keyword_wordcloud.py`.
+  - Generated `fig_bibliometric_keyword_wordcloud.png` and
+    `csv/fig_bibliometric_keyword_wordcloud_terms.csv` from the curated
+    paper library's keyword fields only.
+  - Added `csv/fig_bibliometric_keyword_wordcloud_unclassified_terms.csv` as
+    an audit trail for keyword phrases that were not assigned to a plotted
+    color family.
+  - Inserted the figure into `manuscript/03_bibliometrical_analysis.tex` with
+    an explicit note that color marks energy-system context, optimisation and
+    decision methods, surrogate and AI methods, energy technologies, and
+    performance objectives, not co-occurrence distance.
+
+- 2026-06-08: Reorganized the ThermFlex paper figure workspace.
+  - Split active figure artifacts into `runners/`, `png/`, `csv/`, `cache/`,
+    and `notes/`; moved superseded material to `archive/old/`.
+  - Added `runners/_paths.py` as the common path contract and migrated all
+    active builders and documentation references to the new locations.
+  - Verified all active builders by compilation, imported the linked paper
+    figure modules, reran the sensitivity boxplot builder, and validated the
+    registered learning-artifact paths without missing files.
+
+- 2026-06-09: Added and smoke-tested the unified review-paper evidence audit.
+  - Added `paper_library/build_unified_evidence_audit.py` as the shared
+    evidence source for the alluvial, model-class/target/trust, DoE, and
+    validation-combination figures.
+  - Added source-bound page-text caching under
+    `paper_library/cache/unified_pdf_text/`; cache reuse requires matching PDF
+    path, size, modification time, and page limit.
+  - The runner preserves multi-label target, trust, data-source, DoE, and
+    validation assignments with cite key, source, page, snippet, and
+    adjudication provenance. Model class and integration pattern remain
+    fail-closed primary assignments.
+  - Tightened focal-study checks after the first smoke pass exposed generic
+    validation and Related-Work matches.
+  - Final uncached smoke result: 16 PDFs, 239 pages, 48.6 s wall time with four
+    workers at 20 pages; estimated full matched-library runtime about 11 min
+    at that page limit. A cached repeat previously completed in about 10 s.
+
+- 2026-06-09: Completed the unified review-paper foreground audit.
+  - Audited 249 non-review studies using abstracts for all records and 187
+    matched PDFs, extracting 2,456 pages with a 50-page ceiling and stopping at
+    conventional reference headings.
+  - The uncached run took about 31.6 minutes. The cached corrected reruns took
+    about three minutes.
+  - Added an explicit vocabulary mapping for older manual data-source labels
+    and reused accepted point-metric evidence as the identical
+    predictive-error trust mechanism.
+  - Final figure-ready coverage is 45 complete model-class/target/trust
+    records and 83 records with validation evidence. Only 13 complete
+    data-source/DoE pairs and 13 complete alluvial paths passed the strict
+    current rules, so those two plots require either a smaller disclosed cohort
+    or a targeted evidence follow-up rather than forced assignments.
+
+- 2026-06-09: Expanded the unified review-paper audit with follow-up evidence reuse.
+  - Extended `paper_library/build_unified_evidence_audit.py` to merge the
+    existing wide `alluvial_evidence_audit_followup.csv` adjudications into the
+    unified label table, in addition to the row-wise manual adjudication file.
+  - Broadened `data_source` pattern coverage conservatively for explicit
+    simulation-generated, recorded historical, onsite/measured, and
+    training-set-construction phrasing without introducing implicit fallback
+    inference.
+  - Cached full rerun result after the expansion: `data_source=78`,
+    `doe_strategy=105`, `pattern=103`, `validation=173`, `trust=117`,
+    `family=203`, `target=179`, with 232 studies receiving at least one
+    accepted label.
+  - Completeness improved to 56 complete alluvial paths, 59 complete
+    model-class/target/trust records, and 17 complete DoE/data-source pairs.
+
+- 2026-06-09: Added a targeted manual follow-up for remaining DoE/data-source gaps.
+  - Added `paper_library/unified_targeted_manual_adjudication.csv` with
+    page-referenced high-confidence adjudications for explicit synthetic,
+    historical, quasi-Monte-Carlo, and transfer-learning cases that were still
+    missing after the broader follow-up merge.
+  - Extended the unified runner to merge that exact-dimension follow-up file as
+    part of the common evidence-table build instead of maintaining a separate
+    figure-side override.
+  - Cached full rerun after the targeted follow-up raised `data_source` from 78
+    to 88 and `doe_strategy` from 105 to 106.
+  - Complete DoE/data-source pairs increased from 17 to 28 while complete
+    alluvial paths stayed at 56, indicating that the remaining bottleneck now
+    lies mostly in optimizer-integration and validation completeness rather
+    than the DoE/data-source axis alone.
+
+- 2026-06-09: Extended the targeted follow-up with another conservative PDF-only DoE/data-source pass.
+  - Added ten further page-referenced `data_source` adjudications to
+    `paper_library/unified_targeted_manual_adjudication.csv` for studies with
+    explicit statements about sampled scenarios, Latin-hypercube-generated
+    datasets, historical wind-speed data, simulation-based input-output pairs,
+    or expensive black-box evaluations.
+  - Rebuilt the shared evidence table through
+    `paper_library/build_unified_evidence_audit.py` and rerendered the figure
+    runners that depend on it.
+  - Accepted `data_source` labels increased from 88 to 98 and complete
+    DoE/data-source pairs increased from 28 to 38, while complete alluvial
+    paths remained at 59 and the Sankey sample size remained unchanged at 88
+    plotted records.
+  - The DoE/workflow bubble figure now shows materially fewer unresolved
+    Latin-hypercube and factorial cells, but the biggest remaining gap is still
+    `Not explicitly identified` workflow context for active-learning and
+    response-surface studies.
+
+- 2026-06-09: Switched the DoE figure to the same bubble-language as the model-class figure and pushed one more evidence pass.
+  - Updated `figures/runners/build_doe_data_source_bubble_evidence.py` so the
+    DoE panel now uses one large pale bubble per DoE category plus colored and
+    grey inset bubbles for the dominant identified workflow and the unresolved
+    share, matching the visual logic of the model-class/target/trust figure.
+  - Added another conservative block of explicit `data_source` adjudications
+    from PDF or abstract evidence for simulation-generated, Monte-Carlo-based,
+    finite-element-generated, historical-observation-based, and PSCAD-driven
+    studies.
+  - After rerunning the unified audit, accepted `data_source` labels increased
+    from 98 to 111, complete DoE/data-source pairs increased from 38 to 51,
+    and unresolved DoE-without-source studies dropped from 60 to 47.
+  - The remaining unresolved DoE records are concentrated in
+    `Active learning (13)`, `Factorial / response-surface design (12)`, and
+    smaller transfer-, multi-fidelity-, quasi-Monte-Carlo-, and adaptive-
+    sampling groups where the available abstract/PDF evidence does not yet
+    justify a direct source assignment.
+
+- 2026-06-09: Reframed the DoE plot as a subsection heatmap and expanded the Sankey with application targets.
+  - Replaced the DoE bubble summary in
+    `figures/runners/build_doe_data_source_bubble_evidence.py` with a heatmap
+    over `workflow_context x doe_strategy`, with both axes ordered by observed
+    study counts and zero cells left blank.
+  - Updated
+    `figures/runners/build_taxonomy_flow_and_archetypes_draft.py` so the
+    evidence Sankey now shows `model class -> application target -> DoE /
+    training strategy -> integration pattern -> validation`.
+  - The Sankey stage order is now count-driven within each column instead of
+    being forced by the previous manuscript-order lists.
+  - Current rebuilt outputs:
+    `figures/fig_doe_workflow_bubble_evidence.png` (heatmap form) and
+    `figures/fig_taxonomy_alluvial_flow_evidence.png` (5-stage Sankey with
+    application target included).
+
+- 2026-06-09: Replaced the residual Sankey fallback bucket with an explicit application-domain taxonomy.
+  - Collapsed the manuscript application sections into a consistent
+    energiesystem-domain layer for the Sankey:
+    `Integrated multi-energy systems`,
+    `Microgrids and distributed energy systems`,
+    `Power system operation and markets`,
+    `Power flow, network security and grid planning`,
+    `Thermal and building energy systems`,
+    `System design and expansion`,
+    `Forecasting and diagnostics`, and
+    `Component and device design / control`.
+  - Added title-based fallback assignment only for studies not explicitly
+    pulled into the application evidence-map sections, so the Sankey no longer
+    contains a large `Not explicitly identified` application block.
+  - Rebuilt the Sankey output; the 5-stage cohort remains `n=57`, but the
+    application layer is now fully assigned and substantially more informative.
+
+- 2026-06-09: Reduced the Sankey application layer to five MES-oriented domains and relaxed the figure-specific completeness gate.
+  - Merged the application layer into five non-redundant domains:
+    `Integrated and distributed multi-energy systems`,
+    `Power system operation and markets`,
+    `Power flow, network security and grid planning`,
+    `Thermal and building energy systems`, and
+    `System design and expansion`.
+  - Folded earlier forecasting-style titles into
+    `Power system operation and markets`, and component/device-specific studies
+    into `System design and expansion` instead of keeping separate thin
+    categories.
+  - Updated the Sankey runner to require only the dimensions actually shown in
+    the figure (`family`, `application`, `doe`, `pattern`, `validation`)
+    instead of filtering through the broader historical `complete_alluvial`
+    gate.
+  - Added another targeted block of explicit pattern/validation adjudications;
+    after rerunning the shared audit, accepted `pattern` labels increased to
+    `122` and accepted `validation` labels to `180`.
+  - The Sankey figure cohort increased from `57` to `66` plotted records while
+    keeping all five application domains fully assigned.
+
+- 2026-06-09: Ran one more shared-evidence pass to fill the Sankey without diverging from the common runner.
+  - Added another small block of explicit pattern/validation adjudications for
+    probabilistic forecasting, active-learning search acceleration, Kriging
+    metamodel replacement, and point-metric reporting cases.
+  - Rebuilt the shared evidence table through
+    `paper_library/build_unified_evidence_audit.py`, raising accepted
+    `pattern` labels from `122` to `127`, accepted `trust` labels from `120`
+    to `122`, and accepted `validation` labels from `180` to `182`.
+  - Re-rendered the 5-domain Sankey from the same shared evidence table; the
+    plotted cohort increased from `66` to `67` records, with better coverage
+    for `RBF / kernel`, `PCE / RSM`, and point-metric validation strands.
+
+- 2026-06-11: Aligned the DoE heatmap x-axis with the manuscript subsection structure.
+  - Updated `figures/runners/build_doe_data_source_bubble_evidence.py` so the
+    DoE columns follow the paper's subsection grouping order instead of a
+    global frequency sort.
+  - Added visible subsection group guides below the x-axis for `Static
+    designs`, `Adaptive sampling and active learning`, and
+    `Multi-fidelity and transfer learning`.
+  - Re-rendered `figures/fig_doe_workflow_bubble_evidence.png`; the current
+    cohort remains `n=98` with `22` populated workflow-by-DoE cells.
+
+- 2026-06-11: Added an application-target DoE panel with grouped stacked bars.
+  - Created `figures/runners/build_panel_b_doe_application_grouped_bars.py`
+    to quantify DoE-related evidence by the same five application-target
+    domains used in the Sankey figure.
+  - The panel uses three repeated blocks per application target:
+    `Data sources`, `Static designs`, and
+    `Adaptive sampling and active learning`; only explicit assignments are
+    counted, and no synthetic filler bucket is introduced for missing labels.
+  - Rendered `figures/fig_panel_b_doe_application_grouped_bars.png` and wrote
+    the auditable count table to
+    `figures/csv/fig_panel_b_doe_application_grouped_bars_counts.csv`
+    (`included_studies=147`, `nonzero_cells=32`).
+
+- 2026-06-11: Built a four-panel application-target taxonomy figure from the unified evidence table.
+  - Added `figures/runners/build_four_panel_application_target_taxonomy.py`
+    to combine four application-target views on one consistent evidence basis:
+    surrogate model class, DoE/training, integration pattern, and validation.
+  - All four panels use the same five application-target domains as the
+    evidence-based Sankey, but count explicit study-level assignments directly
+    from `paper_library/unified_evidence_studies.csv` rather than filtering to
+    complete Sankey paths.
+  - Rendered `figures/fig_four_panel_application_target_taxonomy.png` and
+    wrote the auditable count table to
+    `figures/csv/fig_four_panel_application_target_taxonomy_counts.csv`.
+
+- 2026-06-11: Tightened the manuscript citation basis and rewrote the closing sections for the surrogate review paper.
+  - Regenerated the manuscript from
+    `Documentation/Papers/review_surrogate_modeling/manuscript/main.md` via
+    `manuscript/convert_main_md_to_tex.py` and reran
+    `manuscript/audit_main_md_claim_evidence.py`.
+  - Removed unsupported meta-review entries and repaired broken UTF-8 cite keys
+    so that the current manuscript citation audit now reports
+    `citation_keys=242` and `missing_in_review_paper_library_bib=0`.
+  - Reworked `Open challenges and research directions` and `Conclusion` in the
+    manuscript source to be more concrete and review-specific, then regenerated
+    `12_open_challenges.tex`, `13_conclusion.tex`, and
+    `Current_manuscript.tex`.
+
+- 2026-06-11: Performed a semantic citation audit of the manuscript's direct
+  study claims and taxonomy tables.
+  - Checked high-risk model-class, integration-pattern, DoE and validation
+    assignments against the locally available paper text rather than relying
+    on BibTeX-key existence or automatically generated evidence labels.
+  - Corrected false assignments for `Wang2017`, `Shao201858`, `Roth2019214`,
+    `Sánchez-Zabala2024`, `Wu2024391`, `Li2023__2`, and `Li2023__3`.
+  - Split the general-purpose ML software row into package-specific entries so
+    that the cited reviews correspond to the package they actually mention.
+  - Regenerated the manuscript and confirmed `237` citation keys with no
+    missing entries in `review_paper_library.bib`.
+
+- 2026-06-11: Completed the follow-up on all 46 citation contexts initially
+  flagged for lacking a verified local PDF.
+  - Checked the claims against DOI metadata, complete stored abstracts,
+    available local full text, and the package-specific full-text audit.
+  - Removed additional overextended citations, including unrelated uses of
+    `Wang2021`, `Zulfiqar20211026`, `Amaral20251156`, `Schulte2016104`, and
+    `Azevedo2021630`.
+  - Rephrased unsupported negative literature-wide claims as findings of the
+    review's own evidence audit.
+  - Recorded the verification basis and corrections in
+    `Documentation/Sources/review_surrogate_citation_semantic_audit_2026-06-11.md`.
+  - Regenerated the manuscript with `225` citation keys and no missing BibTeX
+    entries.
+
+- 2026-06-11: Aligned the application evidence-map section with the five
+  application-target domains used in the quantitative figures.
+  - Retained the detailed application discussion as seven subgroups, but
+    labelled each subgroup with its parent domain from the shared five-domain
+    taxonomy.
+  - Added the evidence-based alluvial figure and the four-panel
+    application-target taxonomy figure to the manuscript, including direct
+    figure references and a figure-based quantitative synthesis.
+  - Updated both figure runners to read the new manuscript headings, normalize
+    the power-system-operation domain name and stop assignment at the synthesis
+    section; the alluvial figure now contains `73` complete plotted records.
+  - Replaced narrative constructions such as `[@Key] review ...` throughout the
+    manuscript with author-led citations such as `Author et al. [@Key] ...`.
+  - Regenerated all manuscript LaTeX files and confirmed `225` citation keys
+    with no missing BibTeX entries.
+
+- 2026-06-15: Added submission-ready research highlights, a revised abstract,
+  and focused keywords for the surrogate-modeling review.
+  - Moved the abstract and keywords into separate maintained LaTeX sources and
+    updated the manuscript runner to inject them into the Elsevier frontmatter.
+  - Rewrote the abstract and title around the review's main novelty: a unified,
+    workflow-wide taxonomy supported by a systematic search, meta-review, and
+    quantitative machine-readable evidence map.
+  - Added five research highlights, each below the usual 85-character limit.
+  - Regenerated the 13 manuscript sections and confirmed `225` citation keys
+    with no missing entries in the review bibliography.

@@ -1,0 +1,495 @@
+\section{Integration patterns: how surrogates plug into ESM optimizers}
+\label{sec:integration}
+
+Section~\ref{sec:taxonomy} classifies surrogate families by
+statistical structure. This section classifies how those families
+attach to the host optimizer. The distinction matters because the
+same neural network can either replace a market-clearing call inside
+a mixed-integer programme (Pattern P1) or predict the programme's
+solution in one shot (Pattern P3). Table~\ref{tab:T2-task-role} maps
+patterns to task classes; Table~\ref{tab:T5-integration-patterns}
+lists solver layer, safety practices and typical failure modes.
+The subsections below follow P1--P5 and focus on multi-energy and
+coupled-carrier studies in the screened pool; single-carrier
+electricity examples appear only where no multi-carrier counterpart
+is available in the pool.
+Section~\ref{sec:doe} already uses many of the same papers to
+illustrate training-data design; here we rotate the citation pool
+toward studies whose primary contribution is the optimizer interface,
+and cross-reference Section~\ref{sec:doe} when training and
+integration are jointly documented.
+The pattern subsections below describe every reference in
+Tables~\ref{tab:T2-task-role} and~\ref{tab:T5-integration-patterns};
+where a study is already used to illustrate training-data design in
+Section~\ref{sec:doe}, the integration role is stated here and the
+sampling workflow is not repeated.
+
+% BEGIN inlined table table_T2_task_role_matrix
+\begin{table*}[!t]
+  \centering
+  \scriptsize
+  \caption{Energy-system task class (rows) versus surrogate integration
+  role (columns); roles match patterns P1--P5 in
+  Section~\ref{sec:integration}. Cells list the typical surrogate
+  families and a small number of representative references; ``$\star$''
+  marks the dominant pattern per row, ``--'' marks combinations that
+  are rare in the screened pool.}
+  \label{tab:T2-task-role}
+  \renewcommand{\arraystretch}{1.25}
+  \begin{tabularx}{\textwidth}{@{}L{0.16\textwidth} L{0.18\textwidth} L{0.16\textwidth} L{0.16\textwidth} L{0.14\textwidth} L{0.14\textwidth}@{}}
+    \toprule
+    Task class & P1 Replace subroutine & P2 Accelerate search & P3 Warm start / proxy & P4 Decomposition & P5 Uncertainty \\
+    \midrule
+    Economic dispatch / UC
+      & $\star$ NN / L2O \cite{Wu2022231,Chen20244723,Pang2023}
+      & GP-BO / kriging-NSGA \cite{Nikolaidis2021,Lin2023}
+      & End-to-end NN \cite{Chen2022,Wu2022231}
+      & Lagrangian / Benders \cite{Wu2024391,Zhang2025__4}
+      & PCE / GP / quantile \cite{Hu2020,Hu2021671,Chen2023657} \\
+    Optimal power flow
+      & $\star$ NN / GNN \cite{Chen20244723,Chen2022,Liu20223726}
+      & Kriging-EA \cite{Deng2020831,Lin2023}
+      & L2O \cite{Li2023__2}
+      & --
+      & PCE / GP / DQ \cite{Muhlpfordt20194806,Chen2023657,Koirala20242284} \\
+    Capacity expansion
+      & NN / GBDT \cite{Jahangiri20244849,Pérez-Uresti2023}
+      & GP-BO / NSGA \cite{Han2018622,Amaral20251156}
+      & --
+      & Benders + GP \cite{Zhang2025__4}
+      & $\star$ Adaptive metamodels \cite{Fu20202904,Kim2021} \\
+    District-heating dispatch
+      & $\star$ NN metamodel \cite{Sánchez-Zabala2024,Du2025}
+      & RSM / RFC \cite{Schulte2016104,Petrova2025}
+      & ANN setpoints \cite{Reynolds2017704}
+      & --
+      & GP / NMPC \cite{Simonson202036} \\
+    Multi-energy planning
+      & NN / GP \cite{Zheng20231907,Yin2024,Roth2019214,Gao2025}
+      & $\star$ GP-BO / NSGA \cite{Han2018622,Schulte2020,Aghaei Pour2022303}
+      & Market-NN proxy \cite{Jalving2023,Wang2020202933}
+      & --
+      & PCE / GP \cite{Dong2023,Dong2022,Wang2024} \\
+    Microgrid / energy hub
+      & RBF / NN \cite{Wang2017,Hussien20211883,Li2023__3}
+      & $\star$ SAEA / kriging-EA \cite{Deng2020831,Pang2023}
+      & RL / NN policy \cite{Chaturvedi2024149,Hussien20226442}
+      & --
+      & Stochastic emulator \cite{Liang20222192,Khalid20241959} \\
+    Multi-objective system design
+      & NN / RBF \cite{Hirvonen2017323,Wang2017,Schulte2020}
+      & $\star$ GP / NN + NSGA \cite{Roth2019214,Han2018622,Aghaei Pour2022303,Reis2025}
+      & Retrofit proxy \cite{Thrampoulidis2021}
+      & --
+      & GP-BO calibration \cite{Chakrabarty2021} \\
+    Stochastic / robust planning
+      & NN / GP \cite{Lawson201647,Liu20222679,Hu2020}
+      & Kriging-NSGA \cite{Lin2023,Pang2023}
+      & L2O proxy \cite{Liang20246508}
+      & Lagrangian ML \cite{Wu2024391}
+      & $\star$ PCE / GP / DQ \cite{Muhlpfordt20194806,Safta20172535,Lu201991827,Chen2023657} \\
+    \bottomrule
+  \end{tabularx}
+\end{table*}
+% END inlined table table_T2_task_role_matrix
+% BEGIN inlined table table_T5_integration_patterns
+\begin{table*}[!t]
+  \centering
+  \scriptsize
+  \caption{Integration patterns for surrogate-assisted energy-system
+  optimization. Each row matches one pattern (P1--P5) used in
+  Section~\ref{sec:integration}. ``Solver layer'' indicates where the
+  surrogate sits in the optimization stack; ``safety hooks'' lists the
+  practices that experienced authors use to keep the integration
+  robust; ``typical pitfalls'' lists the failure modes that recur in
+  the screened pool.}
+  \label{tab:T5-integration-patterns}
+  \renewcommand{\arraystretch}{1.25}
+  \begin{tabularx}{\textwidth}{@{}L{0.04\textwidth} L{0.16\textwidth} L{0.16\textwidth} L{0.18\textwidth} L{0.20\textwidth} L{0.18\textwidth}@{}}
+    \toprule
+    \# & Pattern name & Surrogate role & Solver layer & Safety hooks & Typical pitfalls \\
+    \midrule
+    P1 & Replace expensive subroutine
+       & Direct functional substitute for an inner optimizer or simulator
+       & Inner loop / subproblem
+       & Feasibility-restoration layer; constraint-aware embedding; periodic truth-model re-anchoring \cite{Wu2022231,Chen20244723,Chen2022,Liu20242534}
+       & Silent constraint violation; OOD operating regimes; surrogate-induced bias of the host objective \\
+    P2 & Accelerate search
+       & Acquisition / pre-screening of expensive candidates
+       & Outer loop / metaheuristic / BO
+       & Truth-model check of selected candidates; calibrated posterior for BO; trust-region or infill updates \cite{Nikolaidis2021,Aghaei Pour2022303,Han2018622,Lin2023}
+       & Mis-calibrated posterior, uninformative acquisition, wasted truth-budget \\
+    P3 & Warm start / solution proxy
+       & Predicts (near-)optimal decisions from instance inputs
+       & Pre-solve / branch-and-bound seeding
+       & Downstream solver as repair step; projection onto feasible set; ensembling for variance reduction \cite{Li2023__2,Chen20244723,Liang20246508,Thrampoulidis2021}
+       & Constant-time output is infeasible; warm start dominated by repair cost \\
+    P4 & Decomposition support
+       & Approximates recourse / pricing / value function
+       & Benders / column generation / DP layer
+       & Periodic exact cuts; bound tracking on optimality gap; restart on cut staleness \cite{Zhang2025__4,Wu2024391}
+       & Surrogate cuts dominate but are not certified; non-convergence of master--subproblem loop \\
+    P5 & Uncertainty handling
+       & Approximates chance / robust / DRO mapping
+       & Reformulation layer
+       & Moment or quantile matching; sample-based audit of chance constraints; calibrated uncertainty bands \cite{Muhlpfordt20194806,Safta20172535,Hu2020,Chen2023657}
+       & Tail under-coverage; Gaussian-only assumptions; correlation collapse across operating regimes \\
+    \bottomrule
+  \end{tabularx}
+\end{table*}
+% END inlined table table_T5_integration_patterns
+
+Five integration patterns (P1--P5) describe \emph{where} a surrogate
+sits in the optimization stack, not which surrogate family is used
+(that is the subject of Section~\ref{sec:taxonomy}).
+In P1 and P3 the surrogate is called whenever the host algorithm needs
+a response; in P2 it is called \emph{between} full truth-model runs to
+decide which points deserve one; in P4 it supports a coordinating
+algorithm that splits one problem into many related subproblems; and in
+P5 it translates uncertain inputs into the probabilities or bounds that
+enter chance, robust or distributionally robust constraints.
+The patterns are not mutually exclusive: a kriging model may screen
+candidates in an outer loop (P2) while another surrogate replaces a
+network solver inside each accepted candidate (P1), and a
+learning-to-optimize proxy (P3) may still invoke a repair step that
+resembles P1.
+The subsections below follow the same P1--P5 order as
+Table~\ref{tab:T5-integration-patterns}; each opens with the defining
+contrast to the neighbouring patterns before turning to screened-pool
+exemplars.
+
+\subsection{Pattern P1: surrogate replaces an expensive subroutine}
+\label{sec:int:replace}
+
+In Pattern P1 the surrogate stands in for a repeated inner evaluation
+while the host optimization structure stays unchanged: the mixed-integer
+programme, decomposition loop or co-simulation platform still runs, but
+one subroutine---power flow, building simulation, device model---is
+replaced by a cheap approximation.
+The critical distinction from P2 is that P1 substitutes the inner call
+itself, not merely the ranking of outer-loop candidates; the
+distinction from P3 is that P1 still executes the host solver and only
+approximates an embedded function, whereas P3 predicts decisions
+directly and may bypass most of the solver altogether.
+
+Li et al.\ train a sparse Gaussian-process surrogate on historical
+operating data so a multi-agent reinforcement learner can imitate
+coupled power and thermal flow calculations without maintaining
+physics-based line and pipe parameters for each microgrid in a
+heat--electricity cluster \cite{Li2023__3}. Zheng et al.\ distribute
+dispatch of a coupled electricity--heat system with variable
+district-heating mass flow: in each alternating iteration the heat
+subproblem optimises hydraulic and thermal states through a surrogate
+of network heat dynamics before the electricity subproblem is solved on
+the reduced model \cite{Zheng20231907}. Gao et al.\ embed a semi-empirical solid-oxide
+fuel-cell surrogate inside a MATLAB--TRNSYS co-simulation platform so
+multi-objective sizing of a combined cooling, heating and power system
+can iterate on component capacities without resolving detailed
+electrochemistry at every candidate \cite{Gao2025}. Liu et al.\ embed
+piecewise-linear neural surrogates of converter losses---with variable
+DC-bus voltage---as linear constraints inside two-stage stochastic
+unit commitment for a hybrid AC/DC microgrid \cite{Liu20242534}.
+
+\paragraph{Further cases in Table~\ref{tab:T2-task-role}.}
+For economic dispatch, Pang et al.\ embed a general regression neural
+network inside an adaptive bat algorithm so large-scale dispatch trials
+query a surrogate cost surface instead of the full power-system model
+at every iteration \cite{Pang2023}.
+Chen et al.\ and Wu et al.\ are also listed under P1 when their
+learning-to-optimize models substitute the inner market-clearing or
+unit-commitment solve rather than predicting decisions outright
+(cf.\ Section~\ref{sec:int:warmstart}) \cite{Chen20244723,Wu2022231}.
+Liu et al.\ replace repeated small-signal stability checks inside
+security-constrained OPF with an explicit data-driven stability margin
+\cite{Liu20223726}.
+For capacity decisions, Jahangiri et al.\ apply surrogate models to
+map sensitivities of capital costs, demand and carbon pricing on top of
+an existing provincial capacity-expansion mixed-integer programme
+\cite{Jahangiri20244849}, and
+P\'erez-Uresti et al.\ embed rigorous unit surrogates inside a
+mixed-integer hydrogen supply-chain expansion model so nonlinear
+production and capture units remain tractable across a ten-year plan
+\cite{Pérez-Uresti2023}.
+At district scale, S\'anchez-Zabala and G\'omez-Acebo and Du et al.\
+plug building or network surrogates into district operation studies;
+training-data construction is documented in Section~\ref{sec:doe}
+\cite{Sánchez-Zabala2024,Du2025}.
+Yin et al.\ nest port transport--energy scheduling inside a hybrid
+storage capacity-allocation loop where a sampling-based surrogate
+accelerates the outer capacity search \cite{Yin2024}.
+Roth et al.\ compile hybrid renewable configurations into
+mixed-integer sizing programmes through a flexible metamodel layer
+\cite{Roth2019214}.
+For microgrids, Wang et al.\ benchmark extremal-optimization controller
+design against kriging-surrogate alternatives for islanded frequency
+control \cite{Wang2017}, and Hussien et al.\ formulate PI tuning
+objectives through response-surface metamodels inside a sunflower
+optimizer \cite{Hussien20211883}.
+In multi-objective community design, Hirvonen et al.\ replace repeated
+solar-community simulations with neural metamodelling inside NSGA-II
+\cite{Hirvonen2017323}, and Schulte et al.\ substitute reservoir
+simulation with Gaussian-process response surfaces when exploring
+geothermal well-placement trade-offs \cite{Schulte2020}.
+Under stochastic planning, Lawson et al.\ use statistical emulators to
+propagate geological and demand uncertainty into transmission planning
+decisions \cite{Lawson201647}, Liu et al.\ learn kernel-structured
+Gaussian processes for probabilistic load flow \cite{Liu20222679}, and
+Hu et al.\ emulate stochastic economic dispatch under wind penetration
+with Gaussian-process surrogates \cite{Hu2020}.
+Periodic truth-model re-anchoring and constraint-aware embedding, listed
+as safety hooks in Table~\ref{tab:T5-integration-patterns}, appear in
+the dispatch-proxy studies above \cite{Wu2022231,Chen20244723,Chen2022}.
+
+Across these cases the integration question is whether network,
+market or device constraints still hold when the inner evaluation is
+approximated (Table~\ref{tab:T5-integration-patterns}, P1 row;
+Section~\ref{sec:val:decision}).
+
+\subsection{Pattern P2: surrogate accelerates the search}
+\label{sec:int:accelerate}
+
+In Pattern P2 the truth model remains available, but a metamodel
+decides which candidates receive a full evaluation.
+The surrogate therefore sits in the \emph{outer} loop---inside a genetic
+algorithm, Bayesian optimiser or infill strategy---and its job is budget
+allocation: predict objective or constraint values cheaply enough to
+discard unpromising regions before spending simulation time.
+Unlike P1, every accepted solution can still be checked on the
+high-fidelity model; unlike P3, P2 does not output a final dispatch or
+design vector in one shot.
+
+Reis et al.\ extend NSGA-II for a hybrid solar--wind system with a
+symmetry-aware crossover and a surrogate that approximates objective
+evaluations in later generations, reducing the number of full
+simulation runs needed to reach a diverse Pareto set
+\cite{Reis2025}. Salahinezhad et al.\ first run a small set of detailed
+trigeneration simulations, fit an RSM to the results, and then use that
+surface to compare design choices---solar-collector area, fuel-cell size
+and cooling type---without repeating a full hourly plant model at every
+trial \cite{Salahinezhad2025}. Granacher and
+Mar\'echal screen many alternative plant configurations in
+multi-objective process and energy-system design: a classifier estimates
+which candidates could still belong to the best cost--performance
+trade-off front, and only those are checked with the full nonlinear
+model; the active-learning loop that supplies training labels is
+documented in Section~\ref{sec:doe:infill}
+\cite{Granacher20221573}.
+
+\paragraph{Further cases in Table~\ref{tab:T2-task-role}.}
+Nikolaidis and Chatzis use Gaussian-process Bayesian optimization to
+propose unit-commitment schedules under volatile renewable behaviour,
+checking only the most promising candidates on the full model
+\cite{Nikolaidis2021}.
+Lin et al.\ and Pang et al.\ pair kriging surrogates with NSGA-II or
+bat algorithms for combined economic/emission dispatch on large systems,
+using infill rules to refresh the metamodel where it is least accurate
+\cite{Lin2023,Pang2023}.
+Han et al.\ replace repeated transient-stability simulations in
+multi-objective planning of reactive-power compensation with kriging
+metamodels inside the evolutionary search \cite{Han2018622}.
+Amaral et al.\ adapt metamodel fidelity during simulation-based
+capacity-expansion optimisation \cite{Amaral20251156}.
+Schulte et al.\ optimise borehole thermal-energy storage layouts with
+response-surface metamodels that screen geothermal simulation runs
+\cite{Schulte2016104}, and Petrova et al.\ replace repeated aquifer
+thermal-interference physics with a random-forest classifier when
+screening well placements under geological uncertainty
+\cite{Petrova2025}.
+For multi-energy and geothermal planning, Han et al., Schulte et al.\
+and Aghaei Pour et al.\ combine kriging or Gaussian-process surrogates
+with evolutionary or preference-based multi-objective search
+\cite{Han2018622,Schulte2020,Aghaei Pour2022303}.
+Deng et al.\ accelerate optimal power flow with kriging-assisted
+evolutionary algorithms \cite{Deng2020831}.
+Roth et al.\ and Reis et al.\ appear again under multi-objective system
+design, where metamodels or late-generation surrogates reduce the number
+of full hybrid-system evaluations \cite{Roth2019214,Reis2025}.
+Truth-model checks of selected candidates and calibrated posteriors for
+Bayesian optimisation, listed in Table~\ref{tab:T5-integration-patterns},
+motivate the model-management rules in
+\cite{Nikolaidis2021,Aghaei Pour2022303,Han2018622,Lin2023}.
+
+The relevant check is search quality per simulation budget
+(Table~\ref{tab:T5-integration-patterns}, P2 row), not per-call
+feasibility as in P1.
+
+\subsection{Pattern P3: surrogate as warm-start or proxy of the solution map}
+\label{sec:int:warmstart}
+
+In Pattern P3 the surrogate maps the inputs that define an operating
+case---forecasts, network state, bids or building descriptors---directly
+to a decision vector (dispatch, commitment, retrofit measures, or control
+trajectory).
+The host optimizer, if it is invoked at all, receives a warm start or a
+near-feasible candidate rather than calling an expensive inner model
+repeatedly: learning-to-optimize and optimisation-proxy architectures
+are the dominant forms in the screened pool.
+This is the fastest integration mode when it works, but also the most
+fragile---small changes in load, network state or market prices can push
+the proxy outside its training envelope, which is why repair layers and
+feasibility projection (Table~\ref{tab:T5-integration-patterns}, P3 row)
+appear so often.
+
+In transmission-level studies, Chen et al.\ train optimisation proxies
+for security-constrained economic dispatch that return market-clearing
+decisions in milliseconds; their end-to-end architecture adds
+differentiable repair layers when the raw network output violates
+constraints \cite{Chen2022,Chen20244723}. Wu et al.\ use a convolutional
+network to predict which units are on or off, and then compute the
+matching hourly dispatch levels in a much smaller follow-up
+optimisation step \cite{Wu2022231}. Li et al.\ learn ADMM step updates for
+decentralised DC-OPF so agents reach feasible shared solutions faster
+\cite{Li2023__2}. (Training-data construction for these proxies is
+summarised in Section~\ref{sec:doe}.)
+
+\paragraph{Further cases in Table~\ref{tab:T2-task-role}.}
+Thrampoulidis et al.\ map building and climate descriptors to
+near-optimal combinations of envelope upgrades and energy-system
+choices, replacing repeated building-simulation optimisation runs that
+previously took minutes per query; training is covered in
+Section~\ref{sec:doe} \cite{Thrampoulidis2021}.
+Jalving et al.\ train neural market surrogates that predict clearing
+outcomes from integrated energy system bids and can seed or warm-start
+market-aware design iterations \cite{Jalving2023}.
+Wang et al.\ fit a polynomial response surface to integrated energy
+system operating costs so the scheduler queries a cheap proxy objective
+\cite{Wang2020202933}.
+Reynolds et al.\ train an artificial neural network on EnergyPlus runs
+to supply fitness values to a multi-objective genetic set-point scheduler
+for district-heating-compatible building control \cite{Reynolds2017704}.
+Chaturvedi et al.\ embed a neural-network surrogate in a DC microgrid
+control loop: it predicts power losses and uneven load sharing from the
+local voltage-sharing settings, so reinforcement learning can adjust
+those settings online without repeated full system simulation
+\cite{Chaturvedi2024149}. Hussien et al.\ tune PI controllers for autonomous microgrid operation
+with a coot-bird metaheuristic that treats each closed-loop trial as
+an expensive evaluation \cite{Hussien20226442}.
+Liang et al.\ accelerate joint chance-constrained unit commitment with
+learning-to-optimize warm starts for the robust inner programme
+\cite{Liang20246508}.
+Downstream repair layers and projection onto feasible sets
+(Table~\ref{tab:T5-integration-patterns}) are explicit in
+\cite{Chen20244723,Liang20246508,Thrampoulidis2021}.
+
+Multi-carrier evidence for one-shot proxies is still thin: most
+coupled-carrier papers in the pool substitute inner evaluations (P1)
+or metamodels within search (P2) rather than predicting full joint
+schedules directly.
+
+\subsection{Pattern P4: surrogate enables decomposition}
+\label{sec:int:decomp}
+
+In Pattern P4 the optimizer does not solve one monolithic model at once.
+It splits the problem into a coordinating step and one or more smaller
+subproblems, then iterates: the coordinator proposes, each subproblem
+responds, and the coordinator updates its plan.
+The surrogate approximates what those subproblems would answer---for
+example, how a virtual power plant would schedule given a market price,
+which network constraints are likely to matter, or which penalty
+weights make the subproblems easy to solve---so the coordinator can move
+forward without running every subproblem to full accuracy at every
+iteration.
+P4 therefore differs from P1 because the cheap model serves this
+back-and-forth coordination, not a single repeated physics or market
+call inside one solver, and from P3 because the output still feeds an
+ongoing decomposition loop rather than the final operating decision
+directly.
+
+Coupled-carrier examples are rare in the screened pool. Cao et al.\
+study a market operator and several virtual power plants that trade
+electricity, heat and carbon: the operator proposes prices, each plant
+chooses its schedule in response, and a Kriging model learns how each
+plant would react to a given price so many price options can be compared
+without rerunning the full plant optimisation every time
+\cite{Cao2023__2}. Zhang et al.\ speed up hour-by-hour simulation of
+generation, the transmission grid and storage operating together by
+splitting the model into discrete operating choices and continuous
+hourly decisions; a Gaussian-process model learns from past runs which
+constraints are unlikely to matter and leaves them out of the next solve
+\cite{Zhang2025__4}. Wu et al.\ decompose hourly unit commitment into
+smaller hourly subproblems and train deep networks to predict penalty
+weights that make those subproblems easier to solve, so the overall
+on/off schedule can be found faster without learning the full
+combinatorial problem at once \cite{Wu2024391}. All
+three report lower runtime for a fixed solution target; certifying how
+much accuracy is lost by the learned approximations remains open
+(Section~\ref{sec:challenges}).
+Periodic exact cuts and bound tracking on the optimality gap
+(Table~\ref{tab:T5-integration-patterns}) are the integration safeguards
+emphasised in \cite{Zhang2025__4,Wu2024391}.
+
+\subsection{Pattern P5: surrogate handles uncertainty}
+\label{sec:int:uncertainty}
+
+In Pattern P5 the surrogate estimates how uncertain inputs, e.g.\ wind
+and load forecasts and market prices, translate into uncertain outcomes
+such as operating costs. The optimiser uses those probabilities when it
+must stay within safety or reliability limits under uncertainty. P5
+surrogates provide those estimates without running a large random sample
+of full model evaluations at every optimisation step.
+Unlike P1--P4, the main question is not ``how cheap is this candidate?''
+but ``how likely is a limit to be violated?''; validation therefore
+focuses on rare bad cases and constraint satisfaction under hold-out
+scenarios rather than mean prediction error alone.
+
+Dong et al.\ model renewable-generation and load uncertainty for a
+renewable-energy-source combined cooling, heating and power system with
+Gaussian-process regressions that return predictive distributions, then
+embed those distributions in a robust model-predictive rolling
+optimisation layer \cite{Dong2022}. Chaudhry et al.\ quantify market
+and demand risk for fifth-generation district heating and cooling
+networks through polynomial-chaos Kriging expansions that substitute
+repeated high-fidelity network evaluations inside robust design and
+operational optimisation \cite{Chaudhry2024}. In electricity-only
+studies, M\"uhlpfordt et al.\ use polynomial-chaos expansions for joint
+chance-constrained AC-OPF \cite{Muhlpfordt20194806}, Safta et al.\
+replace Monte Carlo loops in stochastic economic dispatch
+\cite{Safta20172535}, and Chen et al.\ learn quantile surfaces for
+chance-constrained distribution-network OPF when impedance data are
+partially unknown \cite{Chen2023657}.
+
+\paragraph{Further cases in Table~\ref{tab:T2-task-role}.}
+Hu et al.\ construct Gaussian-process emulators of stochastic economic
+dispatch after Karhunen--Lo\`eve dimension reduction, replacing Monte
+Carlo loops at scale \cite{Hu2020,Hu2021671}.
+Dong et al.\ reformulate chance-constrained day-ahead dispatch of an
+integrated energy system from sparse polynomial-chaos expansions of
+power-flow responses; sampling for the expansions is treated in
+Section~\ref{sec:doe} \cite{Dong2023}.
+Wang et al.\ link photovoltaic, storage and electrolysis design variables
+to techno-economic objectives through a machine-learning surrogate inside
+multi-objective hydrogen-system optimisation \cite{Wang2024}.
+Fu et al.\ learn stochastic distribution-network expansion responses
+with statistical machine-learning models that support dimension-reduced
+planning under dynamic correlation \cite{Fu20202904}.
+Kim et al.\ propagate wind-resource uncertainty into probabilistic
+expansion screening \cite{Kim2021}.
+Simonson et al.\ train physics-informed Gaussian-process models of
+district-heating pipe dynamics for stochastic nonlinear predictive
+control \cite{Simonson202036}.
+Liang et al.\ use compressive sensing to solve stochastic energy-router
+storage management without repeated scenario expansions
+\cite{Liang20222192}.
+Khalid et al.\ schedule hybrid energy networks under renewable
+uncertainty with radial-basis-function emulators inside a metaheuristic
+search \cite{Khalid20241959}.
+Chakrabarty et al.\ calibrate coupled building--HVAC parameters through
+scalable Bayesian optimisation when each calibration trial would
+otherwise require an expensive coupled simulation solve
+\cite{Chakrabarty2021}.
+Lu et al.\ nest sparse-grid stochastic collocation inside economic
+dispatch under wind and photovoltaic uncertainty \cite{Lu201991827}.
+Koirala et al.\ propagate photovoltaic uncertainty into hosting-capacity
+chance constraints through general polynomial chaos, avoiding repeated
+power-flow solves \cite{Koirala20242284}.
+Schulte et al.\ explore geothermal design trade-offs through Gaussian-process
+response surfaces over an ensemble of geological models
+\cite{Schulte2020}.
+Moment matching and sample-based audits of chance constraints
+(Table~\ref{tab:T5-integration-patterns}) motivate the validation focus
+in \cite{Muhlpfordt20194806,Safta20172535,Hu2020,Chen2023657}.
+
+Integration-specific validation here targets tail behaviour and
+constraint satisfaction under hold-out uncertainty scenarios
+(Table~\ref{tab:T5-integration-patterns}, P5 row;
+Section~\ref{sec:val:feasibility}), not mean error alone.

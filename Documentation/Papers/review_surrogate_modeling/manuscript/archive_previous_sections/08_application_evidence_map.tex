@@ -1,0 +1,342 @@
+\section{Applications and evidence map}
+\label{sec:applications}
+
+Table~\ref{tab:T6-evidence-map} lists the curated studies.
+The narrative below alternates short case sketches with study-level statements.
+Each citation supports one claim; emulator class, integration role, and
+training-point design are stated separately only when the accessible PDF
+or title supports one clear sampling regime (not merged T6 bucket labels).
+Sector-coupled multi-energy systems are discussed first.
+
+% BEGIN inlined table table_T6_evidence_map
+\input{appendix/table_T6_evidence_map}
+% END inlined table table_T6_evidence_map
+
+\subsection{Multi-energy and sector-coupled systems}
+\label{sec:apps:mes}
+
+The MES strand covers electricity--heat--gas coupling, integrated dispatch and design.
+
+Ren et al.~\cite{Ren2024} examine data-driven surrogate optimization for deploying heterogeneous multi-energy storage. The emulator is neural-network-based and is used to replace expensive inner optimisation solves in the host problem. Training inputs are placed by Latin hypercube sampling over the planning box.
+
+Jalving et al.~\cite{Jalving2023} address beyond price taker: Conceptual design and optimization of integrated energy systems. The emulator is neural-network-based and is used to replace expensive inner optimisation solves in the host problem.
+
+For deep reinforcement learning as a tool for the analysis and optimization of energy, Franzoso et al.~\cite{Franzoso2025} report a surrogate-assisted formulation. The emulator is neural-network-based and is used to replace expensive inner optimisation solves in the host problem.
+
+Regarding a robust optimization approach for integrated community energy system in energy, Zhou et al.~\cite{Zhou20181} present an application study. The emulator is Gaussian-process or kriging-based and is used to propagate uncertainty in chance- or robust-constrained formulations. Validation assesses prediction-interval calibration.
+
+In work on optimization strategy based on robust model predictive control for RES-CCHP system, Dong et al.~\cite{Dong2022} develop a computational workflow. The emulator is Gaussian-process or kriging-based and is used to propagate uncertainty in chance- or robust-constrained formulations.
+
+Optimal Scheduling for Integrated Energy System Considering Scheduling Elasticity is analysed by Wang et al.~\cite{Wang2020202933}. The emulator is polynomial-chaos expansion or response-surface-based and is used to replace expensive inner optimisation solves in the host problem.
+
+Dong et al.~\cite{Dong2023} study chance-constrained optimal dispatch of integrated energy systems based on data-driven. The emulator is polynomial-chaos expansion or response-surface-based and is used to replace expensive inner optimisation solves in the host problem. Uncertain inputs are represented by sparse-grid or PCE collocation nodes (quasi-Monte Carlo / quadrature family). Validation reports feasibility or constraint violations on the host problem.
+
+Zheng et al.~\cite{Zheng20231907} target distributed Dispatch of Integrated Electricity-Heat Systems With Variable Mass Flow. The emulator is Gaussian-process or kriging-based and is used to replace expensive inner optimisation solves in the host problem. Validation reports feasibility or constraint violations on the host problem.
+
+Shi et al.~\cite{Shi2024__2} examine load forecasting for regional integrated energy system based on complementary ensemble. The emulator is Gaussian-process or kriging-based and is used within a decomposition layer (recourse or pricing).
+
+\subsection{Multi-objective energy system design}
+\label{sec:apps:moo}
+
+Multi-objective MES design most often couples surrogates with evolutionary Pareto search.
+
+Several studies in multi-objective energy-system design use polynomial-chaos expansion or response-surface emulators inside an outer multi-objective or evolutionary search loop.
+
+Dong et al.~\cite{Dong2024} examine design and optimal scheduling of forecasting-based campus multi-energy complementary energy system. The emulator is polynomial-chaos expansion or response-surface-based and is used inside an outer multi-objective or evolutionary search loop.
+
+Salahinezhad et al.~\cite{Salahinezhad2025} address trade-off analysis for optimal design of trigeneration energy systems integrated with solar. The emulator is polynomial-chaos expansion or response-surface-based and is used inside an outer multi-objective or evolutionary search loop. Training runs follow structured design-of-experiments grids.
+
+For enhancing renewable energy integration through strategic stochastic optimization planning, ALAhmad et al.~\cite{alahmad_enhancing_2025} report a surrogate-assisted formulation. The emulator is polynomial-chaos expansion or response-surface-based and is used inside an outer multi-objective or evolutionary search loop. Validation reports feasibility or constraint violations on the host problem.
+
+Regarding optimizing renewable energy and green technologies in distribution systems through stochastic, ALAhmad et al.~\cite{alahmad_optimizing_2025} present an application study. The emulator is polynomial-chaos expansion or response-surface-based and is used inside an outer multi-objective or evolutionary search loop. Validation includes stress-test blocks.
+
+In work on optimizing Hydrogen Systems and Demand Response for Enhanced Integration of \{RES\} and \{EVs\}, Ali et al.~\cite{ali_optimizing_2025} develop a computational workflow. The emulator is polynomial-chaos expansion or response-surface-based and is used inside an outer multi-objective or evolutionary search loop.
+
+Multi-objective optimization for optimal placement of shared battery energy storage systems is analysed by An et al.~\cite{an_multi-objective_2025}. The emulator is polynomial-chaos expansion or response-surface-based and is used inside an outer multi-objective or evolutionary search loop. Validation reports feasibility or constraint violations on the host problem.
+
+Bendriss et al.~\cite{bendriss_novel_2025} study a novel improved Frilled Lizard algorithm for solving the optimal planning problem of renewable. The emulator is polynomial-chaos expansion or response-surface-based and is used inside an outer multi-objective or evolutionary search loop.
+
+Chen et al.~\cite{chen_multi-objective_2025-1} target multi-objective optimization of multi-energy complementary systems integrated biomass-solar-wind. The emulator is polynomial-chaos expansion or response-surface-based and is used inside an outer multi-objective or evolutionary search loop. Validation reports feasibility or constraint violations on the host problem.
+
+Cortés-Caicedo et al.~\cite{cortes-caicedo_multi-objective_2025} examine a multi-objective optimization approach based on the Non-Dominated Sorting Genetic Algorithm \{II\}. The emulator is polynomial-chaos expansion or response-surface-based and is used inside an outer multi-objective or evolutionary search loop.
+
+Liang et al.~\cite{liang_high_2024} address high fidelity modeling of pumped storage units for optimal operation of a multi-energy. The emulator is polynomial-chaos expansion or response-surface-based and is used inside an outer multi-objective or evolutionary search loop.
+
+For optimization of Multi-Energy Systems for Efficient Power-to-X Conversion, Authors~\cite{malla_sg_optimization_2024} report a surrogate-assisted formulation. The emulator is polynomial-chaos expansion or response-surface-based and is used inside an outer multi-objective or evolutionary search loop.
+
+Regarding multi-objective optimization of hybrid renewable energy systems with green hydrogen integration, Tezer et al.~\cite{tezer_multi-objective_2025} present an application study. The emulator is polynomial-chaos expansion or response-surface-based and is used inside an outer multi-objective or evolutionary search loop. Training runs follow factorial designs over discrete factor levels.
+
+A common thread in multi-objective energy-system design is neural-network emulators inside an outer multi-objective or evolutionary search loop.
+
+In work on numerical assessment and optimization of photovoltaic-based hydrogen-oxygen Co-production energy, Wang et al.~\cite{Wang2024} develop a computational workflow. The emulator is neural-network-based and is used inside an outer multi-objective or evolutionary search loop. Validation reports feasibility or constraint violations on the host problem.
+
+Multi-objective approach for protection of microgrids using surrogate assisted particle swarm is analysed by Lalitha et al.~\cite{Lalitha20231401}. The emulator is neural-network-based and is used inside an outer multi-objective or evolutionary search loop.
+
+Reis et al.~\cite{Reis2025} study symmetry-Guided Surrogate-Assisted NSGA-II for Multi-Objective Optimization of Renewable Energy. The emulator is neural-network-based and is used inside an outer multi-objective or evolutionary search loop. Further simulation runs are chosen by Bayesian optimization (acquisition-driven active learning).
+
+Bagheri et al.~\cite{bagheri_miqcp-based_2025} target an \{MIQCP\}-based multi-objective optimal operation strategy for renewables-integrated smart. The emulator is neural-network-based and is used inside an outer multi-objective or evolutionary search loop.
+
+Tian et al.~\cite{tian_building_2025} examine building design and operation multi-objective optimization: Energy costs vs. Emissions. The emulator is neural-network-based and is used inside an outer multi-objective or evolutionary search loop. The emulator is trained from historically observed operating data. Validation reports feasibility or constraint violations on the host problem.
+
+Wang et al.~\cite{Wang2017} address design of a fractional order frequency PID controller for an islanded microgrid. The emulator is Gaussian-process or kriging-based and is used inside an outer multi-objective or evolutionary search loop.
+
+For surrogated-assisted multimodal multi-objective optimization for hybrid renewable energy system, Zhang et al.~\cite{Zhang20234075} report a surrogate-assisted formulation. The emulator is Gaussian-process or kriging-based and is used inside an outer multi-objective or evolutionary search loop.
+
+Regarding surrogate modeling-based multi-objective dynamic VAR planning considering short-term voltage, Han et al.~\cite{Han2018622} present an application study. The emulator is RBF or kernel-based and is used inside an outer multi-objective or evolutionary search loop.
+
+In work on robust optimal scheduling for integrated energy systems based on multi-objective confidence gap, Dong et al.~\cite{Dong2023__2} develop a computational workflow. The emulator is polynomial-chaos expansion or response-surface-based and is used to replace expensive inner optimisation solves in the host problem.
+
+Optimal scheduling and management of grid-connected distributed resources using improved is analysed by Abbas et al.~\cite{abbas_optimal_2024}. The emulator is polynomial-chaos expansion or response-surface-based and is used within a decomposition layer (recourse or pricing). Validation reports feasibility or constraint violations on the host problem.
+
+\subsection{Microgrids and energy hubs}
+\label{sec:apps:microgrid}
+
+Microgrid and energy-hub applications mix forecasting, scheduling, sizing and control.
+
+Several studies in microgrid, energy-hub and VPP applications use polynomial-chaos expansion or response-surface emulators inside an outer multi-objective or evolutionary search loop.
+
+Hussien et al.~\cite{Hussien20211883} examine sunflower optimization algorithm-based optimal PI control for enhancing the performance. The emulator is polynomial-chaos expansion or response-surface-based and is used inside an outer multi-objective or evolutionary search loop. Training runs follow factorial designs over discrete factor levels.
+
+Hussien et al.~\cite{Hussien20226442} address coot Bird Algorithms-Based Tuning PI Controller for Optimal Microgrid Autonomous Operation. The emulator is polynomial-chaos expansion or response-surface-based and is used inside an outer multi-objective or evolutionary search loop. Training runs explore discrete factor combinations for response-surface fitting.
+
+For lMSRE-based adaptive pi controller for enhancing the performance of an autonomous operation, Hussien et al.~\cite{Hussien202190577} report a surrogate-assisted formulation. The emulator is polynomial-chaos expansion or response-surface-based and is used inside an outer multi-objective or evolutionary search loop. Training runs explore discrete factor combinations for response-surface fitting.
+
+Regarding hybrid Transient Search Algorithm With Levy Flight for Optimal PI Controllers of Islanded Microgrids, Hussien et al.~\cite{Hussien202415075} present an application study. The emulator is polynomial-chaos expansion or response-surface-based and is used inside an outer multi-objective or evolutionary search loop. Training runs explore discrete factor combinations for response-surface fitting.
+
+In work on scientific mapping of optimisation applied to microgrids integrated with renewable energy systems, Arar Tahir et al.~\cite{arar_tahir_scientific_2023} develop a computational workflow. The emulator is polynomial-chaos expansion or response-surface-based and is used inside an outer multi-objective or evolutionary search loop. Training inputs are placed by Latin hypercube sampling over the planning box.
+
+Optimizing methodologies of hybrid renewable energy systems powered reverse osmosis plants is analysed by Batista et al.~\cite{batista_optimizing_2023}. The emulator is polynomial-chaos expansion or response-surface-based and is used inside an outer multi-objective or evolutionary search loop.
+
+A common thread in microgrid, energy-hub and VPP applications is RBF or kernel emulators to replace expensive inner optimisation solves in the host problem.
+
+Faraji et al.~\cite{Faraji2020157284} study optimal day-ahead self-scheduling and operation of prosumer microgrids using hybrid. The emulator is RBF or kernel-based and is used to replace expensive inner optimisation solves in the host problem.
+
+Wang et al.~\cite{Wang20192635} target neural networks for power management optimal strategy in hybrid microgrid. The emulator is RBF or kernel-based and is used to replace expensive inner optimisation solves in the host problem. The emulator is trained from historically observed operating data.
+
+Lu et al.~\cite{Lu20232989} examine distributed Online Dispatch for Microgrids Using Hierarchical Reinforcement Learning Embedded. The emulator is RBF or kernel-based and is used to replace expensive inner optimisation solves in the host problem. The emulator is trained from historically observed operating data. Validation reports feasibility or constraint violations on the host problem.
+
+Wu et al.~\cite{Wu2021} address optimal bidding and scheduling of AA-CAES based energy hub considering cascaded consumption of heat. The emulator is RBF or kernel-based and is used to replace expensive inner optimisation solves in the host problem. Further simulation runs are chosen by Bayesian optimization (acquisition-driven active learning).
+
+For two-Stage Optimal Operation Strategy of Isolated Microgrid with TSK Fuzzy Identification of Supply, Zhang et al.~\cite{Zhang20203731} report a surrogate-assisted formulation. The emulator is RBF or kernel-based and is used to replace expensive inner optimisation solves in the host problem. Emulator training transfers information across related datasets.
+
+Much of the work on microgrid, energy-hub and VPP applications embeds Gaussian-process or kriging emulators to replace expensive inner optimisation solves in the host problem.
+
+Regarding machine learning based integrated feature selection approach for improved electricity demand, Eseye et al.~\cite{Eseye201991463} present an application study. The emulator is Gaussian-process or kriging-based and is used to replace expensive inner optimisation solves in the host problem.
+
+In work on integrated optimal design of a smart microgrid with storage, Rigo-Mariani et al.~\cite{Rigo-Mariani20171762} develop a computational workflow. The emulator is Gaussian-process or kriging-based and is used to replace expensive inner optimisation solves in the host problem.
+
+Data-Driven Energy Management System with Gaussian Process Forecasting and MPC for Interconnected is analysed by Gan et al.~\cite{Gan2021695}. The emulator is Gaussian-process or kriging-based and is used to replace expensive inner optimisation solves in the host problem.
+
+Kanwal et al.~\cite{Kanwal2018117} study support vector machine and Gaussian process regression based modeling for photovoltaic power. The emulator is Gaussian-process or kriging-based and is used to replace expensive inner optimisation solves in the host problem.
+
+The contributions below on microgrid, energy-hub and VPP applications mainly use neural-network emulators to replace expensive inner optimisation solves in the host problem.
+
+Guo et al.~\cite{Guo20222057} target training Deep Neural Network for Optimal Power Allocation in Islanded Microgrid Systems. The emulator is neural-network-based and is used to replace expensive inner optimisation solves in the host problem.
+
+Chaturvedi et al.~\cite{Chaturvedi2024149} examine reinforcement Learning-Based Integrated Control to Improve the Efficiency of DC Microgrids. The emulator is neural-network-based and is used to replace expensive inner optimisation solves in the host problem.
+
+Roth et al.~\cite{Roth2019214} address a flexible metamodel architecture for optimal design of Hybrid Renewable Energy Systems (HRES) –. The emulator is neural-network-based and is used to replace expensive inner optimisation solves in the host problem.
+
+For more Efficient Energy Management for Hybrid AC/DC Microgrids with Hard Constrained Neural, Liu et al.~\cite{Liu20242534} report a surrogate-assisted formulation. The emulator is neural-network-based and is used to replace expensive inner optimisation solves in the host problem.
+
+Regarding sizing and sitting of DERs in active distribution networks incorporating load prevailing, Nematollahi et al.~\cite{Nematollahi2021} present an application study. The emulator is Gaussian-process or kriging-based and is used to propagate uncertainty in chance- or robust-constrained formulations.
+
+In work on learning Robust Model Predictive Control for Voltage Control of Islanded Microgrid, Kiani et al.~\cite{Kiani20253021} develop a computational workflow. The emulator is Gaussian-process or kriging-based and is used to propagate uncertainty in chance- or robust-constrained formulations.
+
+Hierarchical robust Day-Ahead VPP and DSO coordination based on local market to enhance is analysed by Han et al.~\cite{Han2024}. The emulator is Gaussian-process or kriging-based and is used to propagate uncertainty in chance- or robust-constrained formulations.
+
+Kaewdornhan et al.~\cite{Kaewdornhan2022130373} study electric Distribution Network with Multi-Microgrids Management Using Surrogate-Assisted Deep. The emulator is neural-network-based and is used inside an outer multi-objective or evolutionary search loop. Validation reports feasibility or constraint violations on the host problem.
+
+Perera et al.~\cite{Perera2017187} target optimum design of distributed energy hubs using hybrid surrogate models (HSM). The emulator is neural-network-based and is used inside an outer multi-objective or evolutionary search loop. Further simulation runs are chosen by an active-learning rule.
+
+Pourmohammadi et al.~\cite{Pourmohammadi2023} examine robust metamodel-based simulation-optimization approaches for designing hybrid renewable energy. The emulator is polynomial-chaos expansion or response-surface-based and is used to propagate uncertainty in chance- or robust-constrained formulations.
+
+Yang et al.~\cite{Yang2024__2} address data-driven robust optimization scheduling for microgrid day-ahead to intra-day operations. The emulator is polynomial-chaos expansion or response-surface-based and is used to propagate uncertainty in chance- or robust-constrained formulations. Validation includes stress-test blocks.
+
+For stochastic Optimization for Residential Demand Response with Unit Commitment and Time of Use, Wang et al.~\cite{Wang20211767} report a surrogate-assisted formulation. The emulator is RBF or kernel-based and is used to propagate uncertainty in chance- or robust-constrained formulations.
+
+Regarding co-optimization of multiple virtual power plants considering electricity-heat-carbon trading, Cao et al.~\cite{Cao2023__2} present an application study. The integration role is to replace expensive inner optimisation solves in the host problem. Training inputs are placed by Latin hypercube sampling over the planning box.
+
+In work on maximum Loadability of Islanded Microgrids With Renewable Energy Generation, Xu et al.~\cite{Xu20184696} develop a computational workflow. The emulator is polynomial-chaos expansion or response-surface-based and is used to replace expensive inner optimisation solves in the host problem. Uncertain inputs are represented by sparse-grid or PCE collocation nodes (quasi-Monte Carlo / quadrature family).
+
+Kriging Empirical Mode Decomposition via support vector machine learning technique for autonomous is analysed by Shao et al.~\cite{Shao201858}. The emulator is Gaussian-process or kriging-based and is used within a decomposition layer (recourse or pricing).
+
+Li et al.~\cite{Li2023__3} study physics-model-free heat-electricity energy management of multiple microgrids based on surrogate. The emulator is tree-ensemble-based and is used to replace expensive inner optimisation solves in the host problem.
+
+Matta et al.~\cite{Matta2026} target designing a near-optimal isolated microgrid using active learning. The emulator is Gaussian-process or kriging-based and is used inside an outer multi-objective or evolutionary search loop. Further simulation runs are chosen by an active-learning rule. Validation assesses prediction-interval calibration.
+
+Velásquez et al.~\cite{velasquez_intelligence_2023} examine intelligence Techniques in Sustainable Energy: Analysis of a Decade of Advances. The emulator is RBF or kernel-based and is used inside an outer multi-objective or evolutionary search loop.
+
+\subsection{District heating systems and thermal storage}
+\label{sec:apps:dh}
+
+District heating work substitutes thermal metamodels inside operational models.
+
+Hirvonen et al.~\cite{Hirvonen2017323} examine neural network metamodelling in multi-objective optimization of a high latitude solar community. The emulator is neural-network-based and is used inside an outer multi-objective or evolutionary search loop. Validation reports feasibility or constraint violations on the host problem.
+
+Sánchez-Zabala et al.~\cite{Sánchez-Zabala2024} address building energy performance metamodels for district energy management optimisation platforms. The emulator is RBF or kernel-based and is used to replace expensive inner optimisation solves in the host problem. Validation assesses prediction-interval calibration.
+
+For investigating influential techno-economic factors for combined heat and power production, Weinberger et al.~\cite{Weinberger2018555} report a surrogate-assisted formulation. The emulator is neural-network-based and is used to replace expensive inner optimisation solves in the host problem. Training runs follow a Box--Behnken design over factor levels.
+
+Regarding predictive control of district heating system using multi-stage nonlinear approximation, Reich et al.~\cite{Reich2020} present an application study. The emulator is Gaussian-process or kriging-based and is used to replace expensive inner optimisation solves in the host problem.
+
+In work on improving the potential of fifth-generation district heating and cooling networks through robust, Chaudhry et al.~\cite{Chaudhry2024} develop a computational workflow. The emulator is polynomial-chaos expansion or response-surface-based and is used to propagate uncertainty in chance- or robust-constrained formulations. Uncertain inputs are represented by sparse-grid or PCE collocation nodes (quasi-Monte Carlo / quadrature family).
+
+Development of a robust data-driven surrogate model to improve energy flexibility of an integrated is analysed by Du et al.~\cite{Du2025}. The emulator is neural-network-based and is used to propagate uncertainty in chance- or robust-constrained formulations.
+
+\subsection{Economic dispatch and unit commitment}
+\label{sec:apps:dispatch}
+
+Dispatch and unit commitment target repeated inner MILP/LP solves; stochastic and robust variants appear alongside deterministic dispatch.
+
+Several studies in economic dispatch and unit commitment use neural-network emulators to replace expensive inner optimisation solves in the host problem.
+
+Wu et al.~\cite{Wu2022231} examine deep Learning to Optimize: Security-Constrained Unit Commitment with Uncertain Wind Power. The emulator is neural-network-based and is used to replace expensive inner optimisation solves in the host problem.
+
+Chen et al.~\cite{Chen20244723} address end-to-End Feasible Optimization Proxies for Large-Scale Economic Dispatch. The emulator is neural-network-based and is used to replace expensive inner optimisation solves in the host problem. Validation reports regret or optimality-gap checks, not only fit error.
+
+For learning optimization proxies for large-scale Security-Constrained Economic Dispatch, Chen et al.~\cite{Chen2022} report a surrogate-assisted formulation. The emulator is neural-network-based and is used to replace expensive inner optimisation solves in the host problem. Validation reports feasibility or constraint violations on the host problem.
+
+Regarding e2DNet: An Ensembling Deep Neural Network for Solving Nonconvex Economic Dispatch in Smart Grid, Xu et al.~\cite{Xu20223066} present an application study. The emulator is neural-network-based and is used to replace expensive inner optimisation solves in the host problem.
+
+In work on an Alternative Learning-Based Approach for Economic Dispatch in Smart Grid, Guo et al.~\cite{Guo202115024} develop a computational workflow. The emulator is neural-network-based and is used to replace expensive inner optimisation solves in the host problem.
+
+A common thread in economic dispatch and unit commitment is polynomial-chaos expansion or response-surface emulators to propagate uncertainty in chance- or robust-constrained formulations.
+
+Efficient Uncertainty Quantification in Stochastic Economic Dispatch is analysed by Safta et al.~\cite{Safta20172535}. The emulator is polynomial-chaos expansion or response-surface-based and is used to propagate uncertainty in chance- or robust-constrained formulations. Uncertain inputs are represented by sparse-grid or PCE collocation nodes (quasi-Monte Carlo / quadrature family). Validation reports feasibility or constraint violations on the host problem.
+
+Wang et al.~\cite{Wang2022812} study a Data-Driven Uncertainty Quantification Method for Stochastic Economic Dispatch. The emulator is polynomial-chaos expansion or response-surface-based and is used to propagate uncertainty in chance- or robust-constrained formulations. Uncertain inputs are represented by sparse-grid or PCE collocation nodes (quasi-Monte Carlo / quadrature family).
+
+Pan et al.~\cite{Pan20244422} target reliability-Constrained Economic Dispatch With Analytical Formulation of Operational Risk Evaluation. The emulator is polynomial-chaos expansion or response-surface-based and is used to propagate uncertainty in chance- or robust-constrained formulations. Uncertain inputs are represented by sparse-grid or PCE collocation nodes (quasi-Monte Carlo / quadrature family). Validation reports feasibility or constraint violations on the host problem.
+
+Li et al.~\cite{Li20191438} examine compressive Sensing Based Stochastic Economic Dispatch with High Penetration Renewables. The emulator is polynomial-chaos expansion or response-surface-based and is used to propagate uncertainty in chance- or robust-constrained formulations. Uncertain inputs are represented by sparse-grid or PCE collocation nodes (quasi-Monte Carlo / quadrature family).
+
+Lu et al.~\cite{Lu201991827} address stochastic Optimization of Economic Dispatch with Wind and Photovoltaic Energy Using the Nested. The emulator is polynomial-chaos expansion or response-surface-based and is used to propagate uncertainty in chance- or robust-constrained formulations. Uncertain inputs are represented by sparse-grid or PCE collocation nodes (quasi-Monte Carlo / quadrature family).
+
+For a short-term load forecasting method using integrated CNN and LSTM network, Rafi et al.~\cite{Rafi202132436} report a surrogate-assisted formulation. The emulator is RBF or kernel-based and is used to replace expensive inner optimisation solves in the host problem.
+
+Regarding a general approach for mixed-integer predictive control of HVAC systems using MILP, Dullinger et al.~\cite{Dullinger20181646} present an application study. The emulator is RBF or kernel-based and is used to replace expensive inner optimisation solves in the host problem.
+
+In work on smart real-time scheduling of generating units in an electricity market considering environmental, Goudarzi et al.~\cite{Goudarzi2017667} develop a computational workflow. The emulator is RBF or kernel-based and is used to replace expensive inner optimisation solves in the host problem.
+
+Parametric analysis of wastewater electrolysis for green hydrogen production is analysed by Ahmad et al.~\cite{Ahmad202451}. The emulator is polynomial-chaos expansion or response-surface-based and is used to replace expensive inner optimisation solves in the host problem. Training runs follow a Box--Behnken design over factor levels.
+
+Rixhon et al.~\cite{Rixhon2021} study the role of electrofuels under uncertainties for the belgian energy transition. The emulator is polynomial-chaos expansion or response-surface-based and is used to replace expensive inner optimisation solves in the host problem. Uncertain inputs are represented by quasi-Monte Carlo (low-discrepancy) sample sets.
+
+Nikolaidis et al.~\cite{Nikolaidis2021} target gaussian process-based Bayesian optimization for data-driven unit commitment. The emulator is Gaussian-process or kriging-based and is used inside an outer multi-objective or evolutionary search loop. Further simulation runs are chosen by Bayesian optimization (acquisition-driven active learning).
+
+Lin et al.~\cite{Lin2023} examine data-driven method of solving computationally expensive combined economic/emission dispatch. The emulator is Gaussian-process or kriging-based and is used inside an outer multi-objective or evolutionary search loop.
+
+Angizeh et al.~\cite{Angizeh2023134995} address impact Assessment Framework for Grid Integration of Energy Storage Systems and Renewable Energy. The emulator is Gaussian-process or kriging-based and is used to replace expensive inner optimisation solves in the host problem. Validation assesses prediction-interval calibration.
+
+For analytical Iterative Multistep Interval Forecasts of Wind Generation Based on TLGP, Yan et al.~\cite{Yan2019625} report a surrogate-assisted formulation. The emulator is Gaussian-process or kriging-based and is used to replace expensive inner optimisation solves in the host problem. Validation assesses prediction-interval calibration.
+
+Regarding a Bayesian Approach for Estimating Uncertainty in Stochastic Economic Dispatch Considering Wind, Hu et al.~\cite{Hu2021671} present an application study. The emulator is Gaussian-process or kriging-based and is used to propagate uncertainty in chance- or robust-constrained formulations. Uncertain inputs are represented by sparse-grid or PCE collocation nodes (quasi-Monte Carlo / quadrature family).
+
+In work on uncertainty quantification in stochastic economic dispatch using Gaussian process emulation, Hu et al.~\cite{Hu2020} develop a computational workflow. The emulator is Gaussian-process or kriging-based and is used to propagate uncertainty in chance- or robust-constrained formulations. Training inputs are placed by Latin hypercube sampling over the planning box.
+
+Synergistic Integration of Machine Learning and Mathematical Optimization for Unit Commitment is analysed by Wu et al.~\cite{Wu2024391}. The emulator is tree-ensemble-based and is used to replace expensive inner optimisation solves in the host problem. Validation reports feasibility or constraint violations on the host problem.
+
+Pang et al.~\cite{Pang2023} study a Surrogate-Assisted Adaptive Bat Algorithm for Large-Scale Economic Dispatch. The emulator is neural-network-based and is used inside an outer multi-objective or evolutionary search loop.
+
+Liang et al.~\cite{Liang20246508} target joint Chance-Constrained Unit Commitment. The emulator is constraint-aware neural-based and is used to replace expensive inner optimisation solves in the host problem.
+
+\subsection{Optimal power flow and AC relaxations}
+\label{sec:apps:opf}
+
+AC-OPF-focused work proxies nonlinear solves or propagates input uncertainty, including distribution-network planning and distributionally robust voltage control.
+
+Several studies in AC optimal power flow and stochastic or robust distribution planning use polynomial-chaos expansion or response-surface emulators to replace expensive inner optimisation solves in the host problem.
+
+Muhlpfordt et al.~\cite{Muhlpfordt20194806} examine chance-Constrained AC Optimal Power Flow: A Polynomial Chaos Approach. The emulator is polynomial-chaos expansion or response-surface-based and is used to replace expensive inner optimisation solves in the host problem. Uncertain inputs are represented by sparse-grid or PCE collocation nodes (quasi-Monte Carlo / quadrature family).
+
+Koirala et al.~\cite{Koirala20242284} address chance-Constrained Optimization Based PV Hosting Capacity Calculation Using General Polynomial Chaos. The emulator is polynomial-chaos expansion or response-surface-based and is used to replace expensive inner optimisation solves in the host problem. Uncertain inputs are represented by sparse-grid or PCE collocation nodes (quasi-Monte Carlo / quadrature family).
+
+For solving optimal power flow with non-Gaussian uncertainties via polynomial chaos expansion, Muhlpfordt et al.~\cite{Muhlpfordt20174490} report a surrogate-assisted formulation. The emulator is polynomial-chaos expansion or response-surface-based and is used to replace expensive inner optimisation solves in the host problem. Uncertain inputs are represented by sparse-grid or PCE collocation nodes (quasi-Monte Carlo / quadrature family).
+
+Regarding an Iterative Response-Surface-Based Approach for Chance-Constrained AC Optimal Power Flow, Xu et al.~\cite{Xu20212696} present an application study. The emulator is polynomial-chaos expansion or response-surface-based and is used to replace expensive inner optimisation solves in the host problem. Uncertain inputs are represented by sparse-grid or PCE collocation nodes (quasi-Monte Carlo / quadrature family). Validation reports feasibility or constraint violations on the host problem.
+
+In work on general polynomial chaos in the current–voltage formulation of the optimal power flow problem, Van Acker et al.~\cite{Van Acker2022} develop a computational workflow. The emulator is polynomial-chaos expansion or response-surface-based and is used to replace expensive inner optimisation solves in the host problem. Uncertain inputs are represented by sparse-grid or PCE collocation nodes (quasi-Monte Carlo / quadrature family). Validation reports feasibility or constraint violations on the host problem.
+
+A common thread in AC optimal power flow and load-flow studies is RBF or kernel emulators to replace expensive inner optimisation solves in the host problem.
+
+Importance Sampling Using Multilabel Radial Basis Classification for Composite Power System is analysed by Urgun et al.~\cite{Urgun20202791}. The emulator is RBF or kernel-based and is used to replace expensive inner optimisation solves in the host problem. Training inputs are placed by Latin hypercube sampling over the planning box.
+
+Liu et al.~\cite{Liu20223726} study explicit Data-Driven Small-Signal Stability Constrained Optimal Power Flow. The emulator is RBF or kernel-based and is used to replace expensive inner optimisation solves in the host problem.
+
+Wu et al.~\cite{Wu2021__2} target hybrid Improved Bird Swarm Algorithm with Extreme Learning Machine for Short-Term Power Prediction. The emulator is RBF or kernel-based and is used to replace expensive inner optimisation solves in the host problem.
+
+Mahapatra et al.~\cite{Mahapatra20161921} examine hybrid technique for optimal location and cost sizing of thyristor controlled series compensator. The emulator is RBF or kernel-based and is used to replace expensive inner optimisation solves in the host problem.
+
+Mahapatra et al.~\cite{Mahapatra2022721} address constrained optimal power flow and optimal TCSC allocation using hybrid cuckoo search and ant lion. The emulator is RBF or kernel-based and is used to replace expensive inner optimisation solves in the host problem.
+
+Much of the work on AC optimal power flow and stochastic or robust distribution planning embeds Gaussian-process or kriging emulators to replace expensive inner optimisation solves in the host problem.
+
+For kriging Assisted Surrogate Evolutionary Computation to Solve Optimal Power Flow Problems, Deng et al.~\cite{Deng2020831} report a surrogate-assisted formulation. The emulator is Gaussian-process or kriging-based and is used to replace expensive inner optimisation solves in the host problem. Training points are added sequentially by infill rules during surrogate-assisted search.
+
+Regarding fast Data-Driven Chance Constrained AC-OPF Using Hybrid Sparse Gaussian Processes, Mitrovic et al.~\cite{Mitrovic2023__2} present an application study. The emulator is Gaussian-process or kriging-based and is used to replace expensive inner optimisation solves in the host problem. Validation reports feasibility or constraint violations on the host problem.
+
+In work on gP CC-OPF: Gaussian Process based optimization tool for Chance-Constrained Optimal Power, Mitrovic et al.~\cite{Mitrovic2023__3} develop a computational workflow. The emulator is Gaussian-process or kriging-based and is used to replace expensive inner optimisation solves in the host problem.
+
+Ensemble Surrogate Archive-Assisted Artificial Bee Colony-NSGA-II Metaheuristics for Multi-Modal is analysed by Katkar et al.~\cite{Katkar2025}. The emulator is Gaussian-process or kriging-based and is used to replace expensive inner optimisation solves in the host problem.
+
+Fu et al.~\cite{Fu20202904} study statistical Machine Learning Model for Stochastic Optimal Planning of Distribution Networks. The emulator is polynomial-chaos expansion or response-surface-based and is used to propagate uncertainty in chance- or robust-constrained formulations. Training inputs are placed by Latin hypercube sampling over the planning box.
+
+Fu et al.~\cite{Fu2022} target statistical machine learning model for capacitor planning considering uncertainties in photovoltaic. The emulator is polynomial-chaos expansion or response-surface-based and is used to propagate uncertainty in chance- or robust-constrained formulations. Training runs explore discrete factor combinations for response-surface fitting. Validation reports feasibility or constraint violations on the host problem.
+
+Engelmann et al.~\cite{Engelmann20186188} examine distributed Stochastic AC Optimal Power Flow based on Polynomial Chaos Expansion. The emulator is polynomial-chaos expansion or response-surface-based and is used to propagate uncertainty in chance- or robust-constrained formulations. Uncertain inputs are represented by sparse-grid or PCE collocation nodes (quasi-Monte Carlo / quadrature family). Validation reports feasibility or constraint violations on the host problem.
+
+Su et al.~\cite{Su2022315} address deep Belief Network Enabled Surrogate Modeling for Fast Preventive Control of Power System. The emulator is neural-network-based and is used to replace expensive inner optimisation solves in the host problem. Training inputs are placed by Latin hypercube sampling over the planning box.
+
+For learning to Solve Optimization Problems With Hard Linear Constraints, Li et al.~\cite{Li202359995} report a surrogate-assisted formulation. The emulator is neural-network-based and is used to replace expensive inner optimisation solves in the host problem. Emulator training transfers information across related datasets. Validation reports feasibility or constraint violations on the host problem.
+
+Regarding deep-Quantile-Regression-Based Surrogate Model for Joint Chance-Constrained Optimal Power Flow, Chen et al.~\cite{Chen2023657} present an application study. The emulator is constraint-aware neural-based and is used to replace expensive inner optimisation solves in the host problem. Validation reports feasibility or constraint violations on the host problem.
+
+In work on surrogate Formulation for Chance-Constrained DC Optimal Power Flow With Affine Control Policy, Lei et al.~\cite{Lei20247417} develop a computational workflow. The emulator is constraint-aware neural-based and is used to replace expensive inner optimisation solves in the host problem. Validation reports feasibility or constraint violations on the host problem.
+
+Tractable Data Enriched Distributionally Robust Chance-Constrained Conservation Voltage Reduction is analysed by Zhang et al.~\cite{Zhang2024821}. The emulator is Gaussian-process or kriging-based and is used to propagate uncertainty in chance- or robust-constrained formulations.
+
+Liu et al.~\cite{Liu20222679} study kernel Structure Design for Data-Driven Probabilistic Load Flow Studies. The emulator is Gaussian-process or kriging-based and is used to propagate uncertainty in chance- or robust-constrained formulations.
+
+Srithapon et al.~\cite{Srithapon202134395} target surrogate-Assisted Multi-Objective Probabilistic Optimal Power Flow for Distribution Network. The emulator is neural-network-based and is used inside an outer multi-objective or evolutionary search loop.
+
+Li et al.~\cite{Li2023__2} examine learning to Optimize Distributed Optimization: ADMM-based DC-OPF Case Study. The emulator is tree-ensemble-based and is used to replace expensive inner optimisation solves in the host problem. Validation reports feasibility or constraint violations on the host problem.
+
+\subsection{Capacity and generation expansion planning}
+\label{sec:apps:expansion}
+
+Expansion planning re-evaluates operational sub-models across investment candidates.
+
+Park et al.~\cite{Park2019} examine physics-induced graph neural network: An application to wind-farm power estimation. The emulator is neural-network-based and is used inside an outer multi-objective or evolutionary search loop.
+
+Jahangiri et al.~\cite{Jahangiri20244849} address a machine learning approach to analysis of Canadian provincial power system decarbonization. The emulator is neural-network-based and is used inside an outer multi-objective or evolutionary search loop.
+
+For a Deep Learning Approach for Exploring the Design Space for the Decarbonization of the Canadian, Jahangiri et al.~\cite{Jahangiri2023} report a surrogate-assisted formulation. The emulator is neural-network-based and is used inside an outer multi-objective or evolutionary search loop.
+
+Regarding probabilistic modeling of wind energy potential for power grid expansion planning, Kim et al.~\cite{Kim2021} present an application study. The emulator is Gaussian-process or kriging-based and is used to propagate uncertainty in chance- or robust-constrained formulations.
+
+In work on bayesian framework for power network planning under uncertainty, Lawson et al.~\cite{Lawson201647} develop a computational workflow. The emulator is Gaussian-process or kriging-based and is used to propagate uncertainty in chance- or robust-constrained formulations.
+
+Propagating uncertainty in a network of energy models is analysed by Volodina et al.~\cite{Volodina2022}. The emulator is Gaussian-process or kriging-based and is used to propagate uncertainty in chance- or robust-constrained formulations. Training inputs are placed by Latin hypercube sampling over the planning box. Validation assesses prediction-interval calibration.
+
+Rodgers et al.~\cite{Rodgers2018951} study generation expansion planning considering health and societal damages – A simulation-based. The emulator is polynomial-chaos expansion or response-surface-based and is used inside an outer multi-objective or evolutionary search loop.
+
+Pérez-Uresti et al.~\cite{Pérez-Uresti2023} target strategic investment planning for the hydrogen economy – A mixed integer non-linear framework. The emulator is neural-network-based and is used to replace expensive inner optimisation solves in the host problem.
+
+Yang et al.~\cite{Yang2025} examine adaptive multi-objective Bayesian optimization approach for capacity planning of the interconnected. The emulator is tree-ensemble-based and is used inside an outer multi-objective or evolutionary search loop. Further simulation runs are chosen by Bayesian optimization (acquisition-driven active learning).
+
+\subsection{Synthesis: where surrogates help, where they do not}
+\label{sec:apps:synthesis}
+
+Taken together, the evidence map supports four observations.
+\emph{First}, sector-coupled and MOO studies predominantly use surrogates
+to accelerate outer-loop search, whereas dispatch and OPF work more often
+replace inner solves or handle uncertainty in the reformulation layer.
+\emph{Second}, Gaussian-process and response-surface models remain frequent
+in MES and MOO, while neural proxies dominate OPF replacement and several
+DH metamodels. \emph{Third}, most studies still stop at point fit metrics;
+feasibility-rate reporting and decision-aware regret or gap metrics remain
+the exception outside dispatch and chance-constrained strands.
+\emph{Fourth}, the open MES question is how surrogate-derived Pareto or robust
+solutions should be communicated to decision makers
+\cite{Mylonopoulos202332697,Lim2025}.

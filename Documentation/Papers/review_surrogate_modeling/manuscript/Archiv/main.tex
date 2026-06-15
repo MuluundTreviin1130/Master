@@ -1,0 +1,73 @@
+% =====================================================================
+%  Surrogate Models for MOO in Multi-Energy Systems - main.tex
+%
+%  Target template : Elsevier elsarticle (single-column review style)
+%  Bibliography    : classical bibtex with elsarticle-num
+%  Bib file        : ../references/review_mes_moo_surrogates.bib
+%
+%  The manuscript body lives in 00_..09_ section files which are
+%  \input{}-ed in order below. Editing one section never touches any
+%  other section, so we can iterate on Introduction / Background /
+%  Taxonomy independently from the Application chapters.
+% =====================================================================
+
+\documentclass[review,12pt,3p,times]{elsarticle}
+
+% --- packages -----------------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{makecell}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage[hidelinks]{hyperref}
+\usepackage{cleveref}
+\usepackage[svgnames]{xcolor}
+\usepackage{enumitem}
+\usepackage{siunitx}
+
+% Compact float captions; reviews tend to have many figures/tables.
+\usepackage[font=small,labelfont=bf]{caption}
+
+% Useful column types for the overview tables.
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+
+% Bib style: numerical, sorted by appearance, fits a long reference list.
+\bibliographystyle{elsarticle-num}
+
+% Journal target (uncomment when fixed)
+% \journal{Renewable and Sustainable Energy Reviews}
+
+% =====================================================================
+\begin{document}
+
+% ---- title, authors, abstract -----------------------------------------
+\input{00_title_abstract_keywords}
+
+% ---- main body --------------------------------------------------------
+\input{01_introduction}
+\input{02_related_reviews}
+\input{03_background_optimization_in_esm}
+\input{04_taxonomy_surrogates}
+\input{05_training_data_doe}
+\input{06_integration_patterns}
+\input{07_validation_decision_aware}
+\input{08_application_evidence_map}
+\input{09_open_challenges}
+\input{10_conclusion}
+
+% ---- appendix ---------------------------------------------------------
+\appendix
+\input{appendix}
+
+% ---- bibliography -----------------------------------------------------
+\bibliography{../references/review_mes_moo_surrogates}
+
+\end{document}
