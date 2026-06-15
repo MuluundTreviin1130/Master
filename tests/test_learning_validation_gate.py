@@ -6,11 +6,13 @@ from types import SimpleNamespace
 import numpy as np
 
 from Learning.validation.evaluate_gate import evaluate_gate
-from Settings.learning import ValidationGateConfig
 
 
 def _settings(*, critical_targets: list[str] | None = None) -> SimpleNamespace:
-    gate = ValidationGateConfig(
+    gate = SimpleNamespace(
+        enabled=True,
+        require_full_target_coverage=True,
+        fail_on_nan_predictions=True,
         critical_targets=list(critical_targets or ["critical_flow"]),
         min_pass_share=0.5,
         critical_target_min_r2=0.9,
