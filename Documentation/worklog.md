@@ -10437,3 +10437,12 @@ Naechste Schritte:
   - Added five research highlights, each below the usual 85-character limit.
   - Regenerated the 13 manuscript sections and confirmed `225` citation keys
     with no missing entries in the review bibliography.
+
+- 2026-06-16: Fixed two high-severity Learning/Settings correctness issues found during critical bug review.
+  - `Learning/thermflex_system_results` now aligns dispatch KPI targets from
+    `dispatch_kpis.json["points"]` row-wise with `truth_dataset.csv` and fails
+    fast on count or `point_idx` mismatches instead of broadcasting
+    `latest_point` across multi-point runs.
+  - Restored the missing typed `Settings.validation` package used by
+    `get_settings()` and validation holdout overrides, so Settings and
+    Learning modules import without the missing-module crash.
