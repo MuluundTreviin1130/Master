@@ -145,9 +145,9 @@ def load_system_results_truth_table(
         for key, value in scenario_context.items():
             normalized_df[key] = value
         if dispatch_mode == "latest_point":
-            dispatch_payload = _load_dispatch_kpi_latest_point(csv_path.parent)
-            for key, value in dispatch_payload.items():
-                normalized_df[key] = value
+            dispatch_rows = _load_dispatch_kpi_point_rows(csv_path.parent, expected_rows=len(raw_df))
+            for key in DISPATCH_KPI_TARGET_COLUMNS:
+                normalized_df[key] = [row[key] for row in dispatch_rows]
         normalized_df["split_group_run"] = run_name
         normalized_df["split_group_case"] = run_slug
         normalized_df["split_group_dispatch"] = dispatch_formulation_tag
@@ -445,16 +445,18 @@ def _lookup_scenario_daily_context(anchor_date: datetime | None) -> dict[str, fl
     }
 
 
-def _load_dispatch_kpi_latest_point(run_dir: Path) -> dict[str, float]:
+def _load_dispatch_kpi_point_rows(run_dir: Path, *, expected_rows: int) -> list[dict[str, float]]:
     """
-    Load one explicit dispatch-KPI payload from a historic run folder.
+    Load dispatch-KPI payloads in the same point order as `truth_dataset.csv`.
 
-    The enriched system family uses `dispatch_kpis.json` as a second SSOT next
-    to `truth_dataset.csv`. We only merge the scalar KPI block required for
-    learning and fail fast if the run folder lacks the file or if required KPI
-    names are absent.
+    The Gold engine appends one truth row and one dispatch-KPI `points` entry
+    per evaluated design point. The learning target merge must therefore be
+    row-wise; using `latest_point` for a multi-row run would broadcast the final
+    design point's KPIs onto all earlier rows and corrupt labels silently.
     """
 
+    if expected_rows <= 0:
+        raise ValueError("[thermflex_system_results] expected dispatch KPI row count must be positive.")
     dispatch_path = Path(run_dir).resolve() / "dispatch_kpis.json"
     if not dispatch_path.exists():
         raise FileNotFoundError(
@@ -462,39 +464,99 @@ def _load_dispatch_kpi_latest_point(run_dir: Path) -> dict[str, float]:
             f"{dispatch_path}"
         )
     payload = json.loads(dispatch_path.read_text(encoding="utf-8"))
-    latest_point = payload.get("latest_point")
-    if not isinstance(latest_point, dict):
+    points = payload.get("points")
+    if not isinstance(points, list):
         raise TypeError(
-            "[thermflex_system_results] dispatch_kpis.json missing dict field 'latest_point': "
+            "[thermflex_system_results] dispatch_kpis.json missing list field 'points': "
             f"{dispatch_path}"
         )
-    if "dispatch_heat_operating_cost_eur" not in latest_point:
+    if len(points) != expected_rows:
+        raise ValueError(
+            "[thermflex_system_results] dispatch KPI point count does not match truth rows: "
+            f"{len(points)} points for {expected_rows} truth rows ({dispatch_path})"
+        )
+
+    merged_rows: list[dict[str, float]] = []
+    for expected_idx, point in enumerate(points):
+        if not isinstance(point, dict):
+            raise TypeError(
+                "[thermflex_system_results] dispatch_kpis.json point entry is not a dict: "
+                f"points[{expected_idx}] ({dispatch_path})"
+            )
+        point_idx_raw = point.get("point_idx")
+        if point_idx_raw is None:
+            raise KeyError(
+                "[thermflex_system_results] dispatch KPI point missing point_idx: "
+                f"points[{expected_idx}] ({dispatch_path})"
+            )
+        if isinstance(point_idx_raw, bool):
+            raise TypeError(
+                "[thermflex_system_results] dispatch KPI point_idx must be an integer, not bool: "
+                f"points[{expected_idx}] ({dispatch_path})"
+            )
+        if isinstance(point_idx_raw, float) and not point_idx_raw.is_integer():
+            raise ValueError(
+                "[thermflex_system_results] dispatch KPI point_idx must be an integer: "
+                f"points[{expected_idx}]={point_idx_raw!r} ({dispatch_path})"
+            )
+        try:
+            point_idx = int(point_idx_raw)
+        except (TypeError, ValueError) as exc:
+            raise ValueError(
+                "[thermflex_system_results] dispatch KPI point_idx must be parseable as integer: "
+                f"points[{expected_idx}]={point_idx_raw!r} ({dispatch_path})"
+            ) from exc
+        if point_idx != expected_idx:
+            raise ValueError(
+                "[thermflex_system_results] dispatch KPI point_idx sequence does not match truth row order: "
+                f"points[{expected_idx}].point_idx={point_idx} ({dispatch_path})"
+            )
+        merged_rows.append(
+            _normalize_dispatch_kpi_point(
+                point,
+                dispatch_path=dispatch_path,
+                point_label=f"points[{expected_idx}]",
+            )
+        )
+    return merged_rows
+
+
+def _normalize_dispatch_kpi_point(
+    point: dict[str, Any],
+    *,
+    dispatch_path: Path,
+    point_label: str,
+) -> dict[str, float]:
+    """Validate and coerce one dispatch-KPI JSON point to the target contract."""
+
+    point_payload = dict(point)
+    if "dispatch_heat_operating_cost_eur" not in point_payload:
         required_heat_terms = ("fuel_cost_eur", "co2_cost_eur", "variable_opex_eur")
-        missing_heat_terms = [key for key in required_heat_terms if key not in latest_point]
+        missing_heat_terms = [key for key in required_heat_terms if key not in point_payload]
         if missing_heat_terms:
             raise KeyError(
                 "[thermflex_system_results] cannot derive dispatch_heat_operating_cost_eur because "
-                f"required component KPIs are missing: {', '.join(missing_heat_terms)} ({dispatch_path})"
+                f"required component KPIs are missing: {', '.join(missing_heat_terms)} "
+                f"({point_label}, {dispatch_path})"
             )
-        latest_point = dict(latest_point)
-        latest_point["dispatch_heat_operating_cost_eur"] = (
-            float(latest_point["fuel_cost_eur"])
-            + float(latest_point["co2_cost_eur"])
-            + float(latest_point["variable_opex_eur"])
+        point_payload["dispatch_heat_operating_cost_eur"] = (
+            float(point_payload["fuel_cost_eur"])
+            + float(point_payload["co2_cost_eur"])
+            + float(point_payload["variable_opex_eur"])
         )
 
     merged: dict[str, float] = {}
     for key in DISPATCH_KPI_TARGET_COLUMNS:
-        if key not in latest_point:
+        if key not in point_payload:
             raise KeyError(
-                "[thermflex_system_results] required dispatch KPI missing in latest_point: "
-                f"{key} ({dispatch_path})"
+                "[thermflex_system_results] required dispatch KPI missing in dispatch point: "
+                f"{key} ({point_label}, {dispatch_path})"
             )
-        value = latest_point[key]
+        value = point_payload[key]
         if value is None:
             raise ValueError(
-                "[thermflex_system_results] dispatch KPI must not be null in latest_point: "
-                f"{key} ({dispatch_path})"
+                "[thermflex_system_results] dispatch KPI must not be null in dispatch point: "
+                f"{key} ({point_label}, {dispatch_path})"
             )
         merged[key] = float(value)
     return merged
@@ -514,10 +576,23 @@ def _dispatch_kpi_has_required_keys(run_dir: Path, *, required_keys: tuple[str, 
     if not dispatch_path.exists():
         return False
     payload = json.loads(dispatch_path.read_text(encoding="utf-8"))
-    latest_point = payload.get("latest_point")
-    if not isinstance(latest_point, dict):
+    points = payload.get("points")
+    if not isinstance(points, list) or not points:
         return False
-    return all(key in latest_point for key in required_keys)
+    for idx, point in enumerate(points):
+        if not isinstance(point, dict):
+            return False
+        if not all(key in point for key in required_keys):
+            return False
+        try:
+            _normalize_dispatch_kpi_point(
+                point,
+                dispatch_path=dispatch_path,
+                point_label=f"points[{idx}]",
+            )
+        except (KeyError, TypeError, ValueError):
+            return False
+    return True
 
 
 def _derive_thermflex_case_slug(run_slug: str) -> str:
