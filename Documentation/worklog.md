@@ -10446,3 +10446,6 @@ Naechste Schritte:
   - Restored the missing typed `Settings.validation` package used by
     `get_settings()` and validation holdout overrides, so Settings and
     Learning modules import without the missing-module crash.
+  - Made the system-results daily-context imports lazy so unanchored truth-table
+    loads do not require optional analysis plotting dependencies at module
+    import time.

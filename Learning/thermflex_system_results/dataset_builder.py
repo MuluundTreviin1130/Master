@@ -15,8 +15,6 @@ import pandas as pd
 
 from Learning.datasets.save_dataset import save_dataset
 from Learning.registry.register_dataset import register_dataset
-from Optimization.run.analysis.dh_thermflex_inputs import load_vienna_dh_thermflex_full_year_context
-from Optimization.run.analysis.select_vienna_dh_thermflex_representative_days import _build_daily_features
 from Learning.thermflex_system_results.schema import (
     BUILDER_METADATA_COLUMNS,
     CATEGORICAL_FEATURE_COLUMNS,
@@ -376,6 +374,9 @@ def _system_daily_context_by_date() -> pd.DataFrame:
     context from the same Vienna paper-year SSOT that already underlies the
     daily ThermFlex analysis path.
     """
+
+    from Optimization.run.analysis.dh_thermflex_inputs import load_vienna_dh_thermflex_full_year_context
+    from Optimization.run.analysis.select_vienna_dh_thermflex_representative_days import _build_daily_features
 
     context = load_vienna_dh_thermflex_full_year_context(base_override_path=_DEFAULT_CONTEXT_OVERRIDE)
     daily = _build_daily_features(context).reset_index()
