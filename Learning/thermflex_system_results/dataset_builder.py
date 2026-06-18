@@ -145,6 +145,12 @@ def load_system_results_truth_table(
         for key, value in scenario_context.items():
             normalized_df[key] = value
         if dispatch_mode == "latest_point":
+            if len(normalized_df) != 1:
+                raise ValueError(
+                    "[thermflex_system_results] dispatch_kpi_mode='latest_point' cannot be merged "
+                    "into a multi-row truth_dataset.csv because dispatch_kpis.json exposes only one "
+                    f"latest_point for the run folder: {csv_path.parent} (truth_rows={len(normalized_df)})"
+                )
             dispatch_payload = _load_dispatch_kpi_latest_point(csv_path.parent)
             for key, value in dispatch_payload.items():
                 normalized_df[key] = value
