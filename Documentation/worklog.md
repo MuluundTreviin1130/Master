@@ -10437,3 +10437,17 @@ Naechste Schritte:
   - Added five research highlights, each below the usual 85-character limit.
   - Regenerated the 13 manuscript sections and confirmed `225` citation keys
     with no missing entries in the review bibliography.
+
+- 2026-06-18: Hardened the new ThermFlex learning contracts after critical bug
+  inspection.
+  - Added fail-fast checks for conflicting duplicate Daily policy-day rows and
+    Hourly Mechanism truth rows so curated datasets no longer silently choose
+    one disagreeing label/source copy.
+  - Rejected `dispatch_kpi_mode='latest_point'` for multi-row system truth CSVs
+    because one `dispatch_kpis.json` latest point cannot be safely broadcast to
+    several design points.
+  - Persisted and reconstructed the Daily surrogate feature mode during
+    inference, including v3 dispatch-economics/state template columns.
+  - Restored the missing `Settings.validation` package that caused Settings
+    imports to crash, and added regression coverage in
+    `Learning/test_thermflex_learning_contracts.py`.

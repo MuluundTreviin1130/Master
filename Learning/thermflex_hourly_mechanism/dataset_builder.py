@@ -447,15 +447,17 @@ def _required_numeric(payload: dict[str, Any], key: str, *, context_label: str) 
 
 def _deduplicate_hourly_truth(frame: pd.DataFrame) -> pd.DataFrame:
     """
-    Keep the newest bundle copy when older paper bundles contain the same truth row.
+    Keep one bundle copy when older paper bundles contain the same truth row.
 
     The paper-dispatch-comparison folders contain overlapping cohort-utilization
     exports. Some older folders also use a different display `case_label` for
     the same physical `run_dir`; the deduplication key therefore uses the run,
-    cohort and timestamp identity instead of the label text.
+    cohort and timestamp identity instead of the label text. Duplicate rows must
+    agree on the actual truth payload before one source copy is retained.
     """
 
     deduped = frame.copy()
+    _raise_on_hourly_truth_duplicate_conflicts(deduped)
     deduped["_bundle_rank"] = deduped["source_bundle_name"].astype(str)
     deduped = deduped.sort_values(
         ["case_label", "run_dir", "cohort_key", "timestamp", "_bundle_rank"],
@@ -466,6 +468,51 @@ def _deduplicate_hourly_truth(frame: pd.DataFrame) -> pd.DataFrame:
         keep="last",
     ).reset_index(drop=True)
     return deduped.drop(columns="_bundle_rank")
+
+
+def _raise_on_hourly_truth_duplicate_conflicts(frame: pd.DataFrame) -> None:
+    """Fail fast when overlapping hourly bundles disagree for one physical row."""
+
+    key_columns = ["run_dir", "cohort_key", "timestamp"]
+    duplicate_mask = frame.duplicated(subset=key_columns, keep=False)
+    if not duplicate_mask.any():
+        return
+    ignored_columns = {
+        *key_columns,
+        "case_label",
+        "source_bundle_name",
+        "source_hourly_csv",
+    }
+    compare_columns = [column for column in frame.columns if column not in ignored_columns]
+    conflicts: list[dict[str, Any]] = []
+    for key, group in frame.loc[duplicate_mask].groupby(key_columns, sort=True, dropna=False):
+        conflict_columns: list[str] = []
+        for column in compare_columns:
+            series = group[column]
+            numeric = pd.to_numeric(series, errors="coerce")
+            if numeric.notna().all():
+                spread = float(numeric.max() - numeric.min())
+                if abs(spread) > 1e-9:
+                    conflict_columns.append(str(column))
+                continue
+            normalized = series.where(series.notna(), "<NA>").astype(str)
+            if int(normalized.nunique(dropna=False)) > 1:
+                conflict_columns.append(str(column))
+        if conflict_columns:
+            conflicts.append(
+                {
+                    "run_dir": str(key[0]),
+                    "cohort_key": str(key[1]),
+                    "timestamp": str(key[2]),
+                    "conflict_columns": conflict_columns[:20],
+                }
+            )
+    if conflicts:
+        raise ValueError(
+            "[thermflex_hourly_mechanism] duplicate hourly truth rows disagree; "
+            "refusing to choose one bundle silently. examples="
+            + json.dumps(conflicts[:10], default=str)
+        )
 
 
 @lru_cache(maxsize=1)

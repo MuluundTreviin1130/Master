@@ -654,6 +654,10 @@ def _deduplicate_policy_day_rows(selected: pd.DataFrame) -> tuple[pd.DataFrame, 
         duplicate_rows=duplicate_rows,
         key_columns=key_columns,
     )
+    _raise_on_policy_day_duplicate_target_conflicts(
+        duplicate_rows=duplicate_rows,
+        key_columns=key_columns,
+    )
 
     ranked = working.sort_values(
         [
@@ -709,6 +713,48 @@ def _policy_day_duplicate_target_ranges(
             "mean_range": float(np.mean(ranges)),
         }
     return summary
+
+
+def _raise_on_policy_day_duplicate_target_conflicts(
+    *,
+    duplicate_rows: pd.DataFrame,
+    key_columns: list[str],
+) -> None:
+    """
+    Refuse to rank away duplicate policy-day rows with different labels.
+
+    Exact duplicate rows are harmless replay artifacts. Conflicting target
+    values for the same policy/day key are not: the downstream matrices would
+    keep only one label while the discarded value remains invisible to training.
+    """
+
+    if duplicate_rows.empty:
+        return
+    conflict_examples: list[dict[str, Any]] = []
+    for key, group in duplicate_rows.groupby(key_columns, dropna=False):
+        numeric = group.loc[:, [target for target in TARGET_COLUMNS if target in group.columns]].apply(
+            pd.to_numeric,
+            errors="raise",
+        )
+        spread = numeric.max(axis=0) - numeric.min(axis=0)
+        conflict_columns = [column for column, value in spread.items() if float(abs(value)) > 1e-9]
+        if conflict_columns:
+            key_values = key if isinstance(key, tuple) else (key,)
+            conflict_examples.append(
+                {
+                    "key": {
+                        column: str(value)
+                        for column, value in zip(key_columns, key_values)
+                    },
+                    "conflict_columns": conflict_columns[:20],
+                }
+            )
+    if conflict_examples:
+        raise ValueError(
+            "[thermflex_daily_results] duplicate policy-day rows disagree on target values; "
+            "refusing to choose one silently. examples="
+            + json.dumps(conflict_examples[:10], default=str)
+        )
 
 
 def _source_runs_manifest(
