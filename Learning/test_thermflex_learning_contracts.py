@@ -97,7 +97,7 @@ class ThermflexLearningContractTests(unittest.TestCase):
                 "feature_columns": [
                     "date",
                     "policy_case_label_canonical_UPPER_24H",
-                    "district_thermal_storage_soc_mean_ref_per_dh",
+                    DISPATCH_STATE_REFERENCE_FEATURE_COLUMNS[0],
                 ]
             },
             meta={},
