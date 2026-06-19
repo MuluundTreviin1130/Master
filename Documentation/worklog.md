@@ -1,5 +1,17 @@
 # Worklog
 
+## 2026-06-19
+
+### Critical surrogate-training label guard
+
+- Investigated recent Learning/surrogate commits for high-severity runtime
+  issues and found a silent target-label fallback in native surrogate training.
+- Replaced the `flows_L.get(target, 0.0)` fallback with a fail-fast target
+  resolver so missing teacher/KPI outputs cannot be persisted as zero labels in
+  reusable training datasets.
+- Added a lightweight regression test for objective-vs-flow target precedence
+  and missing-target failure behavior.
+
 ## 2026-06-12
 
 ### Target-layer update: sector-coupled MES with planetary boundaries / LCA scenario bridge
