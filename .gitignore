@@ -24,6 +24,8 @@ Learning/models/*/
 validation/
 !Settings/validation/
 !Settings/validation/**
+Settings/validation/__pycache__/
+Settings/validation/*.py[cod]
 
 Data/profiles/Vienna/weather/.cache/
 Data/profiles/Vienna/weather/_openmeteo_chunks/
