@@ -10437,3 +10437,11 @@ Naechste Schritte:
   - Added five research highlights, each below the usual 85-character limit.
   - Regenerated the 13 manuscript sections and confirmed `225` citation keys
     with no missing entries in the review bibliography.
+
+- 2026-06-20: Fixed ThermFlex system-results dispatch-KPI target alignment.
+  - Replaced `latest_point` broadcasting with a row-wise `dispatch_kpis.json`
+    `points` merge when exporting `dispatch_kpi_mode='latest_point'` datasets.
+  - Added fail-fast validation for KPI point counts and `point_idx` order so
+    multi-row truth tables cannot silently train on stale final-point labels.
+  - Added focused regression coverage for aligned two-row KPI imports and
+    mismatched point counts.
