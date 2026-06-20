@@ -10445,3 +10445,6 @@ Naechste Schritte:
     multi-row truth tables cannot silently train on stale final-point labels.
   - Added focused regression coverage for aligned two-row KPI imports and
     mismatched point counts.
+  - Restored the typed `Settings.validation` package required by
+    `get_settings()` and Learning imports; without it, importing the
+    ThermFlex system-results builder crashed before validation could run.
