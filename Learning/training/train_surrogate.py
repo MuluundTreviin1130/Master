@@ -57,10 +57,20 @@ def _evaluate_teacher_targets(
             profiles,
             requested_objective_names=requested_objective_names,
         )
-        y = np.array(
-            [float(objectives[t]) if t in objectives else float(flows_L.get(t, 0.0)) for t in targets],
-            dtype=float,
-        )
+        row_values: List[float] = []
+        for target in targets:
+            if target in objectives:
+                row_values.append(float(objectives[target]))
+                continue
+            if target in flows_L:
+                row_values.append(float(flows_L[target]))
+                continue
+            raise KeyError(
+                "[surrogate_train] teacher did not return requested target "
+                f"'{target}'. Add it to the gold KPI/flow contract or remove it from the active "
+                "surrogate target settings."
+            )
+        y = np.array(row_values, dtype=float)
         Y_list.append(y)
     return X_new, np.vstack(Y_list)
 

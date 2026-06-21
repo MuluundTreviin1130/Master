@@ -1,5 +1,20 @@
 # Worklog
 
+## 2026-06-21
+
+### Critical bug sweep: Learning validation and Table 09 crash fixes
+
+- Fixed two hard import/runtime breakages found in the recent Learning stack:
+  - restored `Documentation/Papers/thermflex_paper/tables/build_table_09_heating_season_kpis.py`
+    so the documented `Learning.thermflex_daily_results.aggregate` adapter has
+    a real Table-09 builder target again
+  - added `Learning.validation.evaluate_gate` so native surrogate retraining can
+    evaluate holdout eligibility instead of crashing after fitting
+  - restored the missing `Settings.validation` holdout config used by
+    `Settings.settings_model` and Learning model resolution
+- Tightened native surrogate target extraction: missing teacher targets now
+  raise a clear `KeyError` instead of being written as silent `0.0` labels.
+
 ## 2026-06-12
 
 ### Target-layer update: sector-coupled MES with planetary boundaries / LCA scenario bridge
