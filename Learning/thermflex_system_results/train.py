@@ -12,6 +12,7 @@ from sklearn.metrics import r2_score
 from xgboost import XGBRegressor
 
 from Learning.datasets.load_dataset import load_dataset
+from Learning.datasets.validate_alignment import validate_truth_dataset_alignment
 from Learning.registry.register_model import register_model
 from Learning.registry.update_model_status import update_model_status
 from Learning.thermflex_system_results.dataset_builder import (
@@ -52,6 +53,11 @@ def train_system_results_model(
     if truth_csv_path is None:
         raise FileNotFoundError("[thermflex_system_results] curated dataset is missing `truth_dataset.csv`.")
     truth_df = pd.read_csv(truth_csv_path)
+    validate_truth_dataset_alignment(
+        dataset_bundle=dataset_bundle,
+        truth_df=truth_df,
+        context_label="thermflex_system_results",
+    )
     split = build_grouped_holdout_split(
         truth_df=truth_df,
         group_column=group_column,
