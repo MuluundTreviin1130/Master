@@ -10437,3 +10437,14 @@ Naechste Schritte:
   - Added five research highlights, each below the usual 85-character limit.
   - Regenerated the 13 manuscript sections and confirmed `225` citation keys
     with no missing entries in the review bibliography.
+
+- 2026-07-07: Added a fail-fast CSV/NPZ row-alignment guard for ThermFlex
+  learning trainers.
+  - Added `Learning/datasets/validate_alignment.py` to compare the rich
+    `truth_dataset.csv` feature/target contract against `training_data.npz`
+    `X_design`/`Y` before any model artifacts are written.
+  - Wired the guard into the daily-results, hourly-mechanism, and system-results
+    trainers to prevent silently training on re-sorted or partially replaced
+    dataset artifacts.
+  - Added a focused unit test covering the Daily date-ordinal contract, row
+    reordering, and NPZ row-count drift.
