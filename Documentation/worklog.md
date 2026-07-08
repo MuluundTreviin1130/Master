@@ -10437,3 +10437,13 @@ Naechste Schritte:
   - Added five research highlights, each below the usual 85-character limit.
   - Regenerated the 13 manuscript sections and confirmed `225` citation keys
     with no missing entries in the review bibliography.
+
+- 2026-07-08: Fixed silent duplicate-label corruption in the hourly ThermFlex
+  mechanism dataset builder.
+  - `_deduplicate_hourly_truth` now validates overlapping physical
+    `(run_dir, cohort_key, timestamp)` rows before keeping the latest bundle.
+  - Identical duplicate exports remain supported, including renamed
+    `case_label` display text, but conflicting numeric truth fields now fail
+    fast instead of silently choosing one bundle.
+  - Added a focused regression test for identical versus conflicting duplicate
+    hourly mechanism truth rows.
