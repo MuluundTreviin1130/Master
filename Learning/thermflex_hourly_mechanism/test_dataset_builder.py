@@ -1,11 +1,23 @@
 from __future__ import annotations
 
+import sys
+import types
 import unittest
 
 import pandas as pd
 
-from Learning.thermflex_hourly_mechanism.dataset_builder import _deduplicate_hourly_truth
 from Learning.thermflex_hourly_mechanism.schema import REQUIRED_HOURLY_MECHANISM_COLUMNS
+
+
+def _unused_context_loader_stub() -> object:
+    raise AssertionError("deduplication tests must not load canonical hourly context")
+
+
+_context_module = types.ModuleType("Optimization.run.analysis.dh_thermflex_inputs")
+_context_module.load_vienna_dh_thermflex_full_year_context = _unused_context_loader_stub
+sys.modules["Optimization.run.analysis.dh_thermflex_inputs"] = _context_module
+
+from Learning.thermflex_hourly_mechanism.dataset_builder import _deduplicate_hourly_truth
 
 
 def _base_truth_row(*, bundle: str, q_delta: float = 1.5) -> dict[str, object]:
