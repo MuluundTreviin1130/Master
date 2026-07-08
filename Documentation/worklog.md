@@ -10456,3 +10456,11 @@ Naechste Schritte:
   - Kept the default override fields empty, preserving registry-based Learning
     model resolution unless validation explicitly forces a model id or artifact
     path through settings overrides.
+
+- 2026-07-08: Guarded the ThermFlex system-results KPI enrichment against
+  row-level label corruption.
+  - `dispatch_kpi_mode='latest_point'` now fails on multi-row
+    `truth_dataset.csv` inputs because one `dispatch_kpis.json/latest_point`
+    payload only describes the final design point, not every historic row.
+  - Added a focused regression test proving that multi-row truth exports are
+    rejected instead of receiving broadcast dispatch KPI labels.
