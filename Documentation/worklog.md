@@ -10437,3 +10437,30 @@ Naechste Schritte:
   - Added five research highlights, each below the usual 85-character limit.
   - Regenerated the 13 manuscript sections and confirmed `225` citation keys
     with no missing entries in the review bibliography.
+
+- 2026-07-08: Fixed silent duplicate-label corruption in the hourly ThermFlex
+  mechanism dataset builder.
+  - `_deduplicate_hourly_truth` now validates overlapping physical
+    `(run_dir, cohort_key, timestamp)` rows before keeping the latest bundle.
+  - Identical duplicate exports remain supported, including renamed
+    `case_label` display text, but conflicting numeric truth fields now fail
+    fast instead of silently choosing one bundle.
+  - Added a focused regression test for identical versus conflicting duplicate
+    hourly mechanism truth rows.
+
+- 2026-07-08: Restored the missing `Settings.validation` package expected by
+  the central settings model.
+  - Added the validation holdout dataclasses and `make_validation()` factory so
+    `Settings.get_settings` can import and compose the documented validation
+    namespace again.
+  - Kept the default override fields empty, preserving registry-based Learning
+    model resolution unless validation explicitly forces a model id or artifact
+    path through settings overrides.
+
+- 2026-07-08: Guarded the ThermFlex system-results KPI enrichment against
+  row-level label corruption.
+  - `dispatch_kpi_mode='latest_point'` now fails on multi-row
+    `truth_dataset.csv` inputs because one `dispatch_kpis.json/latest_point`
+    payload only describes the final design point, not every historic row.
+  - Added a focused regression test proving that multi-row truth exports are
+    rejected instead of receiving broadcast dispatch KPI labels.

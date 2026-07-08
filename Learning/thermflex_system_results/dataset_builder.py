@@ -109,6 +109,12 @@ def load_system_results_truth_table(
         csv_path = Path(csv_path).resolve()
         raw_df = pd.read_csv(csv_path)
         validate_system_results_frame(raw_df, source_label=str(csv_path))
+        if dispatch_mode == "latest_point" and len(raw_df) != 1:
+            raise ValueError(
+                "[thermflex_system_results] dispatch_kpi_mode='latest_point' can only enrich "
+                "single-row truth_dataset.csv files because dispatch_kpis.json/latest_point "
+                f"describes one final design point, not {len(raw_df)} rows: {csv_path}"
+            )
         run_name = csv_path.parent.name
         run_slug = _strip_run_timestamp(run_name)
         dispatch_formulation_tag = _derive_dispatch_formulation_tag(run_slug)
