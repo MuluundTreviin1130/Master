@@ -10447,3 +10447,12 @@ Naechste Schritte:
     fast instead of silently choosing one bundle.
   - Added a focused regression test for identical versus conflicting duplicate
     hourly mechanism truth rows.
+
+- 2026-07-08: Restored the missing `Settings.validation` package expected by
+  the central settings model.
+  - Added the validation holdout dataclasses and `make_validation()` factory so
+    `Settings.get_settings` can import and compose the documented validation
+    namespace again.
+  - Kept the default override fields empty, preserving registry-based Learning
+    model resolution unless validation explicitly forces a model id or artifact
+    path through settings overrides.
