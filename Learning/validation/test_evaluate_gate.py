@@ -72,6 +72,56 @@ class EvaluateGateTest(unittest.TestCase):
 
         self.assertTrue(hasattr(train_surrogate, "evaluate_gate"))
 
+    def test_missing_teacher_target_fails_fast(self) -> None:
+        import Learning.training.train_surrogate as train_surrogate
+
+        class Teacher:
+            def evaluate_one_with_details(self, _row):
+                return None, None, {"present_target": 1.0}, {"raw": "ok"}
+
+        old_compute_kpis = train_surrogate.compute_kpis
+        old_is_objective = train_surrogate.is_supported_objective_name
+        try:
+            train_surrogate.compute_kpis = lambda *args, **kwargs: ({}, {}, {})
+            train_surrogate.is_supported_objective_name = lambda _params, _target: False
+            with self.assertRaises(KeyError):
+                train_surrogate._evaluate_teacher_targets(
+                    teacher=Teacher(),
+                    settings=SimpleNamespace(),
+                    profiles=SimpleNamespace(),
+                    profile_id="profile",
+                    targets=["missing_target"],
+                    build_design_vars_fn=lambda _row: {"params": {}},
+                    X_design_new=np.array([[1.0]]),
+                )
+        finally:
+            train_surrogate.compute_kpis = old_compute_kpis
+            train_surrogate.is_supported_objective_name = old_is_objective
+
+    def test_existing_dataset_features_are_reaugmented(self) -> None:
+        import Learning.training.train_surrogate as train_surrogate
+
+        old_augment = train_surrogate.augment_features
+        try:
+            train_surrogate.augment_features = lambda _settings, x_design, _profile_id: np.column_stack(
+                [x_design, np.full(x_design.shape[0], 99.0)]
+            )
+            x_design, x, y = train_surrogate._reaugment_existing_dataset(
+                settings=SimpleNamespace(),
+                profile_id="profile",
+                existing_dataset={
+                    "X_design": np.array([[1.0], [2.0]]),
+                    "X": np.array([[1.0, -1.0], [2.0, -1.0]]),
+                    "Y": np.array([[10.0], [20.0]]),
+                },
+            )
+        finally:
+            train_surrogate.augment_features = old_augment
+
+        np.testing.assert_allclose(x_design, np.array([[1.0], [2.0]]))
+        np.testing.assert_allclose(x, np.array([[1.0, 99.0], [2.0, 99.0]]))
+        np.testing.assert_allclose(y, np.array([[10.0], [20.0]]))
+
 
 if __name__ == "__main__":
     unittest.main()
