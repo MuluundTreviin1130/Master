@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
@@ -455,17 +456,63 @@ def _deduplicate_hourly_truth(frame: pd.DataFrame) -> pd.DataFrame:
     cohort and timestamp identity instead of the label text.
     """
 
+    key_columns = ["run_dir", "cohort_key", "timestamp"]
     deduped = frame.copy()
-    deduped["_bundle_rank"] = deduped["source_bundle_name"].astype(str)
+    duplicate_mask = deduped.duplicated(subset=key_columns, keep=False)
+    deduped["_bundle_rank"] = deduped["source_bundle_name"].astype(str).map(_extract_bundle_timestamp_rank)
+    if bool(duplicate_mask.any()):
+        missing_rank_bundles = sorted(
+            deduped.loc[duplicate_mask & (deduped["_bundle_rank"] == ""), "source_bundle_name"]
+            .astype(str)
+            .unique()
+            .tolist()
+        )
+        if missing_rank_bundles:
+            raise ValueError(
+                "[thermflex_hourly_mechanism] duplicate hourly truth rows require timestamped "
+                "source_bundle_name values to select the newest bundle. Missing timestamp rank for: "
+                + ", ".join(missing_rank_bundles)
+            )
+        _validate_newest_hourly_duplicate_ties(
+            deduped.loc[duplicate_mask].copy(),
+            key_columns=key_columns,
+        )
     deduped = deduped.sort_values(
-        ["case_label", "run_dir", "cohort_key", "timestamp", "_bundle_rank"],
-        ascending=[True, True, True, True, True],
+        [*key_columns, "_bundle_rank", "source_bundle_name", "source_hourly_csv"],
+        ascending=[True, True, True, False, False, False],
     )
     deduped = deduped.drop_duplicates(
-        subset=["run_dir", "cohort_key", "timestamp"],
-        keep="last",
+        subset=key_columns,
+        keep="first",
     ).reset_index(drop=True)
     return deduped.drop(columns="_bundle_rank")
+
+
+def _extract_bundle_timestamp_rank(bundle_name: str) -> str:
+    matches = re.findall(r"(\d{8}_\d{6})", str(bundle_name))
+    if not matches:
+        return ""
+    return matches[-1]
+
+
+def _validate_newest_hourly_duplicate_ties(
+    duplicate_rows: pd.DataFrame,
+    *,
+    key_columns: list[str],
+) -> None:
+    for key_values, group in duplicate_rows.groupby(key_columns, dropna=False, sort=True):
+        top_rank = str(group["_bundle_rank"].max())
+        newest_rows = group.loc[group["_bundle_rank"].astype(str) == top_rank]
+        if newest_rows["source_bundle_name"].astype(str).nunique() <= 1:
+            continue
+        if newest_rows.loc[:, list(TARGET_COLUMNS)].drop_duplicates().shape[0] <= 1:
+            continue
+        key_tuple = key_values if isinstance(key_values, tuple) else (key_values,)
+        key_repr = dict(zip(key_columns, key_tuple))
+        raise ValueError(
+            "[thermflex_hourly_mechanism] duplicate hourly truth rows have multiple newest "
+            f"bundles with conflicting target labels for {key_repr}."
+        )
 
 
 @lru_cache(maxsize=1)

@@ -10451,3 +10451,6 @@ Naechste Schritte:
     or non-finite, avoiding silent zero labels and stale static features.
   - Restored the missing `Settings.validation.holdout` namespace used by model
     resolution overrides so the Settings import chain does not crash.
+  - Fixed hourly mechanism truth deduplication to select the newest timestamped
+    source bundle instead of the lexicographically last bundle name, with
+    fail-fast handling for unranked or conflicting newest duplicate rows.
