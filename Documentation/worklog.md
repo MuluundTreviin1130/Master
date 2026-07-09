@@ -10437,3 +10437,20 @@ Naechste Schritte:
   - Added five research highlights, each below the usual 85-character limit.
   - Regenerated the 13 manuscript sections and confirmed `225` citation keys
     with no missing entries in the review bibliography.
+
+- 2026-07-09: Fixed critical native surrogate retrain validation failures found
+  during automated bug investigation.
+  - Added the missing `Learning.validation.evaluate_gate` implementation so
+    `Learning.training.train_surrogate` and `SurrogateEngine` can import and run
+    the documented native retrain path again.
+  - Made the gate use explicit `settings.learning.validation_gate` thresholds,
+    block insufficient/non-finite holdout evidence, and report failed critical
+    targets for remediation.
+  - Rebuilt cached dataset features from `X_design` under current settings
+    before reuse/append and fail fast when requested teacher targets are absent
+    or non-finite, avoiding silent zero labels and stale static features.
+  - Restored the missing `Settings.validation.holdout` namespace used by model
+    resolution overrides so the Settings import chain does not crash.
+  - Fixed hourly mechanism truth deduplication to select the newest timestamped
+    source bundle instead of the lexicographically last bundle name, with
+    fail-fast handling for unranked or conflicting newest duplicate rows.
