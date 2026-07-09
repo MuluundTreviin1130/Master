@@ -57,12 +57,37 @@ def _evaluate_teacher_targets(
             profiles,
             requested_objective_names=requested_objective_names,
         )
-        y = np.array(
-            [float(objectives[t]) if t in objectives else float(flows_L.get(t, 0.0)) for t in targets],
-            dtype=float,
-        )
+        target_values: List[float] = []
+        for target in targets:
+            if target in objectives:
+                value = float(objectives[target])
+            elif target in flows_L:
+                value = float(flows_L[target])
+            else:
+                raise KeyError(
+                    "[learning] teacher output is missing requested surrogate target "
+                    f"'{target}'. Refusing to write an implicit zero label."
+                )
+            if not np.isfinite(value):
+                raise ValueError(
+                    "[learning] teacher output for requested surrogate target "
+                    f"'{target}' is not finite: {value}."
+                )
+            target_values.append(value)
+        y = np.array(target_values, dtype=float)
         Y_list.append(y)
     return X_new, np.vstack(Y_list)
+
+
+def _reaugment_existing_dataset(
+    settings: Any,
+    profile_id: str,
+    existing_dataset: Dict[str, Any],
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    X_design = np.asarray(existing_dataset["X_design"], dtype=float)
+    Y = np.asarray(existing_dataset["Y"], dtype=float)
+    X = augment_features(settings, X_design, profile_id)
+    return X_design, X, Y
 
 
 def _resolve_training_arrays(
@@ -83,12 +108,12 @@ def _resolve_training_arrays(
     existing_dataset = load_dataset(dataset_root, family_hash)
 
     if action == "train_model" and existing_dataset is not None:
-        return (
-            np.asarray(existing_dataset["X_design"], dtype=float),
-            np.asarray(existing_dataset["X"], dtype=float),
-            np.asarray(existing_dataset["Y"], dtype=float),
-            0,
+        X_design_existing, X_existing, Y_existing = _reaugment_existing_dataset(
+            settings,
+            profile_id,
+            existing_dataset,
         )
+        return (X_design_existing, X_existing, Y_existing, 0)
 
     if action == "append_then_train" and existing_dataset is not None:
         sampler = getattr(settings, "sampler", None)
@@ -104,18 +129,22 @@ def _resolve_training_arrays(
             sampler.seed = old_seed
         X_design_existing = np.asarray(existing_dataset["X_design"], dtype=float)
         existing_rows = {tuple(row) for row in np.round(X_design_existing, 8)}
-        filtered = [row for row in np.asarray(X_design_new, dtype=float) if tuple(np.round(row, 8)) not in existing_rows]
+        filtered = [
+            row
+            for row in np.asarray(X_design_new, dtype=float)
+            if tuple(np.round(row, 8)) not in existing_rows
+        ]
         X_design_new = np.asarray(filtered, dtype=float)
     else:
         X_design_new = sample_from_settings_fn(settings)
 
     if X_design_new.size == 0 and existing_dataset is not None:
-        return (
-            np.asarray(existing_dataset["X_design"], dtype=float),
-            np.asarray(existing_dataset["X"], dtype=float),
-            np.asarray(existing_dataset["Y"], dtype=float),
-            0,
+        X_design_existing, X_existing, Y_existing = _reaugment_existing_dataset(
+            settings,
+            profile_id,
+            existing_dataset,
         )
+        return (X_design_existing, X_existing, Y_existing, 0)
 
     X_new, Y_new = _evaluate_teacher_targets(
         teacher=teacher,
@@ -128,9 +157,14 @@ def _resolve_training_arrays(
     )
 
     if existing_dataset is not None and action == "append_then_train":
-        X_design = np.vstack([np.asarray(existing_dataset["X_design"], dtype=float), X_design_new])
-        X = np.vstack([np.asarray(existing_dataset["X"], dtype=float), X_new])
-        Y = np.vstack([np.asarray(existing_dataset["Y"], dtype=float), Y_new])
+        X_design_existing, X_existing, Y_existing = _reaugment_existing_dataset(
+            settings,
+            profile_id,
+            existing_dataset,
+        )
+        X_design = np.vstack([X_design_existing, X_design_new])
+        X = np.vstack([X_existing, X_new])
+        Y = np.vstack([Y_existing, Y_new])
     else:
         X_design = X_design_new
         X = X_new
