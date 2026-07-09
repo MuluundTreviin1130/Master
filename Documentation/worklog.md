@@ -10449,3 +10449,5 @@ Naechste Schritte:
   - Rebuilt cached dataset features from `X_design` under current settings
     before reuse/append and fail fast when requested teacher targets are absent
     or non-finite, avoiding silent zero labels and stale static features.
+  - Restored the missing `Settings.validation.holdout` namespace used by model
+    resolution overrides so the Settings import chain does not crash.
