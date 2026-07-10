@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
@@ -455,17 +456,81 @@ def _deduplicate_hourly_truth(frame: pd.DataFrame) -> pd.DataFrame:
     cohort and timestamp identity instead of the label text.
     """
 
+    key_columns = ["run_dir", "cohort_key", "timestamp"]
     deduped = frame.copy()
-    deduped["_bundle_rank"] = deduped["source_bundle_name"].astype(str)
+    duplicate_mask = deduped.duplicated(subset=key_columns, keep=False)
+    deduped["_bundle_rank"] = deduped["source_bundle_name"].astype(str).map(_extract_bundle_timestamp_rank)
+    unranked_duplicates = deduped.loc[duplicate_mask & (deduped["_bundle_rank"] == ""), "source_bundle_name"]
+    if not unranked_duplicates.empty:
+        bundle_names = sorted(unranked_duplicates.astype(str).unique().tolist())
+        raise ValueError(
+            "[thermflex_hourly_mechanism] overlapping hourly truth rows must come from timestamped "
+            "source bundles so the newest truth can be selected explicitly. Unranked duplicate bundles: "
+            + ", ".join(bundle_names)
+        )
+    _raise_on_tied_newest_hourly_truth_conflicts(deduped.loc[duplicate_mask].copy(), key_columns=key_columns)
     deduped = deduped.sort_values(
-        ["case_label", "run_dir", "cohort_key", "timestamp", "_bundle_rank"],
-        ascending=[True, True, True, True, True],
+        [*key_columns, "_bundle_rank", "source_bundle_name", "source_hourly_csv"],
+        ascending=[True, True, True, False, False, False],
     )
     deduped = deduped.drop_duplicates(
-        subset=["run_dir", "cohort_key", "timestamp"],
-        keep="last",
+        subset=key_columns,
+        keep="first",
     ).reset_index(drop=True)
     return deduped.drop(columns="_bundle_rank")
+
+
+def _extract_bundle_timestamp_rank(bundle_name: str) -> str:
+    matches = re.findall(r"(\d{8}_\d{6})", str(bundle_name))
+    if not matches:
+        return ""
+    return matches[-1]
+
+
+def _raise_on_tied_newest_hourly_truth_conflicts(
+    duplicate_rows: pd.DataFrame,
+    *,
+    key_columns: list[str],
+) -> None:
+    if duplicate_rows.empty:
+        return
+    conflict_columns = [
+        column
+        for column in [
+            "case_label",
+            *MECHANISM_CORE_EVENT_TARGET_COLUMNS,
+            *MECHANISM_ENERGY_STATE_INTENSIVE_TARGET_COLUMNS,
+        ]
+        if column in duplicate_rows.columns
+    ]
+    conflicts: list[str] = []
+    for key_values, group in duplicate_rows.groupby(key_columns, dropna=False):
+        newest_rank = group["_bundle_rank"].max()
+        newest_rows = group.loc[group["_bundle_rank"] == newest_rank]
+        if len(newest_rows) <= 1:
+            continue
+        changed_columns = [
+            column
+            for column in conflict_columns
+            if _series_has_conflicting_values(newest_rows[column])
+        ]
+        if changed_columns:
+            key_text = ", ".join(f"{column}={value}" for column, value in zip(key_columns, key_values))
+            conflicts.append(f"{key_text}; rank={newest_rank}; columns={', '.join(changed_columns)}")
+    if conflicts:
+        raise ValueError(
+            "[thermflex_hourly_mechanism] tied newest hourly truth bundles contain conflicting labels. "
+            "Refusing to choose an arbitrary row for: "
+            + " | ".join(conflicts[:5])
+        )
+
+
+def _series_has_conflicting_values(series: pd.Series) -> bool:
+    numeric_values = pd.to_numeric(series, errors="coerce")
+    if not numeric_values.isna().any():
+        values = numeric_values.to_numpy(dtype=float)
+        return bool(np.nanmax(values) - np.nanmin(values) > 1e-9)
+    return bool(series.astype(str).nunique(dropna=False) > 1)
 
 
 @lru_cache(maxsize=1)
