@@ -10437,3 +10437,16 @@ Naechste Schritte:
   - Added five research highlights, each below the usual 85-character limit.
   - Regenerated the 13 manuscript sections and confirmed `225` citation keys
     with no missing entries in the review bibliography.
+
+- 2026-07-10: Fixed two critical Learning import/data-contract bugs found by
+  the daily bug automation.
+  - Hourly ThermFlex mechanism truth deduplication now ranks overlapping bundle
+    rows by the embedded `YYYYMMDD_HHMMSS` source timestamp instead of full
+    bundle-name lexicographic order, rejects duplicate rows from unranked
+    bundles, and fails fast when tied newest bundles disagree on labels.
+  - Restored source-controlled `Settings/validation` and `Learning/validation`
+    packages after the broad `validation/` ignore rule hid nested source
+    packages; native surrogate imports now resolve `ValidationConfig` and
+    `evaluate_gate`.
+  - Added focused unit tests for hourly dedupe contracts and validation-gate
+    eligibility/blocking, and verified `SurrogateEngine` imports successfully.
