@@ -145,6 +145,16 @@ def load_system_results_truth_table(
         for key, value in scenario_context.items():
             normalized_df[key] = value
         if dispatch_mode == "latest_point":
+            # `latest_point` is one scalar dispatch result for the final design
+            # point in a run folder.  Broadcasting it over several truth rows
+            # would assign the same KPI labels to unrelated design signatures.
+            if len(normalized_df) != 1:
+                raise ValueError(
+                    "[thermflex_system_results] dispatch_kpi_mode='latest_point' "
+                    "requires exactly one truth row per run folder because "
+                    "dispatch_kpis.json/latest_point is a scalar point payload. "
+                    f"Found {len(normalized_df)} rows in {csv_path}."
+                )
             dispatch_payload = _load_dispatch_kpi_latest_point(csv_path.parent)
             for key, value in dispatch_payload.items():
                 normalized_df[key] = value

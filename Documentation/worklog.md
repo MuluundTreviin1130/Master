@@ -10437,3 +10437,14 @@ Naechste Schritte:
   - Added five research highlights, each below the usual 85-character limit.
   - Regenerated the 13 manuscript sections and confirmed `225` citation keys
     with no missing entries in the review bibliography.
+
+- 2026-07-11: Fixed a system-results dispatch-KPI label corruption guard.
+  - Confirmed that `dispatch_kpi_mode='latest_point'` could broadcast one
+    scalar `dispatch_kpis.json/latest_point` payload over multi-row
+    `truth_dataset.csv` inputs, assigning identical dispatch labels to
+    different design signatures.
+  - Added a fail-fast row-count check so the `latest_point` enrichment is only
+    accepted for single-row run folders until a row-level dispatch-KPI source is
+    introduced.
+  - Added a focused regression test for multi-row rejection and single-row
+    acceptance in `Learning/thermflex_system_results/test_dataset_builder.py`.
