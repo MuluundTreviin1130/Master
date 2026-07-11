@@ -10448,3 +10448,8 @@ Naechste Schritte:
     introduced.
   - Added a focused regression test for multi-row rejection and single-row
     acceptance in `Learning/thermflex_system_results/test_dataset_builder.py`.
+  - Restored the missing tracked `Settings.validation` and
+    `Learning.validation` subpackages that were hidden by the broad
+    `validation/` ignore pattern, including a minimal holdout settings
+    namespace and the native retrain validation-gate evaluator expected by
+    `Learning/training/train_surrogate.py`.
