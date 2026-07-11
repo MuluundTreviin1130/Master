@@ -2720,3 +2720,9 @@
       before paper finalization.
     - Use the rebuilt `table_main_season_sparse_anchor_tau4.*` as the current
       promoted season-table candidate and keep evidence labels visible.
+
+- 2026-07-11 follow-up: Introduce a row-level dispatch-KPI source for
+  `thermflex_system_results` before enabling dispatch-KPI enrichment for
+  multi-row `truth_dataset.csv` run folders. The current safe contract accepts
+  `dispatch_kpis.json/latest_point` only for single-row run folders because it
+  is a scalar final-point payload, not a per-`signature_hash` mapping.
