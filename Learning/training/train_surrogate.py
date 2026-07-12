@@ -20,6 +20,27 @@ from Optimization.framework.engines.Surrogat_model.fit.model_factory import make
 from Optimization.framework.engines.kpi import compute_kpis, is_supported_objective_name
 
 
+def _resolve_teacher_target_value(
+    *,
+    target: str,
+    objectives: Dict[str, Any],
+    flows_L: Dict[str, Any],
+) -> float:
+    if target in objectives:
+        value = float(objectives[target])
+    elif target in flows_L:
+        value = float(flows_L[target])
+    else:
+        available = sorted(set(str(k) for k in list(objectives.keys()) + list(flows_L.keys())))
+        raise KeyError(
+            "[surrogate_training] Teacher output is missing required target "
+            f"'{target}'. Available objective/flow keys: {available}"
+        )
+    if not np.isfinite(value):
+        raise ValueError(f"[surrogate_training] Teacher target '{target}' is non-finite: {value}")
+    return value
+
+
 def _artifact_filenames(settings: Any) -> Dict[str, str]:
     learning = getattr(settings, "learning", None)
     primary_artifact = str(getattr(learning, "primary_artifact_filename", "surrogate_bundle.joblib"))
@@ -58,7 +79,10 @@ def _evaluate_teacher_targets(
             requested_objective_names=requested_objective_names,
         )
         y = np.array(
-            [float(objectives[t]) if t in objectives else float(flows_L.get(t, 0.0)) for t in targets],
+            [
+                _resolve_teacher_target_value(target=str(t), objectives=objectives, flows_L=flows_L)
+                for t in targets
+            ],
             dtype=float,
         )
         Y_list.append(y)

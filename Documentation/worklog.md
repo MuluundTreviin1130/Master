@@ -1,5 +1,21 @@
 # Worklog
 
+## 2026-07-12
+
+### Critical Learning validation import and target-contract fix
+
+- Restored the missing source packages behind existing imports:
+  `Settings.validation.holdout` for explicit validation holdout overrides and
+  `Learning.validation.evaluate_gate` for native surrogate retrain gating.
+- Scoped the generic `.gitignore` `validation/` rule to `/validation/` so
+  nested source packages such as `Settings/validation/` and
+  `Learning/validation/` remain trackable.
+- Hardened native surrogate teacher-target extraction: required targets must
+  be present in teacher objectives or flow outputs and must be finite; missing
+  targets now fail fast instead of being silently written as zero truth labels.
+- Added focused unit tests for the Learning validation gate and validation
+  Settings defaults.
+
 ## 2026-06-12
 
 ### Target-layer update: sector-coupled MES with planetary boundaries / LCA scenario bridge
