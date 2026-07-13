@@ -10437,3 +10437,15 @@ Naechste Schritte:
   - Added five research highlights, each below the usual 85-character limit.
   - Regenerated the 13 manuscript sections and confirmed `225` citation keys
     with no missing entries in the review bibliography.
+
+- 2026-07-13: Fixed critical Settings import and daily Learning truth-selection
+  regressions found during high-severity bug automation.
+  - Restored the tracked `Settings.validation` package expected by
+    `Settings.settings_model` and `get_settings()`, and scoped `.gitignore` to
+    ignore only root `/validation/` so nested source packages remain versioned.
+  - Hardened `Learning/thermflex_daily_results/dataset_builder.py` duplicate
+    bundle handling: fuller duplicate screen tables now replace stale snapshot
+    copies, while equal-rank content drift fails fast instead of silently using
+    root order.
+  - Added focused unit coverage for the stale-snapshot replacement and
+    equal-rank conflict paths.
