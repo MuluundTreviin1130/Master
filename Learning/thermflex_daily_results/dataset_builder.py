@@ -80,6 +80,19 @@ class CuratedDatasetResult:
     target_columns: tuple[str, ...]
 
 
+@dataclass(frozen=True)
+class _ScreenTableCandidate:
+    """Small immutable selection record for one discovered screen table."""
+
+    path: Path
+    source_root: Path
+    source_root_index: int
+    row_count: int
+    failure_row_count: int
+    content_hash: str
+    failure_hash: str
+
+
 def discover_screen_csvs(
     *,
     source_root: Path,
@@ -128,28 +141,16 @@ def collect_unique_screen_csvs(*, source_roots: Sequence[Path]) -> tuple[list[Pa
     """
     Collect unique screen CSVs across multiple roots.
 
-    Duplicate bundle names are resolved by root order: the first root wins and
-    later duplicates are only recorded in the manifest.
+    Duplicate bundle names are resolved by explicit completeness metadata before
+    root order is used. This prevents stale snapshot roots from hiding a newer
+    live-gold partial with more solved rows or updated failure manifests.
     """
 
-    selected: dict[str, Path] = {}
-    skipped_duplicates: list[dict[str, str]] = []
-    for root_like in source_roots:
-        root = Path(root_like).resolve()
-        for csv_path in discover_screen_csvs(source_root=root):
-            bundle_name = csv_path.parent.name
-            if bundle_name in selected:
-                skipped_duplicates.append(
-                    {
-                        "bundle_name": bundle_name,
-                        "kept_screen_csv": str(selected[bundle_name]),
-                        "skipped_screen_csv": str(csv_path),
-                        "reason": "duplicate_bundle_name_later_source_root",
-                    }
-                )
-                continue
-            selected[bundle_name] = csv_path
-    return list(selected.values()), skipped_duplicates
+    return _collect_unique_screen_paths(
+        source_roots=source_roots,
+        include_checkpoints=False,
+        min_checkpoint_rows=30,
+    )
 
 
 def collect_unique_screen_tables(
@@ -160,28 +161,114 @@ def collect_unique_screen_tables(
 ) -> tuple[list[Path], list[dict[str, str]]]:
     """Collect unique final or checkpoint screen tables across multiple roots."""
 
-    selected: dict[str, Path] = {}
+    return _collect_unique_screen_paths(
+        source_roots=source_roots,
+        include_checkpoints=include_checkpoints,
+        min_checkpoint_rows=min_checkpoint_rows,
+    )
+
+
+def _collect_unique_screen_paths(
+    *,
+    source_roots: Sequence[Path],
+    include_checkpoints: bool,
+    min_checkpoint_rows: int,
+) -> tuple[list[Path], list[dict[str, str]]]:
+    """Select one screen table per bundle name without silently keeping stale duplicates."""
+
+    selected: dict[str, _ScreenTableCandidate] = {}
     skipped_duplicates: list[dict[str, str]] = []
-    for root_like in source_roots:
+    for source_root_index, root_like in enumerate(source_roots):
         root = Path(root_like).resolve()
         for csv_path in discover_screen_csvs(
             source_root=root,
             include_checkpoints=include_checkpoints,
             min_checkpoint_rows=min_checkpoint_rows,
         ):
-            bundle_name = csv_path.parent.name
-            if bundle_name in selected:
-                skipped_duplicates.append(
-                    {
-                        "bundle_name": bundle_name,
-                        "kept_screen_csv": str(selected[bundle_name]),
-                        "skipped_screen_csv": str(csv_path),
-                        "reason": "duplicate_bundle_name_later_source_root",
-                    }
-                )
+            candidate = _screen_table_candidate(
+                csv_path=csv_path,
+                source_root=root,
+                source_root_index=source_root_index,
+            )
+            bundle_name = candidate.path.parent.name
+            previous = selected.get(bundle_name)
+            if previous is None:
+                selected[bundle_name] = candidate
                 continue
-            selected[bundle_name] = csv_path
-    return list(selected.values()), skipped_duplicates
+            kept, skipped, reason = _select_duplicate_screen_candidate(
+                bundle_name=bundle_name,
+                current=previous,
+                contender=candidate,
+            )
+            selected[bundle_name] = kept
+            skipped_duplicates.append(
+                {
+                    "bundle_name": bundle_name,
+                    "kept_screen_csv": str(kept.path),
+                    "skipped_screen_csv": str(skipped.path),
+                    "reason": reason,
+                }
+            )
+    return [candidate.path for candidate in selected.values()], skipped_duplicates
+
+
+def _screen_table_candidate(
+    *,
+    csv_path: Path,
+    source_root: Path,
+    source_root_index: int,
+) -> _ScreenTableCandidate:
+    """Build deterministic duplicate-selection metadata for one discovered CSV."""
+
+    path = Path(csv_path).resolve()
+    failure_csv = path.parent / "heating_season_day_screen_failures.csv"
+    failure_row_count = _count_csv_rows(failure_csv) if failure_csv.exists() else 0
+    failure_hash = _hash_file(failure_csv) if failure_csv.exists() else ""
+    return _ScreenTableCandidate(
+        path=path,
+        source_root=Path(source_root).resolve(),
+        source_root_index=int(source_root_index),
+        row_count=_count_csv_rows(path),
+        failure_row_count=int(failure_row_count),
+        content_hash=_hash_file(path),
+        failure_hash=failure_hash,
+    )
+
+
+def _select_duplicate_screen_candidate(
+    *,
+    bundle_name: str,
+    current: _ScreenTableCandidate,
+    contender: _ScreenTableCandidate,
+) -> tuple[_ScreenTableCandidate, _ScreenTableCandidate, str]:
+    """
+    Choose between duplicate bundle names or fail on ambiguous content drift.
+
+    A larger screen table represents more solved truth. If solved-row counts tie,
+    a richer explicit failure manifest is preferred because it affects the
+    auditable family signature for partial runs. Exact ties fall back to the
+    caller-provided root order only when the CSV and failure-manifest hashes also
+    match; otherwise neither root is a safe SSOT and the export must fail.
+    """
+
+    current_rank = (current.row_count, current.failure_row_count)
+    contender_rank = (contender.row_count, contender.failure_row_count)
+    if contender_rank > current_rank:
+        return contender, current, "duplicate_bundle_name_replaced_by_more_complete_source"
+    if contender_rank < current_rank:
+        return current, contender, "duplicate_bundle_name_skipped_less_complete_source"
+
+    current_signature = (current.content_hash, current.failure_hash)
+    contender_signature = (contender.content_hash, contender.failure_hash)
+    if current_signature != contender_signature:
+        raise ValueError(
+            "[thermflex_daily_results] duplicate screen bundle has conflicting content "
+            "with the same completeness rank; refusing root-order selection for "
+            f"{bundle_name}: {current.path} vs {contender.path}"
+        )
+    if contender.source_root_index < current.source_root_index:
+        return contender, current, "duplicate_bundle_name_identical_content_earlier_source_root"
+    return current, contender, "duplicate_bundle_name_identical_content_later_source_root"
 
 
 def load_daily_results_truth_table(
@@ -1535,6 +1622,16 @@ def _count_csv_rows(path: Path) -> int:
     with path.open("r", encoding="utf-8") as handle:
         next(handle, None)
         return sum(1 for _ in handle)
+
+
+def _hash_file(path: Path) -> str:
+    """Hash a small source artifact so duplicate roots cannot hide content drift."""
+
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def build_daily_results_dataset(*, source_root: Path, output_root: Path) -> None:
