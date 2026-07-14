@@ -220,6 +220,10 @@ def export_curated_system_results_dataset(
         "allowed_dispatch_tags": None if allowed_dispatch_tags is None else list(allowed_dispatch_tags),
         "dispatch_kpi_mode": dispatch_mode,
         "selected_run_names": sorted(truth["source_run_name"].astype(str).unique().tolist()),
+        # Run names are stable while Gold truth rows can be appended or revised
+        # in place. Bind the family identity to the exact normalized rows so a
+        # re-export cannot overwrite a different dataset under the same hash.
+        "selected_run_signatures": _build_selected_run_signatures(truth),
         "feature_columns": list(numeric_feature_columns),
         "categorical_feature_columns": list(categorical_feature_columns),
         "target_columns": list(target_columns),
@@ -317,6 +321,42 @@ def _build_source_runs_payload(truth: pd.DataFrame) -> list[dict[str, Any]]:
             }
         )
     return sorted(rows, key=lambda item: item["source_run_name"])
+
+
+def _build_selected_run_signatures(truth: pd.DataFrame) -> list[dict[str, Any]]:
+    """
+    Describe the exact normalized rows that define each selected source run.
+
+    Gold run directories are appendable, so their folder names alone cannot
+    identify immutable training truth. The content digest intentionally covers
+    derived context and optional dispatch-KPI targets as they will be persisted,
+    not merely the mutable source filenames.
+    """
+
+    if "source_run_name" not in truth.columns:
+        raise ValueError(
+            "[thermflex_system_results] source_run_name is required to build run signatures."
+        )
+    signatures: list[dict[str, Any]] = []
+    for run_name, frame in truth.groupby("source_run_name", dropna=False, sort=True):
+        # Sorting columns makes the digest independent of incidental DataFrame
+        # construction order while preserving row order, which is part of the
+        # persisted X/Y alignment contract.
+        canonical = frame.loc[:, sorted(str(column) for column in frame.columns)].reset_index(drop=True)
+        payload = canonical.to_json(
+            orient="records",
+            date_format="iso",
+            double_precision=15,
+            force_ascii=False,
+        ).encode("utf-8")
+        signatures.append(
+            {
+                "source_run_name": str(run_name),
+                "row_count": int(len(canonical)),
+                "normalized_rows_sha256": hashlib.sha256(payload).hexdigest(),
+            }
+        )
+    return signatures
 
 
 def _strip_run_timestamp(run_name: str) -> str:

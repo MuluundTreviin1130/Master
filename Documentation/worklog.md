@@ -10437,3 +10437,11 @@ Naechste Schritte:
   - Added five research highlights, each below the usual 85-character limit.
   - Regenerated the 13 manuscript sections and confirmed `225` citation keys
     with no missing entries in the review bibliography.
+
+- 2026-07-14: Hardened ThermFlex system-results dataset identity against in-place
+  Gold truth revisions.
+  - Added deterministic per-run normalized-row signatures to the family spec so
+    appended or revised truth/KPI rows receive a new family hash instead of
+    overwriting an existing dataset and model identity.
+  - Added focused regression coverage for revised rows, appended rows, and
+    irrelevant DataFrame column-order changes.
