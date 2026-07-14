@@ -15,6 +15,7 @@ import pandas as pd
 
 from Learning.datasets.save_dataset import save_dataset
 from Learning.registry.register_dataset import register_dataset
+from Learning.thermflex_system_results.family_identity import build_selected_run_signatures
 from Optimization.run.analysis.dh_thermflex_inputs import load_vienna_dh_thermflex_full_year_context
 from Optimization.run.analysis.select_vienna_dh_thermflex_representative_days import _build_daily_features
 from Learning.thermflex_system_results.schema import (
@@ -220,6 +221,10 @@ def export_curated_system_results_dataset(
         "allowed_dispatch_tags": None if allowed_dispatch_tags is None else list(allowed_dispatch_tags),
         "dispatch_kpi_mode": dispatch_mode,
         "selected_run_names": sorted(truth["source_run_name"].astype(str).unique().tolist()),
+        # Run names are stable while Gold truth rows can be appended or revised
+        # in place. Bind the family identity to the exact normalized rows so a
+        # re-export cannot overwrite a different dataset under the same hash.
+        "selected_run_signatures": build_selected_run_signatures(truth),
         "feature_columns": list(numeric_feature_columns),
         "categorical_feature_columns": list(categorical_feature_columns),
         "target_columns": list(target_columns),
