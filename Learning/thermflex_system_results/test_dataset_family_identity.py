@@ -1,24 +1,29 @@
 from __future__ import annotations
 
+import hashlib
+import json
 import unittest
 
 import pandas as pd
 
-from Learning.thermflex_system_results.dataset_builder import (
-    _build_selected_run_signatures,
-    _hash_family_spec,
+from Learning.thermflex_system_results.family_identity import (
+    build_selected_run_signatures,
 )
 
 
 class SystemResultsFamilyIdentityTest(unittest.TestCase):
     def _family_hash(self, truth: pd.DataFrame) -> str:
-        return _hash_family_spec(
-            {
-                "family_name": "thermflex_system_results",
-                "selected_run_names": ["20260714_110000_thermflex"],
-                "selected_run_signatures": _build_selected_run_signatures(truth),
-            }
-        )
+        family_spec = {
+            "family_name": "thermflex_system_results",
+            "selected_run_names": ["20260714_110000_thermflex"],
+            "selected_run_signatures": build_selected_run_signatures(truth),
+        }
+        payload = json.dumps(
+            family_spec,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+        return hashlib.sha256(payload).hexdigest()
 
     def test_revised_truth_under_same_run_name_changes_family_hash(self) -> None:
         original = pd.DataFrame(
