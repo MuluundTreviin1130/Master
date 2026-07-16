@@ -10437,3 +10437,11 @@ Naechste Schritte:
   - Added five research highlights, each below the usual 85-character limit.
   - Regenerated the 13 manuscript sections and confirmed `225` citation keys
     with no missing entries in the review bibliography.
+
+- 2026-07-16: Fixed stale surrogate reuse after training-configuration changes.
+  - Classified backend and hyperparameter changes as model-refit changes while
+    preserving the existing truth-dataset family identity.
+  - Made retrain policy decisions take precedence over compatible artifact
+    loading, including existing append-and-retrain decisions.
+  - Added focused policy tests for backend/parameter changes and existing-model
+    registry entries.

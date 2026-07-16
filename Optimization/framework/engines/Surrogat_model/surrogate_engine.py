@@ -133,6 +133,16 @@ class SurrogateEngine:
             self._train_or_fail("force_native_retrain" if self._force_native_retrain else "force_append_then_train")
             self._initialize_feasibility_screen()
             return
+        retrain_action = str((self._retrain_decision or {}).get("action", "") or "")
+        if retrain_action in {"train_model", "append_then_train"}:
+            # A compatible artifact can still be stale when only training
+            # settings or the sampled search space changed. Execute the policy
+            # decision before loading so the old estimator cannot silently win.
+            self._targets = list(self._targets)
+            self._models_F = []
+            self._train_or_fail(retrain_action)
+            self._initialize_feasibility_screen()
+            return
         bundle = load_bundle(
             artifact_path=self._artifact_path,
             required_targets=list(self._targets),
