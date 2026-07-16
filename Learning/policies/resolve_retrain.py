@@ -47,6 +47,12 @@ def resolve_retrain(settings: Any, force_native: bool = False) -> Dict[str, Any]
     elif family_status is not None and family_status.status == "append_only":
         status = "append_only"
         action = "append_then_train"
+    elif family_status is not None and family_status.status == "refit_required":
+        # A changed backend or hyperparameter set must be fitted again even
+        # when the registry still contains a loadable model for this dataset
+        # family. Otherwise the old estimator silently wins below.
+        status = "refit_required"
+        action = "train_model"
     elif found_model and not has_native_model and not has_dataset:
         status = "bootstrap_only"
         action = "load_bootstrap_model"

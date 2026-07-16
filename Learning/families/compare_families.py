@@ -12,7 +12,12 @@ FAMILY_KEYS = [
     "time_model",
     "dispatch_signature",
 ]
-REFIT_KEYS: List[str] = []
+# Training backend and hyperparameters do not change the reusable truth dataset,
+# but they do invalidate the fitted model. Keep them outside ``FAMILY_KEYS`` so
+# the dataset family remains stable while the policy explicitly requests a refit.
+REFIT_KEYS: List[str] = [
+    "training_spec",
+]
 APPEND_KEYS = [
     "search_space",
 ]
