@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import importlib
+import sys
+import types
 import unittest
 from unittest.mock import patch
 
@@ -46,8 +49,6 @@ class RetrainPolicyTests(unittest.TestCase):
         self.assertEqual(status.status, "refit_required")
 
     def test_existing_model_does_not_override_refit_decision(self) -> None:
-        from Learning.policies import resolve_retrain as policy
-
         old = _Family("rf", {"n_estimators": 100})
         current = _Family("xgb", {"n_estimators": 300})
         registry = {
@@ -63,13 +64,28 @@ class RetrainPolicyTests(unittest.TestCase):
         }
         resolved_dataset = {"found": True}
 
-        with (
-            patch.object(policy, "load_registry", return_value=registry),
-            patch.object(policy, "build_family", return_value=current),
-            patch.object(policy, "resolve_model", return_value=resolved_model),
-            patch.object(policy, "resolve_dataset", return_value=resolved_dataset),
+        # Isolate this pure policy test from the heavyweight runtime imports.
+        # The base revision currently lacks Settings.validation, which is an
+        # independent import defect handled by its own fix.
+        build_family_module = types.ModuleType("Learning.families.build_family")
+        build_family_module.build_family = lambda _settings: current
+        resolve_model_module = types.ModuleType("Learning.runtime.resolve_model")
+        resolve_model_module.resolve_model = lambda _settings: resolved_model
+        resolve_dataset_module = types.ModuleType("Learning.runtime.resolve_dataset")
+        resolve_dataset_module.resolve_dataset = lambda _settings: resolved_dataset
+
+        with patch.dict(
+            sys.modules,
+            {
+                "Learning.families.build_family": build_family_module,
+                "Learning.runtime.resolve_model": resolve_model_module,
+                "Learning.runtime.resolve_dataset": resolve_dataset_module,
+            },
         ):
-            decision = policy.resolve_retrain(settings=object())
+            sys.modules.pop("Learning.policies.resolve_retrain", None)
+            policy = importlib.import_module("Learning.policies.resolve_retrain")
+            with patch.object(policy, "load_registry", return_value=registry):
+                decision = policy.resolve_retrain(settings=object())
 
         self.assertEqual(decision["status"], "refit_required")
         self.assertEqual(decision["action"], "train_model")
