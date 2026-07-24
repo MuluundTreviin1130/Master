@@ -47,12 +47,57 @@ class FamilySpec:
         return data
 
 
+def _require_family_delta_t(settings: Any) -> float:
+    """
+    ThermFlex/EC teacher labels depend on the comfort-band relaxation.
+    Family identity must therefore read the live Settings SSOT value instead of
+    a hardcoded placeholder; otherwise a changed delta_T silently reuses models.
+    """
+    thermal = getattr(settings, "thermal", None)
+    if thermal is None:
+        raise ValueError(
+            "[learning.families] settings.thermal is required for family identity "
+            "because teacher labels depend on thermal.delta_T."
+        )
+    if not hasattr(thermal, "delta_T"):
+        raise ValueError(
+            "[learning.families] settings.thermal.delta_T is required for family identity."
+        )
+    return float(getattr(thermal, "delta_T"))
+
+
+def _require_family_active_tariff_arm(settings: Any) -> str:
+    """
+    Tariff-aware NPC and related economic targets change with the active arm.
+    Keep the arm in the hashed dispatch signature so a tariff switch cannot reuse
+    an incompatible dataset/model family as if nothing changed.
+    """
+    market = getattr(settings, "market", None)
+    if market is None:
+        raise ValueError(
+            "[learning.families] settings.market is required for family identity "
+            "because economic teacher labels depend on market.active_tariff_arm."
+        )
+    if not hasattr(market, "active_tariff_arm"):
+        raise ValueError(
+            "[learning.families] settings.market.active_tariff_arm is required for family identity."
+        )
+    active_tariff_arm = str(getattr(market, "active_tariff_arm") or "").strip().lower()
+    if not active_tariff_arm:
+        raise ValueError(
+            "[learning.families] settings.market.active_tariff_arm must be a non-empty string."
+        )
+    return active_tariff_arm
+
+
 def build_family(settings: Any, provenance: Dict[str, Any] | None = None) -> FamilySpec:
     engine = getattr(settings, "engine", None)
     run = getattr(settings, "run", None)
     surrogate = getattr(settings, "surrogate", None)
     surrogate_train = getattr(settings, "surrogate_train", None)
-    market = getattr(settings, "market", None)
+    # Read identity-critical Settings fields fail-fast before hashing.
+    delta_T = _require_family_delta_t(settings)
+    active_tariff_arm = _require_family_active_tariff_arm(settings)
 
     system = {
         "system_id": str(getattr(engine, "system_id", "unknown")),
@@ -89,11 +134,14 @@ def build_family(settings: Any, provenance: Dict[str, Any] | None = None) -> Fam
         "time_series_schema": list(getattr(getattr(settings, "learning", None), "time_series_schema", []) or []),
         "location_mode": str(getattr(getattr(settings, "learning", None), "location_mode", "dataset_context")),
     }
+    # delta_T and active_tariff_arm belong in the hashed signature because both
+    # change teacher behavior/labels while leaving schema names unchanged.
     dispatch_signature = {
         "dispatch_model_id": str(getattr(getattr(settings, "learning", None), "dispatch_model_id", "default")),
         "dispatch_params": {
-            "delta_T": 0.0,
+            "delta_T": float(delta_T),
         },
+        "active_tariff_arm": active_tariff_arm,
     }
     spec = FamilySpec(
         system=system,
@@ -106,7 +154,8 @@ def build_family(settings: Any, provenance: Dict[str, Any] | None = None) -> Fam
         dispatch_signature=dispatch_signature,
         provenance={
             "run_tag": str(getattr(run, "tag", "") or ""),
-            "active_tariff_arm": str(getattr(market, "active_tariff_arm", "flat")),
+            # Keep a human-readable copy in provenance; identity uses dispatch_signature.
+            "active_tariff_arm": active_tariff_arm,
             **dict(provenance or {}),
         },
     )
