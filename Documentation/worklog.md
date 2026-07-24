@@ -1,5 +1,19 @@
 # Worklog
 
+## 2026-07-24
+
+### Critical bug: native family identity ignored thermal/tariff settings
+
+- Found that `Learning.families.build_family` hashed `dispatch_signature.delta_T`
+  as a hardcoded `0.0` and kept `market.active_tariff_arm` only in provenance.
+- Concrete trigger: change `settings.thermal.delta_T` (e.g. 0K -> 2K) or
+  `settings.market.active_tariff_arm` (e.g. flat -> dynamic) while schema/targets
+  stay identical. Teacher labels change, but the old `family_hash` reused
+  datasets/models.
+- Fix: read both Settings fields fail-fast into the hashed `dispatch_signature`
+  and add focused regression tests under
+  `Learning/families/test_build_family_identity.py`.
+
 ## 2026-06-12
 
 ### Target-layer update: sector-coupled MES with planetary boundaries / LCA scenario bridge
