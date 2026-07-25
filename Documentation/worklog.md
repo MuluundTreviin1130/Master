@@ -1,5 +1,23 @@
 # Worklog
 
+## 2026-07-25
+
+### Critical bug: eligible native retrain left stale active peers selectable
+
+- Found that `Learning.training.train_surrogate` always registered gate-passing
+  native models with `is_preferred=False` and never deactivated older active
+  peers. `resolve_model` then selected the first active eligible native by
+  registry insertion order.
+- Concrete trigger: retrain creates a newer `native_<signature_hash>` under an
+  existing family while an older active eligible native artifact still exists
+  and `preferred_model_id` is unset (already visible for family `be657...` in
+  `Learning/registry/registry.json`). Optimization silently loads the older
+  surrogate.
+- Fix: promote eligible natives to preferred and deactivate other active native
+  peers; fall back to newest active eligible native by `updated_at_utc` when no
+  usable preferred artifact exists. Added
+  `Learning/runtime/test_resolve_model_selection.py`.
+
 ## 2026-06-12
 
 ### Target-layer update: sector-coupled MES with planetary boundaries / LCA scenario bridge

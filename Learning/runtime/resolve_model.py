@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 from Learning.registry.load_registry import load_registry
 from Learning.families.build_family import build_family
@@ -30,6 +30,16 @@ def _is_native_training(entry: Dict[str, Any]) -> bool:
 def _is_optimization_eligible_native(entry: Dict[str, Any]) -> bool:
     stage = str(entry.get("validation_stage", "") or "").strip().lower()
     return stage in {"eligible", "validated", "production"}
+
+
+def _native_recency_key(item: Tuple[str, Dict[str, Any]]) -> Tuple[str, str, str]:
+    # Sort key for active-native fallback. Newer updates must win over older
+    # insertion order, otherwise a stale peer registered earlier keeps serving
+    # after a later eligible retrain when preferred_model_id is unset.
+    model_id, entry = item
+    updated = str(entry.get("updated_at_utc", "") or "")
+    created = str(entry.get("created_at_utc", "") or "")
+    return (updated, created, model_id)
 
 
 def _validation_forced_model_id(settings: Any) -> Optional[str]:
@@ -88,19 +98,22 @@ def resolve_model(settings: Any) -> Dict[str, Any]:
     if preferred_native_id and preferred_native_id in family_models:
         entry = dict(family_models[preferred_native_id])
         path = _model_path_from_entry(entry)
-        if _is_optimization_eligible_native(entry):
+        # Preferred eligible natives are authoritative only when their artifact
+        # exists. A missing preferred file must fall through so a newer active
+        # peer can still serve instead of hard-failing optimization.
+        if _is_optimization_eligible_native(entry) and path is not None and path.exists():
             return {
                 "family_hash": family_hash,
                 "model_id": preferred_native_id,
                 "entry": entry,
                 "artifact_path": path,
-                "found": bool(path and path.exists()),
+                "found": True,
                 "forced": False,
             }
         if _is_native_training(entry):
             preferred_native_id = None
 
-    active_native = [
+    active_native: List[Tuple[str, Dict[str, Any]]] = [
         (model_id, dict(entry))
         for model_id, entry in family_models.items()
         if (
@@ -109,6 +122,9 @@ def resolve_model(settings: Any) -> Dict[str, Any]:
             and _is_optimization_eligible_native(entry)
         )
     ]
+    # Newest eligible active native first. Dict insertion order previously
+    # favored the oldest peer and could ignore a later retrain.
+    active_native.sort(key=_native_recency_key, reverse=True)
     for model_id, entry in active_native:
         path = _model_path_from_entry(entry)
         if path and path.exists():
