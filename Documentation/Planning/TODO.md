@@ -2,6 +2,11 @@
 
 ## Active
 
+- [ ] Learning correctness follow-ups after native resolve_model preference fix:
+  - teacher `_sum()` / `flows_L.get(..., 0.0)` can still zero-fill missing native targets before dataset persistence
+  - daily trainer can silently drop NaN-bearing requested targets while keeping the profile-based `model_id`
+  - hourly_dispatch builder still lacks a `timestamp == date + hour_index` invariant
+
 - [ ] ThermFlex-Paper: Two-stage-MILP als methodischen Unsicherheits-/Preis-Pfad festziehen:
   - klaeren, ob `milp_two_stage` mit historischen Preis-/Wetter-Szenarien nur als Robustheitscheck oder als eigener Sensitivitaetsblock berichtet wird
   - Settings-Vertrag fuer `stochastic_enabled`, historische Preisquellen, Szenarioanzahl und Reduktion dokumentieren
