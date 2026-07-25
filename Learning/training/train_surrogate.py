@@ -294,6 +294,10 @@ def train_surrogate_model(
         y_pred=Y_pred_test,
     )
     validation_stage = "eligible" if gate_result.get("eligible") else "blocked"
+    # An eligible native retrain must become the preferred active model.
+    # Leaving is_preferred=False kept older active peers selectable by
+    # registry insertion order and silently reused stale surrogates.
+    is_preferred = validation_stage == "eligible"
     extra_fields = {
         "gate_result": gate_result,
         "holdout_n_test": int(len(X_test)),
@@ -305,7 +309,7 @@ def train_surrogate_model(
         model_id,
         validation_stage=validation_stage,
         is_active=True,
-        is_preferred=False,
+        is_preferred=is_preferred,
         extra_fields=extra_fields,
     )
     return models, native_artifact_dir, native_artifact_path, {
