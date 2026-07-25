@@ -1,14 +1,13 @@
 from __future__ import annotations
 
+import importlib
 import json
+import sys
 import tempfile
 import types
 import unittest
 from pathlib import Path
 from unittest.mock import patch
-
-from Learning.registry.update_model_status import update_model_status
-from Learning.runtime.resolve_model import resolve_model
 
 
 class _Family:
@@ -30,8 +29,26 @@ class ResolveModelSelectionTests(unittest.TestCase):
             validation=None,
         )
 
+    def _load_isolated_modules(self):
+        # Isolate these pure registry/runtime tests from the heavyweight
+        # Data/Optimization import chain that build_family normally pulls in.
+        build_family_module = types.ModuleType("Learning.families.build_family")
+        build_family_module.build_family = lambda _settings: _Family("unused")
+        with patch.dict(
+            sys.modules,
+            {
+                "Learning.families.build_family": build_family_module,
+            },
+        ):
+            sys.modules.pop("Learning.runtime.resolve_model", None)
+            sys.modules.pop("Learning.registry.update_model_status", None)
+            resolve_model_module = importlib.import_module("Learning.runtime.resolve_model")
+            update_status_module = importlib.import_module("Learning.registry.update_model_status")
+        return resolve_model_module, update_status_module
+
     def test_active_native_fallback_prefers_newest_eligible_model(self) -> None:
         family_hash = "family-hash"
+        resolve_model_module, _update_status_module = self._load_isolated_modules()
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             older_artifact = root / "older.joblib"
@@ -73,11 +90,12 @@ class ResolveModelSelectionTests(unittest.TestCase):
                 },
             )
             settings = self._settings(registry_path)
-            with patch(
-                "Learning.runtime.resolve_model.build_family",
+            with patch.object(
+                resolve_model_module,
+                "build_family",
                 return_value=_Family(family_hash),
             ):
-                resolved = resolve_model(settings)
+                resolved = resolve_model_module.resolve_model(settings)
 
         self.assertTrue(resolved["found"])
         self.assertEqual(resolved["model_id"], "native_newer")
@@ -85,6 +103,7 @@ class ResolveModelSelectionTests(unittest.TestCase):
 
     def test_eligible_promotion_prefers_new_model_and_deactivates_peers(self) -> None:
         family_hash = "family-hash"
+        resolve_model_module, update_status_module = self._load_isolated_modules()
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             older_artifact = root / "older.joblib"
@@ -124,7 +143,7 @@ class ResolveModelSelectionTests(unittest.TestCase):
 
             # Mirror the train_surrogate gate-pass contract: eligible native
             # models become preferred and remove older active native peers.
-            update_model_status(
+            update_status_module.update_model_status(
                 settings,
                 family_hash,
                 "native_newer",
@@ -145,17 +164,19 @@ class ResolveModelSelectionTests(unittest.TestCase):
             self.assertFalse(older["is_active"])
             self.assertFalse(older["is_preferred"])
 
-            with patch(
-                "Learning.runtime.resolve_model.build_family",
+            with patch.object(
+                resolve_model_module,
+                "build_family",
                 return_value=_Family(family_hash),
             ):
-                resolved = resolve_model(settings)
+                resolved = resolve_model_module.resolve_model(settings)
 
         self.assertTrue(resolved["found"])
         self.assertEqual(resolved["model_id"], "native_newer")
 
     def test_missing_preferred_artifact_falls_through_to_newest_active(self) -> None:
         family_hash = "family-hash"
+        resolve_model_module, _update_status_module = self._load_isolated_modules()
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             fallback_artifact = root / "fallback.joblib"
@@ -194,11 +215,12 @@ class ResolveModelSelectionTests(unittest.TestCase):
                 },
             )
             settings = self._settings(registry_path)
-            with patch(
-                "Learning.runtime.resolve_model.build_family",
+            with patch.object(
+                resolve_model_module,
+                "build_family",
                 return_value=_Family(family_hash),
             ):
-                resolved = resolve_model(settings)
+                resolved = resolve_model_module.resolve_model(settings)
 
         self.assertTrue(resolved["found"])
         self.assertEqual(resolved["model_id"], "native_fallback")
