@@ -509,6 +509,13 @@
   - nicht fuer jeden neuen Archetyp / jedes Jahr ein vollstaendig neues Surrogat bei null trainieren
   - stattdessen Vortraining auf breiter `EnergyPlus`-Teacher-Basis und gezieltes Fine-Tuning mit kleinen Zusatzdatensaetzen
   - besonders relevant fuer spaetere Generalisierung ueber mehr Wetterjahre, Settings und Systemvarianten
+- [x] Daily-results Target-Profile-Vertrag fail-fast machen:
+  - NaN in angeforderten Profile-Targets nicht mehr still ausschliessen
+  - sonst kollidiert `model_id` (`..._{target_profile}_{family_hash}`) mit verengten Estimatoren
+  - Fix: `Learning/thermflex_daily_results/target_completeness.py` + Train/Holdout-Wiring
+- [ ] `Learning/thermflex_hourly_dispatch/`: Timestamp-vs-`hour_index`-Invariante absichern
+  - Builder joined Context auf `timestamp`, gruppiert/dedupliziert aber auf `(date, hour_index)`
+  - bei Drift waeren zyklische Stundenfeatures und Weather/Price-Context inkonsistent
 - [ ] `Learning/thermflex_daily_results/` vom Struktur-Skeleton zum ersten lauffaehigen Datensatzpfad ausbauen:
   - Truth-Quellen und Pflichtspalten aus `Data/surrogate_training_cache/...bundle_stop/` und den Gold-Daily-Screens explizit festziehen
   - Day-row-Vertrag definieren:

@@ -32,6 +32,7 @@ from Learning.thermflex_daily_results.schema import (
     TABLE_09_PAPER_TARGET_COLUMNS,
     TARGET_COLUMNS,
 )
+from Learning.thermflex_daily_results.target_completeness import require_complete_requested_targets
 from Learning.thermflex_daily_results.validate import build_grouped_holdout_split
 
 _DEFAULT_MODEL_ROOT = Path(__file__).resolve().parents[2] / "Learning" / "models"
@@ -70,12 +71,6 @@ def train_daily_results_model(
             "[thermflex_daily_results] curated dataset is missing `truth_dataset.csv`."
         )
     truth_df = pd.read_csv(truth_csv_path)
-    split = build_grouped_holdout_split(
-        truth_df=truth_df,
-        group_column=group_column,
-        test_size=test_size,
-        random_state=random_state,
-    )
     x = np.asarray(dataset_bundle["X"], dtype=float)
     all_target_names = list(dataset_bundle["meta"]["target_columns"])
     requested_target_names = _resolve_target_profile(target_profile)
@@ -85,17 +80,28 @@ def train_daily_results_model(
             "[thermflex_daily_results] requested target profile contains unknown targets: "
             + ", ".join(missing_requested)
         )
-    available_target_names = [target for target in requested_target_names if not truth_df[target].isna().any()]
-    excluded_target_names = [target for target in requested_target_names if target not in available_target_names]
-    if not available_target_names:
-        raise ValueError("[thermflex_daily_results] no fully available targets left for baseline training.")
-    target_indices = [all_target_names.index(target) for target in available_target_names]
+    # Target profiles are an explicit training contract. Incomplete requested
+    # columns must fail fast: silently dropping NaN targets while keeping
+    # model_id = f"..._{target_profile}_{family_hash}" would register a narrowed
+    # estimator under a full-profile identity and later overwrite/reuse it.
+    require_complete_requested_targets(
+        truth_df=truth_df,
+        requested_target_names=requested_target_names,
+        target_profile=target_profile,
+    )
+    split = build_grouped_holdout_split(
+        truth_df=truth_df,
+        group_column=group_column,
+        test_size=test_size,
+        random_state=random_state,
+    )
+    target_indices = [all_target_names.index(target) for target in requested_target_names]
     y = np.asarray(dataset_bundle["Y"], dtype=float)[:, target_indices]
     x_train = x[split.train_index, :]
     x_test = x[split.test_index, :]
     y_train = y[split.train_index, :]
     y_test = y[split.test_index, :]
-    target_names = list(available_target_names)
+    target_names = list(requested_target_names)
     target_transforms = {target: _resolve_target_transform(target) for target in target_names}
 
     models: list[Any] = []
@@ -158,7 +164,6 @@ def train_daily_results_model(
         "group_column": group_column,
         "test_size": float(test_size),
         "random_state": int(random_state),
-        "excluded_target_names": excluded_target_names,
     }
     meta_path.write_text(json.dumps(meta, indent=2), encoding="utf-8")
 
@@ -190,7 +195,6 @@ def train_daily_results_model(
         "mean_mae": float(metrics_df["mae"].mean()),
         "mean_rmse": float(metrics_df["rmse"].mean()),
         "mean_r2": float(metrics_df["r2"].dropna().mean()) if metrics_df["r2"].notna().any() else float("nan"),
-        "excluded_target_names": excluded_target_names,
     }
     update_model_status(
         settings_stub,
