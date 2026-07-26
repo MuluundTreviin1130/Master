@@ -10437,3 +10437,15 @@ Naechste Schritte:
   - Added five research highlights, each below the usual 85-character limit.
   - Regenerated the 13 manuscript sections and confirmed `225` citation keys
     with no missing entries in the review bibliography.
+
+- 2026-07-26: Fixed critical daily-results target-profile identity bug.
+  - `train_daily_results_model` and repeated-holdout diagnostics previously
+    dropped NaN profile targets while keeping `model_id` /
+    diagnostic labels keyed only by `target_profile` + family hash.
+  - Concrete trigger: historic screens omit optional dispatch-economics
+    columns; the builder stores them as NaN; training with `all` or
+    `heat_cost_total_co2_absolute` silently narrowed the estimator under the
+    full profile name.
+  - Added `require_complete_requested_targets` fail-fast helper and focused
+    unit tests; callers must choose a fully populated profile or export the
+    missing truth columns.

@@ -29,6 +29,7 @@ from xgboost import XGBRegressor
 
 from Learning.datasets.load_dataset import load_dataset
 from Learning.thermflex_daily_results.dataset_builder import _DEFAULT_DATASET_ROOT
+from Learning.thermflex_daily_results.target_completeness import require_complete_requested_targets
 from Learning.thermflex_daily_results.train import (
     _apply_target_transform,
     _invert_target_transform,
@@ -97,12 +98,14 @@ def evaluate_repeated_holdouts(
             "[thermflex_daily_results] requested target profile contains unknown targets: "
             + ", ".join(missing_requested)
         )
-    available_target_names = [
-        target for target in requested_target_names if not filtered_truth[target].isna().any()
-    ]
-    if not available_target_names:
-        raise ValueError("[thermflex_daily_results] no fully available targets left for diagnostics.")
-    target_indices = [all_target_names.index(target) for target in available_target_names]
+    # Same contract as train_daily_results_model: a named profile must not
+    # silently shrink when curated truth still has NaNs in optional columns.
+    require_complete_requested_targets(
+        truth_df=filtered_truth,
+        requested_target_names=requested_target_names,
+        target_profile=target_profile,
+    )
+    target_indices = [all_target_names.index(target) for target in requested_target_names]
     y = np.asarray(dataset_bundle["Y"], dtype=float)[selected_positions, :][:, target_indices]
 
     rows: list[dict[str, Any]] = []
@@ -124,11 +127,11 @@ def evaluate_repeated_holdouts(
             x_train=x_train,
             x_test=x_test,
             y_train=y_train,
-            target_names=available_target_names,
+            target_names=requested_target_names,
             random_state=seed,
             estimator=estimator,
         )
-        metrics = _metric_block(y_true=y_test, y_pred=y_pred, target_names=available_target_names)
+        metrics = _metric_block(y_true=y_test, y_pred=y_pred, target_names=requested_target_names)
         for row in metrics.to_dict(orient="records"):
             row.update(
                 {
