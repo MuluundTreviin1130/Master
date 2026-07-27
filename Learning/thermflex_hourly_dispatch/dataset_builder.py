@@ -18,6 +18,7 @@ from Learning.thermflex_hourly_dispatch.schema import (
     TARGET_COLUMNS,
     feature_columns,
     validate_hourly_dispatch_frame,
+    validate_hourly_dispatch_time_consistency,
 )
 from Optimization.run.analysis.dh_thermflex_inputs import load_vienna_dh_thermflex_full_year_context
 
@@ -99,6 +100,9 @@ def load_hourly_dispatch_truth_table(*, hourly_csv_paths: Sequence[Path]) -> pd.
         df["date"] = pd.to_datetime(df["date"], errors="raise")
         df["timestamp"] = pd.to_datetime(df["timestamp"], errors="raise")
         df["hour_index"] = pd.to_numeric(df["hour_index"], errors="raise").astype(int)
+        # Context joins on timestamp; uniqueness/grouping use (date, hour_index).
+        # Reject drifted rows before enrichment can silently attach wrong state.
+        validate_hourly_dispatch_time_consistency(df, source_label=str(csv_path))
         df["source_bundle_name"] = csv_path.parent.name
         df["source_hourly_csv"] = str(csv_path)
         df["source_hourly_kind"] = "checkpoint" if csv_path.name == _CHECKPOINT_FILENAME else "final"

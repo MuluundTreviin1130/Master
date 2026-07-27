@@ -20,3 +20,9 @@ policy + daily/hourly context + REF hourly dispatch state
 Raw hourly outputs remain in their source run folders under
 `Optimization/run/results/.../daily_thermflex_screen_*/heating_season_hourly_dispatch.csv`.
 Reusable ML datasets are registered through `Learning/datasets/`.
+
+Time-key contract: every loaded row must satisfy
+`date == timestamp.normalize()` and `hour_index == timestamp.hour`.
+Context joins use `timestamp`; uniqueness, dedupe, and daily grouping use
+`(date, hour_index)`. Mismatches fail fast instead of silently corrupting
+features or holdout buckets.
