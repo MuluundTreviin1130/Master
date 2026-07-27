@@ -2180,6 +2180,8 @@
     - hourly weather/price/DH-state
     - REF dispatch state
     - upstream ThermFlex load response (`dh_bus_load_kwh_delta`, later predicted by mechanism surrogate).
+  - Time keys must stay consistent: `date == timestamp.normalize()` and
+    `hour_index == timestamp.hour` (enforced fail-fast since 2026-07-27).
 - Current quality signal:
   - With oracle upstream load delta and the expanded Truth basis:
     - Global Daily Heat-Cost is around median `R2 ~= 0.96`.

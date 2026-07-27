@@ -132,6 +132,70 @@ def validate_hourly_dispatch_frame(frame: pd.DataFrame, *, source_label: str) ->
         pd.to_numeric(frame[column], errors="raise")
 
 
+def validate_hourly_dispatch_time_consistency(frame: pd.DataFrame, *, source_label: str) -> None:
+    """
+    Fail fast when `date` / `hour_index` disagree with `timestamp`.
+
+    Context enrichment joins weather/price state on `timestamp`, while
+    uniqueness, dedupe, split grouping, and daily aggregation key on
+    `(date, hour_index)`. A mismatch silently attaches the wrong context
+    features to dispatch labels or moves rows into the wrong day bucket.
+    """
+
+    required = ("date", "hour_index", "timestamp")
+    missing = [column for column in required if column not in frame.columns]
+    if missing:
+        raise KeyError(
+            "[thermflex_hourly_dispatch] missing time-key columns in "
+            f"{source_label}: {', '.join(missing)}"
+        )
+
+    dates = pd.to_datetime(frame["date"], errors="raise")
+    timestamps = pd.to_datetime(frame["timestamp"], errors="raise")
+    hours = pd.to_numeric(frame["hour_index"], errors="raise")
+
+    if dates.isna().any() or timestamps.isna().any():
+        raise ValueError(
+            "[thermflex_hourly_dispatch] null date/timestamp values are not allowed in "
+            f"{source_label}"
+        )
+    # Reject non-integral hour labels before casting; float 6.5 must not become 6.
+    if ((hours % 1) != 0).any():
+        raise ValueError(
+            "[thermflex_hourly_dispatch] hour_index must be integer-valued in "
+            f"{source_label}"
+        )
+
+    hours_int = hours.astype(int)
+    if ((hours_int < 0) | (hours_int > 23)).any():
+        raise ValueError(
+            "[thermflex_hourly_dispatch] hour_index must be in [0, 23] in "
+            f"{source_label}"
+        )
+
+    date_mismatch = dates.dt.normalize() != timestamps.dt.normalize()
+    hour_mismatch = hours_int.to_numpy() != timestamps.dt.hour.to_numpy()
+    bad_mask = date_mismatch | hour_mismatch
+    if not bad_mask.any():
+        return
+
+    examples = (
+        pd.DataFrame(
+            {
+                "date": dates.loc[bad_mask].dt.strftime("%Y-%m-%d"),
+                "hour_index": hours_int.loc[bad_mask],
+                "timestamp": timestamps.loc[bad_mask].astype(str),
+            }
+        )
+        .head(10)
+        .to_dict(orient="records")
+    )
+    raise ValueError(
+        "[thermflex_hourly_dispatch] date/hour_index disagree with timestamp in "
+        f"{source_label}; examples={examples}"
+    )
+
+
 def feature_columns() -> tuple[str, ...]:
     return (
         POLICY_FEATURE_COLUMNS
