@@ -10437,3 +10437,8 @@ Naechste Schritte:
   - Added five research highlights, each below the usual 85-character limit.
   - Regenerated the 13 manuscript sections and confirmed `225` citation keys
     with no missing entries in the review bibliography.
+
+- 2026-07-27: Hourly-dispatch time-key invariant fail-fast.
+  - `Learning/thermflex_hourly_dispatch` now rejects rows where `date`/`hour_index` disagree with `timestamp` before context enrichment.
+  - Prevents silent wrong weather/price joins and wrong daily/holdout grouping.
+  - Regression tests: `Learning/thermflex_hourly_dispatch/test_time_consistency.py`.
