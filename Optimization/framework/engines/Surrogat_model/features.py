@@ -24,6 +24,60 @@ def get_control_mode(settings: Any) -> str:
     return str(getattr(getattr(settings, "heating_control", None), "control_mode", "constant") or "constant").strip().lower()
 
 
+def _optional_float_feature(value: Any) -> float:
+    """Encode an optional numeric settings field for the static feature vector.
+
+    Numpy static features cannot carry JSON null. Unset optional bounds therefore
+    become 0.0 in the vector, while signature/family identity keep the raw null
+    via `_optional_json_float` so "unset" and an explicit 0.0 °C stay distinct
+    for artifact and dataset selection.
+    """
+
+    if value is None:
+        return 0.0
+    return float(value)
+
+
+def _optional_json_float(value: Any) -> float | None:
+    """Preserve optional numeric settings as JSON-null-aware identity values."""
+
+    if value is None:
+        return None
+    return float(value)
+
+
+def thermflex_policy_identity(settings: Any) -> Dict[str, Any]:
+    """Return the ThermFlex policy fields that change teacher labels and must
+    participate in surrogate identity.
+
+    Constant-mode paper cases primarily vary `constant_lower_bound_c` and
+    `constrain_upper_temperature` (upper-only vs lower-relax). Those fields were
+    previously absent from static features and signature context, so distinct
+    policies collided on the same artifact/dataset identity.
+    """
+
+    thermflex_cfg = getattr(getattr(settings, "constraints", None), "thermflex", None)
+    return {
+        "constant_lower_bound_c": _optional_json_float(
+            getattr(thermflex_cfg, "constant_lower_bound_c", None)
+        ),
+        "day_lower_bound_c": _optional_json_float(getattr(thermflex_cfg, "day_lower_bound_c", None)),
+        "night_lower_bound_c": _optional_json_float(
+            getattr(thermflex_cfg, "night_lower_bound_c", None)
+        ),
+        "use_explicit_lower_bounds": bool(
+            getattr(thermflex_cfg, "use_explicit_lower_bounds", False)
+        ),
+        "constrain_upper_temperature": bool(
+            getattr(thermflex_cfg, "constrain_upper_temperature", False)
+        ),
+        "max_flex_duration_h": float(getattr(thermflex_cfg, "max_flex_duration_h", 0.0) or 0.0),
+        "max_flex_events_per_day": float(
+            getattr(thermflex_cfg, "max_flex_events_per_day", 0.0) or 0.0
+        ),
+    }
+
+
 def _is_feature_enabled(settings: Any, attr: str) -> bool:
     eng_cfg = getattr(settings, "engine", None)
     features = getattr(eng_cfg, "features", None)
@@ -305,8 +359,11 @@ def resolve_feature_names(settings: Any) -> List[str]:
         "constant_setpoint_c",
         "day_setpoint_c",
         "night_setpoint_c",
+        "constant_lower_bound_c",
         "day_lower_bound_c",
         "night_lower_bound_c",
+        "use_explicit_lower_bounds",
+        "constrain_upper_temperature",
         "thermflex_max_duration_h",
         "thermflex_max_events_per_day",
     ]
@@ -362,8 +419,14 @@ def build_static_feature_vector(settings: Any, profile_id: str) -> np.ndarray:
             float(getattr(heating_control, "constant_setpoint_c", 0.0) or 0.0),
             float(getattr(heating_control, "day_setpoint_c", 0.0) or 0.0),
             float(getattr(heating_control, "night_setpoint_c", 0.0) or 0.0),
-            float(getattr(thermflex_cfg, "day_lower_bound_c", 0.0) or 0.0),
-            float(getattr(thermflex_cfg, "night_lower_bound_c", 0.0) or 0.0),
+            # Constant-mode ThermFlex lower bound is the primary paper lever
+            # (lb21 vs lb22.5). It must appear in the static vector; day/night
+            # alone collapse to 0.0 for typical constant overrides.
+            _optional_float_feature(getattr(thermflex_cfg, "constant_lower_bound_c", None)),
+            _optional_float_feature(getattr(thermflex_cfg, "day_lower_bound_c", None)),
+            _optional_float_feature(getattr(thermflex_cfg, "night_lower_bound_c", None)),
+            float(int(bool(getattr(thermflex_cfg, "use_explicit_lower_bounds", False)))),
+            float(int(bool(getattr(thermflex_cfg, "constrain_upper_temperature", False)))),
             float(getattr(thermflex_cfg, "max_flex_duration_h", 0.0) or 0.0),
             float(getattr(thermflex_cfg, "max_flex_events_per_day", 0.0) or 0.0),
         ],
@@ -376,9 +439,9 @@ def build_signature_context_payload(settings: Any, profile_id: str) -> Dict[str,
     features = getattr(eng_cfg, "features", None)
     activation = getattr(settings, "technology_activation", None)
     heating_control = getattr(settings, "heating_control", None)
-    thermflex_cfg = getattr(getattr(settings, "constraints", None), "thermflex", None)
     dispatch_cfg = getattr(settings, "dispatch", None)
     district_heating = getattr(settings, "district_heating", None)
+    thermflex_policy = thermflex_policy_identity(settings)
     return {
         "profile_id": str(profile_id),
         "system_id": str(getattr(eng_cfg, "system_id", "unknown") or "unknown"),
@@ -388,10 +451,13 @@ def build_signature_context_payload(settings: Any, profile_id: str) -> Dict[str,
         "constant_setpoint_c": float(getattr(heating_control, "constant_setpoint_c", 0.0) or 0.0),
         "day_setpoint_c": float(getattr(heating_control, "day_setpoint_c", 0.0) or 0.0),
         "night_setpoint_c": float(getattr(heating_control, "night_setpoint_c", 0.0) or 0.0),
-        "day_lower_bound_c": float(getattr(thermflex_cfg, "day_lower_bound_c", 0.0) or 0.0),
-        "night_lower_bound_c": float(getattr(thermflex_cfg, "night_lower_bound_c", 0.0) or 0.0),
-        "max_flex_duration_h": float(getattr(thermflex_cfg, "max_flex_duration_h", 0.0) or 0.0),
-        "max_flex_events_per_day": float(getattr(thermflex_cfg, "max_flex_events_per_day", 0.0) or 0.0),
+        "constant_lower_bound_c": thermflex_policy["constant_lower_bound_c"],
+        "day_lower_bound_c": thermflex_policy["day_lower_bound_c"],
+        "night_lower_bound_c": thermflex_policy["night_lower_bound_c"],
+        "use_explicit_lower_bounds": thermflex_policy["use_explicit_lower_bounds"],
+        "constrain_upper_temperature": thermflex_policy["constrain_upper_temperature"],
+        "max_flex_duration_h": thermflex_policy["max_flex_duration_h"],
+        "max_flex_events_per_day": thermflex_policy["max_flex_events_per_day"],
         "district_heating_share": float(getattr(district_heating, "share", 0.0) or 0.0),
         "dispatch_mode": str(getattr(dispatch_cfg, "mode", "unknown") or "unknown"),
         "dispatch_stochastic_enabled": bool(getattr(dispatch_cfg, "stochastic_enabled", False)),

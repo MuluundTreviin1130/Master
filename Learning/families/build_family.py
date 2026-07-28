@@ -9,6 +9,7 @@ from Optimization.framework.engines.Surrogat_model.features import (
     resolve_feature_encoding,
     resolve_feature_names,
     resolve_surrogate_targets,
+    thermflex_policy_identity,
 )
 
 
@@ -93,6 +94,10 @@ def build_family(settings: Any, provenance: Dict[str, Any] | None = None) -> Fam
         "dispatch_model_id": str(getattr(getattr(settings, "learning", None), "dispatch_model_id", "default")),
         "dispatch_params": {
             "delta_T": 0.0,
+            # ThermFlex policy changes teacher KPIs under the same design space.
+            # Keep it inside the hashed family payload so lb21 vs lb22.5 / upper-only
+            # cannot silently reuse one dataset family.
+            **thermflex_policy_identity(settings),
         },
     }
     spec = FamilySpec(

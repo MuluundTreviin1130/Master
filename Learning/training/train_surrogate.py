@@ -83,9 +83,13 @@ def _resolve_training_arrays(
     existing_dataset = load_dataset(dataset_root, family_hash)
 
     if action == "train_model" and existing_dataset is not None:
+        X_design = np.asarray(existing_dataset["X_design"], dtype=float)
+        # Always rebuild static-augmented X under current settings. Cached X can
+        # keep stale ThermFlex policy columns after settings change.
+        X = augment_features(settings, X_design, profile_id)
         return (
-            np.asarray(existing_dataset["X_design"], dtype=float),
-            np.asarray(existing_dataset["X"], dtype=float),
+            X_design,
+            X,
             np.asarray(existing_dataset["Y"], dtype=float),
             0,
         )
@@ -110,9 +114,11 @@ def _resolve_training_arrays(
         X_design_new = sample_from_settings_fn(settings)
 
     if X_design_new.size == 0 and existing_dataset is not None:
+        X_design = np.asarray(existing_dataset["X_design"], dtype=float)
+        X = augment_features(settings, X_design, profile_id)
         return (
-            np.asarray(existing_dataset["X_design"], dtype=float),
-            np.asarray(existing_dataset["X"], dtype=float),
+            X_design,
+            X,
             np.asarray(existing_dataset["Y"], dtype=float),
             0,
         )
@@ -128,8 +134,10 @@ def _resolve_training_arrays(
     )
 
     if existing_dataset is not None and action == "append_then_train":
-        X_design = np.vstack([np.asarray(existing_dataset["X_design"], dtype=float), X_design_new])
-        X = np.vstack([np.asarray(existing_dataset["X"], dtype=float), X_new])
+        X_design_existing = np.asarray(existing_dataset["X_design"], dtype=float)
+        X_existing = augment_features(settings, X_design_existing, profile_id)
+        X_design = np.vstack([X_design_existing, X_design_new])
+        X = np.vstack([X_existing, X_new])
         Y = np.vstack([np.asarray(existing_dataset["Y"], dtype=float), Y_new])
     else:
         X_design = X_design_new
