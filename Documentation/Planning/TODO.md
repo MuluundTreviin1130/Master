@@ -2,6 +2,12 @@
 
 ## Active
 
+- [ ] Merge/reconcile open Learning correctness PRs that still restore
+  `Settings.validation` / `Learning.validation` and related identity guards;
+  this branch only adds ThermFlex constant-lower identity to native surrogates.
+- [ ] Follow-up (medium): hourly-mechanism `_run_policy_context_for_run_dir`
+  still maps missing day/night setpoints and lowers via `or 0.0`; tighten to
+  mode-conditional fail-fast once day_night truth coverage is broader.
 - [ ] ThermFlex-Paper: Two-stage-MILP als methodischen Unsicherheits-/Preis-Pfad festziehen:
   - klaeren, ob `milp_two_stage` mit historischen Preis-/Wetter-Szenarien nur als Robustheitscheck oder als eigener Sensitivitaetsblock berichtet wird
   - Settings-Vertrag fuer `stochastic_enabled`, historische Preisquellen, Szenarioanzahl und Reduktion dokumentieren
