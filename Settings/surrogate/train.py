@@ -40,8 +40,11 @@ def _default_surrogate_feature_names() -> List[str]:
         "constant_setpoint_c",
         "day_setpoint_c",
         "night_setpoint_c",
+        "constant_lower_bound_c",
         "day_lower_bound_c",
         "night_lower_bound_c",
+        "use_explicit_lower_bounds",
+        "constrain_upper_temperature",
         "thermflex_max_duration_h",
         "thermflex_max_events_per_day",
     ]

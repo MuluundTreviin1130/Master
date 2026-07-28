@@ -255,7 +255,14 @@ def auto_train_surrogate(settings) -> str:
     existing_failed_points: List[dict] = []
     if existing_dataset is not None:
         X_design_existing = np.asarray(existing_dataset["X_design"], dtype=float)
-        X_feat_existing = np.asarray(existing_dataset["X"], dtype=float)
+        # Rebuild augmented features from design columns under the *current*
+        # settings. Cached `X` embeds static ThermFlex/policy columns that can
+        # change without changing family feature names; reusing them would train
+        # under a new signature with stale static context.
+        if X_design_existing.size:
+            X_feat_existing = augment_features(settings, X_design_existing, profile_id)
+        else:
+            X_feat_existing = np.zeros((0, expected_feature_width), float)
         YF_existing = np.asarray(existing_dataset["Y"], dtype=float)
         if X_design_existing.shape[1] != len(bounds_names):
             raise ValueError(
@@ -267,7 +274,7 @@ def auto_train_surrogate(settings) -> str:
             )
         if X_feat_existing.shape[1] != expected_feature_width:
             raise ValueError(
-                "[surrogate] existing dataset feature width passt nicht zur aktiven Feature-Spezifikation."
+                "[surrogate] rebuilt dataset feature width passt nicht zur aktiven Feature-Spezifikation."
             )
         source_runs_path = existing_dataset.get("source_runs_path")
         if source_runs_path is not None and source_runs_path.exists():

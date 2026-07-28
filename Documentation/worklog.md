@@ -1,5 +1,25 @@
 # Worklog
 
+## 2026-07-28
+
+### Critical bugfix: native surrogate ThermFlex constant lower-bound identity
+
+- Found that constant-mode ThermFlex paper policies differing only by
+  `constant_lower_bound_c` / `constrain_upper_temperature` shared native
+  surrogate signature and static-feature identity because only day/night
+  lowers were encoded (typically `None` → `0.0`).
+- Concrete trigger: `lb21.0` lower-relax vs `lb22.5` upper-only with matching
+  duration/events reused the same signature hash / could overwrite or reload
+  the wrong artifact; family datasets likewise did not separate the policies.
+- Fix:
+  - encode `constant_lower_bound_c`, `use_explicit_lower_bounds`, and
+    `constrain_upper_temperature` in static features, signature context, and
+    family `dispatch_signature`
+  - rebuild cached augmented `X` from `X_design` under current settings in both
+    native training paths
+- Validation: focused unit tests for feature/signature identity, family hash,
+  and augmented-X rebuild.
+
 ## 2026-06-12
 
 ### Target-layer update: sector-coupled MES with planetary boundaries / LCA scenario bridge
