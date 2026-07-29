@@ -57,15 +57,38 @@ def _distribute(total_kwh: float, caps: np.ndarray) -> np.ndarray:
 
 
 def _align_1d_length(values: Any, n_steps: int, fill_value: float = 0.0) -> np.ndarray:
+    """Require an exact-horizon 1D series.
+
+    Silent truncate/pad previously corrupted inputs on length mismatch.
+    ``fill_value`` is retained only for call-site compatibility and is unused.
+    """
+
+    del fill_value
     arr = np.asarray(values, dtype=float).reshape(-1)
-    if arr.size == n_steps:
-        return arr
-    if arr.size > n_steps:
-        return arr[:n_steps]
-    if arr.size == 0:
-        return np.full(n_steps, float(fill_value), dtype=float)
-    pad = np.full(n_steps - arr.size, float(arr[-1]), dtype=float)
-    return np.concatenate([arr, pad])
+    expected = int(n_steps)
+    if arr.size != expected:
+        raise ValueError(f"[EC_FLEX] 1D series length mismatch: got {arr.size}, expected {expected}.")
+    return arr
+
+
+def _require_wind_series(values: Any, n_steps: int, *, label: str) -> np.ndarray:
+    """Require a wind series that matches the simulation horizon.
+
+    Some Geosphere-style archives include one exclusive endpoint sample
+    (``n_steps + 1``). That single trailing sample may be trimmed explicitly;
+    any other length mismatch fails fast instead of inventing values.
+    """
+
+    arr = np.asarray(values, dtype=float).reshape(-1)
+    expected = int(n_steps)
+    if arr.size == expected + 1:
+        arr = arr[:expected]
+    if arr.size != expected:
+        raise ValueError(
+            f"[EC_FLEX] Wind profile '{label}' length mismatch: "
+            f"got {arr.size}, expected {expected} (or {expected + 1} with one trailing endpoint sample)."
+        )
+    return arr
 
 
 def _require_block(params: Dict[str, Any], key: str) -> Dict[str, Any]:
@@ -117,10 +140,12 @@ def simulate_energy_system_ec_flex(params: Dict[str, Any], profiles: Dict[str, A
     timestamps = profiles.get("timestamps", pd.date_range("2023-01-01", periods=n_steps, freq="h"))
     wind_enabled = enable_small_wind or enable_large_wind
     if wind_enabled:
-        # Some upstream wind profiles include one extra endpoint sample; align to the
-        # simulation horizon so downstream registry validation sees consistent lengths.
-        wind_speed_ms = _align_1d_length(_require_profile(profiles, "wind_speed_ms"), n_steps)
-        wind_pressure_hpa = _align_1d_length(_require_profile(profiles, "wind_pressure_hpa"), n_steps)
+        wind_speed_ms = _require_wind_series(_require_profile(profiles, "wind_speed_ms"), n_steps, label="wind_speed_ms")
+        wind_pressure_hpa = _require_wind_series(
+            _require_profile(profiles, "wind_pressure_hpa"),
+            n_steps,
+            label="wind_pressure_hpa",
+        )
     else:
         wind_speed_ms = np.zeros(n_steps, dtype=float)
         wind_pressure_hpa = np.zeros(n_steps, dtype=float)

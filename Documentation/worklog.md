@@ -1,5 +1,19 @@
 # Worklog
 
+## 2026-07-29
+
+### Kritische IES-Korrektheitsfehler (Series-Align + Boiler-SSOT)
+
+- Bug-Finding-Automation auf Master/`cursor/critical-bug-investigation-7c02`.
+- Zwei kritische silent-fallback Pfade behoben:
+  1. `_align_1d_length` in IES/EC_FLEX paddete/trimmmte Preis-, Fuel- und andere Reihen still bei Horizont-Mismatch (konkret: 23h→24h last-value pad; Vienna-Wind 8761→8760 nur zufällig korrekt).
+  2. MILP-Pfad fuer aktivierte `district_gas_boiler` / `district_wood_chip_boiler` coercierte `eta_th=None`→0→1e-9 und `fuel_lhv=None`→1.0 (MILP) bzw. 10.0 (Fuel-Preis-Fallback) statt fail-fast.
+- Fix:
+  - exact-length Require in `_align_1d_length`; Wind `n+1` Endpoint explizit in Loader + IES/EC_FLEX
+  - Settings-Validierung fuer aktivierte Boiler (eta/LHV/partload)
+  - MILP-Param-Aufbau und Fuel-Preis-Fallback ohne erfundene LHV-Defaults
+- Regression: `tests/test_ies_series_length_and_boiler_ssot.py`
+
 ## 2026-06-12
 
 ### Target-layer update: sector-coupled MES with planetary boundaries / LCA scenario bridge

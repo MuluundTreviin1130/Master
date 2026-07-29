@@ -374,6 +374,77 @@ def _validate_district_gas_chp_operating_region(cfg: Settings) -> None:
         )
 
 
+def _validate_activated_district_boilers(cfg: Settings) -> None:
+    """Fail fast when activated boilers lack eta/LHV/partload SSOT fields.
+
+    The heuristic DH path already requires these attributes via the technology
+    dispatch modules. The MILP path previously coerced ``None`` to silent
+    defaults (eta→0→1e-9, LHV→1.0 or 10.0), which corrupts fuel cost and CO2.
+    """
+
+    activation = getattr(cfg, "technology_activation", None)
+    if activation is None:
+        return
+
+    if bool(getattr(activation, "district_gas_boiler", False)):
+        gas_cfg = getattr(cfg, "district_gas_boiler", None)
+        eta = _require_positive_float(
+            getattr(gas_cfg, "eta_th", None) if gas_cfg is not None else None,
+            label="district_gas_boiler.eta_th",
+        )
+        if eta > 1.0:
+            raise ValueError(
+                f"[settings] district_gas_boiler.eta_th must be <= 1, got {eta}."
+            )
+        _require_positive_float(
+            getattr(gas_cfg, "fuel_lhv_kwh_per_m3", None) if gas_cfg is not None else None,
+            label="district_gas_boiler.fuel_lhv_kwh_per_m3",
+        )
+        min_partload = getattr(gas_cfg, "min_partload", None) if gas_cfg is not None else None
+        max_partload = getattr(gas_cfg, "max_partload", None) if gas_cfg is not None else None
+        if min_partload is None or max_partload is None:
+            raise ValueError(
+                "[settings] district_gas_boiler.min_partload and max_partload are required when "
+                "technology_activation.district_gas_boiler is enabled."
+            )
+        min_pl = float(min_partload)
+        max_pl = float(max_partload)
+        if not 0.0 <= min_pl <= max_pl <= 1.0:
+            raise ValueError(
+                "[settings] district_gas_boiler partload settings must satisfy "
+                "0 <= min_partload <= max_partload <= 1."
+            )
+
+    if bool(getattr(activation, "district_wood_chip_boiler", False)):
+        wood_cfg = getattr(cfg, "district_wood_chip_boiler", None)
+        eta = _require_positive_float(
+            getattr(wood_cfg, "eta_th", None) if wood_cfg is not None else None,
+            label="district_wood_chip_boiler.eta_th",
+        )
+        if eta > 1.0:
+            raise ValueError(
+                f"[settings] district_wood_chip_boiler.eta_th must be <= 1, got {eta}."
+            )
+        _require_positive_float(
+            getattr(wood_cfg, "fuel_lhv_kwh_per_kg", None) if wood_cfg is not None else None,
+            label="district_wood_chip_boiler.fuel_lhv_kwh_per_kg",
+        )
+        min_partload = getattr(wood_cfg, "min_partload", None) if wood_cfg is not None else None
+        max_partload = getattr(wood_cfg, "max_partload", None) if wood_cfg is not None else None
+        if min_partload is None or max_partload is None:
+            raise ValueError(
+                "[settings] district_wood_chip_boiler.min_partload and max_partload are required when "
+                "technology_activation.district_wood_chip_boiler is enabled."
+            )
+        min_pl = float(min_partload)
+        max_pl = float(max_partload)
+        if not 0.0 <= min_pl <= max_pl <= 1.0:
+            raise ValueError(
+                "[settings] district_wood_chip_boiler partload settings must satisfy "
+                "0 <= min_partload <= max_partload <= 1."
+            )
+
+
 def _validate_dispatch_objective_components(cfg: Settings) -> None:
     """Fail fast on unsupported dispatch objective component names."""
 
@@ -875,6 +946,7 @@ def get_settings(overrides: Dict[str, Any] | None = None) -> Settings:
     apply_feature_bounds(cfg.engine, cfg.bounds)
     _validate_energy_potential_alignment(cfg)
     _validate_district_gas_chp_operating_region(cfg)
+    _validate_activated_district_boilers(cfg)
     _validate_dispatch_objective_components(cfg)
     cfg.constraints = make_constraints(cfg.engine, lifetime_years=25)
     _attach_central_capacity_constraints(cfg, shared_capacity_caps)
