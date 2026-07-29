@@ -121,12 +121,23 @@ def _fuel_price_series_eur_per_mwh(
     *,
     profile_key: str,
     fallback_eur_per_m3: float,
-    lhv_kwh_per_m3: float,
+    lhv_kwh_per_m3: float | None,
     n_steps: int,
 ) -> np.ndarray:
     if profile_key in profiles:
         return _align_1d_length(profiles[profile_key], n_steps, fill_value=0.0)
-    lhv = max(1e-9, float(lhv_kwh_per_m3))
+    # Fallback converts EUR/m3 to EUR/MWh_fuel. LHV must be an explicit SSOT value;
+    # inventing 1.0 or 10.0 here would silently scale every gas cost by orders of magnitude.
+    if lhv_kwh_per_m3 is None:
+        raise ValueError(
+            f"[integrated_energy_system] Missing '{profile_key}' and fuel LHV is None; "
+            "cannot convert fallback fuel_eur_per_m3 to EUR/MWh_fuel."
+        )
+    lhv = float(lhv_kwh_per_m3)
+    if lhv <= 0.0:
+        raise ValueError(
+            f"[integrated_energy_system] fuel LHV for '{profile_key}' fallback must be > 0, got {lhv}."
+        )
     if float(fallback_eur_per_m3) <= 0.0:
         raise ValueError(
             f"[integrated_energy_system] Missing '{profile_key}' and no positive fallback fuel_eur_per_m3 is available."
@@ -227,14 +238,42 @@ def _distribute(total_kwh: float, caps: np.ndarray) -> np.ndarray:
 
 
 def _align_1d_length(values: Any, n_steps: int, fill_value: float = 0.0) -> np.ndarray:
+    """Require an exact-horizon 1D series.
+
+    Silent truncate/pad previously corrupted price, fuel, CO2 and other series
+    whenever a provided vector did not match ``n_steps``. Callers that need an
+    explicit default must construct a length-matched array themselves.
+    ``fill_value`` is retained only for call-site compatibility and is unused.
+    """
+
+    del fill_value
     arr = np.asarray(values, dtype=float).reshape(-1)
-    if arr.size == n_steps:
-        return arr
-    if arr.size > n_steps:
-        return arr[:n_steps]
-    if arr.size == 0:
-        return np.full(n_steps, float(fill_value), dtype=float)
-    return np.concatenate([arr, np.full(n_steps - arr.size, float(arr[-1]), dtype=float)])
+    expected = int(n_steps)
+    if arr.size != expected:
+        raise ValueError(
+            f"[integrated_energy_system] 1D series length mismatch: got {arr.size}, expected {expected}."
+        )
+    return arr
+
+
+def _require_wind_series(values: Any, n_steps: int, *, label: str) -> np.ndarray:
+    """Require a wind series that matches the simulation horizon.
+
+    Some Geosphere-style archives include one exclusive endpoint sample
+    (``n_steps + 1``). That single trailing sample may be trimmed explicitly;
+    any other length mismatch fails fast instead of inventing values.
+    """
+
+    arr = np.asarray(values, dtype=float).reshape(-1)
+    expected = int(n_steps)
+    if arr.size == expected + 1:
+        arr = arr[:expected]
+    if arr.size != expected:
+        raise ValueError(
+            f"[integrated_energy_system] Wind profile '{label}' length mismatch: "
+            f"got {arr.size}, expected {expected} (or {expected + 1} with one trailing endpoint sample)."
+        )
+    return arr
 
 
 def _to_celsius_if_kelvin(values: Any) -> np.ndarray:
@@ -256,6 +295,63 @@ def _require_float_attr(obj: Any, attr: str) -> float:
     if value is None:
         raise ValueError(f"[integrated_energy_system] Config attribute '{attr}' must not be None.")
     return float(value)
+
+
+def _require_positive_float_attr(obj: Any, attr: str, *, upper: float | None = None) -> float:
+    """Require a strictly positive config float, optionally capped by ``upper``."""
+
+    value = _require_float_attr(obj, attr)
+    if value <= 0.0:
+        raise ValueError(
+            f"[integrated_energy_system] Config attribute '{attr}' must be > 0, got {value}."
+        )
+    if upper is not None and value > float(upper):
+        raise ValueError(
+            f"[integrated_energy_system] Config attribute '{attr}' must be <= {float(upper)}, got {value}."
+        )
+    return value
+
+
+def _active_boiler_milp_scalars(
+    cfg: Any,
+    *,
+    active: bool,
+    tech_name: str,
+    lhv_settings_attr: str,
+) -> Dict[str, float]:
+    """Resolve boiler eta/LHV/partload for MILP params.
+
+    Inactive technologies contribute explicit zeros. Active technologies must
+    expose complete SSOT values so the MILP path cannot invent eta=0→1e-9 or
+    conflicting LHV defaults (historically 1.0 vs 10.0).
+    """
+
+    if not active:
+        return {
+            "eta_th": 0.0,
+            "min_partload": 0.0,
+            "max_partload": 0.0,
+            "fuel_lhv": 0.0,
+        }
+    if cfg is None:
+        raise ValueError(
+            f"[integrated_energy_system] Active technology '{tech_name}' is missing its settings config."
+        )
+    eta = _require_positive_float_attr(cfg, "eta_th", upper=1.0)
+    min_partload = _require_float_attr(cfg, "min_partload")
+    max_partload = _require_float_attr(cfg, "max_partload")
+    if not 0.0 <= min_partload <= max_partload <= 1.0:
+        raise ValueError(
+            f"[integrated_energy_system] {tech_name} partload settings must satisfy "
+            "0 <= min_partload <= max_partload <= 1."
+        )
+    lhv = _require_positive_float_attr(cfg, lhv_settings_attr)
+    return {
+        "eta_th": eta,
+        "min_partload": min_partload,
+        "max_partload": max_partload,
+        "fuel_lhv": lhv,
+    }
 
 
 def _district_gas_chp_piecewise_payload(config: Any) -> Dict[str, Any]:
@@ -1052,8 +1148,12 @@ def simulate_integrated_energy_system(params: Dict[str, Any], profiles: Dict[str
     timestamps = profiles.get("timestamps", pd.date_range("2023-01-01", periods=n_steps, freq="h"))
 
     if enable_small_wind or enable_large_wind:
-        wind_speed_ms = _align_1d_length(_require_profile(profiles, "wind_speed_ms"), n_steps)
-        wind_pressure_hpa = _align_1d_length(_require_profile(profiles, "wind_pressure_hpa"), n_steps)
+        wind_speed_ms = _require_wind_series(_require_profile(profiles, "wind_speed_ms"), n_steps, label="wind_speed_ms")
+        wind_pressure_hpa = _require_wind_series(
+            _require_profile(profiles, "wind_pressure_hpa"),
+            n_steps,
+            label="wind_pressure_hpa",
+        )
     else:
         wind_speed_ms = np.zeros(n_steps, dtype=float)
         wind_pressure_hpa = np.zeros(n_steps, dtype=float)
@@ -1871,7 +1971,7 @@ def simulate_integrated_energy_system(params: Dict[str, Any], profiles: Dict[str
                 fallback_eur_per_m3=float(
                     ((tech_economics.get("district_gas_boiler") or {}).get("fuel_eur_per_m3", 0.0) or 0.0)
                 ),
-                lhv_kwh_per_m3=float(getattr(district_gas_boiler_cfg, "fuel_lhv_kwh_per_m3", 10.0) or 10.0),
+                lhv_kwh_per_m3=getattr(district_gas_boiler_cfg, "fuel_lhv_kwh_per_m3", None),
                 n_steps=n_steps,
             )
         elif "district_gas_price_eur_per_mwh_fuel" in profiles:
@@ -1881,7 +1981,7 @@ def simulate_integrated_energy_system(params: Dict[str, Any], profiles: Dict[str
                 fallback_eur_per_m3=float(
                     ((tech_economics.get("district_gas_boiler") or {}).get("fuel_eur_per_m3", 0.0) or 0.0)
                 ),
-                lhv_kwh_per_m3=float(getattr(district_gas_boiler_cfg, "fuel_lhv_kwh_per_m3", 10.0) or 10.0),
+                lhv_kwh_per_m3=getattr(district_gas_boiler_cfg, "fuel_lhv_kwh_per_m3", None),
                 n_steps=n_steps,
             )
         else:
@@ -1900,7 +2000,7 @@ def simulate_integrated_energy_system(params: Dict[str, Any], profiles: Dict[str
                     fallback_eur_per_m3=float(
                         ((tech_economics.get("district_gas_boiler") or {}).get("fuel_eur_per_m3", 0.0) or 0.0)
                     ),
-                    lhv_kwh_per_m3=float(getattr(district_gas_boiler_cfg, "fuel_lhv_kwh_per_m3", 10.0) or 10.0),
+                    lhv_kwh_per_m3=getattr(district_gas_boiler_cfg, "fuel_lhv_kwh_per_m3", None),
                     n_steps=n_steps,
                 )
         gas_balance_price_eur_per_mwh = None
@@ -2129,6 +2229,22 @@ def simulate_integrated_energy_system(params: Dict[str, Any], profiles: Dict[str
                 thermflex_initial_state = {
                     "thermflex_t_in_initial_c": np.asarray(thermflex_t_in_prev_c, dtype=float),
                 }
+            gas_boiler_active = dh_context is not None and "district_gas_boiler" in dh_context["source_names"]
+            wood_boiler_active = (
+                dh_context is not None and "district_wood_chip_boiler" in dh_context["source_names"]
+            )
+            gas_boiler_milp = _active_boiler_milp_scalars(
+                district_gas_boiler_cfg,
+                active=gas_boiler_active,
+                tech_name="district_gas_boiler",
+                lhv_settings_attr="fuel_lhv_kwh_per_m3",
+            )
+            wood_boiler_milp = _active_boiler_milp_scalars(
+                district_wood_chip_boiler_cfg,
+                active=wood_boiler_active,
+                tech_name="district_wood_chip_boiler",
+                lhv_settings_attr="fuel_lhv_kwh_per_kg",
+            )
             dispatch_input = DispatchInput(
                 series={
                     "electric_non_dispatch_demand": electric_non_dispatch_demand[start:stop],
@@ -2295,12 +2411,10 @@ def simulate_integrated_energy_system(params: Dict[str, Any], profiles: Dict[str
                     "district_gas_chp_co2_t_per_mwh_fuel": float(
                         ((tech_economics.get("district_gas_chp") or {}).get("co2_t_per_mwh_fuel", 0.0) or 0.0)
                     ),
-                    "district_gas_boiler_eta_th": float(getattr(district_gas_boiler_cfg, "eta_th", 0.0) or 0.0),
-                    "district_gas_boiler_min_partload": float(getattr(district_gas_boiler_cfg, "min_partload", 0.0) or 0.0),
-                    "district_gas_boiler_max_partload": float(getattr(district_gas_boiler_cfg, "max_partload", 0.0) or 0.0),
-                    "district_gas_boiler_fuel_lhv_kwh_per_m3": float(
-                        getattr(district_gas_boiler_cfg, "fuel_lhv_kwh_per_m3", 1.0) or 1.0
-                    ),
+                    "district_gas_boiler_eta_th": float(gas_boiler_milp["eta_th"]),
+                    "district_gas_boiler_min_partload": float(gas_boiler_milp["min_partload"]),
+                    "district_gas_boiler_max_partload": float(gas_boiler_milp["max_partload"]),
+                    "district_gas_boiler_fuel_lhv_kwh_per_m3": float(gas_boiler_milp["fuel_lhv"]),
                     "district_gas_boiler_fuel_cost_eur_per_m3": _require_tech_economic_value(
                         tech_economics,
                         "district_gas_boiler",
@@ -2314,12 +2428,10 @@ def simulate_integrated_energy_system(params: Dict[str, Any], profiles: Dict[str
                     "district_gas_boiler_variable_cost_eur_per_kwh_th": float(
                         ((tech_economics.get("district_gas_boiler") or {}).get("variable_opex_eur_per_kwh_th", 0.0) or 0.0)
                     ),
-                    "district_wood_chip_boiler_eta_th": float(getattr(district_wood_chip_boiler_cfg, "eta_th", 0.0) or 0.0),
-                    "district_wood_chip_boiler_min_partload": float(getattr(district_wood_chip_boiler_cfg, "min_partload", 0.0) or 0.0),
-                    "district_wood_chip_boiler_max_partload": float(getattr(district_wood_chip_boiler_cfg, "max_partload", 0.0) or 0.0),
-                    "district_wood_chip_boiler_fuel_lhv_kwh_per_kg": float(
-                        getattr(district_wood_chip_boiler_cfg, "fuel_lhv_kwh_per_kg", 1.0) or 1.0
-                    ),
+                    "district_wood_chip_boiler_eta_th": float(wood_boiler_milp["eta_th"]),
+                    "district_wood_chip_boiler_min_partload": float(wood_boiler_milp["min_partload"]),
+                    "district_wood_chip_boiler_max_partload": float(wood_boiler_milp["max_partload"]),
+                    "district_wood_chip_boiler_fuel_lhv_kwh_per_kg": float(wood_boiler_milp["fuel_lhv"]),
                     "district_wood_chip_boiler_fuel_cost_eur_per_kg": float(
                         ((tech_economics.get("district_wood_chip_boiler") or {}).get("fuel_eur_per_kg", 0.0) or 0.0)
                     ),

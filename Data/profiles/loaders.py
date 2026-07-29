@@ -76,6 +76,39 @@ def load_v2h_profiles(file_path: str, n_steps: int) -> Tuple[np.ndarray, np.ndar
     return min_soc, availability, driving
 
 
+def _require_profile_length(values: Any, n_steps: int, *, label: str) -> np.ndarray:
+    """Fail fast when a loaded profile does not match the load horizon."""
+
+    arr = np.asarray(values, dtype=float).reshape(-1)
+    expected = int(n_steps)
+    if arr.size != expected:
+        raise ValueError(
+            f"[profiles] Profile '{label}' length mismatch: got {arr.size}, expected {expected}."
+        )
+    return arr
+
+
+def _coerce_wind_profile_to_horizon(values: Any, n_steps: int, *, label: str) -> np.ndarray:
+    """Align wind archives to the load horizon with an explicit endpoint rule.
+
+    Vienna Geosphere wind CSVs include one exclusive endpoint sample
+    (``n_steps + 1``). That single trailing sample is trimmed here at the data
+    boundary so downstream systems never silently pad or truncate arbitrary
+    mismatches.
+    """
+
+    arr = np.asarray(values, dtype=float).reshape(-1)
+    expected = int(n_steps)
+    if arr.size == expected + 1:
+        arr = arr[:expected]
+    if arr.size != expected:
+        raise ValueError(
+            f"[profiles] Wind profile '{label}' length mismatch: got {arr.size}, "
+            f"expected {expected} (or {expected + 1} with one trailing endpoint sample)."
+        )
+    return arr
+
+
 def load_profiles(
     location: str,
     member_ids: Optional[List[str]] = None,
@@ -174,10 +207,18 @@ def load_profiles(
     load_array = load_member_2d.sum(axis=1)
 
     df_pv = pd.read_csv(location_PVprofiles[location], sep=";", decimal=",")
-    pv_array = pd.to_numeric(df_pv["PPV"], errors="coerce").to_numpy()
+    pv_array = _require_profile_length(
+        pd.to_numeric(df_pv["PPV"], errors="coerce").to_numpy(),
+        n_steps,
+        label="pv_generation",
+    )
 
     df_temp = pd.read_csv(location_temp_profiles[location], sep=";", decimal=",")
-    temp_series = pd.Series(pd.to_numeric(df_temp["T2m"], errors="coerce").values, index=df_temp["time"])
+    temp_array = _require_profile_length(
+        pd.to_numeric(df_temp["T2m"], errors="coerce").to_numpy(),
+        n_steps,
+        label="T_outdoor",
+    )
 
     if require_wind:
         df_wind = pd.read_csv(location_wind_profiles[location])
@@ -192,21 +233,34 @@ def load_profiles(
                 f"[profiles] Wind profile for location '{location}' contains NaNs: "
                 f"ff={n_nan_speed}, p={n_nan_pressure}. Clean the source data before using wind-enabled runs."
             )
+        wind_speed_array = _coerce_wind_profile_to_horizon(wind_speed_array, n_steps, label="wind_speed_ms")
+        wind_pressure_array = _coerce_wind_profile_to_horizon(
+            wind_pressure_array,
+            n_steps,
+            label="wind_pressure_hpa",
+        )
 
     df_irr = pd.read_csv(location_solarirradiation_profiles[location], sep=";", decimal=",")
-    irr_array = pd.to_numeric(df_irr["solar_irradiance_total"], errors="coerce").to_numpy()
+    irr_array = _require_profile_length(
+        pd.to_numeric(df_irr["solar_irradiance_total"], errors="coerce").to_numpy(),
+        n_steps,
+        label="irradiance",
+    )
 
     df_solargains = pd.read_csv(location_solargains_profiles[location], sep=";", decimal=",")
-    solargains_array = pd.to_numeric(df_solargains["solar_gains_(W/m2)"], errors="coerce").to_numpy()
+    solargains_array = _require_profile_length(
+        pd.to_numeric(df_solargains["solar_gains_(W/m2)"], errors="coerce").to_numpy(),
+        n_steps,
+        label="solargains",
+    )
 
-    n_steps = len(load_array)
     min_soc, availability_profile, driving_profile = load_v2h_profiles(location_V2H_profiles, n_steps)
 
     result = {
         "load": np.asarray(load_array),
         "load_member_2d": load_member_2d,
         "pv_generation": np.asarray(pv_array),
-        "T_outdoor": np.asarray(temp_series),
+        "T_outdoor": np.asarray(temp_array),
         "irradiance": np.asarray(irr_array),
         "solargains": np.asarray(solargains_array),
         "min_SOC": np.asarray(min_soc),
