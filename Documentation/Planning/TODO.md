@@ -2,6 +2,7 @@
 
 ## Active
 
+- [ ] Merge critical CHP MILP LHV fail-fast (`cursor/critical-bug-investigation-0cac`) after review; boiler twin remains on PR #40.
 - [ ] ThermFlex-Paper: Two-stage-MILP als methodischen Unsicherheits-/Preis-Pfad festziehen:
   - klaeren, ob `milp_two_stage` mit historischen Preis-/Wetter-Szenarien nur als Robustheitscheck oder als eigener Sensitivitaetsblock berichtet wird
   - Settings-Vertrag fuer `stochastic_enabled`, historische Preisquellen, Szenarioanzahl und Reduktion dokumentieren

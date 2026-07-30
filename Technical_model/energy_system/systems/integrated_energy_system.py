@@ -258,6 +258,64 @@ def _require_float_attr(obj: Any, attr: str) -> float:
     return float(value)
 
 
+def _require_positive_float_attr(obj: Any, attr: str, *, upper: float | None = None) -> float:
+    """Require a strictly positive config float, optionally capped by ``upper``."""
+
+    value = _require_float_attr(obj, attr)
+    if value <= 0.0:
+        raise ValueError(
+            f"[integrated_energy_system] Config attribute '{attr}' must be > 0, got {value}."
+        )
+    if upper is not None and value > float(upper):
+        raise ValueError(
+            f"[integrated_energy_system] Config attribute '{attr}' must be <= {float(upper)}, got {value}."
+        )
+    return value
+
+
+def _active_chp_milp_scalars(
+    cfg: Any,
+    *,
+    active: bool,
+    tech_name: str,
+    lhv_settings_attr: str,
+) -> Dict[str, float]:
+    """Resolve CHP eta/LHV/partload for MILP params.
+
+    Inactive technologies contribute explicit zeros. Active technologies must
+    expose complete SSOT values so the MILP path cannot invent ``fuel_lhv=1.0``
+    (historically used when Settings left LHV as ``None``), which silently
+    scales fuel quantity and EUR fuel cost by ``1/LHV``.
+    """
+
+    if not active:
+        return {
+            "eta_el": 0.0,
+            "eta_th": 0.0,
+            "min_partload": 0.0,
+            "fuel_lhv": 0.0,
+        }
+    if cfg is None:
+        raise ValueError(
+            f"[integrated_energy_system] Active technology '{tech_name}' is missing its settings config."
+        )
+    eta_el = _require_positive_float_attr(cfg, "eta_el", upper=1.0)
+    eta_th = _require_positive_float_attr(cfg, "eta_th", upper=1.0)
+    min_partload = _require_float_attr(cfg, "min_partload")
+    if not 0.0 <= min_partload <= 1.0:
+        raise ValueError(
+            f"[integrated_energy_system] {tech_name}.min_partload must satisfy "
+            "0 <= min_partload <= 1."
+        )
+    lhv = _require_positive_float_attr(cfg, lhv_settings_attr)
+    return {
+        "eta_el": eta_el,
+        "eta_th": eta_th,
+        "min_partload": min_partload,
+        "fuel_lhv": lhv,
+    }
+
+
 def _district_gas_chp_piecewise_payload(config: Any) -> Dict[str, Any]:
     """Expose the explicit CHP operating-region SSOT for dispatch.
 
@@ -2129,6 +2187,29 @@ def simulate_integrated_energy_system(params: Dict[str, Any], profiles: Dict[str
                 thermflex_initial_state = {
                     "thermflex_t_in_initial_c": np.asarray(thermflex_t_in_prev_c, dtype=float),
                 }
+            # Resolve CHP MILP scalars with fail-fast SSOT checks. Inactive techs
+            # contribute explicit zeros; active techs must not invent LHV=1.0.
+            biomass_chp_active = dh_context is not None and "district_biomass_chp" in dh_context["source_names"]
+            biogas_chp_active = dh_context is not None and "district_biogas_chp" in dh_context["source_names"]
+            gas_chp_active = dh_context is not None and "district_gas_chp" in dh_context["source_names"]
+            biomass_chp_milp = _active_chp_milp_scalars(
+                district_biomass_chp_cfg,
+                active=biomass_chp_active,
+                tech_name="district_biomass_chp",
+                lhv_settings_attr="fuel_lhv_kwh_per_kg",
+            )
+            biogas_chp_milp = _active_chp_milp_scalars(
+                district_biogas_chp_cfg,
+                active=biogas_chp_active,
+                tech_name="district_biogas_chp",
+                lhv_settings_attr="fuel_lhv_kwh_per_nm3",
+            )
+            gas_chp_milp = _active_chp_milp_scalars(
+                district_gas_chp_cfg,
+                active=gas_chp_active,
+                tech_name="district_gas_chp",
+                lhv_settings_attr="fuel_lhv_kwh_per_m3",
+            )
             dispatch_input = DispatchInput(
                 series={
                     "electric_non_dispatch_demand": electric_non_dispatch_demand[start:stop],
@@ -2245,17 +2326,17 @@ def simulate_integrated_energy_system(params: Dict[str, Any], profiles: Dict[str
                     "dh_storage_eta_charge": float(getattr(storage_cfg, "charge_efficiency", 1.0) or 1.0),
                     "dh_storage_eta_discharge": float(getattr(storage_cfg, "discharge_efficiency", 1.0) or 1.0),
                     "dh_storage_loss_kwh_per_h": float((getattr(storage_cfg, "standing_loss_kwh_per_day", 0.0) or 0.0) / 24.0),
-                    "district_biomass_chp_eta_el": float(getattr(district_biomass_chp_cfg, "eta_el", 0.0) or 0.0),
-                    "district_biomass_chp_eta_th": float(getattr(district_biomass_chp_cfg, "eta_th", 0.0) or 0.0),
-                    "district_biomass_chp_min_partload": float(getattr(district_biomass_chp_cfg, "min_partload", 0.0) or 0.0),
-                    "district_biomass_chp_fuel_lhv_kwh_per_kg": float(getattr(district_biomass_chp_cfg, "fuel_lhv_kwh_per_kg", 1.0) or 1.0),
+                    "district_biomass_chp_eta_el": float(biomass_chp_milp["eta_el"]),
+                    "district_biomass_chp_eta_th": float(biomass_chp_milp["eta_th"]),
+                    "district_biomass_chp_min_partload": float(biomass_chp_milp["min_partload"]),
+                    "district_biomass_chp_fuel_lhv_kwh_per_kg": float(biomass_chp_milp["fuel_lhv"]),
                     "district_biomass_chp_fuel_cost_eur_per_kg": float(
                         ((tech_economics.get("district_biomass_chp") or {}).get("fuel_eur_per_kg", 0.0) or 0.0)
                     ),
-                    "district_biogas_chp_eta_el": float(getattr(district_biogas_chp_cfg, "eta_el", 0.0) or 0.0),
-                    "district_biogas_chp_eta_th": float(getattr(district_biogas_chp_cfg, "eta_th", 0.0) or 0.0),
-                    "district_biogas_chp_min_partload": float(getattr(district_biogas_chp_cfg, "min_partload", 0.0) or 0.0),
-                    "district_biogas_chp_fuel_lhv_kwh_per_nm3": float(getattr(district_biogas_chp_cfg, "fuel_lhv_kwh_per_nm3", 1.0) or 1.0),
+                    "district_biogas_chp_eta_el": float(biogas_chp_milp["eta_el"]),
+                    "district_biogas_chp_eta_th": float(biogas_chp_milp["eta_th"]),
+                    "district_biogas_chp_min_partload": float(biogas_chp_milp["min_partload"]),
+                    "district_biogas_chp_fuel_lhv_kwh_per_nm3": float(biogas_chp_milp["fuel_lhv"]),
                     "district_biogas_chp_fuel_cost_eur_per_nm3": float(
                         ((tech_economics.get("district_biogas_chp") or {}).get("fuel_eur_per_nm3", 0.0) or 0.0)
                     ),
@@ -2267,8 +2348,8 @@ def simulate_integrated_energy_system(params: Dict[str, Any], profiles: Dict[str
                     "district_external_heat_min_partload": float(
                         getattr(district_external_heat_cfg, "min_partload", 0.0) or 0.0
                     ),
-                    "district_gas_chp_eta_el": float(getattr(district_gas_chp_cfg, "eta_el", 0.0) or 0.0),
-                    "district_gas_chp_eta_th": float(getattr(district_gas_chp_cfg, "eta_th", 0.0) or 0.0),
+                    "district_gas_chp_eta_el": float(gas_chp_milp["eta_el"]),
+                    "district_gas_chp_eta_th": float(gas_chp_milp["eta_th"]),
                     "district_gas_chp_operating_mode_model": str(
                         getattr(district_gas_chp_cfg, "operating_mode_model", "fixed_ratio") or "fixed_ratio"
                     ),
@@ -2287,8 +2368,8 @@ def simulate_integrated_energy_system(params: Dict[str, Any], profiles: Dict[str
                     "district_gas_chp_operating_point_eta_th": list(
                         _district_gas_chp_piecewise_payload(district_gas_chp_cfg)["operating_point_eta_th"]
                     ),
-                    "district_gas_chp_min_partload": float(getattr(district_gas_chp_cfg, "min_partload", 0.0) or 0.0),
-                    "district_gas_chp_fuel_lhv_kwh_per_m3": float(getattr(district_gas_chp_cfg, "fuel_lhv_kwh_per_m3", 1.0) or 1.0),
+                    "district_gas_chp_min_partload": float(gas_chp_milp["min_partload"]),
+                    "district_gas_chp_fuel_lhv_kwh_per_m3": float(gas_chp_milp["fuel_lhv"]),
                     "district_gas_chp_fuel_cost_eur_per_m3": float(
                         ((tech_economics.get("district_gas_chp") or {}).get("fuel_eur_per_m3", 0.0) or 0.0)
                     ),
