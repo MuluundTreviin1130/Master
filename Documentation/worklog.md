@@ -1,5 +1,28 @@
 # Worklog
 
+## 2026-07-30
+
+### Critical bugfix: MILP invented CHP fuel LHV = 1.0
+
+- Found a high-severity silent correctness bug sibling to the boiler SSOT fix
+  (open PR #40): when `district_*_chp` was active in `milp_day_ahead` /
+  `milp_two_stage`, IES packed `fuel_lhv_*=getattr(..., 1.0) or 1.0`.
+- Settings leave CHP LHV optional (`None`). Heuristic DH source modules already
+  fail-fast on missing LHV; the MILP path did not.
+- Concrete trigger: activate biomass/biogas/gas CHP with eta/capacity set and
+  leave `fuel_lhv_*` as default `None`, then run `dispatch.mode=milp_day_ahead`.
+- Impact: fuel mass/volume and EUR fuel terms scale as `1/LHV`. Invented LHV=1.0
+  vs real ~3.5–10 kWh per physical unit inflates fuel quantity/cost several-fold
+  and corrupts NPC, CO2 (via fuel m3), and Gold teacher flows.
+- Fix:
+  - Settings: `_validate_activated_district_chps` requires eta/LHV/min_partload
+    when the corresponding activation flag is enabled (including fixed_ratio
+    gas CHP, which previously only required LHV in piecewise mode).
+  - IES: `_active_chp_milp_scalars` fails fast for active CHPs and contributes
+    explicit zeros when inactive; no more invented LHV=1.0.
+  - Regression: `tests/test_ies_chp_milp_lhv_ssot.py`.
+- Left boiler silent LHV defaults to open PR #40 (do not duplicate).
+
 ## 2026-06-12
 
 ### Target-layer update: sector-coupled MES with planetary boundaries / LCA scenario bridge

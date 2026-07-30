@@ -374,6 +374,115 @@ def _validate_district_gas_chp_operating_region(cfg: Settings) -> None:
         )
 
 
+def _validate_activated_district_chps(cfg: Settings) -> None:
+    """Fail fast when activated CHPs lack eta/LHV/partload SSOT fields.
+
+    Heuristic DH source modules already require these attributes. The MILP path
+    previously coerced ``fuel_lhv_*=None`` to ``1.0``, which silently scaled fuel
+    mass/volume and EUR fuel terms by orders of magnitude (fuel ~ 1/LHV).
+    """
+
+    activation = getattr(cfg, "technology_activation", None)
+    if activation is None:
+        return
+
+    if bool(getattr(activation, "district_biomass_chp", False)):
+        biomass_cfg = getattr(cfg, "district_biomass_chp", None)
+        eta_el = _require_positive_float(
+            getattr(biomass_cfg, "eta_el", None) if biomass_cfg is not None else None,
+            label="district_biomass_chp.eta_el",
+        )
+        eta_th = _require_positive_float(
+            getattr(biomass_cfg, "eta_th", None) if biomass_cfg is not None else None,
+            label="district_biomass_chp.eta_th",
+        )
+        if eta_el > 1.0 or eta_th > 1.0:
+            raise ValueError(
+                "[settings] district_biomass_chp eta_el/eta_th must be <= 1, "
+                f"got eta_el={eta_el}, eta_th={eta_th}."
+            )
+        _require_positive_float(
+            getattr(biomass_cfg, "fuel_lhv_kwh_per_kg", None) if biomass_cfg is not None else None,
+            label="district_biomass_chp.fuel_lhv_kwh_per_kg",
+        )
+        min_partload = getattr(biomass_cfg, "min_partload", None) if biomass_cfg is not None else None
+        if min_partload is None:
+            raise ValueError(
+                "[settings] district_biomass_chp.min_partload is required when "
+                "technology_activation.district_biomass_chp is enabled."
+            )
+        min_pl = float(min_partload)
+        if not 0.0 <= min_pl <= 1.0:
+            raise ValueError(
+                "[settings] district_biomass_chp.min_partload must satisfy 0 <= min_partload <= 1."
+            )
+
+    if bool(getattr(activation, "district_biogas_chp", False)):
+        biogas_cfg = getattr(cfg, "district_biogas_chp", None)
+        eta_el = _require_positive_float(
+            getattr(biogas_cfg, "eta_el", None) if biogas_cfg is not None else None,
+            label="district_biogas_chp.eta_el",
+        )
+        eta_th = _require_positive_float(
+            getattr(biogas_cfg, "eta_th", None) if biogas_cfg is not None else None,
+            label="district_biogas_chp.eta_th",
+        )
+        if eta_el > 1.0 or eta_th > 1.0:
+            raise ValueError(
+                "[settings] district_biogas_chp eta_el/eta_th must be <= 1, "
+                f"got eta_el={eta_el}, eta_th={eta_th}."
+            )
+        _require_positive_float(
+            getattr(biogas_cfg, "fuel_lhv_kwh_per_nm3", None) if biogas_cfg is not None else None,
+            label="district_biogas_chp.fuel_lhv_kwh_per_nm3",
+        )
+        min_partload = getattr(biogas_cfg, "min_partload", None) if biogas_cfg is not None else None
+        if min_partload is None:
+            raise ValueError(
+                "[settings] district_biogas_chp.min_partload is required when "
+                "technology_activation.district_biogas_chp is enabled."
+            )
+        min_pl = float(min_partload)
+        if not 0.0 <= min_pl <= 1.0:
+            raise ValueError(
+                "[settings] district_biogas_chp.min_partload must satisfy 0 <= min_partload <= 1."
+            )
+
+    if bool(getattr(activation, "district_gas_chp", False)):
+        gas_cfg = getattr(cfg, "district_gas_chp", None)
+        eta_el = _require_positive_float(
+            getattr(gas_cfg, "eta_el", None) if gas_cfg is not None else None,
+            label="district_gas_chp.eta_el",
+        )
+        eta_th = _require_positive_float(
+            getattr(gas_cfg, "eta_th", None) if gas_cfg is not None else None,
+            label="district_gas_chp.eta_th",
+        )
+        if eta_el > 1.0 or eta_th > 1.0:
+            raise ValueError(
+                "[settings] district_gas_chp eta_el/eta_th must be <= 1, "
+                f"got eta_el={eta_el}, eta_th={eta_th}."
+            )
+        # Activation-gated LHV is required for every operating mode. Piecewise mode
+        # already checks LHV in `_validate_district_gas_chp_operating_region`; fixed_ratio
+        # previously skipped it and let the MILP path invent fuel_lhv=1.0.
+        _require_positive_float(
+            getattr(gas_cfg, "fuel_lhv_kwh_per_m3", None) if gas_cfg is not None else None,
+            label="district_gas_chp.fuel_lhv_kwh_per_m3",
+        )
+        min_partload = getattr(gas_cfg, "min_partload", None) if gas_cfg is not None else None
+        if min_partload is None:
+            raise ValueError(
+                "[settings] district_gas_chp.min_partload is required when "
+                "technology_activation.district_gas_chp is enabled."
+            )
+        min_pl = float(min_partload)
+        if not 0.0 <= min_pl <= 1.0:
+            raise ValueError(
+                "[settings] district_gas_chp.min_partload must satisfy 0 <= min_partload <= 1."
+            )
+
+
 def _validate_dispatch_objective_components(cfg: Settings) -> None:
     """Fail fast on unsupported dispatch objective component names."""
 
@@ -875,6 +984,7 @@ def get_settings(overrides: Dict[str, Any] | None = None) -> Settings:
     apply_feature_bounds(cfg.engine, cfg.bounds)
     _validate_energy_potential_alignment(cfg)
     _validate_district_gas_chp_operating_region(cfg)
+    _validate_activated_district_chps(cfg)
     _validate_dispatch_objective_components(cfg)
     cfg.constraints = make_constraints(cfg.engine, lifetime_years=25)
     _attach_central_capacity_constraints(cfg, shared_capacity_caps)
