@@ -258,6 +258,49 @@ def _require_float_attr(obj: Any, attr: str) -> float:
     return float(value)
 
 
+def _active_district_thermal_storage_milp_scalars(
+    cfg: Any,
+    *,
+    active: bool,
+) -> Dict[str, float]:
+    """Resolve DH storage eta/loss for MILP params from explicit Settings SSOT.
+
+    When the store is inactive the MILP capacity is forced to zero, so these
+    scalars are inert placeholders. When active they must be complete: the
+    previous ``getattr(..., 1.0) or 1.0`` packing invented perfect round-trip
+    efficiency and zero standing loss whenever Settings left the Optional
+    fields at ``None``.
+    """
+
+    if not active:
+        return {
+            "eta_charge": 0.0,
+            "eta_discharge": 0.0,
+            "loss_kwh_per_h": 0.0,
+        }
+
+    eta_charge = _require_float_attr(cfg, "charge_efficiency")
+    eta_discharge = _require_float_attr(cfg, "discharge_efficiency")
+    standing_loss_kwh_per_day = _require_float_attr(cfg, "standing_loss_kwh_per_day")
+    if not 0.0 < eta_charge <= 1.0:
+        raise ValueError(
+            "[integrated_energy_system] district_thermal_storage.charge_efficiency must be within (0, 1]."
+        )
+    if not 0.0 < eta_discharge <= 1.0:
+        raise ValueError(
+            "[integrated_energy_system] district_thermal_storage.discharge_efficiency must be within (0, 1]."
+        )
+    if standing_loss_kwh_per_day < 0.0:
+        raise ValueError(
+            "[integrated_energy_system] district_thermal_storage.standing_loss_kwh_per_day must be >= 0."
+        )
+    return {
+        "eta_charge": float(eta_charge),
+        "eta_discharge": float(eta_discharge),
+        "loss_kwh_per_h": float(standing_loss_kwh_per_day) / 24.0,
+    }
+
+
 def _district_gas_chp_piecewise_payload(config: Any) -> Dict[str, Any]:
     """Expose the explicit CHP operating-region SSOT for dispatch.
 
@@ -2129,6 +2172,13 @@ def simulate_integrated_energy_system(params: Dict[str, Any], profiles: Dict[str
                 thermflex_initial_state = {
                     "thermflex_t_in_initial_c": np.asarray(thermflex_t_in_prev_c, dtype=float),
                 }
+            # MILP must not see a positive store capacity when the technology is
+            # deactivated, and must not invent eta=1 / loss=0 from Optional None.
+            milp_storage_capacity_kwh = float(installed_storage_kwh if storage_enabled else 0.0)
+            storage_milp = _active_district_thermal_storage_milp_scalars(
+                storage_cfg,
+                active=(storage_enabled and milp_storage_capacity_kwh > 0.0),
+            )
             dispatch_input = DispatchInput(
                 series={
                     "electric_non_dispatch_demand": electric_non_dispatch_demand[start:stop],
@@ -2190,7 +2240,7 @@ def simulate_integrated_energy_system(params: Dict[str, Any], profiles: Dict[str
                     "ely_power_kwh_per_step": float(h2.p_ely_max_kw * dt_h if enable_h2 else 0.0),
                     "fc_power_kwh_per_step": float(h2.p_fc_max_kw * dt_h if enable_h2 else 0.0),
                     "district_heat_pump_kw_th": float(params.get("district_heat_pump_kw_th", 0.0)),
-                    "district_thermal_storage_kwh_th": float(params.get("district_thermal_storage_kwh_th", 0.0)),
+                    "district_thermal_storage_kwh_th": milp_storage_capacity_kwh,
                 },
                 params={
                     "dispatch_mode": dispatch_mode,
@@ -2242,9 +2292,9 @@ def simulate_integrated_energy_system(params: Dict[str, Any], profiles: Dict[str
                     "bess_eta_discharge": float(bess_eta),
                     "eta_ely": float(h2.eta_ely),
                     "eta_fc": float(h2.eta_fc),
-                    "dh_storage_eta_charge": float(getattr(storage_cfg, "charge_efficiency", 1.0) or 1.0),
-                    "dh_storage_eta_discharge": float(getattr(storage_cfg, "discharge_efficiency", 1.0) or 1.0),
-                    "dh_storage_loss_kwh_per_h": float((getattr(storage_cfg, "standing_loss_kwh_per_day", 0.0) or 0.0) / 24.0),
+                    "dh_storage_eta_charge": float(storage_milp["eta_charge"]),
+                    "dh_storage_eta_discharge": float(storage_milp["eta_discharge"]),
+                    "dh_storage_loss_kwh_per_h": float(storage_milp["loss_kwh_per_h"]),
                     "district_biomass_chp_eta_el": float(getattr(district_biomass_chp_cfg, "eta_el", 0.0) or 0.0),
                     "district_biomass_chp_eta_th": float(getattr(district_biomass_chp_cfg, "eta_th", 0.0) or 0.0),
                     "district_biomass_chp_min_partload": float(getattr(district_biomass_chp_cfg, "min_partload", 0.0) or 0.0),

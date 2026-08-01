@@ -1,5 +1,22 @@
 # Worklog
 
+## 2026-08-01
+
+### Critical fix: DH thermal storage MILP silent perfect-efficiency defaults
+
+- Found that `integrated_energy_system` packed
+  `dh_storage_eta_charge/discharge = getattr(..., 1.0) or 1.0` and
+  `standing_loss = ... or 0.0` into MILP params while Settings defaults leave
+  those Optional fields at `None`. Heuristic stepping already fail-fasts.
+- Concrete trigger: activate `district_thermal_storage`, set capacity
+  (paper basis uses ~1.11 GWh), leave eta/loss unset, run `milp_day_ahead` →
+  lossless store arbitrage and corrupted fuel/CO2/Learning storage labels.
+- Also restored the missing deactivate contract: MILP assets now export
+  capacity `0` when `technology_activation.district_thermal_storage` is false.
+- Fix: Settings `_validate_activated_district_thermal_storage` plus IES
+  `_active_district_thermal_storage_milp_scalars`; regression tests in
+  `tests/test_ies_dh_storage_milp_ssot.py` (7 OK).
+
 ## 2026-06-12
 
 ### Target-layer update: sector-coupled MES with planetary boundaries / LCA scenario bridge
