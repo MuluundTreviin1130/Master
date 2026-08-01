@@ -284,6 +284,52 @@ def _require_positive_float(value: Any, *, label: str) -> float:
     return value_f
 
 
+def _require_nonnegative_float(value: Any, *, label: str) -> float:
+    if value is None:
+        raise ValueError(f"[settings] {label} must not be None.")
+    value_f = float(value)
+    if value_f < 0.0:
+        raise ValueError(f"[settings] {label} must be >= 0, got {value_f}.")
+    return value_f
+
+
+def _validate_activated_district_thermal_storage(cfg: Settings) -> None:
+    """Fail fast when activated DH storage lacks eta/loss SSOT fields.
+
+    The MILP path previously coerced ``charge_efficiency=None`` /
+    ``discharge_efficiency=None`` to ``1.0`` and ``standing_loss=None`` to
+    ``0.0``, inventing lossless perfect storage. Heuristic stepping already
+    requires these fields; Settings must reject the incomplete activation
+    before any dispatch path can invent physics.
+    """
+
+    activation = getattr(cfg, "technology_activation", None)
+    if activation is None or not bool(getattr(activation, "district_thermal_storage", False)):
+        return
+
+    storage_cfg = getattr(cfg, "district_thermal_storage", None)
+    eta_charge = _require_positive_float(
+        getattr(storage_cfg, "charge_efficiency", None) if storage_cfg is not None else None,
+        label="district_thermal_storage.charge_efficiency",
+    )
+    if eta_charge > 1.0:
+        raise ValueError(
+            f"[settings] district_thermal_storage.charge_efficiency must be <= 1, got {eta_charge}."
+        )
+    eta_discharge = _require_positive_float(
+        getattr(storage_cfg, "discharge_efficiency", None) if storage_cfg is not None else None,
+        label="district_thermal_storage.discharge_efficiency",
+    )
+    if eta_discharge > 1.0:
+        raise ValueError(
+            f"[settings] district_thermal_storage.discharge_efficiency must be <= 1, got {eta_discharge}."
+        )
+    _require_nonnegative_float(
+        getattr(storage_cfg, "standing_loss_kwh_per_day", None) if storage_cfg is not None else None,
+        label="district_thermal_storage.standing_loss_kwh_per_day",
+    )
+
+
 def _validate_district_gas_chp_operating_region(cfg: Settings) -> None:
     """Fail fast on incomplete future CHP operating-region settings.
 
@@ -875,6 +921,7 @@ def get_settings(overrides: Dict[str, Any] | None = None) -> Settings:
     apply_feature_bounds(cfg.engine, cfg.bounds)
     _validate_energy_potential_alignment(cfg)
     _validate_district_gas_chp_operating_region(cfg)
+    _validate_activated_district_thermal_storage(cfg)
     _validate_dispatch_objective_components(cfg)
     cfg.constraints = make_constraints(cfg.engine, lifetime_years=25)
     _attach_central_capacity_constraints(cfg, shared_capacity_caps)
