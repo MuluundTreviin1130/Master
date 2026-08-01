@@ -620,6 +620,9 @@
   - Status `2026-04-30`:
     - Aktiv-/Inaktiv-Schalten im Dispatch-Pfad gehaertet: deaktivierter Speicher wird als `0`-Kapazitaets-Asset und ohne Speicherverluste an den MILP uebergeben
     - Fig.-12-No-Storage-Pfad ist fuer April lauffaehig; vor Paper-Entscheidung noch fachlich klaeren, ob Main-Paper-Figuren Speicher komplett ausschliessen oder Speicher als eigene Sensitivitaet zeigen
+  - Status `2026-08-01`:
+    - Critical bugfix on master branch path: MILP no longer invents `eta=1` / `loss=0` from Optional `None`; Settings fail-fast when storage is activated without eta/loss SSOT; deactivated capacity zeroing restored in IES MILP assets
+    - Power-limit SSOT (`max_charge_kw_th` / `max_discharge_kw_th`) remains open; do not treat efficiency fail-fast as completion of the power-limit work
 
 - [ ] Heat-Pump-Dispatchlogik fuer Wien 2023 pruefen:
   - aktuelle Grosswaermepumpe hat nur Kapazitaetsgrenze und COP, aber keine Mindestlast, Verfuegbarkeit, Laufzeitlogik oder Start-/Rampenkosten
