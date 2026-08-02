@@ -2,6 +2,11 @@
 
 ## Active
 
+- [ ] Follow-up after waste must-run MILP fix: decide whether `district_external_heat`
+  should gain an explicit Settings `must_run` flag for the Wien paper path
+  (documented intent in worklog 2026-04-29, still not in Settings SSOT). Keep
+  activation explicit; do not invent a silent default must-run for external heat.
+
 - [ ] ThermFlex-Paper: Two-stage-MILP als methodischen Unsicherheits-/Preis-Pfad festziehen:
   - klaeren, ob `milp_two_stage` mit historischen Preis-/Wetter-Szenarien nur als Robustheitscheck oder als eigener Sensitivitaetsblock berichtet wird
   - Settings-Vertrag fuer `stochastic_enabled`, historische Preisquellen, Szenarioanzahl und Reduktion dokumentieren

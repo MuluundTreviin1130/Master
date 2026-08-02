@@ -1,5 +1,30 @@
 # Worklog
 
+## 2026-08-02
+
+### Critical bugfix: waste incineration `must_run` ignored by MILP
+
+- Settings SSOT defaults `district_waste_incineration.must_run = True`, and the
+  heuristic source model already forces full available output when must-run is
+  active. The MILP path only had an optional upper bound
+  (`waste_th + waste_spill <= available * waste_on`), so activated waste could
+  silently disappear in low-load hours.
+- Concrete trigger: activated waste with positive availability, `must_run=True`,
+  `dispatch.mode in {milp_day_ahead, milp_two_stage}`, DH demand below available
+  waste heat. Impact: wrong DH source shares/costs/CO2 and corrupted ThermFlex
+  Learning waste labels.
+- Fix:
+  - IES packs `district_waste_incineration_must_run` and
+    `district_waste_incineration_min_partload` from Settings.
+  - `milp_day_ahead` / `milp_two_stage` enforce `waste_on = 1` and
+    `waste_th + waste_spill == available` when must-run is true; otherwise apply
+    the optional min-partload lower bound.
+  - Positive waste availability without the must-run param now fails fast.
+- Validation: `python3 -m unittest tests.test_waste_must_run_milp -v` (3 tests OK).
+- Note: worklog 2026-04-27 already described this correction, but the code never
+  landed on master (`district_waste_incineration_must_run` was absent from git
+  history). This restores the intended SSOT contract.
+
 ## 2026-06-12
 
 ### Target-layer update: sector-coupled MES with planetary boundaries / LCA scenario bridge
