@@ -228,6 +228,15 @@ def run_milp_day_ahead_dispatch(dispatch_input: DispatchInput, **_: Any) -> Disp
     bigas_min = np.clip(_f(p, "district_biogas_chp_min_partload"), 0.0, 1.0)
     gas_min = np.clip(_f(p, "district_gas_chp_min_partload"), 0.0, 1.0)
     external_heat_min = np.clip(_f(p, "district_external_heat_min_partload"), 0.0, 1.0)
+    # Waste availability without an explicit must-run flag would reintroduce the
+    # silent optional-dispatch bug (Settings default must_run=True).
+    if np.any(waste_th_av > 1e-12) and "district_waste_incineration_must_run" not in p:
+        raise ValueError(
+            "[dispatch.milp_day_ahead] Positive district_waste_incineration_available_th requires "
+            "params['district_waste_incineration_must_run'] from Settings SSOT."
+        )
+    waste_must_run = bool(p.get("district_waste_incineration_must_run", False))
+    waste_min = np.clip(_f(p, "district_waste_incineration_min_partload"), 0.0, 1.0)
     gas_boiler_min = np.clip(_f(p, "district_gas_boiler_min_partload"), 0.0, 1.0)
     gas_boiler_max = np.clip(_f(p, "district_gas_boiler_max_partload", 1.0), 0.0, 1.0)
     wood_min = np.clip(_f(p, "district_wood_chip_boiler_min_partload"), 0.0, 1.0)
@@ -699,7 +708,14 @@ def run_milp_day_ahead_dispatch(dispatch_input: DispatchInput, **_: Any) -> Disp
         m.c.add(m.solar_load[t] + m.solar_charge[t] + m.solar_spill[t] == solar_total_useful_av[t])
         m.c.add(m.external_heat_th[t] + m.external_heat_spill[t] <= external_heat_th_av[t] * m.external_heat_on[t])
         m.c.add(m.external_heat_th[t] + m.external_heat_spill[t] >= external_heat_th_av[t] * external_heat_min * m.external_heat_on[t])
-        m.c.add(m.waste_th[t] + m.waste_spill[t] <= waste_th_av[t] * m.waste_on[t])
+        # Must-run waste matches heuristic SSOT: full available output is forced,
+        # with unused heat going to spill (or DH demand / storage via balance).
+        if waste_must_run:
+            m.c.add(m.waste_on[t] == 1)
+            m.c.add(m.waste_th[t] + m.waste_spill[t] == waste_th_av[t])
+        else:
+            m.c.add(m.waste_th[t] + m.waste_spill[t] <= waste_th_av[t] * m.waste_on[t])
+            m.c.add(m.waste_th[t] + m.waste_spill[t] >= waste_th_av[t] * waste_min * m.waste_on[t])
 
         m.c.add(m.grid_import[t] <= big_m_import[t] * m.grid_import_on[t])
         m.c.add(m.grid_export[t] <= big_m_export[t] * m.grid_export_on[t])

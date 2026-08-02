@@ -363,6 +363,43 @@ def _require_tech_economic_value(tech_economics: Dict[str, Any], tech_name: str,
     return float(tech_block[key])
 
 
+def _waste_incineration_milp_control_params(waste_cfg: Any) -> Dict[str, Any]:
+    """Pack waste must-run / partload controls for MILP from Settings SSOT.
+
+    Heuristic ``dispatch_district_waste_incineration`` already honors
+    ``must_run`` by forcing full available output. The MILP path must receive
+    the same SSOT flags; otherwise the optimizer can silently turn waste off
+    (or leave capacity unused) in low-load hours and corrupt DH dispatch labels.
+    """
+    # No waste config object means the technology is absent from this run.
+    # Emit inactive controls rather than inventing a must-run plant.
+    if waste_cfg is None:
+        return {
+            "district_waste_incineration_min_partload": 0.0,
+            "district_waste_incineration_must_run": False,
+        }
+    if not hasattr(waste_cfg, "must_run"):
+        raise ValueError(
+            "[integrated_energy_system] district_waste_incineration config is missing required attribute 'must_run'."
+        )
+    # min_partload is Optional in the dataclass, but packing for MILP requires an
+    # explicit numeric value so optional dispatch cannot invent a free lower bound.
+    min_partload = getattr(waste_cfg, "min_partload", None)
+    if min_partload is None:
+        raise ValueError(
+            "[integrated_energy_system] district_waste_incineration.min_partload must not be None when packing MILP params."
+        )
+    min_partload_f = float(min_partload)
+    if not 0.0 <= min_partload_f <= 1.0:
+        raise ValueError(
+            "[integrated_energy_system] district_waste_incineration.min_partload must be within [0, 1]."
+        )
+    return {
+        "district_waste_incineration_min_partload": min_partload_f,
+        "district_waste_incineration_must_run": bool(getattr(waste_cfg, "must_run")),
+    }
+
+
 def _member_count(member: Any) -> int:
     if hasattr(member, "count"):
         return int(member.count)
@@ -2267,6 +2304,9 @@ def simulate_integrated_energy_system(params: Dict[str, Any], profiles: Dict[str
                     "district_external_heat_min_partload": float(
                         getattr(district_external_heat_cfg, "min_partload", 0.0) or 0.0
                     ),
+                    # Waste must-run / partload come from Settings SSOT so MILP
+                    # cannot silently re-interpret activated incineration as optional.
+                    **_waste_incineration_milp_control_params(district_waste_incineration_cfg),
                     "district_gas_chp_eta_el": float(getattr(district_gas_chp_cfg, "eta_el", 0.0) or 0.0),
                     "district_gas_chp_eta_th": float(getattr(district_gas_chp_cfg, "eta_th", 0.0) or 0.0),
                     "district_gas_chp_operating_mode_model": str(
