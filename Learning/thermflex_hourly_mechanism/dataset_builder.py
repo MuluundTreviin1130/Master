@@ -15,6 +15,9 @@ from Data.thermal_archetypes.Vienna.calibrated_v1 import build_calibrated_v1_val
 from dispatch.metrics import compute_thermflex_series_metrics
 from Learning.datasets.save_dataset import save_dataset
 from Learning.registry.register_dataset import register_dataset
+from Learning.thermflex_hourly_mechanism.family_identity import (
+    build_selected_bundle_signatures as _selected_bundle_signatures,
+)
 from Learning.thermflex_hourly_mechanism.schema import (
     BUILDER_METADATA_COLUMNS,
     CATEGORICAL_FEATURE_COLUMNS,
@@ -1110,22 +1113,6 @@ def _resolve_target_profile(target_profile: str) -> tuple[str, ...]:
     if profile == "mechanism_energy_state_intensive":
         return tuple(MECHANISM_ENERGY_STATE_INTENSIVE_TARGET_COLUMNS)
     raise ValueError(f"[thermflex_hourly_mechanism] unsupported target profile: {target_profile}")
-
-
-def _selected_bundle_signatures(selected: pd.DataFrame) -> list[dict[str, Any]]:
-    signatures: list[dict[str, Any]] = []
-    for bundle_name, bundle_df in selected.groupby("source_bundle_name", sort=True):
-        signatures.append(
-            {
-                "bundle_name": str(bundle_name),
-                "source_hourly_csv": str(bundle_df["source_hourly_csv"].iloc[0]),
-                "rows": int(len(bundle_df)),
-                "case_count": int(bundle_df["case_label"].nunique()),
-                "cohort_count": int(bundle_df["cohort_key"].nunique()),
-                "timestamp_count": int(bundle_df["timestamp"].nunique()),
-            }
-        )
-    return signatures
 
 
 def _source_runs_manifest(selected: pd.DataFrame) -> list[dict[str, Any]]:

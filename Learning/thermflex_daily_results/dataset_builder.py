@@ -14,6 +14,9 @@ import pandas as pd
 
 from Learning.datasets.save_dataset import save_dataset
 from Learning.registry.register_dataset import register_dataset
+from Learning.thermflex_daily_results.family_identity import (
+    build_selected_bundle_signatures,
+)
 from Learning.thermflex_daily_results.features import add_engineered_feature_columns
 from Learning.thermflex_daily_results.schema import (
     BUILDER_METADATA_COLUMNS,
@@ -748,40 +751,14 @@ def _selected_bundle_signatures(
     truth: pd.DataFrame,
     selected: pd.DataFrame,
 ) -> list[dict[str, Any]]:
-    """
-    Build a compact selected-bundle revision signature for dataset hashing.
-
-    The daily curated family is not defined only by bundle names. Partial truth
-    bundles evolve over time as more days are solved or explicit heavy-day
-    failures are added. If the family hash ignores that evolution, a later and
-    materially richer checkpoint silently reuses the old hash and overwrites the
-    old model id. The signature below therefore keeps exactly the bundle facts
-    that change the effective training truth:
-    - which concrete screen table was selected (`final` vs `checkpoint`)
-    - how many rows of truth it currently contributes
-    - which explicit heavy-day failures are known beside that truth
-    """
-
-    selected_bundle_names = set(selected["source_bundle_name"].astype(str).unique().tolist())
-    signatures: list[dict[str, Any]] = []
-    for bundle_name, bundle_df in truth.groupby("source_bundle_name", sort=True):
-        bundle_name_str = str(bundle_name)
-        if bundle_name_str not in selected_bundle_names:
-            continue
-        bundle_dir = Path(str(bundle_df["source_screen_csv"].iloc[0])).resolve().parent
-        failure_summary = _read_bundle_failure_summary(bundle_dir=bundle_dir)
-        signatures.append(
-            {
-                "bundle_name": bundle_name_str,
-                "screen_csv": str(bundle_df["source_screen_csv"].iloc[0]),
-                "screen_kind": str(bundle_df["source_screen_kind"].iloc[0]),
-                "rows": int(len(bundle_df)),
-                "schema_version": str(bundle_df["source_schema_version"].iloc[0]),
-                "known_failure_rows": int(failure_summary["known_failure_rows"]),
-                "known_failure_dates": list(failure_summary["known_failure_dates"]),
-            }
-        )
-    return signatures
+    # Keep the failure-summary IO local while the identity digest lives in the
+    # import-light family_identity helper so focused regression tests stay free
+    # of Settings/Optimization import chains.
+    return build_selected_bundle_signatures(
+        truth=truth,
+        selected=selected,
+        read_bundle_failure_summary=_read_bundle_failure_summary,
+    )
 
 
 def _read_bundle_failure_summary(*, bundle_dir: Path) -> dict[str, Any]:
