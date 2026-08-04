@@ -2,6 +2,11 @@
 
 ## Active
 
+- [ ] Critical correctness follow-ups from 2026-08-04 investigation (not covered by open PRs #26-#43):
+  - extend row-content family-hash digests from system_results (PR#33) to `thermflex_hourly_mechanism`, `thermflex_daily_results`, and `thermflex_hourly_dispatch`
+  - fail fast when MILP has `district_heat_pump_kw_th > 0` but missing `district_heat_pump_cop` (no `np.ones` COP=1.0 default)
+  - gate DH design bounds / IES MILP assets by `technology_activation` (sibling of storage capacity zeroing in PR#42)
+
 - [ ] ThermFlex-Paper: Two-stage-MILP als methodischen Unsicherheits-/Preis-Pfad festziehen:
   - klaeren, ob `milp_two_stage` mit historischen Preis-/Wetter-Szenarien nur als Robustheitscheck oder als eigener Sensitivitaetsblock berichtet wird
   - Settings-Vertrag fuer `stochastic_enabled`, historische Preisquellen, Szenarioanzahl und Reduktion dokumentieren

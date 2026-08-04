@@ -10437,3 +10437,11 @@ Naechste Schritte:
   - Added five research highlights, each below the usual 85-character limit.
   - Regenerated the 13 manuscript sections and confirmed `225` citation keys
     with no missing entries in the review bibliography.
+
+- 2026-08-04: Critical-bug investigation sweep on master (branch `cursor/critical-bug-investigation-c880`).
+  - Reconfirmed open PRs #40-#43 already cover boiler/CHP LHV, DH storage eta/loss, waste must-run, and IES series align; Learning PRs #26-#39 cover the prior identity/validation cluster.
+  - NEW candidates not covered by those PRs:
+    1. ThermFlex `hourly_mechanism` / `daily_results` / `hourly_dispatch` family hashes omit row-content digests (PR#33 only fixed `system_results`), so in-place truth revisions with unchanged structure can overwrite datasets/models.
+    2. MILP day-ahead/two-stage default missing `district_heat_pump_cop` to `np.ones` (COP=1.0) while Settings-derived COP is required for activated HP.
+    3. `apply_feature_bounds` does not zero DH design variables from `technology_activation`; IES still packs HP capacity into MILP assets when activation is false.
+  - External-heat `must_run` remains medium: worklog 2026-04-29 describes wiring, but master Settings/MILP still lack the field.
