@@ -3,16 +3,17 @@ from __future__ import annotations
 import hashlib
 import json
 import unittest
-from unittest import mock
 
 import pandas as pd
 
-from Learning.thermflex_daily_results.dataset_builder import _selected_bundle_signatures
-from Learning.thermflex_hourly_dispatch.dataset_builder import (
-    _selected_bundle_signatures as hourly_dispatch_signatures,
+from Learning.thermflex_daily_results.family_identity import (
+    build_selected_bundle_signatures as daily_signatures,
 )
-from Learning.thermflex_hourly_mechanism.dataset_builder import (
-    _selected_bundle_signatures as hourly_mechanism_signatures,
+from Learning.thermflex_hourly_dispatch.family_identity import (
+    build_selected_bundle_signatures as hourly_dispatch_signatures,
+)
+from Learning.thermflex_hourly_mechanism.family_identity import (
+    build_selected_bundle_signatures as hourly_mechanism_signatures,
 )
 
 
@@ -85,17 +86,23 @@ class CuratedFamilyContentIdentityTest(unittest.TestCase):
         revised = selected.copy()
         revised.loc[0, "heat_cost_eur"] = 250.0
 
-        with mock.patch(
-            "Learning.thermflex_daily_results.dataset_builder._read_bundle_failure_summary",
-            return_value={"known_failure_rows": 0, "known_failure_dates": []},
-        ):
-            original_hash = _hash_signatures(
-                _selected_bundle_signatures(truth=truth, selected=selected)
-            )
-            revised_hash = _hash_signatures(
-                _selected_bundle_signatures(truth=truth, selected=revised)
-            )
+        def _no_failures(*, bundle_dir):
+            return {"known_failure_rows": 0, "known_failure_dates": []}
 
+        original_hash = _hash_signatures(
+            daily_signatures(
+                truth=truth,
+                selected=selected,
+                read_bundle_failure_summary=_no_failures,
+            )
+        )
+        revised_hash = _hash_signatures(
+            daily_signatures(
+                truth=truth,
+                selected=revised,
+                read_bundle_failure_summary=_no_failures,
+            )
+        )
         self.assertNotEqual(original_hash, revised_hash)
 
 

@@ -11,9 +11,11 @@ from typing import Any, Sequence
 import numpy as np
 import pandas as pd
 
-from Learning.datasets.row_content_signature import normalized_rows_sha256
 from Learning.datasets.save_dataset import save_dataset
 from Learning.registry.register_dataset import register_dataset
+from Learning.thermflex_hourly_dispatch.family_identity import (
+    build_selected_bundle_signatures as _selected_bundle_signatures,
+)
 from Learning.thermflex_daily_results.dataset_builder import _load_policy_metadata
 from Learning.thermflex_hourly_dispatch.schema import (
     TARGET_COLUMNS,
@@ -390,35 +392,6 @@ def _run_slug_from_bundle_name(bundle_name: str) -> str:
     if len(parts) == 3 and parts[1].isdigit() and parts[2].isdigit():
         return parts[0]
     return stem
-
-
-def _selected_bundle_signatures(frame: pd.DataFrame) -> list[dict[str, Any]]:
-    """
-    Describe each selected hourly-dispatch bundle for family hashing.
-
-    Date spans and row counts miss in-place label/feature revisions under the
-    same bundle path. Include a content digest so a re-export cannot overwrite a
-    different training truth under the same family hash.
-    """
-
-    signatures: list[dict[str, Any]] = []
-    for bundle_name, group in frame.groupby("source_bundle_name", sort=True):
-        signatures.append(
-            {
-                "source_bundle_name": str(bundle_name),
-                "source_hourly_csv": str(group["source_hourly_csv"].iloc[0]),
-                "source_hourly_kind": str(group["source_hourly_kind"].iloc[0]),
-                "flex_case_label": str(group["flex_case_label"].iloc[0]),
-                "flex_override_name": str(group["flex_override_name"].iloc[0]),
-                "row_count": int(len(group)),
-                "date_count": int(group["date"].dt.strftime("%Y-%m-%d").nunique()),
-                "first_date": str(group["date"].min().date()),
-                "last_date": str(group["date"].max().date()),
-                # Bind identity to the exact selected cells that become X/Y.
-                "normalized_rows_sha256": normalized_rows_sha256(group),
-            }
-        )
-    return signatures
 
 
 def _source_runs_manifest(
