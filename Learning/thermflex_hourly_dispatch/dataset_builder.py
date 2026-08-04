@@ -11,6 +11,7 @@ from typing import Any, Sequence
 import numpy as np
 import pandas as pd
 
+from Learning.datasets.row_content_signature import normalized_rows_sha256
 from Learning.datasets.save_dataset import save_dataset
 from Learning.registry.register_dataset import register_dataset
 from Learning.thermflex_daily_results.dataset_builder import _load_policy_metadata
@@ -392,6 +393,14 @@ def _run_slug_from_bundle_name(bundle_name: str) -> str:
 
 
 def _selected_bundle_signatures(frame: pd.DataFrame) -> list[dict[str, Any]]:
+    """
+    Describe each selected hourly-dispatch bundle for family hashing.
+
+    Date spans and row counts miss in-place label/feature revisions under the
+    same bundle path. Include a content digest so a re-export cannot overwrite a
+    different training truth under the same family hash.
+    """
+
     signatures: list[dict[str, Any]] = []
     for bundle_name, group in frame.groupby("source_bundle_name", sort=True):
         signatures.append(
@@ -405,6 +414,8 @@ def _selected_bundle_signatures(frame: pd.DataFrame) -> list[dict[str, Any]]:
                 "date_count": int(group["date"].dt.strftime("%Y-%m-%d").nunique()),
                 "first_date": str(group["date"].min().date()),
                 "last_date": str(group["date"].max().date()),
+                # Bind identity to the exact selected cells that become X/Y.
+                "normalized_rows_sha256": normalized_rows_sha256(group),
             }
         )
     return signatures

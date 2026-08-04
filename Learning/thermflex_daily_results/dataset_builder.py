@@ -12,6 +12,7 @@ from typing import Any, Iterable, Sequence
 import numpy as np
 import pandas as pd
 
+from Learning.datasets.row_content_signature import normalized_rows_sha256
 from Learning.datasets.save_dataset import save_dataset
 from Learning.registry.register_dataset import register_dataset
 from Learning.thermflex_daily_results.features import add_engineered_feature_columns
@@ -760,6 +761,8 @@ def _selected_bundle_signatures(
     - which concrete screen table was selected (`final` vs `checkpoint`)
     - how many rows of truth it currently contributes
     - which explicit heavy-day failures are known beside that truth
+    - a content digest of the selected rows that actually become X/Y, so
+      in-place value revisions with unchanged structure cannot collide
     """
 
     selected_bundle_names = set(selected["source_bundle_name"].astype(str).unique().tolist())
@@ -770,6 +773,10 @@ def _selected_bundle_signatures(
             continue
         bundle_dir = Path(str(bundle_df["source_screen_csv"].iloc[0])).resolve().parent
         failure_summary = _read_bundle_failure_summary(bundle_dir=bundle_dir)
+        # Hash the selected rows that enter training, not merely the raw screen.
+        selected_bundle = selected.loc[
+            selected["source_bundle_name"].astype(str) == bundle_name_str
+        ].copy()
         signatures.append(
             {
                 "bundle_name": bundle_name_str,
@@ -779,6 +786,8 @@ def _selected_bundle_signatures(
                 "schema_version": str(bundle_df["source_schema_version"].iloc[0]),
                 "known_failure_rows": int(failure_summary["known_failure_rows"]),
                 "known_failure_dates": list(failure_summary["known_failure_dates"]),
+                "selected_rows": int(len(selected_bundle)),
+                "normalized_rows_sha256": normalized_rows_sha256(selected_bundle),
             }
         )
     return signatures
