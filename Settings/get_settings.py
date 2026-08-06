@@ -284,6 +284,52 @@ def _require_positive_float(value: Any, *, label: str) -> float:
     return value_f
 
 
+def _validate_activated_district_heat_pump(cfg: Settings) -> None:
+    """Fail fast when an activated DH heat pump lacks temperature SSOT.
+
+    The MILP path derives electricity as ``thermal / COP``. COP itself is
+    computed from ``source_temp_c`` / ``supply_temp_c`` (optional ``cop_max``).
+    Activating the technology without those temperatures would either crash
+    mid-horizon or, historically, allow dispatch to invent COP=1.0 when the
+    series key was absent. Validate at settings load instead.
+    """
+
+    activation = getattr(cfg, "technology_activation", None)
+    if activation is None or not bool(getattr(activation, "district_heat_pump", False)):
+        return
+    hp_cfg = getattr(cfg, "district_heat_pump", None)
+    if hp_cfg is None:
+        raise ValueError(
+            "[settings] technology_activation.district_heat_pump=True requires "
+            "settings.district_heat_pump."
+        )
+    # source_temp_c may be <= 0 (cold source); only forbid None.
+    for attr in ("source_temp_c", "supply_temp_c", "return_temp_c"):
+        if getattr(hp_cfg, attr, None) is None:
+            raise ValueError(
+                f"[settings] district_heat_pump.{attr} must not be None when "
+                "technology_activation.district_heat_pump is True."
+            )
+    source_temp_c = float(hp_cfg.source_temp_c)
+    supply_temp_c = float(hp_cfg.supply_temp_c)
+    return_temp_c = float(hp_cfg.return_temp_c)
+    if supply_temp_c <= source_temp_c:
+        raise ValueError(
+            "[settings] district_heat_pump.supply_temp_c must be greater than "
+            f"source_temp_c (got supply={supply_temp_c}, source={source_temp_c})."
+        )
+    if supply_temp_c <= return_temp_c:
+        raise ValueError(
+            "[settings] district_heat_pump.supply_temp_c must be greater than "
+            f"return_temp_c (got supply={supply_temp_c}, return={return_temp_c})."
+        )
+    cop_max = getattr(hp_cfg, "cop_max", None)
+    if cop_max is not None and float(cop_max) <= 0.0:
+        raise ValueError(
+            f"[settings] district_heat_pump.cop_max must be > 0 when provided, got {float(cop_max)}."
+        )
+
+
 def _validate_district_gas_chp_operating_region(cfg: Settings) -> None:
     """Fail fast on incomplete future CHP operating-region settings.
 
@@ -875,6 +921,7 @@ def get_settings(overrides: Dict[str, Any] | None = None) -> Settings:
     apply_feature_bounds(cfg.engine, cfg.bounds)
     _validate_energy_potential_alignment(cfg)
     _validate_district_gas_chp_operating_region(cfg)
+    _validate_activated_district_heat_pump(cfg)
     _validate_dispatch_objective_components(cfg)
     cfg.constraints = make_constraints(cfg.engine, lifetime_years=25)
     _attach_central_capacity_constraints(cfg, shared_capacity_caps)

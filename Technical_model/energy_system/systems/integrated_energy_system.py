@@ -1319,6 +1319,15 @@ def simulate_integrated_energy_system(params: Dict[str, Any], profiles: Dict[str
     district_wood_chip_boiler_cfg = getattr(settings_obj, "district_wood_chip_boiler", None)
     storage_cfg = getattr(settings_obj, "district_thermal_storage", None)
     storage_enabled = bool(getattr(_require_attr(settings_obj, "technology_activation"), "district_thermal_storage", False))
+    # Heat-pump activation is independent of the design-vector upper bound. When the
+    # technology is off, MILP must not see a positive thermal capacity: zero COP
+    # series plus positive capacity previously coerced to COP≈1e-9 and exploded
+    # Big-M import bounds on every Gold evaluation that sampled HP > 0.
+    heat_pump_enabled = bool(
+        getattr(_require_attr(settings_obj, "technology_activation"), "district_heat_pump", False)
+    )
+    installed_heat_pump_kw_th = float(params.get("district_heat_pump_kw_th", 0.0))
+    milp_heat_pump_kw_th = float(installed_heat_pump_kw_th if heat_pump_enabled else 0.0)
     installed_storage_kwh = float(params.get("district_thermal_storage_kwh_th", 0.0))
     storage_soc_kwh = (
         initialize_district_thermal_storage_soc(installed_storage_kwh, storage_cfg)
@@ -2189,7 +2198,7 @@ def simulate_integrated_energy_system(params: Dict[str, Any], profiles: Dict[str
                     "h2_tank_kwh": float(h2.e_h2_max_kwh if enable_h2 else 0.0),
                     "ely_power_kwh_per_step": float(h2.p_ely_max_kw * dt_h if enable_h2 else 0.0),
                     "fc_power_kwh_per_step": float(h2.p_fc_max_kw * dt_h if enable_h2 else 0.0),
-                    "district_heat_pump_kw_th": float(params.get("district_heat_pump_kw_th", 0.0)),
+                    "district_heat_pump_kw_th": milp_heat_pump_kw_th,
                     "district_thermal_storage_kwh_th": float(params.get("district_thermal_storage_kwh_th", 0.0)),
                 },
                 params={
