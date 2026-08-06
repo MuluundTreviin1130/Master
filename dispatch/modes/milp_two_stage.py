@@ -18,6 +18,7 @@ from pyomo.environ import (
 
 from dispatch.scenarios.historical import build_historical_scenario_bundle
 from dispatch.core import DispatchInput, DispatchResult
+from dispatch.core.heat_pump_cop import resolve_district_heat_pump_cop
 from dispatch.metrics import compute_series_peak_change_kw, compute_series_peak_kw, compute_thermflex_series_metrics
 
 
@@ -101,6 +102,9 @@ def run_milp_two_stage_dispatch(dispatch_input: DispatchInput, **_: Any) -> Disp
     a = dispatch_input.assets
     p = dispatch_input.params
     st = dispatch_input.initial_state
+    # Capacity is shared across scenarios; resolve it before reading per-scenario COP
+    # so missing COP cannot fall back to ones when the heat pump can deliver heat.
+    hp_th_cap = max(0.0, _f(a, "district_heat_pump_kw_th"))
     base_gas_day_ahead_price_raw = dispatch_input.series.get(
         "district_gas_day_ahead_price_eur_per_mwh_fuel",
         dispatch_input.series.get("district_gas_price_eur_per_mwh_fuel"),
@@ -164,7 +168,12 @@ def run_milp_two_stage_dispatch(dispatch_input: DispatchInput, **_: Any) -> Disp
         dh_demand[s_idx] = _series(scenario, "district_heat_demand", n)
         dh_space_heat_ref[s_idx] = _series(scenario, "district_space_heat_demand", n)
         dh_hotwater_demand[s_idx] = _series(scenario, "district_hotwater_demand", n)
-        hp_cop[s_idx] = np.maximum(1e-9, _arr(scenario.series.get("district_heat_pump_cop", np.ones(n)), n))
+        hp_cop[s_idx] = resolve_district_heat_pump_cop(
+            scenario.series,
+            hp_th_cap=hp_th_cap,
+            n=n,
+            label="dispatch.milp_two_stage",
+        )
         geo_el_av[s_idx] = _series(scenario, "district_geothermal_available_el", n)
         geo_th_av[s_idx] = _series(scenario, "district_geothermal_available_th", n)
         solar_direct_av[s_idx] = _series(scenario, "district_solar_thermal_direct_available_th", n)
@@ -182,7 +191,7 @@ def run_milp_two_stage_dispatch(dispatch_input: DispatchInput, **_: Any) -> Disp
     h2_cap = max(0.0, _f(a, "h2_tank_kwh"))
     ely_p = max(0.0, _f(a, "ely_power_kwh_per_step"))
     fc_p = max(0.0, _f(a, "fc_power_kwh_per_step"))
-    hp_th_cap = max(0.0, _f(a, "district_heat_pump_kw_th"))
+    # hp_th_cap already resolved above before per-scenario COP validation.
     dh_store_cap = max(0.0, _f(a, "district_thermal_storage_kwh_th"))
 
     bess_eta_ch = max(1e-9, _f(p, "bess_eta_charge", 1.0))

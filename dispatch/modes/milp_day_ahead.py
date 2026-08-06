@@ -6,6 +6,7 @@ import numpy as np
 from pyomo.environ import Binary, ConcreteModel, ConstraintList, NonNegativeReals, Objective, RangeSet, SolverFactory, Var, minimize, value
 
 from dispatch.core import DispatchInput, DispatchResult
+from dispatch.core.heat_pump_cop import resolve_district_heat_pump_cop
 from dispatch.metrics import compute_series_peak_change_kw, compute_series_peak_kw, compute_thermflex_series_metrics
 
 
@@ -167,7 +168,6 @@ def run_milp_day_ahead_dispatch(dispatch_input: DispatchInput, **_: Any) -> Disp
     dh_demand = _series(dispatch_input, "district_heat_demand", n)
     dh_space_heat_ref = _series(dispatch_input, "district_space_heat_demand", n)
     dh_hotwater_demand = _series(dispatch_input, "district_hotwater_demand", n)
-    hp_cop = np.maximum(1e-9, _arr(s.get("district_heat_pump_cop", np.ones(n)), n))
     geo_el_av = _series(dispatch_input, "district_geothermal_available_el", n)
     geo_th_av = _series(dispatch_input, "district_geothermal_available_th", n)
     solar_direct_av = _series(dispatch_input, "district_solar_thermal_direct_available_th", n)
@@ -187,7 +187,14 @@ def run_milp_day_ahead_dispatch(dispatch_input: DispatchInput, **_: Any) -> Disp
     h2_cap = max(0.0, _f(a, "h2_tank_kwh"))
     ely_p = max(0.0, _f(a, "ely_power_kwh_per_step"))
     fc_p = max(0.0, _f(a, "fc_power_kwh_per_step"))
+    # Resolve capacity before COP: positive capacity must not invent COP=1.0.
     hp_th_cap = max(0.0, _f(a, "district_heat_pump_kw_th"))
+    hp_cop = resolve_district_heat_pump_cop(
+        s,
+        hp_th_cap=hp_th_cap,
+        n=n,
+        label="dispatch.milp_day_ahead",
+    )
     dh_store_cap = max(0.0, _f(a, "district_thermal_storage_kwh_th"))
 
     bess_eta_ch = max(1e-9, _f(p, "bess_eta_charge", 1.0))

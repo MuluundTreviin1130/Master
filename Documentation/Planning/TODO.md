@@ -2,6 +2,12 @@
 
 ## Active
 
+- [ ] Follow-up after HP MILP COP fix (2026-08-06): gate remaining central DH design
+  bounds (`district_thermal_storage_kwh_th`, wood/biomass/gas/biogas/geothermal, …) by
+  `technology_activation` in `Settings/problem/bounds.py` so inactive techs cannot
+  accumulate CAPEX in Gold/teacher evaluations. HP MILP asset capacity is already
+  zeroed in IES; bounds gating is still open for the broader DH set.
+
 - [ ] ThermFlex-Paper: Two-stage-MILP als methodischen Unsicherheits-/Preis-Pfad festziehen:
   - klaeren, ob `milp_two_stage` mit historischen Preis-/Wetter-Szenarien nur als Robustheitscheck oder als eigener Sensitivitaetsblock berichtet wird
   - Settings-Vertrag fuer `stochastic_enabled`, historische Preisquellen, Szenarioanzahl und Reduktion dokumentieren

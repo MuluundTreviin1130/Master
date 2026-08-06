@@ -1,5 +1,23 @@
 # Worklog
 
+## 2026-08-06
+
+### Critical fix: MILP DH heat-pump COP silent ones + inactive capacity leak
+
+- Trigger: `district_heat_pump_kw_th > 0` while `series['district_heat_pump_cop']` is
+  missing (or zero-filled after inactive activation) caused `milp_day_ahead` /
+  `milp_two_stage` to invent `COP=1.0` via `series.get(..., np.ones(n))` or to coerce
+  zeros through `max(1e-9, ·)`.
+- Impact: understated HP electricity (~true COP 3–4) or exploded Big-M import bounds
+  (`cap / 1e-9`), corrupting grid import/export binaries and DH merit order / teacher labels.
+- Concrete path: default `technology_activation.district_heat_pump=False` still leaves
+  design bounds `0..7500` for `district_heat_pump_kw_th`; Gold/IES packed positive capacity
+  with zero COP into MILP assets.
+- Fix: `dispatch.core.heat_pump_cop.resolve_district_heat_pump_cop` fail-fast; IES zeros
+  MILP HP capacity when inactive; Settings validates temps when HP is activated.
+- Tests: `tests/test_district_heat_pump_milp_cop_ssot.py`.
+
+
 ## 2026-06-12
 
 ### Target-layer update: sector-coupled MES with planetary boundaries / LCA scenario bridge
