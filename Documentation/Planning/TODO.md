@@ -2,6 +2,7 @@
 
 ## Active
 
+- [ ] Native family identity: after merging the dispatch-contract hash fix, prefer also merging open PR #35 (`thermal.delta_T` / `market.active_tariff_arm`) so both teacher-label axes are covered together; watch for `build_family.py` merge conflicts on `dispatch_signature`.
 - [ ] ThermFlex-Paper: Two-stage-MILP als methodischen Unsicherheits-/Preis-Pfad festziehen:
   - klaeren, ob `milp_two_stage` mit historischen Preis-/Wetter-Szenarien nur als Robustheitscheck oder als eigener Sensitivitaetsblock berichtet wird
   - Settings-Vertrag fuer `stochastic_enabled`, historische Preisquellen, Szenarioanzahl und Reduktion dokumentieren

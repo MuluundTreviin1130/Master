@@ -47,12 +47,121 @@ class FamilySpec:
         return data
 
 
+def _require_family_dispatch_mode(settings: Any) -> str:
+    """
+    Teacher labels are produced by the active operational policy.
+    Family identity must therefore hash the live dispatch.mode; otherwise a
+    switch such as milp_day_ahead -> milp_two_stage keeps the same family_hash
+    and resolve_model silently reuses the previous native artifact.
+    """
+    dispatch = getattr(settings, "dispatch", None)
+    if dispatch is None:
+        raise ValueError(
+            "[learning.families] settings.dispatch is required for family identity "
+            "because teacher labels depend on dispatch.mode."
+        )
+    if not hasattr(dispatch, "mode"):
+        raise ValueError(
+            "[learning.families] settings.dispatch.mode is required for family identity."
+        )
+    mode = str(getattr(dispatch, "mode") or "").strip().lower()
+    if not mode:
+        raise ValueError(
+            "[learning.families] settings.dispatch.mode must be a non-empty string."
+        )
+    return mode
+
+
+def _require_family_dispatch_horizon_h(settings: Any) -> int:
+    """
+    MILP and rolling dispatch horizons change commitment/lookahead and therefore
+    the teacher objective surface. Keep horizon_h in the hashed signature so a
+    24h -> 48h change cannot reuse an incompatible dataset/model family.
+    """
+    dispatch = getattr(settings, "dispatch", None)
+    if dispatch is None:
+        raise ValueError(
+            "[learning.families] settings.dispatch is required for family identity "
+            "because teacher labels depend on dispatch.horizon_h."
+        )
+    if not hasattr(dispatch, "horizon_h"):
+        raise ValueError(
+            "[learning.families] settings.dispatch.horizon_h is required for family identity."
+        )
+    horizon_h = int(getattr(dispatch, "horizon_h"))
+    if horizon_h <= 0:
+        raise ValueError(
+            "[learning.families] settings.dispatch.horizon_h must be a positive integer, "
+            f"got {horizon_h}."
+        )
+    return horizon_h
+
+
+def _require_family_dispatch_stochastic_enabled(settings: Any) -> bool:
+    """
+    Stochastic two-stage dispatch changes expected-cost teacher labels even when
+    the nominal mode string stays fixed. Hash the live SSOT flag so enabling
+    stochastic scenarios cannot silently reuse a deterministic native model.
+    """
+    dispatch = getattr(settings, "dispatch", None)
+    if dispatch is None:
+        raise ValueError(
+            "[learning.families] settings.dispatch is required for family identity "
+            "because teacher labels depend on dispatch.stochastic_enabled."
+        )
+    if not hasattr(dispatch, "stochastic_enabled"):
+        raise ValueError(
+            "[learning.families] settings.dispatch.stochastic_enabled is required for family identity."
+        )
+    value = getattr(dispatch, "stochastic_enabled")
+    if not isinstance(value, bool):
+        raise ValueError(
+            "[learning.families] settings.dispatch.stochastic_enabled must be a bool, "
+            f"got {type(value).__name__}."
+        )
+    return bool(value)
+
+
+def _require_family_district_heating_share(settings: Any) -> float:
+    """
+    District-heating share reshapes the EC/DH teacher demand split and coupled
+    costs. Include the live share in the hashed signature so a share change
+    cannot reuse models trained under a different bus mix.
+    """
+    district_heating = getattr(settings, "district_heating", None)
+    if district_heating is None:
+        raise ValueError(
+            "[learning.families] settings.district_heating is required for family identity "
+            "because teacher labels depend on district_heating.share."
+        )
+    if not hasattr(district_heating, "share"):
+        raise ValueError(
+            "[learning.families] settings.district_heating.share is required for family identity."
+        )
+    share = float(getattr(district_heating, "share"))
+    if share < 0.0 or share > 1.0:
+        raise ValueError(
+            "[learning.families] settings.district_heating.share must be in [0, 1], "
+            f"got {share}."
+        )
+    return share
+
+
 def build_family(settings: Any, provenance: Dict[str, Any] | None = None) -> FamilySpec:
     engine = getattr(settings, "engine", None)
     run = getattr(settings, "run", None)
     surrogate = getattr(settings, "surrogate", None)
     surrogate_train = getattr(settings, "surrogate_train", None)
     market = getattr(settings, "market", None)
+    # Read identity-critical dispatch/DH Settings fields fail-fast before hashing.
+    # Sibling of the thermal.delta_T / market.active_tariff_arm identity fix:
+    # registry selection keys only on family_hash, and choose_artifact_path prefers
+    # the resolved registry artifact over the signature-scoped path, so any
+    # teacher-label-changing contract field omitted here becomes silent reuse.
+    dispatch_mode = _require_family_dispatch_mode(settings)
+    dispatch_horizon_h = _require_family_dispatch_horizon_h(settings)
+    dispatch_stochastic_enabled = _require_family_dispatch_stochastic_enabled(settings)
+    district_heating_share = _require_family_district_heating_share(settings)
 
     system = {
         "system_id": str(getattr(engine, "system_id", "unknown")),
@@ -89,8 +198,16 @@ def build_family(settings: Any, provenance: Dict[str, Any] | None = None) -> Fam
         "time_series_schema": list(getattr(getattr(settings, "learning", None), "time_series_schema", []) or []),
         "location_mode": str(getattr(getattr(settings, "learning", None), "location_mode", "dataset_context")),
     }
+    # learning.dispatch_model_id remains an explicit manual discriminator, but the
+    # live Settings contract below must also be hashed: leaving dispatch_model_id
+    # at its default "default" while changing mode/horizon/stochastic/share is the
+    # concrete silent-reuse trigger this fix closes.
     dispatch_signature = {
         "dispatch_model_id": str(getattr(getattr(settings, "learning", None), "dispatch_model_id", "default")),
+        "dispatch_mode": dispatch_mode,
+        "dispatch_horizon_h": int(dispatch_horizon_h),
+        "dispatch_stochastic_enabled": bool(dispatch_stochastic_enabled),
+        "district_heating_share": float(district_heating_share),
         "dispatch_params": {
             "delta_T": 0.0,
         },

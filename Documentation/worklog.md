@@ -1,5 +1,25 @@
 # Worklog
 
+## 2026-08-07
+
+### Critical bug: native family identity ignored live dispatch contract
+
+- Found that `Learning.families.build_family` hashed only
+  `learning.dispatch_model_id` (default `"default"`) plus a hardcoded
+  `delta_T=0.0`, while omitting live `dispatch.mode`, `dispatch.horizon_h`,
+  `dispatch.stochastic_enabled`, and `district_heating.share`.
+- Concrete trigger: train an eligible native under
+  `dispatch.mode="milp_day_ahead"`, then switch to `"milp_two_stage"` (or
+  change horizon/stochastic/share) without bumping `dispatch_model_id`.
+  `resolve_model` keeps the same `family_hash`, `choose_artifact_path`
+  prefers the registry artifact over the signature-scoped path, and
+  `load_bundle` does not re-check the dispatch contract → silent reuse of
+  an incompatible surrogate for optimization / further teacher appends.
+- Distinct from open PR #35 (`delta_T` / `active_tariff_arm` only).
+- Fix: fail-fast read of the four Settings fields into the hashed
+  `dispatch_signature`, plus focused regression tests in
+  `Learning/families/test_build_family_dispatch_contract.py`.
+
 ## 2026-06-12
 
 ### Target-layer update: sector-coupled MES with planetary boundaries / LCA scenario bridge
