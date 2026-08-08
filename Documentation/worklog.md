@@ -1,5 +1,29 @@
 # Worklog
 
+## 2026-08-08
+
+### Critical bugfix: Vienna peak-boiler mix ignored in MILP fuel cost
+
+- Finding: with a present `district_gas_day_ahead_price_eur_per_mwh_fuel`
+  series, `milp_day_ahead` / `milp_two_stage` priced peak-boiler fuel with the
+  Gas-CHP gas series. Vienna's explicit gas/oil mix in
+  `district_gas_boiler.fuel_eur_per_m3` (~77.4 EUR/MWh_fuel) never entered the
+  objective, while the higher boiler CO2 factor already did.
+- Impact: shipped Vienna MILP runs underprice peak-boiler heat, distort
+  dispatch ranking / ThermFlex boiler-reduction conclusions, and leave an
+  asymmetric fuel-vs-CO2 contract.
+- Fix restored on branch `cursor/critical-bug-investigation-327b`:
+  - `dispatch/core/gas_boiler_fuel_price.py` resolves boiler fuel price from the
+    dedicated series or boiler economics; never from the Gas-CHP gas series
+  - IES packs `district_gas_boiler_day_ahead_price_eur_per_mwh_fuel` from
+    economics SSOT by default
+  - optional `dispatch.historical_gas_boiler_uses_day_ahead_price` opts boiler
+    back onto the historical gas day-ahead series for sensitivity runs
+  - two-stage gas procurement now covers Gas-CHP only; boiler fuel is costed
+    on the boiler series
+- Validation: `python3 -m unittest dispatch.tests.test_gas_boiler_fuel_price -v`
+  and `py_compile` on the touched modules.
+
 ## 2026-06-12
 
 ### Target-layer update: sector-coupled MES with planetary boundaries / LCA scenario bridge

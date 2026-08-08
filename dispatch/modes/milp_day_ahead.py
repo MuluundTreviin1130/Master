@@ -6,6 +6,7 @@ import numpy as np
 from pyomo.environ import Binary, ConcreteModel, ConstraintList, NonNegativeReals, Objective, RangeSet, SolverFactory, Var, minimize, value
 
 from dispatch.core import DispatchInput, DispatchResult
+from dispatch.core.gas_boiler_fuel_price import resolve_gas_boiler_fuel_price_eur_per_mwh
 from dispatch.metrics import compute_series_peak_change_kw, compute_series_peak_kw, compute_thermflex_series_metrics
 
 
@@ -261,11 +262,14 @@ def run_milp_day_ahead_dispatch(dispatch_input: DispatchInput, **_: Any) -> Disp
     co2_price_raw = s.get("co2_price_eur_per_tco2")
     gas_price_raw = s.get("district_gas_day_ahead_price_eur_per_mwh_fuel", s.get("district_gas_price_eur_per_mwh_fuel"))
     if gas_price_raw is None:
-        fallback_gas_cost = max(gas_fuel_cost, gas_boiler_fuel_cost)
+        # Gas-CHP fallback stays on CHP economics only; peak-boiler price is
+        # resolved separately so the Vienna oil-mix uplift cannot leak into CHP
+        # or disappear into the shared gas series.
+        fallback_gas_cost = float(gas_fuel_cost)
         if fallback_gas_cost <= 0.0:
             raise ValueError(
                 "[dispatch.milp_day_ahead] Missing 'district_gas_day_ahead_price_eur_per_mwh_fuel' "
-                "(or legacy alias 'district_gas_price_eur_per_mwh_fuel') and no positive gas-fuel-cost fallback is available."
+                "(or legacy alias 'district_gas_price_eur_per_mwh_fuel') and no positive gas-CHP-fuel-cost fallback is available."
             )
         gas_price_mwh = np.full(n, fallback_gas_cost * 1000.0 / max(1e-9, gas_lhv), dtype=float)
     else:
@@ -274,6 +278,13 @@ def run_milp_day_ahead_dispatch(dispatch_input: DispatchInput, **_: Any) -> Disp
             raise ValueError(
                 "[dispatch.milp_day_ahead] district_gas_day_ahead_price_eur_per_mwh_fuel must be finite and strictly positive."
             )
+    gas_boiler_price_mwh = resolve_gas_boiler_fuel_price_eur_per_mwh(
+        s,
+        p,
+        n_steps=n,
+        align_arr=_arr,
+        error_label="dispatch.milp_day_ahead",
+    )
     co2_price_eur_per_t = None
     if co2_cost_enabled:
         if co2_price_raw is None:
@@ -829,7 +840,7 @@ def run_milp_day_ahead_dispatch(dispatch_input: DispatchInput, **_: Any) -> Disp
         (m.bio_th[t] / max(1e-9, bio_eta_th)) / bio_lhv * bio_fuel_cost
         + (m.bigas_th[t] / max(1e-9, bigas_eta_th)) / bigas_lhv * bigas_fuel_cost
         + (m.gas_fuel_input[t]) / 1000.0 * gas_price_mwh[t]
-        + (m.gas_boiler_th[t] / gas_boiler_eta_th) / 1000.0 * gas_price_mwh[t]
+        + (m.gas_boiler_th[t] / gas_boiler_eta_th) / 1000.0 * gas_boiler_price_mwh[t]
         + (m.wood_th[t] / wood_eta_th) / wood_lhv * wood_fuel_cost
         for t in range(n)
     )

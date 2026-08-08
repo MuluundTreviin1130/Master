@@ -733,6 +733,23 @@ def build_ies_historical_scenarios(
             "co2_price_eur_per_tco2": scenario_co2_price,
             "ambient_temperature_c": scenario_temperature,
         }
+        # Keep the peak-boiler fuel price on its own contract:
+        # - sensitivity flag on  -> follow scenario gas day-ahead
+        # - default SSOT mix     -> copy the packed boiler series unchanged
+        if bool(dispatch_input.params.get("dispatch_historical_gas_boiler_uses_day_ahead_price", False)):
+            scenario_series["district_gas_boiler_day_ahead_price_eur_per_mwh_fuel"] = (
+                scenario_gas_day_ahead_price
+            )
+        elif "district_gas_boiler_day_ahead_price_eur_per_mwh_fuel" in dispatch_input.series:
+            base_boiler_price = np.asarray(
+                dispatch_input.series["district_gas_boiler_day_ahead_price_eur_per_mwh_fuel"],
+                dtype=float,
+            ).reshape(-1)
+            scenario_series["district_gas_boiler_day_ahead_price_eur_per_mwh_fuel"] = _align_daily(
+                base_boiler_price,
+                n,
+                fill_value=float(base_boiler_price[-1]) if base_boiler_price.size else 0.0,
+            )
         scenario_series["district_heat_demand"] = scenario_series["district_space_heat_demand"] + scenario_series["district_hotwater_demand"]
         if "district_waste_incineration_available_th" in dispatch_input.series:
             scenario_series["district_waste_incineration_available_th"] = np.asarray(

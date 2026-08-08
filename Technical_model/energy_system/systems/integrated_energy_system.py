@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 
 from dispatch import DispatchInput, get_dispatch_runner
+from dispatch.core.gas_boiler_fuel_price import constant_fuel_price_eur_per_mwh_from_m3
 from dispatch.scenarios import build_ies_historical_scenarios
 from dispatch.metrics import compute_series_peak_change_kw, compute_series_peak_kw, compute_thermflex_series_metrics
 from market import build_market_bundle
@@ -1919,6 +1920,36 @@ def simulate_integrated_energy_system(params: Dict[str, Any], profiles: Dict[str
                     value_candidates=("price_eur_per_mwh", "ceghix_eur_per_mwh", "gas_price_eur_per_mwh", "cegh_day_ahead_eur_per_mwh", "price"),
                     error_label="Historical gas balance price",
                 )
+        # Peak-boiler fuel price is a separate SSOT path from Gas-CHP gas prices.
+        # Vienna stores a gas/oil mix in fuel_eur_per_m3; that mix must reach the
+        # MILP objective unless an explicit sensitivity flag opts back into the
+        # historical gas day-ahead series for the boiler only.
+        boiler_fuel_eur_per_m3 = _require_tech_economic_value(
+            tech_economics,
+            "district_gas_boiler",
+            "fuel_eur_per_m3",
+        )
+        boiler_lhv_kwh_per_m3 = getattr(district_gas_boiler_cfg, "fuel_lhv_kwh_per_m3", None)
+        if bool(getattr(dispatch_cfg, "historical_gas_boiler_uses_day_ahead_price", False)):
+            if gas_day_ahead_price_eur_per_mwh is None:
+                raise ValueError(
+                    "[integrated_energy_system] dispatch.historical_gas_boiler_uses_day_ahead_price=True "
+                    "requires a resolved district gas day-ahead price series for the peak boiler."
+                )
+            gas_boiler_day_ahead_price_eur_per_mwh = np.asarray(
+                gas_day_ahead_price_eur_per_mwh,
+                dtype=float,
+            ).copy()
+        else:
+            boiler_price_mwh = constant_fuel_price_eur_per_mwh_from_m3(
+                fuel_eur_per_m3=boiler_fuel_eur_per_m3,
+                fuel_lhv_kwh_per_m3=float(boiler_lhv_kwh_per_m3)
+                if boiler_lhv_kwh_per_m3 is not None
+                else 0.0,
+                error_label="integrated_energy_system.district_gas_boiler",
+            )
+            gas_boiler_day_ahead_price_eur_per_mwh = np.full(n_steps, boiler_price_mwh, dtype=float)
+
         co2_price_eur_per_t = None
         if "co2_price_eur_per_tco2" in profiles:
             co2_price_eur_per_t = _optional_price_series_eur_per_mwh(
@@ -2149,6 +2180,11 @@ def simulate_integrated_energy_system(params: Dict[str, Any], profiles: Dict[str
                     ),
                     "district_gas_price_eur_per_mwh_fuel": gas_day_ahead_price_eur_per_mwh[start:stop],
                     "district_gas_day_ahead_price_eur_per_mwh_fuel": gas_day_ahead_price_eur_per_mwh[start:stop],
+                    # Peak-boiler mix/sensitivity price is packed separately so MILP
+                    # never silently reuses the Gas-CHP day-ahead gas series.
+                    "district_gas_boiler_day_ahead_price_eur_per_mwh_fuel": (
+                        gas_boiler_day_ahead_price_eur_per_mwh[start:stop]
+                    ),
                     **(
                         {"co2_price_eur_per_tco2": co2_price_eur_per_t[start:stop]}
                         if co2_price_eur_per_t is not None
@@ -2237,6 +2273,9 @@ def simulate_integrated_energy_system(params: Dict[str, Any], profiles: Dict[str
                     ),
                     "dispatch_enable_co2_cost_model": bool(
                         getattr(dispatch_constraints_cfg, "enable_co2_cost_model", True)
+                    ),
+                    "dispatch_historical_gas_boiler_uses_day_ahead_price": bool(
+                        getattr(dispatch_cfg, "historical_gas_boiler_uses_day_ahead_price", False)
                     ),
                     "bess_eta_charge": float(bess_eta),
                     "bess_eta_discharge": float(bess_eta),
