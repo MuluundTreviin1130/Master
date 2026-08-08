@@ -18,6 +18,7 @@ from pyomo.environ import (
 
 from dispatch.scenarios.historical import build_historical_scenario_bundle
 from dispatch.core import DispatchInput, DispatchResult
+from dispatch.core.gas_boiler_fuel_price import resolve_gas_boiler_fuel_price_eur_per_mwh
 from dispatch.metrics import compute_series_peak_change_kw, compute_series_peak_kw, compute_thermflex_series_metrics
 
 
@@ -115,6 +116,7 @@ def run_milp_two_stage_dispatch(dispatch_input: DispatchInput, **_: Any) -> Disp
     grid_buy = np.zeros((n_scen, n), dtype=float)
     grid_sell = np.zeros((n_scen, n), dtype=float)
     gas_price_mwh = np.empty((n_scen, n), dtype=float)
+    gas_boiler_price_mwh = np.empty((n_scen, n), dtype=float)
     gas_balance_price_mwh = np.empty((n_scen, n), dtype=float)
     co2_price_eur_per_t = np.empty((n_scen, n), dtype=float)
     dh_demand = np.zeros((n_scen, n), dtype=float)
@@ -176,6 +178,15 @@ def run_milp_two_stage_dispatch(dispatch_input: DispatchInput, **_: Any) -> Disp
         gas_th_av[s_idx] = _series(scenario, "district_gas_chp_available_th", n)
         gas_boiler_th_av[s_idx] = _series(scenario, "district_gas_boiler_available_th", n)
         wood_th_av[s_idx] = _series(scenario, "district_wood_chip_boiler_available_th", n)
+        # Resolve boiler fuel price per scenario from the boiler-specific series /
+        # economics. Never inherit the Gas-CHP gas day-ahead series here.
+        gas_boiler_price_mwh[s_idx] = resolve_gas_boiler_fuel_price_eur_per_mwh(
+            scenario.series,
+            p,
+            n_steps=n,
+            align_arr=_arr,
+            error_label="dispatch.milp_two_stage",
+        )
 
     bess_cap = max(0.0, _f(a, "battery_capacity_kwh"))
     bess_p = max(0.0, _f(a, "battery_power_kwh_per_step"))
@@ -245,7 +256,8 @@ def run_milp_two_stage_dispatch(dispatch_input: DispatchInput, **_: Any) -> Disp
     gas_day_ahead_price_day = None
     day_idx_of_t = np.array([t // 24 for t in range(n)], dtype=int)
     n_days = int(day_idx_of_t.max()) + 1 if n > 0 else 0
-    fallback_gas_cost = max(gas_fuel_cost, gas_boiler_fuel_cost)
+    # Gas-CHP fallback must stay on CHP economics; boiler fuel has its own series.
+    fallback_gas_cost = float(gas_fuel_cost)
     fallback_gas_price_mwh = (
         fallback_gas_cost * 1000.0 / max(1e-9, gas_lhv) if fallback_gas_cost > 0.0 else None
     )
@@ -704,10 +716,10 @@ def run_milp_two_stage_dispatch(dispatch_input: DispatchInput, **_: Any) -> Disp
             )
             m.c.add(m.wood_th[s_idx, t] + m.wood_spill[s_idx, t] >= wood_th_av[s_idx, t] * wood_min * m.wood_on[t])
             if gas_procurement_enabled:
-                gas_use_mwh = (
-                    (m.gas_th[s_idx, t] / max(1e-9, gas_eta_th))
-                    + (m.gas_boiler_th[s_idx, t] / gas_boiler_eta_th)
-                ) / 1000.0
+                # Procurement covers Gas-CHP fuel only. Peak-boiler fuel is priced
+                # through the separate boiler mix/sensitivity series so oil uplift
+                # cannot be laundered through the pure-gas procurement path.
+                gas_use_mwh = (m.gas_th[s_idx, t] / max(1e-9, gas_eta_th)) / 1000.0
                 m.c.add(
                     gas_use_mwh
                     <= m.gas_day_ahead_base_mwh_per_h[int(day_idx_of_t[t])] + m.gas_balance_mwh[s_idx, t]
@@ -839,6 +851,14 @@ def run_milp_two_stage_dispatch(dispatch_input: DispatchInput, **_: Any) -> Disp
         )
         for s_idx in range(n_scen)
     )
+    gas_boiler_fuel_cost_expr = sum(
+        probabilities[s_idx]
+        * sum(
+            (m.gas_boiler_th[s_idx, t] / gas_boiler_eta_th) / 1000.0 * gas_boiler_price_mwh[s_idx, t]
+            for t in range(n)
+        )
+        for s_idx in range(n_scen)
+    )
     if gas_procurement_enabled:
         gas_procurement_day_ahead_cost_expr = sum(
             24.0 * gas_day_ahead_price_day[d] * m.gas_day_ahead_base_mwh_per_h[d]
@@ -849,13 +869,17 @@ def run_milp_two_stage_dispatch(dispatch_input: DispatchInput, **_: Any) -> Disp
             * sum(gas_balance_price_mwh[s_idx, t] * m.gas_balance_mwh[s_idx, t] for t in range(n))
             for s_idx in range(n_scen)
         )
-        gas_fuel_cost_expr = gas_procurement_day_ahead_cost_expr + gas_procurement_balance_cost_expr
+        gas_fuel_cost_expr = (
+            gas_procurement_day_ahead_cost_expr
+            + gas_procurement_balance_cost_expr
+            + gas_boiler_fuel_cost_expr
+        )
     else:
         gas_fuel_cost_expr = sum(
             probabilities[s_idx]
             * sum(
                 (m.gas_th[s_idx, t] / max(1e-9, gas_eta_th)) / 1000.0 * gas_price_mwh[s_idx, t]
-                + (m.gas_boiler_th[s_idx, t] / gas_boiler_eta_th) / 1000.0 * gas_price_mwh[s_idx, t]
+                + (m.gas_boiler_th[s_idx, t] / gas_boiler_eta_th) / 1000.0 * gas_boiler_price_mwh[s_idx, t]
                 for t in range(n)
             )
             for s_idx in range(n_scen)

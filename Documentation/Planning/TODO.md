@@ -1592,10 +1592,17 @@
     - ob solverseitig Time-Limit/MIP-Gap/Presolve-Optionen fuer diese reine Mechanismusfigure vertretbar sind
     - ob lower-row alternativ als fixed `24 h` lower-relaxation erzaehlt und die Duration-Dimension nur fuer upper-only gezeigt wird
 
-  - Peak-Boiler-Mix-Fix ist umgesetzt:
-    - `district_gas_boiler_day_ahead_price_eur_per_mwh_fuel` wird nun aus der Wiener Boiler-Economics-SSOT an den MILP uebergeben
-    - `milp_day_ahead.py` und `milp_two_stage.py` nutzen fuer Peak-Boiler-Fuel-Cost nicht mehr die Gas-CHP-Gaspreisreihe
-    - naechster Check: `march_savings` und ggf. `good_feb`/`good_mar` selektiv neu rendern und pruefen, ob Boiler-Energie/Peak jetzt ohne freie Lambda-Objective staerker fallen
+  - Peak-Boiler-Mix-Fix war im Worklog als umgesetzt dokumentiert, fehlte aber auf
+    `master` im Git-Stand; erneut verdrahtet auf
+    `cursor/critical-bug-investigation-327b`:
+    - `district_gas_boiler_day_ahead_price_eur_per_mwh_fuel` kommt aus der Wiener
+      Boiler-Economics-SSOT (Default) bzw. optional aus der Gas-Day-Ahead-Serie
+      via `dispatch.historical_gas_boiler_uses_day_ahead_price`
+    - `milp_day_ahead.py` und `milp_two_stage.py` nutzen fuer Peak-Boiler-Fuel-Cost
+      nicht mehr die Gas-CHP-Gaspreisreihe
+    - naechster Check nach Merge: `march_savings` und ggf. `good_feb`/`good_mar`
+      selektiv neu rendern und pruefen, ob Boiler-Energie/Peak jetzt ohne freie
+      Lambda-Objective staerker fallen
   - vor weiteren Wochen nur selektiv per `--variant <slug>` rendern; nicht alle Varianten pauschal starten
   - zuerst gezielt entscheiden, ob nur die `good_*` Wochen oder auch `november_savings`/`march_savings` aktualisiert werden sollen
   - neuer robuster Pfad: `build_fig_12_weekly_dispatch_shift.py --variant <slug>` nutzt validierte Ref/Flex-Seriencaches je Variante und Case

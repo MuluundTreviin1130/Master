@@ -48,6 +48,10 @@ class DispatchConfig:
     historical_min_year: int = 2020
     historical_max_year: int = 2025
     historical_heating_season_only: bool = True
+    # When False (default), peak-boiler fuel cost uses the economics SSOT mix
+    # price derived from district_gas_boiler.fuel_eur_per_m3. When True, the
+    # boiler reuses the historical gas day-ahead series (sensitivity contract).
+    historical_gas_boiler_uses_day_ahead_price: bool = False
 
     objective_components: List[str] = field(
         default_factory=lambda: [
