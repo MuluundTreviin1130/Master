@@ -15,6 +15,9 @@ import pandas as pd
 from Learning.datasets.save_dataset import save_dataset
 from Learning.registry.register_dataset import register_dataset
 from Learning.thermflex_daily_results.features import add_engineered_feature_columns
+from Learning.thermflex_daily_results.policy_identity import (
+    policy_metadata_from_settings as _policy_metadata_from_settings,
+)
 from Learning.thermflex_daily_results.schema import (
     BUILDER_METADATA_COLUMNS,
     CATEGORICAL_FEATURE_COLUMNS,
@@ -1419,109 +1422,10 @@ def _load_policy_metadata(*, override_name: str) -> dict[str, Any]:
         )
     overrides = json.loads(override_path.read_text(encoding="utf-8-sig"))
     settings = get_settings(overrides=overrides)
-    thermflex_cfg = settings.constraints.thermflex
-    dispatch_cfg = settings.dispatch
-    heating_cfg = settings.heating_control
-    setpoint_c = float(getattr(heating_cfg, "constant_setpoint_c", 0.0))
-    lower_bound_c = float(getattr(thermflex_cfg, "constant_lower_bound_c", setpoint_c))
-    lower_relaxation_k = float(setpoint_c - lower_bound_c)
-    duration_h = float(getattr(thermflex_cfg, "max_flex_duration_h"))
-    max_events_per_day = float(getattr(thermflex_cfg, "max_flex_events_per_day"))
-    dispatch_contract = _dispatch_solve_contract(
-        dispatch_cfg=dispatch_cfg,
-        context_label=f"dispatch settings for {override_name}",
+    return _policy_metadata_from_settings(
+        settings=settings,
+        context_label=f"override {override_name}",
     )
-    return {
-        "policy_case_label_canonical": _build_canonical_case_label(
-            duration_h=duration_h,
-            lower_relaxation_k=lower_relaxation_k,
-            max_events_per_day=max_events_per_day,
-        ),
-        "policy_duration_h": duration_h,
-        "policy_max_events_per_day": max_events_per_day,
-        "policy_constant_lower_bound_c": lower_bound_c,
-        "policy_lower_relaxation_k": lower_relaxation_k,
-        "policy_tau_h": float(getattr(dispatch_cfg, "dh_bus_inertia_tau_h")),
-        **dispatch_contract,
-        "policy_upper_only": bool(abs(lower_relaxation_k) < 1e-12),
-    }
-
-
-def _dispatch_solve_contract(*, dispatch_cfg: Any, context_label: str) -> dict[str, float]:
-    """Expose the MILP rolling-horizon contract as stable learning features."""
-
-    horizon_h = _required_positive_int_attr(
-        dispatch_cfg,
-        "horizon_h",
-        context_label=context_label,
-    )
-    rolling_commit_raw_h = _required_nonnegative_int_attr(
-        dispatch_cfg,
-        "rolling_commit_h",
-        context_label=context_label,
-    )
-    rolling_commit_h = horizon_h if rolling_commit_raw_h <= 0 else rolling_commit_raw_h
-    if rolling_commit_h > horizon_h:
-        raise ValueError(
-            "[thermflex_daily_results] dispatch rolling horizon contract invalid in "
-            f"{context_label}: rolling_commit_h={rolling_commit_h}, horizon_h={horizon_h}."
-        )
-    lookahead_h = horizon_h - rolling_commit_h
-    return {
-        "policy_dispatch_horizon_h": float(horizon_h),
-        "policy_dispatch_rolling_commit_h": float(rolling_commit_h),
-        "policy_dispatch_lookahead_h": float(lookahead_h),
-        "policy_dispatch_is_rolling": float(lookahead_h > 0),
-    }
-
-
-def _required_positive_int_attr(obj: Any, attr_name: str, *, context_label: str) -> int:
-    value = _required_int_attr(obj, attr_name, context_label=context_label)
-    if value <= 0:
-        raise ValueError(
-            "[thermflex_daily_results] required positive integer setting "
-            f"`{attr_name}` must be > 0 in {context_label}, got {value}."
-        )
-    return value
-
-
-def _required_nonnegative_int_attr(obj: Any, attr_name: str, *, context_label: str) -> int:
-    value = _required_int_attr(obj, attr_name, context_label=context_label)
-    if value < 0:
-        raise ValueError(
-            "[thermflex_daily_results] required nonnegative integer setting "
-            f"`{attr_name}` must be >= 0 in {context_label}, got {value}."
-        )
-    return value
-
-
-def _required_int_attr(obj: Any, attr_name: str, *, context_label: str) -> int:
-    if not hasattr(obj, attr_name):
-        raise AttributeError(
-            "[thermflex_daily_results] required dispatch setting "
-            f"`{attr_name}` missing in {context_label}."
-        )
-    value = getattr(obj, attr_name)
-    if value is None:
-        raise ValueError(
-            "[thermflex_daily_results] required dispatch setting "
-            f"`{attr_name}` is None in {context_label}."
-        )
-    return int(value)
-
-
-def _build_canonical_case_label(
-    *,
-    duration_h: float,
-    lower_relaxation_k: float,
-    max_events_per_day: float,
-) -> str:
-    """Create one canonical case label directly from policy parameters."""
-
-    if abs(lower_relaxation_k) < 1e-12:
-        return f"UPPER_{int(round(duration_h))}H"
-    lower_label = str(int(round(lower_relaxation_k)))
-    return f"LOWER{lower_label}K_DUR{int(round(duration_h))}_EVT{int(round(max_events_per_day))}"
 
 
 def _hash_family_spec(family_spec: dict[str, Any]) -> str:

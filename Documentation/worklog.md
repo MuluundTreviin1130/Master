@@ -1,5 +1,27 @@
 # Worklog
 
+## 2026-08-09
+
+### Critical bugfix: curated ThermFlex policy identity omitted upper/lower envelope flags
+
+- Finding: `thermflex_daily_results` / `thermflex_hourly_dispatch` policy
+  descriptors derived `policy_upper_only` only from zero lower relaxation and
+  omitted live `constrain_upper_temperature` / `use_explicit_lower_bounds`.
+  Constant-mode twins with the same setpoint, lower, duration, and event budget
+  therefore shared `UPPER_*H` labels and identical policy feature vectors while
+  MILP teacher labels still diverged on the upper comfort constraints.
+- Impact: curated train/predict paths could silently mix or reuse the wrong
+  ThermFlex envelope; sibling of native surrogate identity PR #39, not covered
+  by curated content-digest PR #44.
+- Fix on branch `cursor/critical-bug-investigation-893a`:
+  - import-light `Learning/thermflex_daily_results/policy_identity.py`
+  - numeric features `policy_constrain_upper_temperature` /
+    `policy_use_explicit_lower_bounds` in daily and hourly_dispatch schemas
+  - predict path writes the same descriptors; explicit lowers fail fast when
+    activated without `constant_lower_bound_c`
+- Validation:
+  `python3 -m unittest Learning.thermflex_daily_results.test_policy_metadata_identity -v`
+
 ## 2026-06-12
 
 ### Target-layer update: sector-coupled MES with planetary boundaries / LCA scenario bridge

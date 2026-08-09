@@ -50,6 +50,9 @@ POLICY_FEATURE_COLUMNS: tuple[str, ...] = (
     "policy_max_events_per_day",
     "policy_constant_lower_bound_c",
     "policy_upper_only",
+    # Live ThermFlex envelope flags shared with daily_results policy metadata.
+    "policy_use_explicit_lower_bounds",
+    "policy_constrain_upper_temperature",
 )
 
 
