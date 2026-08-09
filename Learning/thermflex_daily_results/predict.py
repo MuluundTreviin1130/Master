@@ -161,6 +161,12 @@ def _build_feature_frame(
     frame["policy_max_events_per_day"] = float(policy_meta["policy_max_events_per_day"])
     frame["policy_constant_lower_bound_c"] = float(policy_meta["policy_constant_lower_bound_c"])
     frame["policy_upper_only"] = float(bool(policy_meta["policy_upper_only"]))
+    frame["policy_use_explicit_lower_bounds"] = float(
+        policy_meta["policy_use_explicit_lower_bounds"]
+    )
+    frame["policy_constrain_upper_temperature"] = float(
+        policy_meta["policy_constrain_upper_temperature"]
+    )
     frame["policy_case_label_matches_export"] = float(
         str(policy_label).strip() == str(policy_meta["policy_case_label_canonical"]).strip()
     )

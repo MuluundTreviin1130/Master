@@ -2,6 +2,13 @@
 
 ## Active
 
+- [ ] Critical correctness follow-ups remaining after 2026-08-09 curated policy-identity fix:
+  - curated daily/hourly_dispatch now encode `policy_constrain_upper_temperature`
+    and `policy_use_explicit_lower_bounds` (branch `cursor/critical-bug-investigation-893a`)
+  - still open medium/high SSOT: gate remaining central DH design bounds by
+    `technology_activation` in `Settings/problem/bounds.py`
+  - prefer merging open critical-bug PRs #26–#47 rather than re-reporting
+
 - [ ] ThermFlex-Paper: Two-stage-MILP als methodischen Unsicherheits-/Preis-Pfad festziehen:
   - klaeren, ob `milp_two_stage` mit historischen Preis-/Wetter-Szenarien nur als Robustheitscheck oder als eigener Sensitivitaetsblock berichtet wird
   - Settings-Vertrag fuer `stochastic_enabled`, historische Preisquellen, Szenarioanzahl und Reduktion dokumentieren
