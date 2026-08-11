@@ -115,6 +115,31 @@ def make_bounds(engine, caps: Optional[Dict[str, float]] = None) -> Bounds:
     return b
 
 
+# Central DH decision variables that exist in the optimization vector.
+# Each entry maps a technology_activation flag onto the bound name(s) that must
+# collapse to 0..0 when that technology is inactive. Technologies without a
+# design variable here (external heat, gas boiler, solar thermal, waste) are
+# intentionally omitted: they are not part of the sampled decision vector.
+_TECHNOLOGY_ACTIVATION_BOUND_VARS = (
+    ("district_heat_pump", ("district_heat_pump_kw_th",)),
+    ("district_thermal_storage", ("district_thermal_storage_kwh_th",)),
+    ("district_wood_chip_boiler", ("district_wood_chip_boiler_kw_th",)),
+    ("district_biomass_chp", ("district_biomass_chp_kw_th",)),
+    ("district_geothermal", ("district_geothermal_kw_el",)),
+    ("district_gas_chp", ("district_gas_chp_kw_el",)),
+    ("district_biogas_chp", ("district_biogas_chp_kw_el",)),
+)
+
+
+def _force_bound_zero(bounds: Bounds, idx: Dict[str, int], var_name: str) -> None:
+    """Collapse one decision variable to the inactive interval 0..0."""
+    i = idx.get(var_name)
+    if i is None:
+        return
+    bounds.lower[i] = 0.0
+    bounds.upper[i] = 0.0
+
+
 def apply_feature_bounds(engine, bounds: Bounds) -> None:
     """Enforce feature-toggle consistency on decision bounds.
 
@@ -125,6 +150,9 @@ def apply_feature_bounds(engine, bounds: Bounds) -> None:
     Notes:
     - V2H and thermal-flex currently have no direct decision variable in the
       superset vector, so only BESS and H2 vars are guarded here.
+    - Central DH capacities are gated separately by
+      ``apply_technology_activation_bounds`` because their SSOT lives in
+      ``settings.technology_activation``, not ``engine.features``.
     """
     features = getattr(engine, "features", None)
     if features is None:
@@ -132,25 +160,54 @@ def apply_feature_bounds(engine, bounds: Bounds) -> None:
 
     idx = make_name_to_index(bounds)
 
-    def _force_zero(var_name: str) -> None:
-        i = idx.get(var_name)
-        if i is None:
-            return
-        bounds.lower[i] = 0.0
-        bounds.upper[i] = 0.0
-
     if not bool(getattr(features, "enable_bess", True)):
-        _force_zero("bess_kwh")
+        _force_bound_zero(bounds, idx, "bess_kwh")
 
     if not bool(getattr(features, "enable_h2", False)):
-        _force_zero("ely_kw")
-        _force_zero("h2_tank_kwh")
-        _force_zero("fc_kw")
+        _force_bound_zero(bounds, idx, "ely_kw")
+        _force_bound_zero(bounds, idx, "h2_tank_kwh")
+        _force_bound_zero(bounds, idx, "fc_kw")
     if not bool(getattr(features, "enable_small_wind", False)):
-        _force_zero("small_wind_kw")
+        _force_bound_zero(bounds, idx, "small_wind_kw")
     if not bool(getattr(features, "enable_large_wind", False)):
-        _force_zero("large_wind_kw")
+        _force_bound_zero(bounds, idx, "large_wind_kw")
     if not bool(getattr(features, "enable_biogas_engine", False)):
-        _force_zero("biogas_engine_kw")
+        _force_bound_zero(bounds, idx, "biogas_engine_kw")
     if not bool(getattr(features, "enable_wood_gasifier", False)):
-        _force_zero("wood_gasifier_kw")
+        _force_bound_zero(bounds, idx, "wood_gasifier_kw")
+
+
+def apply_technology_activation_bounds(activation, bounds: Bounds) -> None:
+    """Enforce technology_activation consistency on central DH decision bounds.
+
+    Why this exists:
+    - ``make_bounds`` keeps positive scaffold uppers for central DH assets so an
+      activated technology can be sized by Gold / optimizer / teacher sampling.
+    - Dispatch already ignores inactive DH technologies, but CAPEX / OPEX in
+      ``Cost_model.financial_model`` still scale with the design capacities that
+      were sampled into ``params``.
+    - Without this clamp, default ``technology_activation.*=False`` still leaves
+      e.g. ``district_heat_pump_kw_th`` open at ``0..7500``. Gold/teacher points
+      can therefore accumulate HP/storage/CHP CAPEX while IES never dispatches
+      those assets — corrupting NPC labels and optimization objectives.
+
+    Contract:
+    - Activation OFF => force related decision variable(s) to 0..0.
+    - Activation ON  => leave current bounds untouched (manual / potential caps
+      remain authoritative).
+    - Missing activation object is a no-op, matching ``apply_feature_bounds``
+      when ``engine.features`` is absent; callers that own Settings must pass the
+      live ``technology_activation`` SSOT.
+    """
+    if activation is None:
+        return
+
+    idx = make_name_to_index(bounds)
+    for activation_attr, var_names in _TECHNOLOGY_ACTIVATION_BOUND_VARS:
+        # Explicit False (or missing attr treated as inactive) collapses bounds.
+        # Active technologies keep whatever upper was established by scaffold,
+        # manual installed_*_max, or energy-potential caps.
+        if bool(getattr(activation, activation_attr, False)):
+            continue
+        for var_name in var_names:
+            _force_bound_zero(bounds, idx, var_name)

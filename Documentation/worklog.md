@@ -10437,3 +10437,11 @@ Naechste Schritte:
   - Added five research highlights, each below the usual 85-character limit.
   - Regenerated the 13 manuscript sections and confirmed `225` citation keys
     with no missing entries in the review bibliography.
+
+- 2026-08-11: Gated central DH design bounds by `technology_activation`.
+  - Bug: inactive DH techs kept positive scaffold uppers in `Settings/problem/bounds.py`
+    (`apply_feature_bounds` only covered engine features). Gold/teacher could sample
+    positive inactive capacities → CAPEX in NPC without dispatch benefit.
+  - Fix: `apply_technology_activation_bounds` + hard clamp in `get_settings` after
+    manual/potential/override reopen steps.
+  - Validation: `python3 -m unittest tests.test_technology_activation_bounds -v`.

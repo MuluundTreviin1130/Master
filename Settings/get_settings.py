@@ -21,7 +21,12 @@ from Settings.optimization.sampler import make_sampler
 from Settings.run.scheduler import make_scheduler
 from Settings.surrogate.surrogate import make_surrogate
 from Settings.surrogate.train import make_surrogate_train
-from Settings.problem.bounds import make_bounds, apply_feature_bounds, Bounds
+from Settings.problem.bounds import (
+    Bounds,
+    apply_feature_bounds,
+    apply_technology_activation_bounds,
+    make_bounds,
+)
 from Settings.problem.feasibility.verification import make_feasibility_verification
 from Settings.problem.hypervolume import make_hypervolume
 from Settings.problem.objectives import make_objectives
@@ -861,18 +866,25 @@ def get_settings(overrides: Dict[str, Any] | None = None) -> Settings:
     # Apply explicit bounds-structure overrides (legacy compatibility).
     _apply_bounds_struct_overrides(cfg.bounds, overrides)
 
-    # Final hard clamp for feature OFF in case legacy overrides attempted to re-open bounds.
-    apply_feature_bounds(cfg.engine, cfg.bounds)
+    def _clamp_inactive_decision_bounds() -> None:
+        # Feature OFF and technology_activation OFF must both hard-clamp after every
+        # step that can reopen uppers (manual caps, potentials, variable overrides).
+        # Otherwise inactive central DH capacities remain sampleable and pollute NPC.
+        apply_feature_bounds(cfg.engine, cfg.bounds)
+        apply_technology_activation_bounds(cfg.technology_activation, cfg.bounds)
+
+    # Final hard clamp for feature/activation OFF in case legacy overrides attempted to re-open bounds.
+    _clamp_inactive_decision_bounds()
     shared_capacity_caps = _derive_capacity_caps_from_annual_potentials(cfg)
     _require_manual_bounds_for_nonpotential_central_dh_technologies(cfg)
     _apply_manual_technology_capacity_limits(cfg)
     _apply_energy_potential_caps(cfg, overrides)
-    apply_feature_bounds(cfg.engine, cfg.bounds)
+    _clamp_inactive_decision_bounds()
     # Apply per-variable overrides only after all manual/potential upper caps are known.
     base_upper = {cfg.bounds.names[i]: float(cfg.bounds.upper[i]) for i in range(len(cfg.bounds.names))}
     if overrides:
         _apply_bounds_variable_overrides(cfg, overrides, base_upper=base_upper)
-    apply_feature_bounds(cfg.engine, cfg.bounds)
+    _clamp_inactive_decision_bounds()
     _validate_energy_potential_alignment(cfg)
     _validate_district_gas_chp_operating_region(cfg)
     _validate_dispatch_objective_components(cfg)
