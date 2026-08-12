@@ -1,5 +1,18 @@
 # Worklog
 
+## 2026-08-12
+
+### Critical audit: inactive H2 fixed-system CAPEX pollution
+
+- Found that `Cost_model/financial_model._annualized_capex_and_opex` always added
+  `economics.hydrogen.fixed_system_eur` (Vienna 63800 EUR) even when all H2
+  capacities were zero (SH arms with `features.enable_h2=False`).
+- This removed the fixed-cost differential between H2 and no-H2 portfolios and
+  biased technology screening toward H2.
+- Fix: charge fixed H2 CAPEX only when ely/tank/fc capacity > 0; KPI path also
+  zeros H2 capacities when `enable_h2=False` (mirrors existing V2H gate).
+- Added import-light regression test under `Cost_model/tests/`.
+
 ## 2026-06-12
 
 ### Target-layer update: sector-coupled MES with planetary boundaries / LCA scenario bridge

@@ -2,6 +2,8 @@
 
 ## Active
 
+- [ ] Follow-up from 2026-08-12 critical audit (after H2 fixed-CAPEX fix): remaining medium items stay deferred — `allow_unserved_*` / `allow_grid_export` ignored by MILP; MILP `_f` 0→1 coercion; DH storage power limits; external-heat must_run SSOT; latent silent 0.0 CHP CO2 / wood-biomass fuel if economics keys omitted.
+
 - [ ] ThermFlex-Paper: Two-stage-MILP als methodischen Unsicherheits-/Preis-Pfad festziehen:
   - klaeren, ob `milp_two_stage` mit historischen Preis-/Wetter-Szenarien nur als Robustheitscheck oder als eigener Sensitivitaetsblock berichtet wird
   - Settings-Vertrag fuer `stochastic_enabled`, historische Preisquellen, Szenarioanzahl und Reduktion dokumentieren

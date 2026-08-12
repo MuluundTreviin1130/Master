@@ -168,7 +168,14 @@ def _annualized_capex_and_opex(
     capex_h2_tank = float_(h2_tank_cost["capex_eur_per_kwh"]) * h2_tank_kwh
     capex_fc = float_(fc_cost["capex_eur_per_kw"]) * fc_kw
     capex_comp = float_(comp_cost["capex_eur_per_kw_ely"]) * ely_kw
-    capex_h2_fixed = float_(econ["hydrogen"]["fixed_system_eur"])
+    # Fixed H2-system CAPEX must follow installed H2 assets. When
+    # ``features.enable_h2=False``, design bounds force ely/tank/fc to 0, but
+    # previously ``fixed_system_eur`` was still charged. That silently polluted
+    # NPC for every no-H2 portfolio (including SH arms with h2=0) and removed
+    # the fixed-cost differential from H2 vs no-H2 comparisons, making H2 look
+    # cheaper than the economics SSOT intends.
+    h2_installed = (ely_kw > 0.0) or (h2_tank_kwh > 0.0) or (fc_kw > 0.0)
+    capex_h2_fixed = float_(econ["hydrogen"]["fixed_system_eur"]) if h2_installed else 0.0
     capex_h2 = capex_h2_fixed + capex_ely + capex_h2_tank + capex_fc + capex_comp
     capex_small_wind = float_(small_wind_cost["capex_eur_per_kw"]) * small_wind_kw
     capex_large_wind = float_(large_wind_cost["capex_eur_per_kw"]) * large_wind_kw
