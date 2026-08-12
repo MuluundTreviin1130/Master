@@ -2,6 +2,19 @@
 
 ## 2026-08-12
 
+### Critical audit: native identity omitted ThermFlex event-response bounds
+
+- Found that Settings default `constraints.thermflex.use_event_response_bounds=False`
+  while Vienna ThermFlex paper cases set it `True` (with peak/energy/recovery
+  enforces). Neither native `signature_hash` static context nor hashed
+  `family_hash` included those fields (open PR #39 covers envelope
+  lowers/duration/events only).
+- Concrete trigger: train eligible native under defaults, then switch to the
+  Vienna paper event-response cut → same family/signature identity →
+  `auto_train` / `resolve_model` can reuse incompatible teacher labels.
+- Fix: hash event-response policy into signature context, static features, and
+  family `dispatch_signature`; add import-light regression tests.
+
 ### Critical audit: native family hash omitted heating-control setpoints/modes
 
 - Found that `Learning.families.build_family` hashed only schema names (and,

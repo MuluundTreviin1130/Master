@@ -10,6 +10,7 @@ from Optimization.framework.engines.Surrogat_model.features import (
     resolve_feature_encoding,
     resolve_feature_names,
     resolve_surrogate_targets,
+    thermflex_event_response_policy_identity,
 )
 
 
@@ -95,11 +96,17 @@ def build_family(settings: Any, provenance: Dict[str, Any] | None = None) -> Fam
     # values inside the hashed family payload so 22.0 vs 22.5 (or constant vs
     # day_night) cannot silently reuse one dataset/model family. Sibling of the
     # ThermFlex envelope identity fields (constant_lower / duration / events).
+    #
+    # Event-response bounds are a separate Vienna-paper policy cut: Settings
+    # defaults keep ``use_event_response_bounds=False`` while paper cases set
+    # ``True``. That must also participate in family identity (distinct from
+    # open PR #39 envelope lowers).
     dispatch_signature = {
         "dispatch_model_id": str(getattr(getattr(settings, "learning", None), "dispatch_model_id", "default")),
         "dispatch_params": {
             "delta_T": 0.0,
             **heating_control_policy_identity(settings),
+            **thermflex_event_response_policy_identity(settings),
         },
     }
     spec = FamilySpec(

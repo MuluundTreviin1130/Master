@@ -46,6 +46,35 @@ def heating_control_policy_identity(settings: Any) -> Dict[str, Any]:
     }
 
 
+def thermflex_event_response_policy_identity(settings: Any) -> Dict[str, Any]:
+    """Return ThermFlex event-response fields that change MILP teacher labels.
+
+    Vienna ThermFlex paper cases activate
+    ``constraints.thermflex.use_event_response_bounds=True`` (with peak/energy/
+    recovery enforces). Settings defaults keep the flag ``False``. Those levers
+    change the feasible ThermFlex region and therefore teacher KPIs, but they
+    previously lived in neither ``signature_hash`` static context nor the hashed
+    native ``family_hash`` (open PR #39 covers envelope lowers/duration/events
+    only). Train under defaults then switch to the paper event-response cut
+    reused one family/artifact silently.
+    """
+    thermflex_cfg = getattr(getattr(settings, "constraints", None), "thermflex", None)
+    return {
+        "use_event_response_bounds": bool(
+            getattr(thermflex_cfg, "use_event_response_bounds", False)
+        ),
+        "enforce_event_peak_bounds": bool(
+            getattr(thermflex_cfg, "enforce_event_peak_bounds", True)
+        ),
+        "enforce_event_energy_bounds": bool(
+            getattr(thermflex_cfg, "enforce_event_energy_bounds", True)
+        ),
+        "enforce_recovery_cooldown": bool(
+            getattr(thermflex_cfg, "enforce_recovery_cooldown", True)
+        ),
+    }
+
+
 def _is_feature_enabled(settings: Any, attr: str) -> bool:
     eng_cfg = getattr(settings, "engine", None)
     features = getattr(eng_cfg, "features", None)
@@ -331,6 +360,12 @@ def resolve_feature_names(settings: Any) -> List[str]:
         "night_lower_bound_c",
         "thermflex_max_duration_h",
         "thermflex_max_events_per_day",
+        # Event-response policy must participate in feature schema identity so
+        # default-off vs Vienna-paper-on cannot share one static column layout.
+        "thermflex_use_event_response_bounds",
+        "thermflex_enforce_event_peak_bounds",
+        "thermflex_enforce_event_energy_bounds",
+        "thermflex_enforce_recovery_cooldown",
     ]
     for name in required:
         if name not in feature_names:
@@ -353,6 +388,10 @@ def build_static_feature_vector(settings: Any, profile_id: str) -> np.ndarray:
     heating_control = getattr(settings, "heating_control", None)
     thermflex_cfg = getattr(getattr(settings, "constraints", None), "thermflex", None)
     active_tariff_arm = get_active_tariff_arm(settings)
+    # Live event-response flags must occupy static columns (not only names) so
+    # default-off vs paper-on policies produce distinct augmented X rows even
+    # before family-hash / signature-hash separation.
+    event_response = thermflex_event_response_policy_identity(settings)
     return np.array(
         [
             float(int(bool(getattr(features, "enable_bess", False)))),
@@ -388,6 +427,10 @@ def build_static_feature_vector(settings: Any, profile_id: str) -> np.ndarray:
             float(getattr(thermflex_cfg, "night_lower_bound_c", 0.0) or 0.0),
             float(getattr(thermflex_cfg, "max_flex_duration_h", 0.0) or 0.0),
             float(getattr(thermflex_cfg, "max_flex_events_per_day", 0.0) or 0.0),
+            float(int(bool(event_response["use_event_response_bounds"]))),
+            float(int(bool(event_response["enforce_event_peak_bounds"]))),
+            float(int(bool(event_response["enforce_event_energy_bounds"]))),
+            float(int(bool(event_response["enforce_recovery_cooldown"]))),
         ],
         dtype=float,
     )
@@ -401,6 +444,10 @@ def build_signature_context_payload(settings: Any, profile_id: str) -> Dict[str,
     thermflex_cfg = getattr(getattr(settings, "constraints", None), "thermflex", None)
     dispatch_cfg = getattr(settings, "dispatch", None)
     district_heating = getattr(settings, "district_heating", None)
+    # Keep event-response policy inside signature context so artifact directories
+    # under Optimization/Learning scoped by signature_hash cannot collide across
+    # the Settings-default-off vs Vienna-paper-on cut.
+    event_response = thermflex_event_response_policy_identity(settings)
     return {
         "profile_id": str(profile_id),
         "system_id": str(getattr(eng_cfg, "system_id", "unknown") or "unknown"),
@@ -414,6 +461,10 @@ def build_signature_context_payload(settings: Any, profile_id: str) -> Dict[str,
         "night_lower_bound_c": float(getattr(thermflex_cfg, "night_lower_bound_c", 0.0) or 0.0),
         "max_flex_duration_h": float(getattr(thermflex_cfg, "max_flex_duration_h", 0.0) or 0.0),
         "max_flex_events_per_day": float(getattr(thermflex_cfg, "max_flex_events_per_day", 0.0) or 0.0),
+        "use_event_response_bounds": bool(event_response["use_event_response_bounds"]),
+        "enforce_event_peak_bounds": bool(event_response["enforce_event_peak_bounds"]),
+        "enforce_event_energy_bounds": bool(event_response["enforce_event_energy_bounds"]),
+        "enforce_recovery_cooldown": bool(event_response["enforce_recovery_cooldown"]),
         "district_heating_share": float(getattr(district_heating, "share", 0.0) or 0.0),
         "dispatch_mode": str(getattr(dispatch_cfg, "mode", "unknown") or "unknown"),
         "dispatch_stochastic_enabled": bool(getattr(dispatch_cfg, "stochastic_enabled", False)),

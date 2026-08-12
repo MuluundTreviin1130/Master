@@ -56,10 +56,23 @@ def _load_build_family():
             ),
         }
 
+    def thermflex_event_response_policy_identity(_settings):
+        # Heating-control tests keep event-response fixed so hash diffs isolate
+        # setpoint / control_mode identity only.
+        return {
+            "use_event_response_bounds": False,
+            "enforce_event_peak_bounds": True,
+            "enforce_event_energy_bounds": True,
+            "enforce_recovery_cooldown": True,
+        }
+
     features_mod.resolve_feature_names = resolve_feature_names
     features_mod.resolve_feature_encoding = resolve_feature_encoding
     features_mod.resolve_surrogate_targets = resolve_surrogate_targets
     features_mod.heating_control_policy_identity = heating_control_policy_identity
+    features_mod.thermflex_event_response_policy_identity = (
+        thermflex_event_response_policy_identity
+    )
 
     for name in (
         "Optimization",
