@@ -24,6 +24,28 @@ def get_control_mode(settings: Any) -> str:
     return str(getattr(getattr(settings, "heating_control", None), "control_mode", "constant") or "constant").strip().lower()
 
 
+def heating_control_policy_identity(settings: Any) -> Dict[str, Any]:
+    """Return heating-control fields that change teacher labels and must
+    participate in native surrogate family identity.
+
+    ThermFlex paper cases treat ``constant_setpoint_c`` and ``control_mode`` as
+    first-class global policy levers. Those values already appear in static
+    features and signature context, but ``build_family`` previously hashed only
+    feature *names*, so e.g. setpoint 22.0 vs 22.5 (Settings default vs paper)
+    or ``constant`` vs ``day_night`` collided on one ``family_hash``. Dataset
+    cache reuse and ``resolve_model`` then silently attached the wrong teacher
+    labels / artifact across incompatible heating policies.
+    """
+    heating_control = getattr(settings, "heating_control", None)
+    return {
+        "reference_control_mode": get_reference_control_mode(settings),
+        "control_mode": get_control_mode(settings),
+        "constant_setpoint_c": float(getattr(heating_control, "constant_setpoint_c", 0.0) or 0.0),
+        "day_setpoint_c": float(getattr(heating_control, "day_setpoint_c", 0.0) or 0.0),
+        "night_setpoint_c": float(getattr(heating_control, "night_setpoint_c", 0.0) or 0.0),
+    }
+
+
 def _is_feature_enabled(settings: Any, attr: str) -> bool:
     eng_cfg = getattr(settings, "engine", None)
     features = getattr(eng_cfg, "features", None)

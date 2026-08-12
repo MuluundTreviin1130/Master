@@ -6,6 +6,7 @@ from dataclasses import asdict, dataclass, field, is_dataclass
 from typing import Any, Dict, List
 
 from Optimization.framework.engines.Surrogat_model.features import (
+    heating_control_policy_identity,
     resolve_feature_encoding,
     resolve_feature_names,
     resolve_surrogate_targets,
@@ -89,10 +90,16 @@ def build_family(settings: Any, provenance: Dict[str, Any] | None = None) -> Fam
         "time_series_schema": list(getattr(getattr(settings, "learning", None), "time_series_schema", []) or []),
         "location_mode": str(getattr(getattr(settings, "learning", None), "location_mode", "dataset_context")),
     }
+    # Heating-control setpoints/modes change ThermFlex/EC teacher KPIs under an
+    # otherwise identical design space and feature-name schema. Keep the live
+    # values inside the hashed family payload so 22.0 vs 22.5 (or constant vs
+    # day_night) cannot silently reuse one dataset/model family. Sibling of the
+    # ThermFlex envelope identity fields (constant_lower / duration / events).
     dispatch_signature = {
         "dispatch_model_id": str(getattr(getattr(settings, "learning", None), "dispatch_model_id", "default")),
         "dispatch_params": {
             "delta_T": 0.0,
+            **heating_control_policy_identity(settings),
         },
     }
     spec = FamilySpec(

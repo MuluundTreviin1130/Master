@@ -2,6 +2,20 @@
 
 ## 2026-08-12
 
+### Critical audit: native family hash omitted heating-control setpoints/modes
+
+- Found that `Learning.families.build_family` hashed only schema names (and,
+  via open PRs, ThermFlex envelope / dispatch contract / tariff fields) while
+  omitting live `heating_control.constant_setpoint_c` / `control_mode`.
+- Concrete trigger: train eligible native at setpoint 22.0 (Settings default),
+  then switch to paper 22.5 (or `constant` → `day_night`). Same `family_hash`
+  → `auto_train_surrogate` reuses cached teacher Y; `resolve_model` +
+  `choose_artifact_path` can load the prior family artifact because
+  `load_bundle` only checks feature names/width.
+- Distinct from open PR #39 (envelope lowers/duration/events) and #35/#46.
+- Fix: hash live heating-control identity into `dispatch_signature`; add
+  import-light regression tests.
+
 ### Critical audit: inactive H2 fixed-system CAPEX pollution
 
 - Found that `Cost_model/financial_model._annualized_capex_and_opex` always added
