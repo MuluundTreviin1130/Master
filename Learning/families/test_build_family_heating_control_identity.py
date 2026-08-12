@@ -66,6 +66,30 @@ def _load_build_family():
             "enforce_recovery_cooldown": True,
         }
 
+    def engine_feature_policy_identity(_settings):
+        # Fixed baseline so heating-control tests isolate only that policy axis.
+        return {
+            "enable_bess": False,
+            "enable_v2h": False,
+            "enable_h2": False,
+            "enable_thermflex": False,
+            "enable_small_wind": False,
+            "enable_large_wind": False,
+            "enable_biogas_engine": False,
+            "enable_wood_gasifier": False,
+            "district_external_heat": False,
+            "district_gas_boiler": False,
+            "district_heat_pump": False,
+            "district_thermal_storage": False,
+            "district_wood_chip_boiler": False,
+            "district_biomass_chp": False,
+            "district_biogas_chp": False,
+            "district_gas_chp": False,
+            "district_geothermal": False,
+            "district_solar_thermal": False,
+            "district_waste_incineration": False,
+        }
+
     features_mod.resolve_feature_names = resolve_feature_names
     features_mod.resolve_feature_encoding = resolve_feature_encoding
     features_mod.resolve_surrogate_targets = resolve_surrogate_targets
@@ -73,6 +97,7 @@ def _load_build_family():
     features_mod.thermflex_event_response_policy_identity = (
         thermflex_event_response_policy_identity
     )
+    features_mod.engine_feature_policy_identity = engine_feature_policy_identity
 
     for name in (
         "Optimization",

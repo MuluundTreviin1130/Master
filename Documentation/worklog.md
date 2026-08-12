@@ -2,6 +2,17 @@
 
 ## 2026-08-12
 
+### Critical audit: native family hash omitted SH engine feature flags
+
+- Found that `build_family` hashed feature *names* for `enable_thermflex` /
+  `enable_h2` / … but not the live boolean values. SH arms
+  `bess*_v2h*_h2*_tf0` vs `…_tf1` therefore shared one `family_hash`.
+- Concrete trigger: `auto_train_surrogate` across the SH arm matrix reuses
+  incompatible teacher Y / registry entries between ThermFlex-off and -on arms
+  (and similarly H2 on/off) while `signature_hash` already differed.
+- Fix: hash `engine_feature_policy_identity` into family `dispatch_signature`;
+  import-light regression tests for tf0/tf1 and h2 on/off.
+
 ### Critical audit: native identity omitted ThermFlex event-response bounds
 
 - Found that Settings default `constraints.thermflex.use_event_response_bounds=False`

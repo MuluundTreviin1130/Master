@@ -75,6 +75,47 @@ def thermflex_event_response_policy_identity(settings: Any) -> Dict[str, Any]:
     }
 
 
+def engine_feature_policy_identity(settings: Any) -> Dict[str, Any]:
+    """Return engine/technology enable flags that change teacher labels.
+
+    SH/GIW arms toggle ``features.enable_thermflex`` / ``enable_h2`` / … while
+    keeping the same design-bound *names* and static feature *names*. Family
+    hashing previously used only those names, so e.g. ``bess0_v2h0_h2{0}_tf0``
+    vs ``…_tf1`` shared one ``family_hash`` and ``auto_train_surrogate`` could
+    reuse incompatible teacher Y across arms. ``signature_hash`` already embeds
+    these flags; family identity must match that contract.
+    """
+    features = getattr(getattr(settings, "engine", None), "features", None)
+    activation = getattr(settings, "technology_activation", None)
+    return {
+        "enable_bess": bool(getattr(features, "enable_bess", False)),
+        "enable_v2h": bool(getattr(features, "enable_v2h", False)),
+        "enable_h2": bool(getattr(features, "enable_h2", False)),
+        "enable_thermflex": bool(getattr(features, "enable_thermflex", False)),
+        "enable_small_wind": bool(getattr(features, "enable_small_wind", False)),
+        "enable_large_wind": bool(getattr(features, "enable_large_wind", False)),
+        "enable_biogas_engine": bool(getattr(features, "enable_biogas_engine", False)),
+        "enable_wood_gasifier": bool(getattr(features, "enable_wood_gasifier", False)),
+        "district_external_heat": bool(getattr(activation, "district_external_heat", False)),
+        "district_gas_boiler": bool(getattr(activation, "district_gas_boiler", False)),
+        "district_heat_pump": bool(getattr(activation, "district_heat_pump", False)),
+        "district_thermal_storage": bool(
+            getattr(activation, "district_thermal_storage", False)
+        ),
+        "district_wood_chip_boiler": bool(
+            getattr(activation, "district_wood_chip_boiler", False)
+        ),
+        "district_biomass_chp": bool(getattr(activation, "district_biomass_chp", False)),
+        "district_biogas_chp": bool(getattr(activation, "district_biogas_chp", False)),
+        "district_gas_chp": bool(getattr(activation, "district_gas_chp", False)),
+        "district_geothermal": bool(getattr(activation, "district_geothermal", False)),
+        "district_solar_thermal": bool(getattr(activation, "district_solar_thermal", False)),
+        "district_waste_incineration": bool(
+            getattr(activation, "district_waste_incineration", False)
+        ),
+    }
+
+
 def _is_feature_enabled(settings: Any, attr: str) -> bool:
     eng_cfg = getattr(settings, "engine", None)
     features = getattr(eng_cfg, "features", None)

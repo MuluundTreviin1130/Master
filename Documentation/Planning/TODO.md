@@ -2,7 +2,7 @@
 
 ## Active
 
-- [ ] Native family identity: after merging the heating-control setpoint/mode hash fix on `cdd2`, prefer also merging open PRs #35 / #39 / #46 (`delta_T` / tariff, ThermFlex envelope, dispatch contract) so teacher-label axes stay covered together; watch for `build_family.py` merge conflicts on `dispatch_signature`.
+- [ ] Native family identity: after merging the engine-feature / heating-control / event-response hash fixes on `cdd2`, prefer also merging open PRs #35 / #39 / #46 (`delta_T` / tariff, ThermFlex envelope, dispatch contract) so teacher-label axes stay covered together; watch for `build_family.py` merge conflicts on `dispatch_signature`.
 - [ ] Follow-up from 2026-08-12 critical audit (after H2 fixed-CAPEX fix): remaining medium items stay deferred — `allow_unserved_*` / `allow_grid_export` ignored by MILP; MILP `_f` 0→1 coercion; DH storage power limits; external-heat must_run SSOT; latent silent 0.0 CHP CO2 / wood-biomass fuel if economics keys omitted.
 
 - [ ] ThermFlex-Paper: Two-stage-MILP als methodischen Unsicherheits-/Preis-Pfad festziehen:
