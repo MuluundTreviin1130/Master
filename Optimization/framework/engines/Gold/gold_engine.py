@@ -18,6 +18,7 @@ from Optimization.run.analysis.csv_exports import (
     append_thermflex_hourly_export,
     build_dispatch_kpi_payload,
 )
+from Data.assembly.replacements import annual_bess_throughput_kwh
 from Settings.surrogate.train import make_surrogate_train
 from Settings.problem.bounds import vector_to_named_dict
 
@@ -186,7 +187,10 @@ class GoldEngine:
 
         # PV / BESS (allow missing -> 0)
         pv_gen_Y = _sum_pos(res, "pv_generation")
-        bess_ch_Y = _sum_pos(res, "bess_charged") + _sum_pos(res, "bess_discharged")
+        bess_ch_Y = annual_bess_throughput_kwh(
+            charged_kwh=_sum_pos(res, "bess_charged"),
+            discharged_kwh=_sum_pos(res, "bess_discharged"),
+        )
 
         # -----------------------------
         # Total load (fail-fast if missing)

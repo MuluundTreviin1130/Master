@@ -6,6 +6,7 @@ from typing import Any, Dict, List, Tuple
 import numpy as np
 from tqdm.auto import tqdm
 
+from Data.assembly.replacements import annual_bess_throughput_kwh
 from Optimization.framework.engines.kpi import compute_kpis, is_supported_objective_name
 from Optimization.framework.engines.Surrogat_model.features import resolve_surrogate_targets
 from Settings.problem.bounds import vector_to_named_dict
@@ -19,6 +20,19 @@ def _sum(result: Dict[str, Any], key: str) -> float:
         return 0.0
     a = np.asarray(arr)
     return float(np.sum(a))
+
+
+def _sum_nonneg(result: Dict[str, Any], key: str) -> float:
+    """Sum the nonnegative part of a flow series.
+
+    Gold clips BESS charge/discharge the same way before adding them into
+    throughput. The teacher must use that clipped sum, not a raw ``np.sum``,
+    so a sign convention change cannot silently cancel charge against discharge.
+    """
+    arr = result.get(key, None)
+    if arr is None:
+        return 0.0
+    return float(np.sum(np.clip(np.asarray(arr, dtype=float), 0.0, None)))
 
 
 _THERMFLEX_DIAG_TARGETS: Dict[str, str] = {
@@ -81,7 +95,10 @@ def _year_flows(
         "E_import_ec_pv_kWh": _sum(res, "ec_import_from_pv"),
         "E_import_ec_ev_kWh": _sum(res, "ec_import_from_ev"),
         "E_export_ec_pv_kWh": _sum(res, "ec_export_from_pv"),
-        "BESS_throughput_kWh": _sum(res, "bess_charged"),
+        "BESS_throughput_kWh": annual_bess_throughput_kwh(
+            charged_kwh=_sum_nonneg(res, "bess_charged"),
+            discharged_kwh=_sum_nonneg(res, "bess_discharged"),
+        ),
         "E_ev_charged_kWh": _sum(res, "ev_charge_ac"),
         "E_ev_discharged_kWh": _sum(res, "ev_discharged"),
         "E_h2_charge_elec_kWh": _sum(res, "h2_charge_elec"),

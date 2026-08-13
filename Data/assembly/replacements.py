@@ -97,6 +97,24 @@ def compute_fc_replacement(
     )
 
 
+def annual_bess_throughput_kwh(*, charged_kwh: float, discharged_kwh: float) -> float:
+    """Return annual BESS throughput as charge plus discharge energy.
+
+    ``compute_bess_replacement`` sizes cycle wear with
+    ``2 * E * DoD * max_cycles``. That factor is the energy of one equivalent
+    full cycle when throughput is defined as charge+discharge. Passing only
+    charge energy would undercount cycling by about 2x and skip replacements
+    that Gold already charges into ``npc_eur`` / BESS LCA.
+    """
+    charged = float(charged_kwh)
+    discharged = float(discharged_kwh)
+    if charged < 0.0:
+        raise ValueError(f"[replacements] charged_kwh must be >= 0, got {charged}.")
+    if discharged < 0.0:
+        raise ValueError(f"[replacements] discharged_kwh must be >= 0, got {discharged}.")
+    return charged + discharged
+
+
 def compute_bess_replacement(
     params: Dict[str, Any],
     *,
