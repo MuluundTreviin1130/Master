@@ -14,4 +14,6 @@ Current contents:
 - `tech_params.py`
   global technology dictionary assembly
 - `replacements.py`
-  replacement-interval helpers used by cost and KPI reporting
+  replacement-interval helpers used by cost and KPI reporting.
+  BESS throughput is charge+discharge energy; `annual_bess_throughput_kwh`
+  is the shared helper for Gold, teacher, and CSV exports.

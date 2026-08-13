@@ -16,6 +16,7 @@ from .api import (
 )
 from .replacements import (
     ReplacementInfo,
+    annual_bess_throughput_kwh,
     compute_bess_replacement,
     compute_fc_replacement,
     compute_pv_replacement,
@@ -23,6 +24,7 @@ from .replacements import (
 
 __all__ = [
     "ReplacementInfo",
+    "annual_bess_throughput_kwh",
     "compute_bess_replacement",
     "compute_fc_replacement",
     "compute_pv_replacement",

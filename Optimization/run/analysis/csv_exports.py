@@ -13,7 +13,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from Data.assembly.replacements import compute_bess_replacement, compute_fc_replacement
+from Data.assembly.replacements import annual_bess_throughput_kwh, compute_bess_replacement, compute_fc_replacement
 from Cost_model.dispatch_cost_model import build_dispatch_cost_breakdown
 from Optimization.framework.engines.Gated.io import append_csv
 
@@ -562,9 +562,11 @@ def export_load_flows_timeseries(run_dir: str, settings: Any, X_opt: np.ndarray,
         ts = np.asarray(res.get("timestamps", np.arange(n_steps)))
         lifetime = float(teacher.lifetime_years)
         total_load_y = float(np.sum(np.clip(np.asarray(res.get("total_load", np.zeros(n_steps))), 0.0, None)))
-        bess_throughput_y = float(
-            np.sum(np.clip(np.asarray(res.get("bess_charged", np.zeros(n_steps))), 0.0, None))
-            + np.sum(np.clip(np.asarray(res.get("bess_discharged", np.zeros(n_steps))), 0.0, None))
+        bess_throughput_y = annual_bess_throughput_kwh(
+            charged_kwh=float(np.sum(np.clip(np.asarray(res.get("bess_charged", np.zeros(n_steps))), 0.0, None))),
+            discharged_kwh=float(
+                np.sum(np.clip(np.asarray(res.get("bess_discharged", np.zeros(n_steps))), 0.0, None))
+            ),
         )
         h2_charge_elec_y = float(np.sum(np.clip(np.asarray(res.get("h2_charge_elec", np.zeros(n_steps))), 0.0, None)))
         h2_discharge_elec_y = float(np.sum(np.clip(np.asarray(res.get("h2_discharge_elec", np.zeros(n_steps))), 0.0, None)))

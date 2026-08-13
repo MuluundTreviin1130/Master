@@ -1,5 +1,18 @@
 # Worklog
 
+## 2026-08-13
+
+### Critical bug: teacher BESS throughput omitted discharge
+
+- Teacher `BESS_throughput_kWh` summed only `bess_charged`, while Gold, CSV
+  exports, and `compute_bess_replacement` treat throughput as charge+discharge
+  (`2 * E * DoD * max_cycles` lifetime energy).
+- Concrete trigger: default `npc_eur` / BESS-LCA path with a cycling battery
+  (~2 equivalent cycles/day). Charge-only throughput halves wear and drops
+  in-lifetime replacements, so teacher NPC/LCA labels diverge from Gold.
+- Fix: shared `annual_bess_throughput_kwh` helper; teacher now clips and adds
+  charge+discharge. Import-light contract tests in `Data/assembly/tests/`.
+
 ## 2026-06-12
 
 ### Target-layer update: sector-coupled MES with planetary boundaries / LCA scenario bridge
