@@ -262,6 +262,14 @@ def compute_objectives(
         eng = getattr(settings, "engine", None)
         features = getattr(eng, "features", None) if eng is not None else None
         enable_v2h = bool(getattr(features, "enable_v2h", False))
+        enable_h2 = bool(getattr(features, "enable_h2", False))
+        # Mirror the V2H gate: when H2 is feature-disabled, force capacities to
+        # zero before NPC so financial_model cannot charge H2 CAPEX (including
+        # ``hydrogen.fixed_system_eur``) for an inactive technology.
+        if not enable_h2:
+            params_fin["ely_kw"] = 0.0
+            params_fin["h2_tank_kwh"] = 0.0
+            params_fin["fc_kw"] = 0.0
         params_fin.setdefault("EV", {})
         params_fin["EV"]["N_EV_total"] = int(getattr(eng, "N_EV_total", 0))
         params_fin["EV"]["N_EV_bidirectional"] = int(getattr(eng, "N_EV_bidirectional", 0)) if enable_v2h else 0

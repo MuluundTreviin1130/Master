@@ -24,6 +24,98 @@ def get_control_mode(settings: Any) -> str:
     return str(getattr(getattr(settings, "heating_control", None), "control_mode", "constant") or "constant").strip().lower()
 
 
+def heating_control_policy_identity(settings: Any) -> Dict[str, Any]:
+    """Return heating-control fields that change teacher labels and must
+    participate in native surrogate family identity.
+
+    ThermFlex paper cases treat ``constant_setpoint_c`` and ``control_mode`` as
+    first-class global policy levers. Those values already appear in static
+    features and signature context, but ``build_family`` previously hashed only
+    feature *names*, so e.g. setpoint 22.0 vs 22.5 (Settings default vs paper)
+    or ``constant`` vs ``day_night`` collided on one ``family_hash``. Dataset
+    cache reuse and ``resolve_model`` then silently attached the wrong teacher
+    labels / artifact across incompatible heating policies.
+    """
+    heating_control = getattr(settings, "heating_control", None)
+    return {
+        "reference_control_mode": get_reference_control_mode(settings),
+        "control_mode": get_control_mode(settings),
+        "constant_setpoint_c": float(getattr(heating_control, "constant_setpoint_c", 0.0) or 0.0),
+        "day_setpoint_c": float(getattr(heating_control, "day_setpoint_c", 0.0) or 0.0),
+        "night_setpoint_c": float(getattr(heating_control, "night_setpoint_c", 0.0) or 0.0),
+    }
+
+
+def thermflex_event_response_policy_identity(settings: Any) -> Dict[str, Any]:
+    """Return ThermFlex event-response fields that change MILP teacher labels.
+
+    Vienna ThermFlex paper cases activate
+    ``constraints.thermflex.use_event_response_bounds=True`` (with peak/energy/
+    recovery enforces). Settings defaults keep the flag ``False``. Those levers
+    change the feasible ThermFlex region and therefore teacher KPIs, but they
+    previously lived in neither ``signature_hash`` static context nor the hashed
+    native ``family_hash`` (open PR #39 covers envelope lowers/duration/events
+    only). Train under defaults then switch to the paper event-response cut
+    reused one family/artifact silently.
+    """
+    thermflex_cfg = getattr(getattr(settings, "constraints", None), "thermflex", None)
+    return {
+        "use_event_response_bounds": bool(
+            getattr(thermflex_cfg, "use_event_response_bounds", False)
+        ),
+        "enforce_event_peak_bounds": bool(
+            getattr(thermflex_cfg, "enforce_event_peak_bounds", True)
+        ),
+        "enforce_event_energy_bounds": bool(
+            getattr(thermflex_cfg, "enforce_event_energy_bounds", True)
+        ),
+        "enforce_recovery_cooldown": bool(
+            getattr(thermflex_cfg, "enforce_recovery_cooldown", True)
+        ),
+    }
+
+
+def engine_feature_policy_identity(settings: Any) -> Dict[str, Any]:
+    """Return engine/technology enable flags that change teacher labels.
+
+    SH/GIW arms toggle ``features.enable_thermflex`` / ``enable_h2`` / … while
+    keeping the same design-bound *names* and static feature *names*. Family
+    hashing previously used only those names, so e.g. ``bess0_v2h0_h2{0}_tf0``
+    vs ``…_tf1`` shared one ``family_hash`` and ``auto_train_surrogate`` could
+    reuse incompatible teacher Y across arms. ``signature_hash`` already embeds
+    these flags; family identity must match that contract.
+    """
+    features = getattr(getattr(settings, "engine", None), "features", None)
+    activation = getattr(settings, "technology_activation", None)
+    return {
+        "enable_bess": bool(getattr(features, "enable_bess", False)),
+        "enable_v2h": bool(getattr(features, "enable_v2h", False)),
+        "enable_h2": bool(getattr(features, "enable_h2", False)),
+        "enable_thermflex": bool(getattr(features, "enable_thermflex", False)),
+        "enable_small_wind": bool(getattr(features, "enable_small_wind", False)),
+        "enable_large_wind": bool(getattr(features, "enable_large_wind", False)),
+        "enable_biogas_engine": bool(getattr(features, "enable_biogas_engine", False)),
+        "enable_wood_gasifier": bool(getattr(features, "enable_wood_gasifier", False)),
+        "district_external_heat": bool(getattr(activation, "district_external_heat", False)),
+        "district_gas_boiler": bool(getattr(activation, "district_gas_boiler", False)),
+        "district_heat_pump": bool(getattr(activation, "district_heat_pump", False)),
+        "district_thermal_storage": bool(
+            getattr(activation, "district_thermal_storage", False)
+        ),
+        "district_wood_chip_boiler": bool(
+            getattr(activation, "district_wood_chip_boiler", False)
+        ),
+        "district_biomass_chp": bool(getattr(activation, "district_biomass_chp", False)),
+        "district_biogas_chp": bool(getattr(activation, "district_biogas_chp", False)),
+        "district_gas_chp": bool(getattr(activation, "district_gas_chp", False)),
+        "district_geothermal": bool(getattr(activation, "district_geothermal", False)),
+        "district_solar_thermal": bool(getattr(activation, "district_solar_thermal", False)),
+        "district_waste_incineration": bool(
+            getattr(activation, "district_waste_incineration", False)
+        ),
+    }
+
+
 def _is_feature_enabled(settings: Any, attr: str) -> bool:
     eng_cfg = getattr(settings, "engine", None)
     features = getattr(eng_cfg, "features", None)
@@ -309,6 +401,12 @@ def resolve_feature_names(settings: Any) -> List[str]:
         "night_lower_bound_c",
         "thermflex_max_duration_h",
         "thermflex_max_events_per_day",
+        # Event-response policy must participate in feature schema identity so
+        # default-off vs Vienna-paper-on cannot share one static column layout.
+        "thermflex_use_event_response_bounds",
+        "thermflex_enforce_event_peak_bounds",
+        "thermflex_enforce_event_energy_bounds",
+        "thermflex_enforce_recovery_cooldown",
     ]
     for name in required:
         if name not in feature_names:
@@ -331,6 +429,10 @@ def build_static_feature_vector(settings: Any, profile_id: str) -> np.ndarray:
     heating_control = getattr(settings, "heating_control", None)
     thermflex_cfg = getattr(getattr(settings, "constraints", None), "thermflex", None)
     active_tariff_arm = get_active_tariff_arm(settings)
+    # Live event-response flags must occupy static columns (not only names) so
+    # default-off vs paper-on policies produce distinct augmented X rows even
+    # before family-hash / signature-hash separation.
+    event_response = thermflex_event_response_policy_identity(settings)
     return np.array(
         [
             float(int(bool(getattr(features, "enable_bess", False)))),
@@ -366,6 +468,10 @@ def build_static_feature_vector(settings: Any, profile_id: str) -> np.ndarray:
             float(getattr(thermflex_cfg, "night_lower_bound_c", 0.0) or 0.0),
             float(getattr(thermflex_cfg, "max_flex_duration_h", 0.0) or 0.0),
             float(getattr(thermflex_cfg, "max_flex_events_per_day", 0.0) or 0.0),
+            float(int(bool(event_response["use_event_response_bounds"]))),
+            float(int(bool(event_response["enforce_event_peak_bounds"]))),
+            float(int(bool(event_response["enforce_event_energy_bounds"]))),
+            float(int(bool(event_response["enforce_recovery_cooldown"]))),
         ],
         dtype=float,
     )
@@ -379,6 +485,10 @@ def build_signature_context_payload(settings: Any, profile_id: str) -> Dict[str,
     thermflex_cfg = getattr(getattr(settings, "constraints", None), "thermflex", None)
     dispatch_cfg = getattr(settings, "dispatch", None)
     district_heating = getattr(settings, "district_heating", None)
+    # Keep event-response policy inside signature context so artifact directories
+    # under Optimization/Learning scoped by signature_hash cannot collide across
+    # the Settings-default-off vs Vienna-paper-on cut.
+    event_response = thermflex_event_response_policy_identity(settings)
     return {
         "profile_id": str(profile_id),
         "system_id": str(getattr(eng_cfg, "system_id", "unknown") or "unknown"),
@@ -392,6 +502,10 @@ def build_signature_context_payload(settings: Any, profile_id: str) -> Dict[str,
         "night_lower_bound_c": float(getattr(thermflex_cfg, "night_lower_bound_c", 0.0) or 0.0),
         "max_flex_duration_h": float(getattr(thermflex_cfg, "max_flex_duration_h", 0.0) or 0.0),
         "max_flex_events_per_day": float(getattr(thermflex_cfg, "max_flex_events_per_day", 0.0) or 0.0),
+        "use_event_response_bounds": bool(event_response["use_event_response_bounds"]),
+        "enforce_event_peak_bounds": bool(event_response["enforce_event_peak_bounds"]),
+        "enforce_event_energy_bounds": bool(event_response["enforce_event_energy_bounds"]),
+        "enforce_recovery_cooldown": bool(event_response["enforce_recovery_cooldown"]),
         "district_heating_share": float(getattr(district_heating, "share", 0.0) or 0.0),
         "dispatch_mode": str(getattr(dispatch_cfg, "mode", "unknown") or "unknown"),
         "dispatch_stochastic_enabled": bool(getattr(dispatch_cfg, "stochastic_enabled", False)),

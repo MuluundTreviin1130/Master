@@ -1,5 +1,56 @@
 # Worklog
 
+## 2026-08-12
+
+### Critical audit: native family hash omitted SH engine feature flags
+
+- Found that `build_family` hashed feature *names* for `enable_thermflex` /
+  `enable_h2` / … but not the live boolean values. SH arms
+  `bess*_v2h*_h2*_tf0` vs `…_tf1` therefore shared one `family_hash`.
+- Concrete trigger: `auto_train_surrogate` across the SH arm matrix reuses
+  incompatible teacher Y / registry entries between ThermFlex-off and -on arms
+  (and similarly H2 on/off) while `signature_hash` already differed.
+- Fix: hash `engine_feature_policy_identity` into family `dispatch_signature`;
+  import-light regression tests for tf0/tf1 and h2 on/off.
+
+### Critical audit: native identity omitted ThermFlex event-response bounds
+
+- Found that Settings default `constraints.thermflex.use_event_response_bounds=False`
+  while Vienna ThermFlex paper cases set it `True` (with peak/energy/recovery
+  enforces). Neither native `signature_hash` static context nor hashed
+  `family_hash` included those fields (open PR #39 covers envelope
+  lowers/duration/events only).
+- Concrete trigger: train eligible native under defaults, then switch to the
+  Vienna paper event-response cut → same family/signature identity →
+  `auto_train` / `resolve_model` can reuse incompatible teacher labels.
+- Fix: hash event-response policy into signature context, static features, and
+  family `dispatch_signature`; add import-light regression tests.
+
+### Critical audit: native family hash omitted heating-control setpoints/modes
+
+- Found that `Learning.families.build_family` hashed only schema names (and,
+  via open PRs, ThermFlex envelope / dispatch contract / tariff fields) while
+  omitting live `heating_control.constant_setpoint_c` / `control_mode`.
+- Concrete trigger: train eligible native at setpoint 22.0 (Settings default),
+  then switch to paper 22.5 (or `constant` → `day_night`). Same `family_hash`
+  → `auto_train_surrogate` reuses cached teacher Y; `resolve_model` +
+  `choose_artifact_path` can load the prior family artifact because
+  `load_bundle` only checks feature names/width.
+- Distinct from open PR #39 (envelope lowers/duration/events) and #35/#46.
+- Fix: hash live heating-control identity into `dispatch_signature`; add
+  import-light regression tests.
+
+### Critical audit: inactive H2 fixed-system CAPEX pollution
+
+- Found that `Cost_model/financial_model._annualized_capex_and_opex` always added
+  `economics.hydrogen.fixed_system_eur` (Vienna 63800 EUR) even when all H2
+  capacities were zero (SH arms with `features.enable_h2=False`).
+- This removed the fixed-cost differential between H2 and no-H2 portfolios and
+  biased technology screening toward H2.
+- Fix: charge fixed H2 CAPEX only when ely/tank/fc capacity > 0; KPI path also
+  zeros H2 capacities when `enable_h2=False` (mirrors existing V2H gate).
+- Added import-light regression test under `Cost_model/tests/`.
+
 ## 2026-06-12
 
 ### Target-layer update: sector-coupled MES with planetary boundaries / LCA scenario bridge

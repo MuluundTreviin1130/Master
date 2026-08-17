@@ -44,6 +44,10 @@ def _default_surrogate_feature_names() -> List[str]:
         "night_lower_bound_c",
         "thermflex_max_duration_h",
         "thermflex_max_events_per_day",
+        "thermflex_use_event_response_bounds",
+        "thermflex_enforce_event_peak_bounds",
+        "thermflex_enforce_event_energy_bounds",
+        "thermflex_enforce_recovery_cooldown",
     ]
 
 

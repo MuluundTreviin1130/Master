@@ -6,9 +6,12 @@ from dataclasses import asdict, dataclass, field, is_dataclass
 from typing import Any, Dict, List
 
 from Optimization.framework.engines.Surrogat_model.features import (
+    engine_feature_policy_identity,
+    heating_control_policy_identity,
     resolve_feature_encoding,
     resolve_feature_names,
     resolve_surrogate_targets,
+    thermflex_event_response_policy_identity,
 )
 
 
@@ -89,10 +92,27 @@ def build_family(settings: Any, provenance: Dict[str, Any] | None = None) -> Fam
         "time_series_schema": list(getattr(getattr(settings, "learning", None), "time_series_schema", []) or []),
         "location_mode": str(getattr(getattr(settings, "learning", None), "location_mode", "dataset_context")),
     }
+    # Heating-control setpoints/modes change ThermFlex/EC teacher KPIs under an
+    # otherwise identical design space and feature-name schema. Keep the live
+    # values inside the hashed family payload so 22.0 vs 22.5 (or constant vs
+    # day_night) cannot silently reuse one dataset/model family. Sibling of the
+    # ThermFlex envelope identity fields (constant_lower / duration / events).
+    #
+    # Event-response bounds are a separate Vienna-paper policy cut: Settings
+    # defaults keep ``use_event_response_bounds=False`` while paper cases set
+    # ``True``. That must also participate in family identity (distinct from
+    # open PR #39 envelope lowers).
+    #
+    # SH/GIW arms also toggle engine feature flags (e.g. enable_thermflex tf0/tf1)
+    # without changing feature *names*; hash those live values too so arm cuts
+    # cannot share one cached teacher family.
     dispatch_signature = {
         "dispatch_model_id": str(getattr(getattr(settings, "learning", None), "dispatch_model_id", "default")),
         "dispatch_params": {
             "delta_T": 0.0,
+            **engine_feature_policy_identity(settings),
+            **heating_control_policy_identity(settings),
+            **thermflex_event_response_policy_identity(settings),
         },
     }
     spec = FamilySpec(
