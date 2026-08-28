@@ -4,8 +4,8 @@
   "building_stock_source": "manual_citiwatt_energy_report_snapshot",
   "thermal_archetypes_source": "manual_v1_tabula_and_prototype_inference",
   "source_file_paths": [
-    "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Daten\\Citiwatt_indicators_Vienna.txt",
-    "C:\\Users\\Philipp Thunshirn\\Downloads\\2025.pdf"
+    "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\raw\\Citiwatts\\Vienna\\citiwatts_indicators_vienna.txt",
+    "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Documentation\\Sources\\Vienna\\Energy_Reports\\energiebericht_wien_2025.pdf"
   ],
   "usage_profile_path": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\profiles\\common\\usage\\usage_profiles.xlsx",
   "usage_profile_sheet_name": "usage_profiles",

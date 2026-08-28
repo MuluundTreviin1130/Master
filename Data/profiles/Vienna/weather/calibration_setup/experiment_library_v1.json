@@ -151,6 +151,81 @@
       ]
     },
     {
+      "experiment_id": "summer_peak_cooling_day",
+      "role": "mild_year",
+      "calendar_year": 2024,
+      "epw_path": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\profiles\\Vienna\\weather\\epw\\vienna_openmeteo_mild_year_2024.epw",
+      "start_local": "2024-07-10T00:00:00",
+      "end_local": "2024-07-11T00:00:00",
+      "duration_h": 24,
+      "control_mode": "reference",
+      "event_type": "none",
+      "event_start_offset_h": 0,
+      "event_duration_h": 0,
+      "event_setpoint_delta_k": 0.0,
+      "post_event_observation_h": 0,
+      "notes": [
+        "Summer peak-cooling day on the mild representative year.",
+        "Used as a compact cooling plausibility anchor before annual bridge work."
+      ]
+    },
+    {
+      "experiment_id": "summer_reference_96h",
+      "role": "mild_year",
+      "calendar_year": 2024,
+      "epw_path": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\profiles\\Vienna\\weather\\epw\\vienna_openmeteo_mild_year_2024.epw",
+      "start_local": "2024-07-09T00:00:00",
+      "end_local": "2024-07-13T00:00:00",
+      "duration_h": 96,
+      "control_mode": "reference",
+      "event_type": "none",
+      "event_start_offset_h": 0,
+      "event_duration_h": 0,
+      "event_setpoint_delta_k": 0.0,
+      "post_event_observation_h": 0,
+      "notes": [
+        "96h summer cooling reference window around the selected peak-cooling day."
+      ]
+    },
+    {
+      "experiment_id": "summer_reference_week",
+      "role": "mild_year",
+      "calendar_year": 2024,
+      "epw_path": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\profiles\\Vienna\\weather\\epw\\vienna_openmeteo_mild_year_2024.epw",
+      "start_local": "2024-07-29T00:00:00",
+      "end_local": "2024-08-05T00:00:00",
+      "duration_h": 168,
+      "control_mode": "reference",
+      "event_type": "none",
+      "event_start_offset_h": 0,
+      "event_duration_h": 0,
+      "event_setpoint_delta_k": 0.0,
+      "post_event_observation_h": 0,
+      "notes": [
+        "Summer reference week on the mild representative year.",
+        "Used as the first active cooling truth window for the Vienna MES bridge layer."
+      ]
+    },
+    {
+      "experiment_id": "annual_reference_2023",
+      "role": "historical_2023",
+      "calendar_year": 2023,
+      "epw_path": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\profiles\\Vienna\\weather\\epw\\vienna_openmeteo_historical_2023_2023.epw",
+      "start_local": "2023-01-01T00:00:00",
+      "end_local": "2024-01-01T00:00:00",
+      "duration_h": 8760,
+      "control_mode": "reference",
+      "event_type": "none",
+      "event_start_offset_h": 0,
+      "event_duration_h": 0,
+      "event_setpoint_delta_k": 0.0,
+      "post_event_observation_h": 0,
+      "notes": [
+        "Full-year EnergyPlus teacher run aligned with the active 2023 Vienna demand and renewable-profile basis.",
+        "Supplies reference useful space-heating and useful-cooling truth; it does not activate building flexibility."
+      ]
+    },
+    {
       "experiment_id": "repday_winter_peak_heat_day",
       "role": "historical_2023",
       "calendar_year": 2023,
@@ -238,6 +313,154 @@
       "post_event_observation_h": 0,
       "notes": [
         "Teacher reference day aligned with the selected 2023 shoulder_typical_day."
+      ]
+    },
+    {
+      "experiment_id": "repday_winter_peak_heat_reference_96h",
+      "role": "historical_2023",
+      "calendar_year": 2023,
+      "epw_path": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\profiles\\Vienna\\weather\\epw\\vienna_openmeteo_historical_2023_2023.epw",
+      "start_local": "2023-01-16T00:00:00",
+      "end_local": "2023-01-20T00:00:00",
+      "duration_h": 96,
+      "control_mode": "reference",
+      "event_type": "none",
+      "event_start_offset_h": 0,
+      "event_duration_h": 0,
+      "event_setpoint_delta_k": 0.0,
+      "post_event_observation_h": 0,
+      "notes": [
+        "96h reference window around the selected 2023 winter peak heat day.",
+        "Used as paired baseline for upper-only preheat Teacher augmentation."
+      ]
+    },
+    {
+      "experiment_id": "repday_winter_peak_heat_preheat_96h",
+      "role": "historical_2023",
+      "calendar_year": 2023,
+      "epw_path": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\profiles\\Vienna\\weather\\epw\\vienna_openmeteo_historical_2023_2023.epw",
+      "start_local": "2023-01-16T00:00:00",
+      "end_local": "2023-01-20T00:00:00",
+      "duration_h": 96,
+      "control_mode": "reference",
+      "event_type": "preheat",
+      "event_start_offset_h": 24,
+      "event_duration_h": 12,
+      "event_setpoint_delta_k": 2.0,
+      "post_event_observation_h": 48,
+      "notes": [
+        "Upper-only preheat Teacher augmentation for the selected 2023 winter peak heat day."
+      ]
+    },
+    {
+      "experiment_id": "repday_winter_price_spike_reference_96h",
+      "role": "historical_2023",
+      "calendar_year": 2023,
+      "epw_path": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\profiles\\Vienna\\weather\\epw\\vienna_openmeteo_historical_2023_2023.epw",
+      "start_local": "2023-01-23T00:00:00",
+      "end_local": "2023-01-27T00:00:00",
+      "duration_h": 96,
+      "control_mode": "reference",
+      "event_type": "none",
+      "event_start_offset_h": 0,
+      "event_duration_h": 0,
+      "event_setpoint_delta_k": 0.0,
+      "post_event_observation_h": 0,
+      "notes": [
+        "96h reference window around the selected 2023 winter price spike day.",
+        "Used as paired baseline for upper-only preheat Teacher augmentation."
+      ]
+    },
+    {
+      "experiment_id": "repday_winter_price_spike_preheat_96h",
+      "role": "historical_2023",
+      "calendar_year": 2023,
+      "epw_path": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\profiles\\Vienna\\weather\\epw\\vienna_openmeteo_historical_2023_2023.epw",
+      "start_local": "2023-01-23T00:00:00",
+      "end_local": "2023-01-27T00:00:00",
+      "duration_h": 96,
+      "control_mode": "reference",
+      "event_type": "preheat",
+      "event_start_offset_h": 24,
+      "event_duration_h": 12,
+      "event_setpoint_delta_k": 2.0,
+      "post_event_observation_h": 48,
+      "notes": [
+        "Upper-only preheat Teacher augmentation for the selected 2023 winter price spike day."
+      ]
+    },
+    {
+      "experiment_id": "repday_winter_sunny_heat_reference_96h",
+      "role": "historical_2023",
+      "calendar_year": 2023,
+      "epw_path": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\profiles\\Vienna\\weather\\epw\\vienna_openmeteo_historical_2023_2023.epw",
+      "start_local": "2023-12-03T00:00:00",
+      "end_local": "2023-12-07T00:00:00",
+      "duration_h": 96,
+      "control_mode": "reference",
+      "event_type": "none",
+      "event_start_offset_h": 0,
+      "event_duration_h": 0,
+      "event_setpoint_delta_k": 0.0,
+      "post_event_observation_h": 0,
+      "notes": [
+        "96h reference window around the selected 2023 winter sunny heat day.",
+        "Used as paired baseline for upper-only preheat Teacher augmentation."
+      ]
+    },
+    {
+      "experiment_id": "repday_winter_sunny_heat_preheat_96h",
+      "role": "historical_2023",
+      "calendar_year": 2023,
+      "epw_path": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\profiles\\Vienna\\weather\\epw\\vienna_openmeteo_historical_2023_2023.epw",
+      "start_local": "2023-12-03T00:00:00",
+      "end_local": "2023-12-07T00:00:00",
+      "duration_h": 96,
+      "control_mode": "reference",
+      "event_type": "preheat",
+      "event_start_offset_h": 24,
+      "event_duration_h": 12,
+      "event_setpoint_delta_k": 2.0,
+      "post_event_observation_h": 48,
+      "notes": [
+        "Upper-only preheat Teacher augmentation for the selected 2023 winter sunny heat day."
+      ]
+    },
+    {
+      "experiment_id": "repday_shoulder_typical_reference_96h",
+      "role": "historical_2023",
+      "calendar_year": 2023,
+      "epw_path": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\profiles\\Vienna\\weather\\epw\\vienna_openmeteo_historical_2023_2023.epw",
+      "start_local": "2023-10-30T00:00:00",
+      "end_local": "2023-11-03T00:00:00",
+      "duration_h": 96,
+      "control_mode": "reference",
+      "event_type": "none",
+      "event_start_offset_h": 0,
+      "event_duration_h": 0,
+      "event_setpoint_delta_k": 0.0,
+      "post_event_observation_h": 0,
+      "notes": [
+        "96h reference window around the selected 2023 shoulder typical day.",
+        "Used as paired baseline for upper-only preheat Teacher augmentation."
+      ]
+    },
+    {
+      "experiment_id": "repday_shoulder_typical_preheat_96h",
+      "role": "historical_2023",
+      "calendar_year": 2023,
+      "epw_path": "C:\\Users\\Philipp Thunshirn\\Desktop\\PhD\\Python model\\Master\\Data\\profiles\\Vienna\\weather\\epw\\vienna_openmeteo_historical_2023_2023.epw",
+      "start_local": "2023-10-30T00:00:00",
+      "end_local": "2023-11-03T00:00:00",
+      "duration_h": 96,
+      "control_mode": "reference",
+      "event_type": "preheat",
+      "event_start_offset_h": 24,
+      "event_duration_h": 12,
+      "event_setpoint_delta_k": 2.0,
+      "post_event_observation_h": 48,
+      "notes": [
+        "Upper-only preheat Teacher augmentation for the selected 2023 shoulder typical day."
       ]
     }
   ],

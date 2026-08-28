@@ -211,7 +211,8 @@ def _build_full_year_schedule_frame(*, calendar_year: int, cohort: dict, experim
             infiltration_ach.append(float(row["Luftwechsel_Infiltration_1_h"]))
             ventilation_ach.append(float(row["Luftwechsel_Anlage_1_h"]))
 
-    heating_setpoint_c = pd.Series(float(cohort["t_min_k"]) - 273.15, index=idx, dtype=float)
+    reference_heating_setpoint_c = pd.Series(float(cfg.teacher_reference_heating_setpoint_c), index=idx, dtype=float)
+    heating_setpoint_c = reference_heating_setpoint_c.copy()
     cooling_setpoint_c = pd.Series(float(cohort["t_max_k"]) - 273.15, index=idx, dtype=float)
     if (cooling_setpoint_c <= heating_setpoint_c).any():
         raise ValueError(
@@ -225,10 +226,19 @@ def _build_full_year_schedule_frame(*, calendar_year: int, cohort: dict, experim
             f"[energyplus_teacher] Experiment '{experiment['experiment_id']}' must currently start at 00:00 local time."
         )
     event_type = str(experiment["event_type"])
+    event_active = pd.Series(0.0, index=idx, dtype=float)
+    event_elapsed_h = pd.Series(0.0, index=idx, dtype=float)
+    event_remaining_h = pd.Series(0.0, index=idx, dtype=float)
+    event_setpoint_delta_c = pd.Series(0.0, index=idx, dtype=float)
     if event_type != "none":
         event_start = start_local + pd.Timedelta(hours=int(experiment["event_start_offset_h"]))
         event_end = event_start + pd.Timedelta(hours=int(experiment["event_duration_h"]))
         event_mask = (idx >= event_start) & (idx < event_end)
+        event_steps = ((idx - event_start) / pd.Timedelta(hours=1)).astype(float)
+        event_active.loc[event_mask] = 1.0
+        event_elapsed_h.loc[event_mask] = event_steps[event_mask]
+        event_remaining_h.loc[event_mask] = float(experiment["event_duration_h"]) - event_steps[event_mask]
+        event_setpoint_delta_c.loc[event_mask] = float(experiment["event_setpoint_delta_k"])
         heating_setpoint_c.loc[event_mask] = heating_setpoint_c.loc[event_mask] + float(
             experiment["event_setpoint_delta_k"]
         )
@@ -236,11 +246,17 @@ def _build_full_year_schedule_frame(*, calendar_year: int, cohort: dict, experim
             raise ValueError(
                 f"[energyplus_teacher] Event '{experiment['experiment_id']}' collapses the setpoint band."
             )
-
     return pd.DataFrame(
         {
             "timestamp_local": idx,
+            "event_type": event_type,
+            "event_active": event_active.to_numpy(dtype=float),
+            "event_elapsed_h": event_elapsed_h.to_numpy(dtype=float),
+            "event_remaining_h": event_remaining_h.to_numpy(dtype=float),
+            "event_setpoint_delta_c": event_setpoint_delta_c.to_numpy(dtype=float),
             "heating_setpoint_c": heating_setpoint_c.to_numpy(dtype=float),
+            "reference_heating_setpoint_c": reference_heating_setpoint_c.to_numpy(dtype=float),
+            "heating_setpoint_delta_c": (heating_setpoint_c - reference_heating_setpoint_c).to_numpy(dtype=float),
             "cooling_setpoint_c": cooling_setpoint_c.to_numpy(dtype=float),
             "internal_gains_w_m2": pd.Series(internal_gains_w_m2, index=idx, dtype=float).to_numpy(dtype=float),
             "infiltration_ach": pd.Series(infiltration_ach, index=idx, dtype=float).to_numpy(dtype=float),
@@ -331,6 +347,9 @@ def _write_schedule_csv(workdir: Path, *, schedule_df: pd.DataFrame) -> Path:
     out = workdir / "teacher_schedules.csv"
     export = schedule_df.copy()
     required_columns = (
+        "timestamp_local",
+        "heating_setpoint_c",
+        "cooling_setpoint_c",
         "internal_gains_w_m2",
         "infiltration_ach",
         "ventilation_ach",
@@ -362,6 +381,22 @@ def _write_schedule_csv(workdir: Path, *, schedule_df: pd.DataFrame) -> Path:
                 f"[energyplus_teacher] Normalized schedule '{fraction_col}' must stay within [0, 1]."
             )
 
+    # EnergyPlus Schedule:File objects below use fixed one-based column numbers.
+    # Keep these columns in the original front positions and append learning-only
+    # event metadata afterwards so adding features cannot change the IDF meaning.
+    energyplus_columns = [
+        "timestamp_local",
+        "heating_setpoint_c",
+        "cooling_setpoint_c",
+        "internal_gains_w_m2",
+        "infiltration_ach",
+        "ventilation_ach",
+        "internal_gains_fraction",
+        "infiltration_fraction",
+        "ventilation_fraction",
+    ]
+    trailing_columns = [col for col in export.columns if col not in energyplus_columns]
+    export = export[energyplus_columns + trailing_columns]
     export["timestamp_local"] = export["timestamp_local"].dt.strftime("%Y-%m-%d %H:%M:%S")
     export.to_csv(out, index=False, encoding="utf-8")
     return out
@@ -1079,7 +1114,14 @@ def _build_plausibility_export(
     merged = hourly_local.merge(schedule_window, on="timestamp_local", how="left", validate="one_to_one")
     merged = merged.merge(weather_window, on="timestamp_local", how="left", validate="one_to_one")
     required_schedule_cols = [
+        "event_type",
+        "event_active",
+        "event_elapsed_h",
+        "event_remaining_h",
+        "event_setpoint_delta_c",
         "heating_setpoint_c",
+        "reference_heating_setpoint_c",
+        "heating_setpoint_delta_c",
         "cooling_setpoint_c",
         "internal_gains_w_m2",
         "internal_gains_fraction",

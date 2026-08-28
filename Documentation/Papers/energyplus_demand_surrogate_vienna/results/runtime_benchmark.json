@@ -1,0 +1,236 @@
+{
+  "schema_version": "vienna_building_demand_runtime_benchmark_v1",
+  "experiment_id": "annual_reference_2023",
+  "scope": "Wall-clock comparison of the EnergyPlus teacher demand path against HistGradientBoosting inference for the eight registered Vienna cohorts. No building flexibility, no PyPSA, no diagnostic plots.",
+  "host": {
+    "node": "SERVICE-22RILCT",
+    "system": "Windows",
+    "release": "10",
+    "machine": "AMD64",
+    "processor": "Intel64 Family 6 Model 142 Stepping 12, GenuineIntel",
+    "python": "3.12.10"
+  },
+  "protocol": {
+    "engine_repeats": 3,
+    "surrogate_predict_repeats": 5,
+    "energyplus_scratch": "tempfile, copies of registered IDF and schedules",
+    "ssot_teacher_runs_modified": false,
+    "plots_included": false
+  },
+  "cohorts": [
+    {
+      "cohort_id": "non_residential_1975_1990",
+      "archived_eplusout_end_s": 0.84,
+      "prepare_s": 2.205183300015051,
+      "energyplus_wall_repeats_s": [
+        2.2227300999802537,
+        2.1569891999824904,
+        2.9181205999921076
+      ],
+      "energyplus_wall_median_s": 2.2227300999802537,
+      "energyplus_end_repeats_s": [
+        1.73,
+        1.66,
+        2.35
+      ],
+      "energyplus_end_median_s": 1.73,
+      "sql_extract_s": 1.8630217000027187,
+      "demand_path_s": 6.290935099998023
+    },
+    {
+      "cohort_id": "non_residential_1990_2000",
+      "archived_eplusout_end_s": 0.86,
+      "prepare_s": 3.8558660999988206,
+      "energyplus_wall_repeats_s": [
+        3.786039200029336,
+        2.708364400023129,
+        4.070758699963335
+      ],
+      "energyplus_wall_median_s": 3.786039200029336,
+      "energyplus_end_repeats_s": [
+        2.85,
+        2.15,
+        3.33
+      ],
+      "energyplus_end_median_s": 2.85,
+      "sql_extract_s": 2.2644106000079773,
+      "demand_path_s": 9.906315900036134
+    },
+    {
+      "cohort_id": "non_residential_2000_2014",
+      "archived_eplusout_end_s": 0.88,
+      "prepare_s": 3.814053900016006,
+      "energyplus_wall_repeats_s": [
+        3.662759799975902,
+        3.0822318000136875,
+        2.76039969996782
+      ],
+      "energyplus_wall_median_s": 3.0822318000136875,
+      "energyplus_end_repeats_s": [
+        2.94,
+        2.48,
+        2.19
+      ],
+      "energyplus_end_median_s": 2.48,
+      "sql_extract_s": 1.9072530000121333,
+      "demand_path_s": 8.803538700041827
+    },
+    {
+      "cohort_id": "non_residential_pre1975",
+      "archived_eplusout_end_s": 0.81,
+      "prepare_s": 4.028145599993877,
+      "energyplus_wall_repeats_s": [
+        3.660734799981583,
+        2.502191799983848,
+        3.0880633000051603
+      ],
+      "energyplus_wall_median_s": 3.0880633000051603,
+      "energyplus_end_repeats_s": [
+        2.88,
+        1.99,
+        2.57
+      ],
+      "energyplus_end_median_s": 2.57,
+      "sql_extract_s": 1.9935858999961056,
+      "demand_path_s": 9.109794799995143
+    },
+    {
+      "cohort_id": "residential_1975_1990",
+      "archived_eplusout_end_s": 0.81,
+      "prepare_s": 2.3713422999717295,
+      "energyplus_wall_repeats_s": [
+        2.1423264000331983,
+        2.3381073999917135,
+        2.404734499985352
+      ],
+      "energyplus_wall_median_s": 2.3381073999917135,
+      "energyplus_end_repeats_s": [
+        1.7,
+        1.85,
+        1.91
+      ],
+      "energyplus_end_median_s": 1.85,
+      "sql_extract_s": 1.3384057000512257,
+      "demand_path_s": 6.047855400014669
+    },
+    {
+      "cohort_id": "residential_1990_2000",
+      "archived_eplusout_end_s": 1.02,
+      "prepare_s": 2.084295300010126,
+      "energyplus_wall_repeats_s": [
+        2.359603099990636,
+        2.758042800007388,
+        2.286166300007608
+      ],
+      "energyplus_wall_median_s": 2.359603099990636,
+      "energyplus_end_repeats_s": [
+        1.9,
+        2.27,
+        1.78
+      ],
+      "energyplus_end_median_s": 1.9,
+      "sql_extract_s": 1.4047510999953374,
+      "demand_path_s": 5.8486494999961
+    },
+    {
+      "cohort_id": "residential_2000_2014",
+      "archived_eplusout_end_s": 0.88,
+      "prepare_s": 2.779154199990444,
+      "energyplus_wall_repeats_s": [
+        2.50173519999953,
+        2.4341390999616124,
+        2.4373598999809474
+      ],
+      "energyplus_wall_median_s": 2.4373598999809474,
+      "energyplus_end_repeats_s": [
+        1.96,
+        1.93,
+        1.92
+      ],
+      "energyplus_end_median_s": 1.93,
+      "sql_extract_s": 1.4249763999832794,
+      "demand_path_s": 6.641490499954671
+    },
+    {
+      "cohort_id": "residential_pre1975",
+      "archived_eplusout_end_s": 0.88,
+      "prepare_s": 6.366531900013797,
+      "energyplus_wall_repeats_s": [
+        5.967041299969424,
+        5.137226500024553,
+        5.472009600023739
+      ],
+      "energyplus_wall_median_s": 5.472009600023739,
+      "energyplus_end_repeats_s": [
+        4.96,
+        4.26,
+        4.61
+      ],
+      "energyplus_end_median_s": 4.61,
+      "sql_extract_s": 2.61207239999203,
+      "demand_path_s": 14.450613900029566
+    }
+  ],
+  "surrogate": {
+    "n_rows": 70080,
+    "n_cohorts": 8,
+    "inference_source": "in_process_refit_same_estimator_and_teacher_table",
+    "load_feature_table_s": 2.7101419999962673,
+    "feature_matrix_s": 0.04855969996424392,
+    "fit_per_target_s": {
+      "useful_space_heating_kwh_per_m2": 12.633570300007705,
+      "useful_cooling_kwh_per_m2": 5.8216373000177555
+    },
+    "fit_both_targets_s": 18.45520760002546,
+    "predict_both_targets_repeats_s": [
+      1.20806909998646,
+      2.067415199999232,
+      2.925308400008362,
+      1.7306256999727339,
+      1.5192133999662474
+    ],
+    "predict_both_targets_median_s": 1.7306256999727339,
+    "cohort_ids": [
+      "non_residential_1975_1990",
+      "non_residential_1990_2000",
+      "non_residential_2000_2014",
+      "non_residential_pre1975",
+      "residential_1975_1990",
+      "residential_1990_2000",
+      "residential_2000_2014",
+      "residential_pre1975"
+    ]
+  },
+  "city_year": {
+    "n_cohorts": 8,
+    "hours_per_cohort": 8760,
+    "prepare_s": 27.50457260000985,
+    "energyplus_wall_median_sum_s": 24.786144400015473,
+    "energyplus_end_median_sum_s": 19.92,
+    "sql_extract_s": 14.808476800040808,
+    "demand_path_s": 67.09919380006613,
+    "speedup_demand_path_vs_predict": 38.77163837398421,
+    "speedup_engine_wall_vs_predict": 14.322071144792304,
+    "time_saved_one_city_year_s": 65.3685681000934
+  },
+  "repeated_evaluations": [
+    {
+      "n_evaluations": 1,
+      "energyplus_demand_path_s": 67.09919380006613,
+      "surrogate_predict_s": 1.7306256999727339,
+      "time_saved_s": 65.3685681000934
+    },
+    {
+      "n_evaluations": 10,
+      "energyplus_demand_path_s": 670.9919380006613,
+      "surrogate_predict_s": 17.30625699972734,
+      "time_saved_s": 653.685681000934
+    },
+    {
+      "n_evaluations": 50,
+      "energyplus_demand_path_s": 3354.9596900033066,
+      "surrogate_predict_s": 86.53128499863669,
+      "time_saved_s": 3268.42840500467
+    }
+  ]
+}

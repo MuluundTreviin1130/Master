@@ -3,11 +3,22 @@ from __future__ import annotations
 from pathlib import Path
 
 
-CITIWATT_SOURCE_FILE_PATH = Path(
-    r"C:\Users\Philipp Thunshirn\Desktop\PhD\Daten\Citiwatt_indicators_Vienna.txt"
+REPOSITORY_ROOT = Path(__file__).resolve().parents[3]
+CITIWATT_SOURCE_FILE_PATH = (
+    REPOSITORY_ROOT
+    / "Data"
+    / "raw"
+    / "Citiwatts"
+    / "Vienna"
+    / "citiwatts_indicators_vienna.txt"
 )
-ENERGY_REPORT_SOURCE_FILE_PATH = Path(
-    r"C:\Users\Philipp Thunshirn\Downloads\2025.pdf"
+ENERGY_REPORT_SOURCE_FILE_PATH = (
+    REPOSITORY_ROOT
+    / "Documentation"
+    / "Sources"
+    / "Vienna"
+    / "Energy_Reports"
+    / "energiebericht_wien_2025.pdf"
 )
 
 
