@@ -86,6 +86,20 @@ def _require_profile(profiles: Dict[str, Any], key: str) -> Any:
     return profiles[key]
 
 
+def _to_celsius_if_kelvin(values: Any) -> np.ndarray:
+    # Same contract as IES: profile T_outdoor is Kelvin. Wind density adds
+    # 273.15 and must see Celsius, otherwise yield is clipped to the 0.5 floor.
+    arr = np.asarray(values, dtype=float).reshape(-1)
+    if arr.size == 0:
+        return arr
+    finite = arr[np.isfinite(arr)]
+    if finite.size == 0:
+        return arr
+    if float(np.nanmedian(finite)) > 150.0:
+        return arr - 273.15
+    return arr
+
+
 def simulate_energy_system_ec_flex(params: Dict[str, Any], profiles: Dict[str, Any], pv_size: float) -> Dict[str, Any]:
     eng = params.get("engine_config", None)
     features = getattr(eng, "features", None) if eng is not None else None
@@ -101,6 +115,7 @@ def simulate_energy_system_ec_flex(params: Dict[str, Any], profiles: Dict[str, A
     load_member_2d = np.asarray(profiles["load_member_2d"], dtype=float)
     hotwater_member_2d = np.asarray(_require_profile(profiles, "hotwater_member_2d"), dtype=float)
     t_out = np.asarray(_require_profile(profiles, "T_outdoor"), dtype=float)
+    t_out_c = _to_celsius_if_kelvin(t_out)
     thermal_cfg = _require_attr(params.get("settings_obj", None), "thermal")
     t_out_building = smooth_effective_outdoor_temperature(
         t_out,
@@ -269,7 +284,7 @@ def simulate_energy_system_ec_flex(params: Dict[str, Any], profiles: Dict[str, A
         cut_in_ms=float(_require_attr(small_wind_cfg, "cut_in_ms")),
         rated_ms=float(_require_attr(small_wind_cfg, "rated_ms")),
         cut_out_ms=float(_require_attr(small_wind_cfg, "cut_out_ms")),
-        temperature_c=t_out,
+        temperature_c=t_out_c,
         pressure_hpa=wind_pressure_hpa,
         reference_air_density_kg_per_m3=float(_require_attr(small_wind_cfg, "reference_air_density_kg_per_m3")),
         dt_h=dt_h,
@@ -283,7 +298,7 @@ def simulate_energy_system_ec_flex(params: Dict[str, Any], profiles: Dict[str, A
         cut_in_ms=float(_require_attr(large_wind_cfg, "cut_in_ms")),
         rated_ms=float(_require_attr(large_wind_cfg, "rated_ms")),
         cut_out_ms=float(_require_attr(large_wind_cfg, "cut_out_ms")),
-        temperature_c=t_out,
+        temperature_c=t_out_c,
         pressure_hpa=wind_pressure_hpa,
         reference_air_density_kg_per_m3=float(_require_attr(large_wind_cfg, "reference_air_density_kg_per_m3")),
         dt_h=dt_h,

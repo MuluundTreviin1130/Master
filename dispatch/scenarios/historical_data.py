@@ -11,6 +11,7 @@ import numpy as np
 import pandas as pd
 
 from dispatch.core import DispatchInput
+from .hdd import heating_degree_hours, require_ambient_temperature_c
 from Technical_model.technologies.electricity.large_wind import simulate_large_wind_generation
 from Technical_model.technologies.electricity.small_wind import simulate_small_wind_generation
 
@@ -513,8 +514,8 @@ def build_historical_residual_library(
         price_actual = np.asarray(row.price, dtype=float)
         price_base = np.asarray(base["price"], dtype=float)
 
-        hdd_actual = np.clip(15.0 - temp_actual, 0.0, None)
-        hdd_base = np.clip(15.0 - temp_base, 0.0, None)
+        hdd_actual = heating_degree_hours(temp_actual, ctx="historical residual actual")
+        hdd_base = heating_degree_hours(temp_base, ctx="historical residual climate")
 
         rows.append(
             {
@@ -625,7 +626,15 @@ def build_ies_historical_scenarios(
         dispatch_input.series.get("district_hotwater_demand", np.clip(base_dh - base_space_heat, 0.0, None)),
         dtype=float,
     ).reshape(-1)
-    base_temperature = np.asarray(dispatch_input.series.get("ambient_temperature_c", np.zeros(n)), dtype=float).reshape(-1)
+    if "ambient_temperature_c" not in dispatch_input.series:
+        raise KeyError(
+            "[dispatch.scenarios] Missing dispatch_input.series['ambient_temperature_c']; "
+            "historical HDD scaling has no silent zero-temperature fallback."
+        )
+    base_temperature = require_ambient_temperature_c(
+        dispatch_input.series["ambient_temperature_c"],
+        ctx="base dispatch day",
+    )
     base_price = np.asarray(dispatch_input.series.get("grid_import_price", np.zeros(n)), dtype=float).reshape(-1)
     base_export = np.asarray(dispatch_input.series.get("grid_export_price", np.zeros(n)), dtype=float).reshape(-1)
     base_gas_day_ahead_key = (
@@ -716,8 +725,8 @@ def build_ies_historical_scenarios(
                 n,
                 fill_value=float(base_co2_price[-1]) if base_co2_price.size else 0.0,
             )
-        base_hdd = np.maximum(0.0, 15.0 - base_temperature)
-        scenario_hdd = np.maximum(0.0, 15.0 - scenario_temperature)
+        base_hdd = heating_degree_hours(base_temperature, ctx="base dispatch day")
+        scenario_hdd = heating_degree_hours(scenario_temperature, ctx="historical scenario day")
         dh_factor = np.clip(_safe_ratio(scenario_hdd, base_hdd, default=1.0), 0.1, 4.0)
         dh_factor[~np.isfinite(dh_factor)] = 1.0
         daily_avg_temp_c = float(np.mean(scenario_temperature))

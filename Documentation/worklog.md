@@ -1,5 +1,19 @@
 # Worklog
 
+## 2026-08-31
+
+### Critical bug: Kelvin outdoor temperature forwarded as Celsius
+
+- Profile `T_outdoor` is Kelvin. IES/EC_FLEX passed it as `temperature_c` into
+  the wind density model (`T_K = T_C + 273.15`) and as `ambient_temperature_c`
+  into two-stage historical HDD scaling (`HDD = max(0, 15 − T_C)`).
+- Trigger: GIW wind arms (`enable_small_wind` / `enable_large_wind`) and
+  `milp_two_stage` historical scenarios. Vienna ~280 K made density clip to 0.5
+  (~50% wind yield) and made base HDD identically zero so every DH demand
+  factor silently became 1.0.
+- Fix: pass `t_out_c` at both call sites; fail-fast if a Kelvin-looking series
+  still arrives. Import-light unit tests cover wind density and HDD.
+
 ## 2026-06-12
 
 ### Target-layer update: sector-coupled MES with planetary boundaries / LCA scenario bridge

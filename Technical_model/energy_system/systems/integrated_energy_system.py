@@ -1167,7 +1167,9 @@ def simulate_integrated_energy_system(params: Dict[str, Any], profiles: Dict[str
         cut_in_ms=float(_require_attr(getattr(settings_obj, "small_wind", None), "cut_in_ms")),
         rated_ms=float(_require_attr(getattr(settings_obj, "small_wind", None), "rated_ms")),
         cut_out_ms=float(_require_attr(getattr(settings_obj, "small_wind", None), "cut_out_ms")),
-        temperature_c=t_out,
+        # Profile T_outdoor is Kelvin; the wind density model adds 273.15 and
+        # must receive Celsius. Passing Kelvin silently halved GIW wind yield.
+        temperature_c=t_out_c,
         pressure_hpa=wind_pressure_hpa,
         reference_air_density_kg_per_m3=float(_require_attr(getattr(settings_obj, "small_wind", None), "reference_air_density_kg_per_m3")),
         dt_h=dt_h,
@@ -1181,7 +1183,7 @@ def simulate_integrated_energy_system(params: Dict[str, Any], profiles: Dict[str
         cut_in_ms=float(_require_attr(getattr(settings_obj, "large_wind", None), "cut_in_ms")),
         rated_ms=float(_require_attr(getattr(settings_obj, "large_wind", None), "rated_ms")),
         cut_out_ms=float(_require_attr(getattr(settings_obj, "large_wind", None), "cut_out_ms")),
-        temperature_c=t_out,
+        temperature_c=t_out_c,
         pressure_hpa=wind_pressure_hpa,
         reference_air_density_kg_per_m3=float(_require_attr(getattr(settings_obj, "large_wind", None), "reference_air_density_kg_per_m3")),
         dt_h=dt_h,
@@ -2137,7 +2139,10 @@ def simulate_integrated_energy_system(params: Dict[str, Any], profiles: Dict[str
                     "small_wind_available": small_wind_gen[start:stop],
                     "large_wind_available": large_wind_gen[start:stop],
                     "run_of_river_hydro_available": run_of_river_hydro_gen[start:stop],
-                    "ambient_temperature_c": t_out[start:stop],
+                    # Two-stage HDD scaling uses a 15 °C base. T_outdoor is
+                    # Kelvin; leaking it here made base HDD identically zero
+                    # and froze every historical DH demand factor at 1.0.
+                    "ambient_temperature_c": t_out_c[start:stop],
                     "wind_speed_ms": wind_speed_ms[start:stop],
                     "wind_pressure_hpa": wind_pressure_hpa[start:stop],
                     "grid_import_price": grid_import_price[start:stop],
