@@ -24,3 +24,5 @@ Current structure:
 - `scenarios/`
   - Historical scenario generation and reduction helpers for the stochastic
     dispatch path.
+  - `hdd.py` is the Celsius heating-degree-hour contract. Profile `T_outdoor`
+    is Kelvin; two-stage HDD scaling must receive `ambient_temperature_c` in °C.

@@ -2,6 +2,31 @@ from __future__ import annotations
 
 import numpy as np
 
+# Outdoor air denser than ~150 °C is not a physical ambient series. Profile
+# `T_outdoor` in this repo is Kelvin; callers that pass it here as Celsius
+# would compute T_K = T_outdoor + 273.15 ≈ 553 K and clip density to 0.5.
+_AMBIENT_CELSIUS_MEDIAN_MAX = 150.0
+
+
+def require_temperature_celsius(temperature_c: np.ndarray) -> np.ndarray:
+    """Reject Kelvin-looking outdoor series before the +273.15 density step.
+
+    The air-density correction is ρ = P / (R * (T_C + 273.15)). A Kelvin
+    profile (~280 K in Vienna) passed as Celsius is indistinguishable from a
+    280 °C gas and must not silently understate wind yield.
+    """
+    arr = np.asarray(temperature_c, dtype=float)
+    finite = arr[np.isfinite(arr)]
+    if finite.size == 0:
+        raise ValueError("[small_wind] temperature_c has no finite values.")
+    median = float(np.nanmedian(finite))
+    if median > _AMBIENT_CELSIUS_MEDIAN_MAX:
+        raise ValueError(
+            f"[small_wind] temperature_c looks like Kelvin (median={median:.2f}). "
+            "Air density uses T_K = T_C + 273.15; pass outdoor temperature in Celsius."
+        )
+    return arr
+
 
 def _adjust_to_hub_height(
     wind_speed_ms: np.ndarray,
@@ -41,7 +66,9 @@ def _air_density_correction_factor(
     pressure_hpa: np.ndarray,
     reference_air_density_kg_per_m3: float,
 ) -> np.ndarray:
-    temp_k = np.asarray(temperature_c, dtype=float) + 273.15
+    # Ideal-gas density vs the configured reference (typically 1.225 kg/m³ at
+    # 15 °C). The +273.15 offset is only valid for Celsius input.
+    temp_k = require_temperature_celsius(temperature_c) + 273.15
     pressure_pa = np.asarray(pressure_hpa, dtype=float) * 100.0
     rho_ref = max(1e-9, float(reference_air_density_kg_per_m3))
     rho = pressure_pa / (287.05 * np.clip(temp_k, 1e-9, None))
