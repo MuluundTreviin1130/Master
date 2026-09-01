@@ -61,6 +61,7 @@ from Data.technology_data.run_of_river_hydro.Vienna.vienna import (
 )
 from Technical_model.technologies.gas_and_fuels.biogas_engine import dispatch_biogas_engine
 from Technical_model.technologies.gas_and_fuels.wood_gasifier import dispatch_wood_gasifier
+from Technical_model.technologies.heatpump_cop import resolve_household_heatpump_cop_series
 from Technical_model.technologies.hydrogen.hydrogen_system import HydrogenSystem
 
 
@@ -1096,8 +1097,10 @@ def simulate_integrated_energy_system(params: Dict[str, Any], profiles: Dict[str
             )
 
     hp = _require_block(params, "heatpump")
-    cop_heat = float(hp["cop_max"])
-    cop_cool = float(hp["eer_max"])
+    cop_heat_series, cop_cool_series = resolve_household_heatpump_cop_series(
+        heatpump=hp,
+        t_outdoor_k=t_out,
+    )
     delta_t = float(_require_attr(_require_attr(settings_obj, "thermal"), "delta_T"))
 
     ev_cfg = _require_block(params, "EV")
@@ -1435,6 +1438,8 @@ def simulate_integrated_energy_system(params: Dict[str, Any], profiles: Dict[str
             h2_soc[t] = h2.soc_kwh
 
         local_share_vector = 1.0 - dh_share_vector
+        cop_heat_t = float(cop_heat_series[t])
+        cop_cool_t = float(cop_cool_series[t])
         if enable_thermflex and not use_coupled_dispatch:
             heat_member = np.zeros(n_members, dtype=float)
             cool_member = np.zeros(n_members, dtype=float)
@@ -1445,8 +1450,8 @@ def simulate_integrated_energy_system(params: Dict[str, Any], profiles: Dict[str
 
             local_heat_member = heat_member * local_share_vector
             dh_space_heat_member = heat_member * dh_share_vector
-            local_heat_elec_member = local_heat_member / max(1e-9, cop_heat)
-            local_cool_elec_member = cool_member / max(1e-9, cop_cool)
+            local_heat_elec_member = local_heat_member / max(1e-9, cop_heat_t)
+            local_cool_elec_member = cool_member / max(1e-9, cop_cool_t)
         else:
             heat_member = np.asarray(space_heat_member_2d[t, :], dtype=float)
             local_heat_member = heat_member * local_share_vector
@@ -1773,7 +1778,7 @@ def simulate_integrated_energy_system(params: Dict[str, Any], profiles: Dict[str
                 local_share = float(local_share_vector[m_idx])
                 if local_share <= 1e-9:
                     continue
-                cap, mode = thermflex_extra_cap_kwh(st, t_out[t], delta_t, cop_heat, cop_cool)
+                cap, mode = thermflex_extra_cap_kwh(st, t_out[t], delta_t, cop_heat_t, cop_cool_t)
                 therm_cap += cap * local_share
                 therm_mode = mode
 
@@ -1799,9 +1804,9 @@ def simulate_integrated_energy_system(params: Dict[str, Any], profiles: Dict[str
                         continue
                     per_member = alloc["thermflex"] * local_share / local_weight_sum
                     if therm_mode == "heat":
-                        st.ti_k = min(st.t_max_k + delta_t, st.ti_k + (per_member * cop_heat * 1000.0) / max(1e-9, st.c_th_wh_per_k))
+                        st.ti_k = min(st.t_max_k + delta_t, st.ti_k + (per_member * cop_heat_t * 1000.0) / max(1e-9, st.c_th_wh_per_k))
                     else:
-                        st.ti_k = max(st.t_min_k - delta_t, st.ti_k - (per_member * cop_cool * 1000.0) / max(1e-9, st.c_th_wh_per_k))
+                        st.ti_k = max(st.t_min_k - delta_t, st.ti_k - (per_member * cop_cool_t * 1000.0) / max(1e-9, st.c_th_wh_per_k))
             if enable_bess:
                 bch = min(alloc["bess_charge"], bess_charge_cap)
                 bess_ch[t] = bch

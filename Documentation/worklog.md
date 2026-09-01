@@ -1,5 +1,19 @@
 # Worklog
 
+## 2026-09-01
+
+### Household HP used `cop_max` as operating COP
+
+- Default `system_id='ec_flex'` converted RC-model space heat to electricity with
+  `cop_heat = heatpump['cop_max']` (Vienna 5.0). Data SSOT also has `eta_cop=0.2`
+  and Kelvin `T_flow`; the precompute path already used Carnot×eta, so Gold/teacher
+  heating electricity was ~2× too low in winter versus the documented HP model.
+- Runtime now resolves hourly COP from Kelvin outdoor air + Data setpoints via
+  `Technical_model/technologies/heatpump_cop.py` (fail-fast on Celsius-looking
+  outdoor or missing `eta_cop`). EC_FLEX, IES heuristic ThermFlex, and
+  `heatpump_model` share that contract.
+- Tests: `Technical_model/technologies/test_heatpump_cop.py` (numpy only).
+
 ## 2026-06-12
 
 ### Target-layer update: sector-coupled MES with planetary boundaries / LCA scenario bridge

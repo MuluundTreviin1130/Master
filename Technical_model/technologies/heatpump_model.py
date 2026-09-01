@@ -1,20 +1,17 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from Data import data as data
+from Technical_model.technologies.heatpump_cop import (
+    cop_cooling_from_kelvin,
+    cop_heating_from_kelvin,
+    resolve_household_heatpump_cop_series,
+)
 
-def calculate_cop_heating(T_outdoor, T_flow, eta_cop=0.4, cop_max=6):
-    if T_flow <= T_outdoor:
-        return 1.0
-    cop_carnot = T_flow / (T_flow - T_outdoor)
-    cop_real = eta_cop * cop_carnot
-    return min(max(cop_real, 1.0), cop_max)
+def calculate_cop_heating(T_outdoor, T_flow, eta_cop, cop_max):
+    return cop_heating_from_kelvin(T_outdoor, T_flow, eta_cop, cop_max)
 
 def calculate_cop_cooling(T_outdoor, T_flow_cool, eta_cop, eer_max):
-    if T_outdoor <= T_flow_cool:
-        return 1.0
-    cop_carnot = T_flow_cool / (T_outdoor - T_flow_cool)
-    cop_real = eta_cop * cop_carnot
-    return min(max(cop_real, 1.0), eer_max)
+    return cop_cooling_from_kelvin(T_outdoor, T_flow_cool, eta_cop, eer_max)
 
 def simulate_heatpump_heating_system(params, profiles):
     # Prefer an explicit precomputed thermal-demand override when the runtime
@@ -33,6 +30,10 @@ def simulate_heatpump_heating_system(params, profiles):
     T_outdoor_array = profiles['T_outdoor']
 
     hp = params['heatpump']
+    cop_heat_series, _cop_cool_series = resolve_household_heatpump_cop_series(
+        heatpump=hp,
+        t_outdoor_k=T_outdoor_array,
+    )
     hours = len(heating_load_on_days)
     elec = np.zeros(hours)
     thermal = np.zeros(hours)
@@ -40,17 +41,11 @@ def simulate_heatpump_heating_system(params, profiles):
 
     for t in range(hours):
         Q_demand = heating_load_on_days[t]
-        T_outdoor = T_outdoor_array[t]
 
         if Q_demand <= 0:
             continue
 
-        COP = calculate_cop_heating(
-            T_outdoor=T_outdoor,
-            T_flow=hp['T_flow'],
-            eta_cop=hp.get('eta_cop', 0.4),
-            cop_max=hp.get('cop_max', 6)
-        )
+        COP = float(cop_heat_series[t])
 
         elec[t] = Q_demand / COP if COP > 0 else 0.0
         thermal[t] = Q_demand
@@ -74,8 +69,10 @@ def simulate_heatpump_cooling_system(params, profiles):
     T_outdoor_array = profiles['T_outdoor']
 
     hp = params['heatpump']
-    building = params.get('building', {})
-    T_in_summer = building.get('T_max')
+    _cop_heat_series, cop_cool_series = resolve_household_heatpump_cop_series(
+        heatpump=hp,
+        t_outdoor_k=T_outdoor_array,
+    )
 
     hours = len(cooling_load_on_days)
     elec = np.zeros(hours)
@@ -84,18 +81,11 @@ def simulate_heatpump_cooling_system(params, profiles):
 
     for t in range(hours):
         Q_cool_demand = cooling_load_on_days[t]
-        T_outdoor = T_outdoor_array [t]
-        T_flow_cool = hp.get('T_flow_cool', T_in_summer)
 
         if Q_cool_demand <= 0:
             continue
 
-        COP_cool = calculate_cop_cooling(
-            T_outdoor,
-            T_flow_cool,
-            eta_cop=hp.get('eta_cop', 0.4),
-            eer_max=hp.get('eer_max', 5)
-        )
+        COP_cool = float(cop_cool_series[t])
 
         elec[t] = Q_cool_demand / COP_cool if COP_cool > 0 else 0.0
         cooling[t] = Q_cool_demand
