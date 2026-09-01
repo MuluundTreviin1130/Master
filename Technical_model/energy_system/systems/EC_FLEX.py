@@ -30,6 +30,7 @@ from Technical_model.technologies.electricity.run_of_river_hydro import simulate
 from Technical_model.technologies.electricity.small_wind import simulate_small_wind_generation
 from Technical_model.technologies.gas_and_fuels.biogas_engine import dispatch_biogas_engine
 from Technical_model.technologies.gas_and_fuels.wood_gasifier import dispatch_wood_gasifier
+from Technical_model.technologies.heatpump_cop import resolve_household_heatpump_cop_series
 from Technical_model.technologies.hydrogen.hydrogen_system import HydrogenSystem
 
 
@@ -153,10 +154,10 @@ def simulate_energy_system_ec_flex(params: Dict[str, Any], profiles: Dict[str, A
                 )
 
     hp = _require_block(params, "heatpump")
-    if "cop_max" not in hp or "eer_max" not in hp:
-        raise ValueError("[EC_FLEX] Missing required heatpump keys 'cop_max' and/or 'eer_max'.")
-    cop_heat = float(hp["cop_max"])
-    cop_cool = float(hp["eer_max"])
+    cop_heat_series, cop_cool_series = resolve_household_heatpump_cop_series(
+        heatpump=hp,
+        t_outdoor_k=t_out,
+    )
     delta_t = float(_require_attr(_require_attr(params.get("settings_obj", None), "thermal"), "delta_T"))
     # EV state.
     ev_cfg = _require_block(params, "EV")
@@ -324,12 +325,16 @@ def simulate_energy_system_ec_flex(params: Dict[str, Any], profiles: Dict[str, A
             h2_soc[t] = h2.soc_kwh
 
         # Base thermal simulation and mandatory HVAC.
+        # Operating COP is Carnot * eta_cop, capped by cop_max/eer_max. Using the
+        # cap as the operating COP would understate winter HP electricity by ~2x.
+        cop_heat_t = float(cop_heat_series[t])
+        cop_cool_t = float(cop_cool_series[t])
         hvac_member = np.zeros(n_ec, dtype=float)
         internal_w_m2 = usage["Qi Winter W/m2"].to_numpy(dtype=float)[t] if "Qi Winter W/m2" in usage.columns else 0.0
         for m_idx, st in enumerate(thermal_states):
             st.passive_step(t_out_building[t], internal_w_m2, solar[t])
             heat_kwh, cool_kwh = st.base_hvac_energy()
-            hvac_member[m_idx] = (heat_kwh / max(1e-9, cop_heat)) + (cool_kwh / max(1e-9, cop_cool))
+            hvac_member[m_idx] = (heat_kwh / max(1e-9, cop_heat_t)) + (cool_kwh / max(1e-9, cop_cool_t))
         hp_base_elec[t] = float(np.sum(hvac_member))
 
         base_member = load_member_2d[t, :] + hotwater_member_2d[t, :] + hvac_member
@@ -412,7 +417,7 @@ def simulate_energy_system_ec_flex(params: Dict[str, Any], profiles: Dict[str, A
         therm_mode = "heat"
         if enable_thermflex:
             for st in thermal_states:
-                cap, mode = thermflex_extra_cap_kwh(st, t_out[t], delta_t, cop_heat, cop_cool)
+                cap, mode = thermflex_extra_cap_kwh(st, t_out[t], delta_t, cop_heat_t, cop_cool_t)
                 therm_cap += cap
                 therm_mode = mode
         bess_charge_cap = min(bess_p_cap, max(0.0, (bess_cap - bess_soc[t]) / max(1e-9, bess_eta)))
@@ -442,9 +447,9 @@ def simulate_energy_system_ec_flex(params: Dict[str, Any], profiles: Dict[str, A
                 per_member = alloc["thermflex"] / float(n_ec)
                 for st in thermal_states:
                     if therm_mode == "heat":
-                        st.ti_k = min(st.t_max_k + delta_t, st.ti_k + (per_member * cop_heat * 1000.0) / max(1e-9, st.c_th_wh_per_k))
+                        st.ti_k = min(st.t_max_k + delta_t, st.ti_k + (per_member * cop_heat_t * 1000.0) / max(1e-9, st.c_th_wh_per_k))
                     else:
-                        st.ti_k = max(st.t_min_k - delta_t, st.ti_k - (per_member * cop_cool * 1000.0) / max(1e-9, st.c_th_wh_per_k))
+                        st.ti_k = max(st.t_min_k - delta_t, st.ti_k - (per_member * cop_cool_t * 1000.0) / max(1e-9, st.c_th_wh_per_k))
 
             # BESS charge.
             if enable_bess:
