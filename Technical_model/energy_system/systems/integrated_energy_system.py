@@ -19,6 +19,10 @@ from Technical_model.technologies.buildings.thermal_building_state import (
     smooth_effective_outdoor_temperature,
 )
 from Technical_model.technologies.buildings.runtime_building_params import get_runtime_building_params
+from Technical_model.technologies.buildings.runtime_space_heat import (
+    build_live_hvac_solar_gains_member_2d,
+    require_live_hvac_internal_gains_w_m2,
+)
 from Technical_model.technologies.buildings.thermal_flex_controller import thermflex_extra_cap_kwh
 from Technical_model.technologies.district_heating.core.dh_buildings import build_dh_buildings
 from Technical_model.technologies.district_heating.core.dh_bus import build_dh_bus
@@ -1033,15 +1037,7 @@ def simulate_integrated_energy_system(params: Dict[str, Any], profiles: Dict[str
         t_out,
         float(getattr(thermal_cfg, "outdoor_smoothing_hours", 24.0)),
     )
-    solar = np.asarray(_require_profile(profiles, "solargains"), dtype=float)
     irradiance = np.asarray(_require_profile(profiles, "irradiance"), dtype=float)
-    solar_member_2d = profiles.get("space_heat_solar_member_2d")
-    if solar_member_2d is not None:
-        solar_member_2d = np.asarray(solar_member_2d, dtype=float)
-        if solar_member_2d.shape != space_heat_member_2d.shape:
-            raise ValueError(
-                "[integrated_energy_system] space_heat_solar_member_2d must match space_heat_member_2d shape."
-            )
     usage = profiles["usage_profile"]
     availability = np.asarray(_require_profile(profiles, "availability_profile"), dtype=float)
     driving = np.asarray(_require_profile(profiles, "driving_profile"), dtype=float)
@@ -1050,6 +1046,15 @@ def simulate_integrated_energy_system(params: Dict[str, Any], profiles: Dict[str
     n_steps, n_members = load_member_2d.shape
     dt_h = 1.0
     timestamps = profiles.get("timestamps", pd.date_range("2023-01-01", periods=n_steps, freq="h"))
+    internal_gains_w_m2 = require_live_hvac_internal_gains_w_m2(
+        timestamps=timestamps,
+        usage_df=usage,
+    )
+    if len(internal_gains_w_m2) != n_steps:
+        raise ValueError(
+            "[integrated_energy_system] Internal-gain series length must match the HVAC horizon, "
+            f"got {len(internal_gains_w_m2)} vs n_steps={n_steps}."
+        )
 
     if enable_small_wind or enable_large_wind:
         wind_speed_ms = _align_1d_length(_require_profile(profiles, "wind_speed_ms"), n_steps)
@@ -1094,6 +1099,19 @@ def simulate_integrated_energy_system(params: Dict[str, Any], profiles: Dict[str
                     dt_h=dt_h,
                 )
             )
+
+    solar_member_2d = build_live_hvac_solar_gains_member_2d(
+        profiles=profiles,
+        members=members_cfg,
+        settings_obj=settings_obj,
+        n_steps=n_steps,
+        n_members=n_members,
+    )
+    if solar_member_2d.shape != space_heat_member_2d.shape:
+        raise ValueError(
+            "[integrated_energy_system] Live HVAC solar-gain axis must match space_heat_member_2d, "
+            f"got {solar_member_2d.shape} vs {space_heat_member_2d.shape}."
+        )
 
     hp = _require_block(params, "heatpump")
     cop_heat = float(hp["cop_max"])
@@ -1438,9 +1456,12 @@ def simulate_integrated_energy_system(params: Dict[str, Any], profiles: Dict[str
         if enable_thermflex and not use_coupled_dispatch:
             heat_member = np.zeros(n_members, dtype=float)
             cool_member = np.zeros(n_members, dtype=float)
-            internal_w_m2 = usage["Qi Winter W/m2"].to_numpy(dtype=float)[t] if "Qi Winter W/m2" in usage.columns else 0.0
             for m_idx, st in enumerate(thermal_states):
-                st.passive_step(t_out_building[t], internal_w_m2, solar[t])
+                st.passive_step(
+                    t_out_building[t],
+                    float(internal_gains_w_m2[t]),
+                    float(solar_member_2d[t, m_idx]),
+                )
                 heat_member[m_idx], cool_member[m_idx] = st.base_hvac_energy()
 
             local_heat_member = heat_member * local_share_vector
