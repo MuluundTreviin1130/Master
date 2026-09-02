@@ -16,6 +16,7 @@ from Technical_model.consumption.heating_anc_cooling_consumption.heating_control
     max_heating_energy_wh,
     max_heating_power_multiplier,
 )
+from Technical_model.technologies.buildings.runtime_building_params import get_runtime_building_params
 
 
 def _require_positive_float(value: Any, *, label: str) -> float:
@@ -330,3 +331,117 @@ def build_reference_space_heat_profile_kwh(
             t_indoor_k[t] = min(upper_k, t_indoor_k[t] + q_heat_wh / c_eff_wh_per_k)
 
     return q_heat_kwh
+
+
+def require_live_hvac_internal_gains_w_m2(*, timestamps, usage_df: pd.DataFrame) -> np.ndarray:
+    """Return the hourly internal-gain series used by live RC HVAC.
+
+    Why this wrapper exists:
+    - Precompute, the thermflex linear model, and EnergyPlus mapping already
+      switch `Qi Winter W/m2` / `Qi Sommer W/m2` by month.
+    - EC_FLEX / IES heuristic HVAC previously kept winter Qi all year and
+      silently used `0.0` when the winter column was missing.
+    - Live Gold/teacher heating therefore did not share the runtime SSOT.
+    """
+
+    idx = pd.DatetimeIndex(timestamps)
+    return _seasonal_internal_gains_w_m2(timestamps=idx, usage_df=usage_df)
+
+
+def build_live_hvac_solar_gains_member_2d(
+    *,
+    profiles: dict[str, Any],
+    members: Any,
+    settings_obj: Any,
+    n_steps: int,
+    n_members: int,
+) -> np.ndarray:
+    """Resolve per-member solar gains for live RC HVAC from the runtime SSOT.
+
+    Why this helper exists:
+    - Default `thermal.runtime_solar_gains_mode` is `irradiance_window_transmission`.
+    - Precompute already derives cohort-specific W/m2 gains from irradiance,
+      window geometry, g-value, and TABULA reduction factors.
+    - Live EC_FLEX / IES heuristic HVAC previously injected the global legacy
+      `solargains` profile into every member. That file is documented as not
+      being the active solar SSOT and is several times larger than the
+      settings-selected term (Vienna mean ~9.6 vs ~2.5 W/m2 for residential).
+    - Gold/teacher default `system_id='ec_flex'` with `district_heating.share=0`
+      takes all space-heat electricity from this live RC path, so the mismatch
+      directly biases HVAC electricity, grid import, NPC, and climate_change.
+
+    Resolution order:
+    1. Reuse `profiles['space_heat_solar_member_2d']` when precompute already
+       built the SSOT series for this member axis.
+    2. Otherwise resolve each member with `resolve_runtime_solar_gains_w_per_m2`.
+    Missing members, shape drift, or irradiance-mode gaps fail fast.
+    """
+
+    n_steps = int(n_steps)
+    n_members = int(n_members)
+    if n_steps <= 0:
+        raise ValueError("[runtime_space_heat] n_steps must be > 0 for live HVAC solar gains.")
+    if n_members < 0:
+        raise ValueError("[runtime_space_heat] n_members must be >= 0 for live HVAC solar gains.")
+    if n_members == 0:
+        return np.zeros((n_steps, 0), dtype=float)
+
+    cached = profiles.get("space_heat_solar_member_2d") if isinstance(profiles, dict) else None
+    if cached is not None:
+        arr = np.asarray(cached, dtype=float)
+        if arr.ndim != 2 or arr.shape != (n_steps, n_members):
+            raise ValueError(
+                "[runtime_space_heat] profiles['space_heat_solar_member_2d'] must have shape "
+                f"({n_steps}, {n_members}), got {arr.shape}."
+            )
+        return arr
+
+    if settings_obj is None or not hasattr(settings_obj, "thermal"):
+        raise ValueError(
+            "[runtime_space_heat] settings_obj.thermal is required to resolve live HVAC solar gains."
+        )
+    member_rows = getattr(members, "members", None) if members is not None else None
+    if not member_rows:
+        raise ValueError(
+            "[runtime_space_heat] engine members are required to resolve per-member live HVAC solar gains. "
+            "The global legacy solargains profile is not an allowed fallback when "
+            "runtime_solar_gains_mode is settings-selected."
+        )
+    if "solargains" not in profiles:
+        raise KeyError("[runtime_space_heat] profiles['solargains'] is required as the legacy solar input.")
+
+    out = np.zeros((n_steps, n_members), dtype=float)
+    col = 0
+    for member in member_rows:
+        count = int(getattr(member, "count", 0))
+        if count <= 0:
+            continue
+        building_params = get_runtime_building_params(member, settings_obj=settings_obj)
+        series = np.asarray(
+            resolve_runtime_solar_gains_w_per_m2(
+                legacy_solar_gains_w_m2=profiles["solargains"],
+                irradiance_w_m2=profiles.get("irradiance"),
+                building_params=building_params,
+                thermal_cfg=settings_obj.thermal,
+            ),
+            dtype=float,
+        ).reshape(-1)
+        if series.size != n_steps:
+            raise ValueError(
+                "[runtime_space_heat] Resolved live HVAC solar series length "
+                f"{series.size} does not match n_steps={n_steps}."
+            )
+        for _ in range(count):
+            if col >= n_members:
+                raise ValueError(
+                    "[runtime_space_heat] Member expansion exceeds live HVAC member axis "
+                    f"n_members={n_members}."
+                )
+            out[:, col] = series
+            col += 1
+    if col != n_members:
+        raise ValueError(
+            "[runtime_space_heat] Member expansion produced "
+            f"{col} live HVAC solar columns, expected n_members={n_members}."
+        )
+    return out

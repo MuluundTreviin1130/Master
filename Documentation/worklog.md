@@ -1,5 +1,21 @@
 # Worklog
 
+## 2026-09-02
+
+### Live Gold HVAC used the legacy solar-gains profile instead of the runtime SSOT
+
+- Default `thermal.runtime_solar_gains_mode` is `irradiance_window_transmission`.
+  Precompute already derives cohort-specific W/m2 gains from irradiance, window
+  geometry and TABULA factors. Live EC_FLEX / IES heuristic HVAC still injected
+  the global `Solar_gains.csv` series into every member.
+- Trigger: default `system_id='ec_flex'`, `district_heating.share=0`. Gold/teacher
+  space-heat electricity comes from live RC HVAC.
+- Impact: Vienna legacy mean ~9.6 W/m2 vs residential SSOT ~2.5 W/m2. Extra solar
+  gains suppress heating electricity, grid import, `npc_eur`, and `climate_change`.
+- Same live loop also kept winter internal gains all year (`else 0.0` fallback).
+- Fix: `build_live_hvac_solar_gains_member_2d` + seasonal internal-gain helper,
+  wired into EC_FLEX and IES. Tests: `test_runtime_solar_gains.py`.
+
 ## 2026-06-12
 
 ### Target-layer update: sector-coupled MES with planetary boundaries / LCA scenario bridge

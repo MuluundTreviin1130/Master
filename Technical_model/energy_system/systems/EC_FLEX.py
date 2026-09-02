@@ -24,6 +24,10 @@ from Technical_model.technologies.buildings.thermal_building_state import (
     smooth_effective_outdoor_temperature,
 )
 from Technical_model.technologies.buildings.runtime_building_params import get_runtime_building_params
+from Technical_model.technologies.buildings.runtime_space_heat import (
+    build_live_hvac_solar_gains_member_2d,
+    require_live_hvac_internal_gains_w_m2,
+)
 from Technical_model.technologies.buildings.thermal_flex_controller import thermflex_extra_cap_kwh
 from Technical_model.technologies.electricity.large_wind import simulate_large_wind_generation
 from Technical_model.technologies.electricity.run_of_river_hydro import simulate_run_of_river_hydro_generation
@@ -106,7 +110,6 @@ def simulate_energy_system_ec_flex(params: Dict[str, Any], profiles: Dict[str, A
         t_out,
         float(getattr(thermal_cfg, "outdoor_smoothing_hours", 24.0)),
     )
-    solar = np.asarray(_require_profile(profiles, "solargains"), dtype=float)
     usage = profiles["usage_profile"]
     availability = np.asarray(_require_profile(profiles, "availability_profile"), dtype=float)
     driving = np.asarray(_require_profile(profiles, "driving_profile"), dtype=float)
@@ -115,6 +118,15 @@ def simulate_energy_system_ec_flex(params: Dict[str, Any], profiles: Dict[str, A
     n_steps, n_ec = load_member_2d.shape
     dt_h = 1.0
     timestamps = profiles.get("timestamps", pd.date_range("2023-01-01", periods=n_steps, freq="h"))
+    internal_gains_w_m2 = require_live_hvac_internal_gains_w_m2(
+        timestamps=timestamps,
+        usage_df=usage,
+    )
+    if len(internal_gains_w_m2) != n_steps:
+        raise ValueError(
+            "[EC_FLEX] Internal-gain series length must match the HVAC horizon, "
+            f"got {len(internal_gains_w_m2)} vs n_steps={n_steps}."
+        )
     wind_enabled = enable_small_wind or enable_large_wind
     if wind_enabled:
         # Some upstream wind profiles include one extra endpoint sample; align to the
@@ -151,6 +163,19 @@ def simulate_energy_system_ec_flex(params: Dict[str, Any], profiles: Dict[str, A
                         dt_h=dt_h,
                     )
                 )
+
+    n_thermal = len(thermal_states)
+    solar_member_2d = (
+        build_live_hvac_solar_gains_member_2d(
+            profiles=profiles,
+            members=members,
+            settings_obj=params.get("settings_obj", None),
+            n_steps=n_steps,
+            n_members=n_thermal,
+        )
+        if n_thermal > 0
+        else np.zeros((n_steps, 0), dtype=float)
+    )
 
     hp = _require_block(params, "heatpump")
     if "cop_max" not in hp or "eer_max" not in hp:
@@ -325,9 +350,12 @@ def simulate_energy_system_ec_flex(params: Dict[str, Any], profiles: Dict[str, A
 
         # Base thermal simulation and mandatory HVAC.
         hvac_member = np.zeros(n_ec, dtype=float)
-        internal_w_m2 = usage["Qi Winter W/m2"].to_numpy(dtype=float)[t] if "Qi Winter W/m2" in usage.columns else 0.0
         for m_idx, st in enumerate(thermal_states):
-            st.passive_step(t_out_building[t], internal_w_m2, solar[t])
+            st.passive_step(
+                t_out_building[t],
+                float(internal_gains_w_m2[t]),
+                float(solar_member_2d[t, m_idx]),
+            )
             heat_kwh, cool_kwh = st.base_hvac_energy()
             hvac_member[m_idx] = (heat_kwh / max(1e-9, cop_heat)) + (cool_kwh / max(1e-9, cop_cool))
         hp_base_elec[t] = float(np.sum(hvac_member))
